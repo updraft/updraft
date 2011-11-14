@@ -1,13 +1,17 @@
 HEADERS += \
-    MainWindow.h
+    MainWindow.h \
+    OsgViewerWidget.h
 
 SOURCES += \
     MainWindow.cpp \
-    main.cpp
+    main.cpp \
+    OsgViewerWidget.cpp
 
 FORMS += \
     MainWindow.ui
 
 LIBS += \
-    -losgQt
-
+    -losg \
+    -losgQt \
+    -losgDB \
+    -losgViewer
