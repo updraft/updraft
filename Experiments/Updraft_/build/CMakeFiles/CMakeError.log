@@ -1,0 +1,90 @@
+Determining if the Q_WS_X11 exist failed with the following output:
+Change Dir: C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp
+
+Run Build Command:C:/MinGW/bin/mingw32-make.exe "cmTryCompileExec/fast"
+C:/MinGW/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec.dir\build.make CMakeFiles/cmTryCompileExec.dir/build
+mingw32-make.exe[1]: Entering directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp'
+"C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_progress_report "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec.dir/CheckSymbolExists.c.obj
+C:\MinGW\bin\gcc.exe   -IC:\QtSDK\Desktop\Qt\4.7.4\mingw\include   -o CMakeFiles\cmTryCompileExec.dir\CheckSymbolExists.c.obj   -c "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CheckSymbolExists.c"
+C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CheckSymbolExists.c: In function `main':
+C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CheckSymbolExists.c:8: error: `Q_WS_X11' undeclared (first use in this function)
+C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CheckSymbolExists.c:8: error: (Each undeclared identifier is reported only once
+C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CheckSymbolExists.c:8: error: for each function it appears in.)
+mingw32-make.exe[1]: *** [CMakeFiles/cmTryCompileExec.dir/CheckSymbolExists.c.obj] Error 1
+mingw32-make.exe[1]: Leaving directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp'
+mingw32-make.exe: *** [cmTryCompileExec/fast] Error 2
+
+File C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <QtCore/qglobal.h>
+
+void cmakeRequireSymbol(int dummy,...){(void)dummy;}
+int main()
+{
+#ifndef Q_WS_X11
+  cmakeRequireSymbol(0,&Q_WS_X11);
+#endif
+  return 0;
+}
+
+Determining if the Q_WS_QWS exist failed with the following output:
+Change Dir: C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp
+
+Run Build Command:C:/MinGW/bin/mingw32-make.exe "cmTryCompileExec/fast"
+C:/MinGW/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec.dir\build.make CMakeFiles/cmTryCompileExec.dir/build
+mingw32-make.exe[1]: Entering directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp'
+"C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_progress_report "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec.dir/CheckSymbolExists.c.obj
+C:\MinGW\bin\gcc.exe   -IC:\QtSDK\Desktop\Qt\4.7.4\mingw\include   -o CMakeFiles\cmTryCompileExec.dir\CheckSymbolExists.c.obj   -c "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CheckSymbolExists.c"
+C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CheckSymbolExists.c: In function `main':
+C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CheckSymbolExists.c:8: error: `Q_WS_QWS' undeclared (first use in this function)
+C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CheckSymbolExists.c:8: error: (Each undeclared identifier is reported only once
+C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CheckSymbolExists.c:8: error: for each function it appears in.)
+mingw32-make.exe[1]: *** [CMakeFiles/cmTryCompileExec.dir/CheckSymbolExists.c.obj] Error 1
+mingw32-make.exe[1]: Leaving directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp'
+mingw32-make.exe: *** [cmTryCompileExec/fast] Error 2
+
+File C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <QtCore/qglobal.h>
+
+void cmakeRequireSymbol(int dummy,...){(void)dummy;}
+int main()
+{
+#ifndef Q_WS_QWS
+  cmakeRequireSymbol(0,&Q_WS_QWS);
+#endif
+  return 0;
+}
+
+Determining if the Q_WS_MAC exist failed with the following output:
+Change Dir: C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp
+
+Run Build Command:C:/MinGW/bin/mingw32-make.exe "cmTryCompileExec/fast"
+C:/MinGW/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec.dir\build.make CMakeFiles/cmTryCompileExec.dir/build
+mingw32-make.exe[1]: Entering directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp'
+"C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_progress_report "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec.dir/CheckSymbolExists.c.obj
+C:\MinGW\bin\gcc.exe   -IC:\QtSDK\Desktop\Qt\4.7.4\mingw\include   -o CMakeFiles\cmTryCompileExec.dir\CheckSymbolExists.c.obj   -c "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CheckSymbolExists.c"
+C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CheckSymbolExists.c: In function `main':
+C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CheckSymbolExists.c:8: error: `Q_WS_MAC' undeclared (first use in this function)
+C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CheckSymbolExists.c:8: error: (Each undeclared identifier is reported only once
+C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CheckSymbolExists.c:8: error: for each function it appears in.)
+mingw32-make.exe[1]: *** [CMakeFiles/cmTryCompileExec.dir/CheckSymbolExists.c.obj] Error 1
+mingw32-make.exe[1]: Leaving directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp'
+mingw32-make.exe: *** [cmTryCompileExec/fast] Error 2
+
+File C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <QtCore/qglobal.h>
+
+void cmakeRequireSymbol(int dummy,...){(void)dummy;}
+int main()
+{
+#ifndef Q_WS_MAC
+  cmakeRequireSymbol(0,&Q_WS_MAC);
+#endif
+  return 0;
+}
+

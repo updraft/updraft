@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>sky_rendering2.jpg</file>
+        <file>igc.png</file>
+    </qresource>
+</RCC>

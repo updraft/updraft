@@ -1,0 +1,261 @@
+The system is: Windows - 5.1 - x86
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: C:/MinGW/bin/gcc.exe 
+Build flags: 
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.exe"
+
+The C compiler identification is GNU, found in "C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CompilerIdC/a.exe"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: C:/MinGW/bin/g++.exe 
+Build flags: 
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.exe"
+
+The CXX compiler identification is GNU, found in "C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CompilerIdCXX/a.exe"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp
+
+Run Build Command:C:/MinGW/bin/mingw32-make.exe "cmTryCompileExec/fast"
+C:/MinGW/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec.dir\build.make CMakeFiles/cmTryCompileExec.dir/build
+mingw32-make.exe[1]: Entering directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp'
+"C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_progress_report "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec.dir/testCCompiler.c.obj
+C:\MinGW\bin\gcc.exe    -o CMakeFiles\cmTryCompileExec.dir\testCCompiler.c.obj   -c "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\testCCompiler.c"
+Linking C executable cmTryCompileExec.exe
+"C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec.dir\link.txt --verbose=1
+C:\MinGW\bin\gcc.exe        CMakeFiles\cmTryCompileExec.dir\testCCompiler.c.obj  -o cmTryCompileExec.exe -Wl,--out-implib,libcmTryCompileExec.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[1]: Leaving directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp'
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp
+
+Run Build Command:C:/MinGW/bin/mingw32-make.exe "cmTryCompileExec/fast"
+C:/MinGW/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec.dir\build.make CMakeFiles/cmTryCompileExec.dir/build
+mingw32-make.exe[1]: Entering directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp'
+"C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_progress_report "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec.dir/CMakeCCompilerABI.c.obj
+C:\MinGW\bin\gcc.exe    -o CMakeFiles\cmTryCompileExec.dir\CMakeCCompilerABI.c.obj   -c "C:\Program Files\CMake 2.8\share\cmake-2.8\Modules\CMakeCCompilerABI.c"
+Linking C executable cmTryCompileExec.exe
+"C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec.dir\link.txt --verbose=1
+C:\MinGW\bin\gcc.exe       -v CMakeFiles\cmTryCompileExec.dir\CMakeCCompilerABI.c.obj  -o cmTryCompileExec.exe -Wl,--out-implib,libcmTryCompileExec.dll.a -Wl,--major-image-version,0,--minor-image-version,0   
+Reading specs from C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/specs
+Configured with: ../gcc/configure --with-gcc --with-gnu-ld --with-gnu-as --host=mingw32 --target=mingw32 --prefix=/mingw --enable-threads --disable-nls --enable-languages=c,c++,f77,ada,objc,java --disable-win32-registry --disable-shared --enable-sjlj-exceptions --enable-libgcj --disable-java-awt --without-x --enable-java-gc=boehm --disable-libgcj-debug --enable-interpreter --enable-hash-synchronization --enable-libstdcxx-debug
+Thread model: win32
+gcc version 3.4.2 (mingw-special)
+ C:/MinGW/bin/../libexec/gcc/mingw32/3.4.2/collect2.exe -Bdynamic -o cmTryCompileExec.exe /mingw/lib/crt2.o C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/crtbegin.o -LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2 -LC:/MinGW/bin/../lib/gcc -L/mingw/lib/gcc/mingw32/3.4.2 -LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../../../mingw32/lib -L/mingw/lib/gcc/mingw32/3.4.2/../../../../mingw32/lib -L/mingw/lib -LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../.. -L/mingw/lib/gcc/mingw32/3.4.2/../../.. CMakeFiles\cmTryCompileExec.dir\CMakeCCompilerABI.c.obj --out-implib libcmTryCompileExec.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -luser32 -lkernel32 -ladvapi32 -lshell32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/crtend.o
+mingw32-make.exe[1]: Leaving directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp'
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld.exe|ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:C:/MinGW/bin/mingw32-make.exe "cmTryCompileExec/fast"]
+  ignore line: [C:/MinGW/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec.dir\build.make CMakeFiles/cmTryCompileExec.dir/build]
+  ignore line: [mingw32-make.exe[1]: Entering directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp']
+  ignore line: ["C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_progress_report "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CMakeFiles" 1]
+  ignore line: [Building C object CMakeFiles/cmTryCompileExec.dir/CMakeCCompilerABI.c.obj]
+  ignore line: [C:\MinGW\bin\gcc.exe    -o CMakeFiles\cmTryCompileExec.dir\CMakeCCompilerABI.c.obj   -c "C:\Program Files\CMake 2.8\share\cmake-2.8\Modules\CMakeCCompilerABI.c"]
+  ignore line: [Linking C executable cmTryCompileExec.exe]
+  ignore line: ["C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec.dir\link.txt --verbose=1]
+  ignore line: [C:\MinGW\bin\gcc.exe       -v CMakeFiles\cmTryCompileExec.dir\CMakeCCompilerABI.c.obj  -o cmTryCompileExec.exe -Wl,--out-implib,libcmTryCompileExec.dll.a -Wl,--major-image-version,0,--minor-image-version,0   ]
+  ignore line: [Reading specs from C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/specs]
+  ignore line: [Configured with: ../gcc/configure --with-gcc --with-gnu-ld --with-gnu-as --host=mingw32 --target=mingw32 --prefix=/mingw --enable-threads --disable-nls --enable-languages=c,c++,f77,ada,objc,java --disable-win32-registry --disable-shared --enable-sjlj-exceptions --enable-libgcj --disable-java-awt --without-x --enable-java-gc=boehm --disable-libgcj-debug --enable-interpreter --enable-hash-synchronization --enable-libstdcxx-debug]
+  ignore line: [Thread model: win32]
+  ignore line: [gcc version 3.4.2 (mingw-special)]
+  link line: [ C:/MinGW/bin/../libexec/gcc/mingw32/3.4.2/collect2.exe -Bdynamic -o cmTryCompileExec.exe /mingw/lib/crt2.o C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/crtbegin.o -LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2 -LC:/MinGW/bin/../lib/gcc -L/mingw/lib/gcc/mingw32/3.4.2 -LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../../../mingw32/lib -L/mingw/lib/gcc/mingw32/3.4.2/../../../../mingw32/lib -L/mingw/lib -LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../.. -L/mingw/lib/gcc/mingw32/3.4.2/../../.. CMakeFiles\cmTryCompileExec.dir\CMakeCCompilerABI.c.obj --out-implib libcmTryCompileExec.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -luser32 -lkernel32 -ladvapi32 -lshell32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/crtend.o]
+    arg [C:/MinGW/bin/../libexec/gcc/mingw32/3.4.2/collect2.exe] ==> ignore
+    arg [-Bdynamic] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTryCompileExec.exe] ==> ignore
+    arg [/mingw/lib/crt2.o] ==> ignore
+    arg [C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/crtbegin.o] ==> ignore
+    arg [-LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2] ==> dir [C:/MinGW/bin/../lib/gcc/mingw32/3.4.2]
+    arg [-LC:/MinGW/bin/../lib/gcc] ==> dir [C:/MinGW/bin/../lib/gcc]
+    arg [-L/mingw/lib/gcc/mingw32/3.4.2] ==> dir [/mingw/lib/gcc/mingw32/3.4.2]
+    arg [-LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../../../mingw32/lib] ==> dir [C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../../../mingw32/lib]
+    arg [-L/mingw/lib/gcc/mingw32/3.4.2/../../../../mingw32/lib] ==> dir [/mingw/lib/gcc/mingw32/3.4.2/../../../../mingw32/lib]
+    arg [-L/mingw/lib] ==> dir [/mingw/lib]
+    arg [-LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../..] ==> dir [C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../..]
+    arg [-L/mingw/lib/gcc/mingw32/3.4.2/../../..] ==> dir [/mingw/lib/gcc/mingw32/3.4.2/../../..]
+    arg [CMakeFiles\cmTryCompileExec.dir\CMakeCCompilerABI.c.obj] ==> ignore
+    arg [--out-implib] ==> ignore
+    arg [libcmTryCompileExec.dll.a] ==> ignore
+    arg [--major-image-version] ==> ignore
+    arg [0] ==> ignore
+    arg [--minor-image-version] ==> ignore
+    arg [0] ==> ignore
+    arg [-lmingw32] ==> lib [mingw32]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lmoldname] ==> lib [moldname]
+    arg [-lmingwex] ==> lib [mingwex]
+    arg [-lmsvcrt] ==> lib [msvcrt]
+    arg [-luser32] ==> lib [user32]
+    arg [-lkernel32] ==> lib [kernel32]
+    arg [-ladvapi32] ==> lib [advapi32]
+    arg [-lshell32] ==> lib [shell32]
+    arg [-lmingw32] ==> lib [mingw32]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lmoldname] ==> lib [moldname]
+    arg [-lmingwex] ==> lib [mingwex]
+    arg [-lmsvcrt] ==> lib [msvcrt]
+    arg [C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/crtend.o] ==> ignore
+  remove lib [gcc]
+  remove lib [gcc]
+  collapse dir [C:/MinGW/bin/../lib/gcc/mingw32/3.4.2] ==> [C:/MinGW/lib/gcc/mingw32/3.4.2]
+  collapse dir [C:/MinGW/bin/../lib/gcc] ==> [C:/MinGW/lib/gcc]
+  collapse dir [/mingw/lib/gcc/mingw32/3.4.2] ==> [/mingw/lib/gcc/mingw32/3.4.2]
+  collapse dir [C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../../../mingw32/lib] ==> [C:/MinGW/mingw32/lib]
+  collapse dir [/mingw/lib/gcc/mingw32/3.4.2/../../../../mingw32/lib] ==> [/MinGW/mingw32/lib]
+  collapse dir [/mingw/lib] ==> [/MinGW/lib]
+  collapse dir [C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../..] ==> [C:/MinGW/lib]
+  collapse dir [/mingw/lib/gcc/mingw32/3.4.2/../../..] ==> [/MinGW/lib]
+  implicit libs: [mingw32;moldname;mingwex;msvcrt;user32;kernel32;advapi32;shell32;mingw32;moldname;mingwex;msvcrt]
+  implicit dirs: [C:/MinGW/lib/gcc/mingw32/3.4.2;C:/MinGW/lib/gcc;/mingw/lib/gcc/mingw32/3.4.2;C:/MinGW/mingw32/lib;/MinGW/mingw32/lib;/MinGW/lib;C:/MinGW/lib]
+
+
+Determining if the CXX compiler works passed with the following output:
+Change Dir: C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp
+
+Run Build Command:C:/MinGW/bin/mingw32-make.exe "cmTryCompileExec/fast"
+C:/MinGW/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec.dir\build.make CMakeFiles/cmTryCompileExec.dir/build
+mingw32-make.exe[1]: Entering directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp'
+"C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_progress_report "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CMakeFiles" 1
+Building CXX object CMakeFiles/cmTryCompileExec.dir/testCXXCompiler.cxx.obj
+C:\MinGW\bin\g++.exe     -o CMakeFiles\cmTryCompileExec.dir\testCXXCompiler.cxx.obj -c "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\testCXXCompiler.cxx"
+Linking CXX executable cmTryCompileExec.exe
+"C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec.dir\link.txt --verbose=1
+C:\MinGW\bin\g++.exe        CMakeFiles\cmTryCompileExec.dir\testCXXCompiler.cxx.obj  -o cmTryCompileExec.exe -Wl,--out-implib,libcmTryCompileExec.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[1]: Leaving directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp'
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp
+
+Run Build Command:C:/MinGW/bin/mingw32-make.exe "cmTryCompileExec/fast"
+C:/MinGW/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec.dir\build.make CMakeFiles/cmTryCompileExec.dir/build
+mingw32-make.exe[1]: Entering directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp'
+"C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_progress_report "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CMakeFiles" 1
+Building CXX object CMakeFiles/cmTryCompileExec.dir/CMakeCXXCompilerABI.cpp.obj
+C:\MinGW\bin\g++.exe     -o CMakeFiles\cmTryCompileExec.dir\CMakeCXXCompilerABI.cpp.obj -c "C:\Program Files\CMake 2.8\share\cmake-2.8\Modules\CMakeCXXCompilerABI.cpp"
+Linking CXX executable cmTryCompileExec.exe
+"C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec.dir\link.txt --verbose=1
+C:\MinGW\bin\g++.exe       -v CMakeFiles\cmTryCompileExec.dir\CMakeCXXCompilerABI.cpp.obj  -o cmTryCompileExec.exe -Wl,--out-implib,libcmTryCompileExec.dll.a -Wl,--major-image-version,0,--minor-image-version,0   
+Reading specs from C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/specs
+Configured with: ../gcc/configure --with-gcc --with-gnu-ld --with-gnu-as --host=mingw32 --target=mingw32 --prefix=/mingw --enable-threads --disable-nls --enable-languages=c,c++,f77,ada,objc,java --disable-win32-registry --disable-shared --enable-sjlj-exceptions --enable-libgcj --disable-java-awt --without-x --enable-java-gc=boehm --disable-libgcj-debug --enable-interpreter --enable-hash-synchronization --enable-libstdcxx-debug
+Thread model: win32
+gcc version 3.4.2 (mingw-special)
+ C:/MinGW/bin/../libexec/gcc/mingw32/3.4.2/collect2.exe -Bdynamic -o cmTryCompileExec.exe /mingw/lib/crt2.o C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/crtbegin.o -LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2 -LC:/MinGW/bin/../lib/gcc -L/mingw/lib/gcc/mingw32/3.4.2 -LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../../../mingw32/lib -L/mingw/lib/gcc/mingw32/3.4.2/../../../../mingw32/lib -L/mingw/lib -LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../.. -L/mingw/lib/gcc/mingw32/3.4.2/../../.. CMakeFiles\cmTryCompileExec.dir\CMakeCXXCompilerABI.cpp.obj --out-implib libcmTryCompileExec.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -luser32 -lkernel32 -ladvapi32 -lshell32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/crtend.o
+mingw32-make.exe[1]: Leaving directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp'
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld.exe|ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:C:/MinGW/bin/mingw32-make.exe "cmTryCompileExec/fast"]
+  ignore line: [C:/MinGW/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec.dir\build.make CMakeFiles/cmTryCompileExec.dir/build]
+  ignore line: [mingw32-make.exe[1]: Entering directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp']
+  ignore line: ["C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_progress_report "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CMakeFiles" 1]
+  ignore line: [Building CXX object CMakeFiles/cmTryCompileExec.dir/CMakeCXXCompilerABI.cpp.obj]
+  ignore line: [C:\MinGW\bin\g++.exe     -o CMakeFiles\cmTryCompileExec.dir\CMakeCXXCompilerABI.cpp.obj -c "C:\Program Files\CMake 2.8\share\cmake-2.8\Modules\CMakeCXXCompilerABI.cpp"]
+  ignore line: [Linking CXX executable cmTryCompileExec.exe]
+  ignore line: ["C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec.dir\link.txt --verbose=1]
+  ignore line: [C:\MinGW\bin\g++.exe       -v CMakeFiles\cmTryCompileExec.dir\CMakeCXXCompilerABI.cpp.obj  -o cmTryCompileExec.exe -Wl,--out-implib,libcmTryCompileExec.dll.a -Wl,--major-image-version,0,--minor-image-version,0   ]
+  ignore line: [Reading specs from C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/specs]
+  ignore line: [Configured with: ../gcc/configure --with-gcc --with-gnu-ld --with-gnu-as --host=mingw32 --target=mingw32 --prefix=/mingw --enable-threads --disable-nls --enable-languages=c,c++,f77,ada,objc,java --disable-win32-registry --disable-shared --enable-sjlj-exceptions --enable-libgcj --disable-java-awt --without-x --enable-java-gc=boehm --disable-libgcj-debug --enable-interpreter --enable-hash-synchronization --enable-libstdcxx-debug]
+  ignore line: [Thread model: win32]
+  ignore line: [gcc version 3.4.2 (mingw-special)]
+  link line: [ C:/MinGW/bin/../libexec/gcc/mingw32/3.4.2/collect2.exe -Bdynamic -o cmTryCompileExec.exe /mingw/lib/crt2.o C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/crtbegin.o -LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2 -LC:/MinGW/bin/../lib/gcc -L/mingw/lib/gcc/mingw32/3.4.2 -LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../../../mingw32/lib -L/mingw/lib/gcc/mingw32/3.4.2/../../../../mingw32/lib -L/mingw/lib -LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../.. -L/mingw/lib/gcc/mingw32/3.4.2/../../.. CMakeFiles\cmTryCompileExec.dir\CMakeCXXCompilerABI.cpp.obj --out-implib libcmTryCompileExec.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -luser32 -lkernel32 -ladvapi32 -lshell32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/crtend.o]
+    arg [C:/MinGW/bin/../libexec/gcc/mingw32/3.4.2/collect2.exe] ==> ignore
+    arg [-Bdynamic] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTryCompileExec.exe] ==> ignore
+    arg [/mingw/lib/crt2.o] ==> ignore
+    arg [C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/crtbegin.o] ==> ignore
+    arg [-LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2] ==> dir [C:/MinGW/bin/../lib/gcc/mingw32/3.4.2]
+    arg [-LC:/MinGW/bin/../lib/gcc] ==> dir [C:/MinGW/bin/../lib/gcc]
+    arg [-L/mingw/lib/gcc/mingw32/3.4.2] ==> dir [/mingw/lib/gcc/mingw32/3.4.2]
+    arg [-LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../../../mingw32/lib] ==> dir [C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../../../mingw32/lib]
+    arg [-L/mingw/lib/gcc/mingw32/3.4.2/../../../../mingw32/lib] ==> dir [/mingw/lib/gcc/mingw32/3.4.2/../../../../mingw32/lib]
+    arg [-L/mingw/lib] ==> dir [/mingw/lib]
+    arg [-LC:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../..] ==> dir [C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../..]
+    arg [-L/mingw/lib/gcc/mingw32/3.4.2/../../..] ==> dir [/mingw/lib/gcc/mingw32/3.4.2/../../..]
+    arg [CMakeFiles\cmTryCompileExec.dir\CMakeCXXCompilerABI.cpp.obj] ==> ignore
+    arg [--out-implib] ==> ignore
+    arg [libcmTryCompileExec.dll.a] ==> ignore
+    arg [--major-image-version] ==> ignore
+    arg [0] ==> ignore
+    arg [--minor-image-version] ==> ignore
+    arg [0] ==> ignore
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [-lmingw32] ==> lib [mingw32]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lmoldname] ==> lib [moldname]
+    arg [-lmingwex] ==> lib [mingwex]
+    arg [-lmsvcrt] ==> lib [msvcrt]
+    arg [-luser32] ==> lib [user32]
+    arg [-lkernel32] ==> lib [kernel32]
+    arg [-ladvapi32] ==> lib [advapi32]
+    arg [-lshell32] ==> lib [shell32]
+    arg [-lmingw32] ==> lib [mingw32]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lmoldname] ==> lib [moldname]
+    arg [-lmingwex] ==> lib [mingwex]
+    arg [-lmsvcrt] ==> lib [msvcrt]
+    arg [C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/crtend.o] ==> ignore
+  remove lib [gcc]
+  remove lib [gcc]
+  collapse dir [C:/MinGW/bin/../lib/gcc/mingw32/3.4.2] ==> [C:/MinGW/lib/gcc/mingw32/3.4.2]
+  collapse dir [C:/MinGW/bin/../lib/gcc] ==> [C:/MinGW/lib/gcc]
+  collapse dir [/mingw/lib/gcc/mingw32/3.4.2] ==> [/mingw/lib/gcc/mingw32/3.4.2]
+  collapse dir [C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../../../mingw32/lib] ==> [C:/MinGW/mingw32/lib]
+  collapse dir [/mingw/lib/gcc/mingw32/3.4.2/../../../../mingw32/lib] ==> [/MinGW/mingw32/lib]
+  collapse dir [/mingw/lib] ==> [/MinGW/lib]
+  collapse dir [C:/MinGW/bin/../lib/gcc/mingw32/3.4.2/../../..] ==> [C:/MinGW/lib]
+  collapse dir [/mingw/lib/gcc/mingw32/3.4.2/../../..] ==> [/MinGW/lib]
+  implicit libs: [stdc++;mingw32;moldname;mingwex;msvcrt;user32;kernel32;advapi32;shell32;mingw32;moldname;mingwex;msvcrt]
+  implicit dirs: [C:/MinGW/lib/gcc/mingw32/3.4.2;C:/MinGW/lib/gcc;/mingw/lib/gcc/mingw32/3.4.2;C:/MinGW/mingw32/lib;/MinGW/mingw32/lib;/MinGW/lib;C:/MinGW/lib]
+
+
+Determining if the Q_WS_WIN exist passed with the following output:
+Change Dir: C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp
+
+Run Build Command:C:/MinGW/bin/mingw32-make.exe "cmTryCompileExec/fast"
+C:/MinGW/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec.dir\build.make CMakeFiles/cmTryCompileExec.dir/build
+mingw32-make.exe[1]: Entering directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp'
+"C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_progress_report "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec.dir/CheckSymbolExists.c.obj
+C:\MinGW\bin\gcc.exe   -IC:\QtSDK\Desktop\Qt\4.7.4\mingw\include   -o CMakeFiles\cmTryCompileExec.dir\CheckSymbolExists.c.obj   -c "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\CMakeTmp\CheckSymbolExists.c"
+Linking C executable cmTryCompileExec.exe
+"C:\Program Files\CMake 2.8\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec.dir\link.txt --verbose=1
+C:\MinGW\bin\gcc.exe        CMakeFiles\cmTryCompileExec.dir\CheckSymbolExists.c.obj  -o cmTryCompileExec.exe -Wl,--out-implib,libcmTryCompileExec.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[1]: Leaving directory `C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp'
+
+File C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <QtCore/qglobal.h>
+
+void cmakeRequireSymbol(int dummy,...){(void)dummy;}
+int main()
+{
+#ifndef Q_WS_WIN
+  cmakeRequireSymbol(0,&Q_WS_WIN);
+#endif
+  return 0;
+}
+

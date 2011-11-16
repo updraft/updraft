@@ -1,0 +1,4 @@
+# Hashes of file build rules.
+5c1380137bf8ed88543e2ea06d0ba476 moc_mainwindow.cxx
+23a4c9982cc794ac5d9804bc8757e53b qrc_resources.cxx
+3a149b1a9caa3f68ef2ebb010559f655 ui_mainwindow.h
