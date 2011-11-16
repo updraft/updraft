@@ -10,13 +10,13 @@ TARGET = MainWindowDesign
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp
+SOURCES += src/main.cpp\
+        src/ui/mainwindow.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += src/ui/mainwindow.h
 
-FORMS    += mainwindow.ui
+FORMS    += src/ui/mainwindow.ui
 
 RESOURCES += \
-    resources.qrc
+    src/resources.qrc
 
