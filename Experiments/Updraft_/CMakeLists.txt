@@ -18,6 +18,8 @@ INCLUDE(${QT_USE_FILE})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 
+ADD_CUSTOM_TARGET(style-check ALL python scripts/cpplint.py ${updraft__SOURCES} ${UPDRAFT__HEADERS})
+
 ADD_EXECUTABLE(updraft_ ${updraft__SOURCES} 
     	${updraft__HEADERS_MOC} 
     	${updraft__FORMS_HEADERS}

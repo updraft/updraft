@@ -3329,6 +3329,8 @@ def ParseArguments(args):
 
 
 def main():
+  print ("Checking all source and header files for style compliance...")
+
   filenames = ParseArguments(sys.argv[1:])
 
   # Change stderr to write with replacement characters so we don't die
