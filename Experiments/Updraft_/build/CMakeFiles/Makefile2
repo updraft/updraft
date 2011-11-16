@@ -46,10 +46,10 @@ RM = "C:\Program Files\CMake 2.8\bin\cmake.exe" -E remove -f
 CMAKE_EDIT_COMMAND = "C:\Program Files\CMake 2.8\bin\cmake-gui.exe"
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_"
+CMAKE_SOURCE_DIR = "C:\Documents and Settings\Mcc\My Documents\Mff Uk\SW Projekt\GIT\updraft\Experiments\Updraft_"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build"
+CMAKE_BINARY_DIR = "C:\Documents and Settings\Mcc\My Documents\Mff Uk\SW Projekt\GIT\updraft\Experiments\Updraft_\build"
 
 #=============================================================================
 # Target rules for target CMakeFiles/updraft_.dir
@@ -58,7 +58,7 @@ CMAKE_BINARY_DIR = "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updra
 CMakeFiles/updraft_.dir/all:
 	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/depend
 	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles"  1 2 3 4 5 6 7
+	$(CMAKE_COMMAND) -E cmake_progress_report "C:\Documents and Settings\Mcc\My Documents\Mff Uk\SW Projekt\GIT\updraft\Experiments\Updraft_\build\CMakeFiles"  1 2 3 4 5 6 7
 	@$(CMAKE_COMMAND) -E echo "Built target updraft_"
 .PHONY : CMakeFiles/updraft_.dir/all
 
@@ -68,9 +68,9 @@ all: CMakeFiles/updraft_.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/updraft_.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles" 7
+	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Documents and Settings\Mcc\My Documents\Mff Uk\SW Projekt\GIT\updraft\Experiments\Updraft_\build\CMakeFiles" 7
 	$(MAKE) -f CMakeFiles\Makefile2 CMakeFiles/updraft_.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles" 0
+	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Documents and Settings\Mcc\My Documents\Mff Uk\SW Projekt\GIT\updraft\Experiments\Updraft_\build\CMakeFiles" 0
 .PHONY : CMakeFiles/updraft_.dir/rule
 
 # Convenience name for target.

@@ -1,9 +1,9 @@
 FILE(REMOVE_RECURSE
-  "CMakeFiles/updraft_.dir/main.cpp.obj"
-  "CMakeFiles/updraft_.dir/mainwindow.cpp.obj"
-  "CMakeFiles/updraft_.dir/moc_mainwindow.cxx.obj"
+  "CMakeFiles/updraft_.dir/src/main.cpp.obj"
+  "CMakeFiles/updraft_.dir/src/ui/mainwindow.cpp.obj"
+  "CMakeFiles/updraft_.dir/src/ui/moc_mainwindow.cxx.obj"
   "CMakeFiles/updraft_.dir/qrc_resources.cxx.obj"
-  "moc_mainwindow.cxx"
+  "src/ui/moc_mainwindow.cxx"
   "ui_mainwindow.h"
   "qrc_resources.cxx"
   "updraft_.pdb"

@@ -4,10 +4,10 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/main.cpp" "C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/updraft_.dir/main.cpp.obj"
-  "C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/mainwindow.cpp" "C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/updraft_.dir/mainwindow.cpp.obj"
-  "C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/moc_mainwindow.cxx" "C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/updraft_.dir/moc_mainwindow.cxx.obj"
-  "C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/qrc_resources.cxx" "C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/CMakeFiles/updraft_.dir/qrc_resources.cxx.obj"
+  "C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/build/qrc_resources.cxx" "C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/build/CMakeFiles/updraft_.dir/qrc_resources.cxx.obj"
+  "C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/src/main.cpp" "C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/build/CMakeFiles/updraft_.dir/src/main.cpp.obj"
+  "C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/src/ui/mainwindow.cpp" "C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/build/CMakeFiles/updraft_.dir/src/ui/mainwindow.cpp.obj"
+  "C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/build/src/ui/moc_mainwindow.cxx" "C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/build/CMakeFiles/updraft_.dir/src/ui/moc_mainwindow.cxx.obj"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 

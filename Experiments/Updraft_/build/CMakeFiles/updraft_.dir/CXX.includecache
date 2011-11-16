@@ -6,31 +6,31 @@
 
 #IncludeRegexTransform: 
 
-C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/../mainwindow.h
-QMainWindow
--
-
-C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/moc_mainwindow.cxx
-../mainwindow.h
-C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/../mainwindow.h
-
-C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/qrc_resources.cxx
+C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/build/qrc_resources.cxx
 QtCore/qglobal.h
 -
 
-C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/main.cpp
+C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/build/src/ui/../../../src/ui/mainwindow.h
+QMainWindow
+-
+
+C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/build/src/ui/moc_mainwindow.cxx
+../../../src/ui/mainwindow.h
+C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/build/src/ui/../../../src/ui/mainwindow.h
+
+C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/src/main.cpp
 QtGui/QApplication
 -
 mainwindow.h
-C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/mainwindow.h
+C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/src/mainwindow.h
 
-C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/mainwindow.cpp
+C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/src/ui/mainwindow.cpp
 mainwindow.h
-C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/mainwindow.h
+C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/src/ui/mainwindow.h
 ui_mainwindow.h
-C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/ui_mainwindow.h
+C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/src/ui/ui_mainwindow.h
 
-C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/mainwindow.h
+C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/src/ui/mainwindow.h
 QMainWindow
 -
 
@@ -564,10 +564,6 @@ C:/QtSDK/Desktop/Qt/4.7.4/mingw/include/QtGui/QHeaderView
 qheaderview.h
 C:/QtSDK/Desktop/Qt/4.7.4/mingw/include/QtGui/qheaderview.h
 
-C:/QtSDK/Desktop/Qt/4.7.4/mingw/include/QtGui/QLabel
-qlabel.h
-C:/QtSDK/Desktop/Qt/4.7.4/mingw/include/QtGui/qlabel.h
-
 C:/QtSDK/Desktop/Qt/4.7.4/mingw/include/QtGui/QMainWindow
 qmainwindow.h
 C:/QtSDK/Desktop/Qt/4.7.4/mingw/include/QtGui/qmainwindow.h
@@ -826,10 +822,6 @@ C:/QtSDK/Desktop/Qt/4.7.4/mingw/include/QtGui/qkeysequence.h
 QtCore/qnamespace.h
 -
 QtCore/qstring.h
--
-
-C:/QtSDK/Desktop/Qt/4.7.4/mingw/include/QtGui/qlabel.h
-QtGui/qframe.h
 -
 
 C:/QtSDK/Desktop/Qt/4.7.4/mingw/include/QtGui/qlayout.h
@@ -1168,8 +1160,6 @@ QtGui/QFrame
 QtGui/QGridLayout
 -
 QtGui/QHeaderView
--
-QtGui/QLabel
 -
 QtGui/QMainWindow
 -

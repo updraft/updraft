@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Wed 16. Nov 17:26:10 2011
+** Created: Wed 16. Nov 19:06:32 2011
 **      by: Qt User Interface Compiler version 4.7.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -17,7 +17,6 @@
 #include <QtGui/QFrame>
 #include <QtGui/QGridLayout>
 #include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenu>
 #include <QtGui/QMenuBar>
@@ -41,11 +40,9 @@ public:
     QSplitter *splitter_2;
     QFrame *frame;
     QVBoxLayout *verticalLayout_3;
-    QLabel *label;
     QTabWidget *tabWidget;
     QWidget *tab;
     QGridLayout *gridLayout;
-    QLabel *label_2;
     QWidget *tab_2;
     QMenuBar *menuBar;
     QMenu *menuMain_Menu;
@@ -80,38 +77,6 @@ public:
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
         treeWidget_2 = new QTreeWidget(layoutWidget);
-        QTreeWidgetItem *__qtreewidgetitem = new QTreeWidgetItem(treeWidget_2);
-        __qtreewidgetitem->setCheckState(0, Qt::PartiallyChecked);
-        QTreeWidgetItem *__qtreewidgetitem1 = new QTreeWidgetItem(__qtreewidgetitem);
-        __qtreewidgetitem1->setCheckState(0, Qt::Checked);
-        QTreeWidgetItem *__qtreewidgetitem2 = new QTreeWidgetItem(__qtreewidgetitem);
-        __qtreewidgetitem2->setCheckState(0, Qt::Checked);
-        QTreeWidgetItem *__qtreewidgetitem3 = new QTreeWidgetItem(__qtreewidgetitem);
-        __qtreewidgetitem3->setCheckState(0, Qt::Checked);
-        QTreeWidgetItem *__qtreewidgetitem4 = new QTreeWidgetItem(__qtreewidgetitem);
-        __qtreewidgetitem4->setCheckState(0, Qt::Unchecked);
-        QTreeWidgetItem *__qtreewidgetitem5 = new QTreeWidgetItem(__qtreewidgetitem);
-        __qtreewidgetitem5->setCheckState(0, Qt::Checked);
-        QTreeWidgetItem *__qtreewidgetitem6 = new QTreeWidgetItem(treeWidget_2);
-        __qtreewidgetitem6->setCheckState(0, Qt::Checked);
-        QTreeWidgetItem *__qtreewidgetitem7 = new QTreeWidgetItem(treeWidget_2);
-        __qtreewidgetitem7->setCheckState(0, Qt::Unchecked);
-        QTreeWidgetItem *__qtreewidgetitem8 = new QTreeWidgetItem(__qtreewidgetitem7);
-        __qtreewidgetitem8->setCheckState(0, Qt::Unchecked);
-        QTreeWidgetItem *__qtreewidgetitem9 = new QTreeWidgetItem(__qtreewidgetitem7);
-        __qtreewidgetitem9->setCheckState(0, Qt::Unchecked);
-        QTreeWidgetItem *__qtreewidgetitem10 = new QTreeWidgetItem(treeWidget_2);
-        __qtreewidgetitem10->setCheckState(0, Qt::Unchecked);
-        QTreeWidgetItem *__qtreewidgetitem11 = new QTreeWidgetItem(__qtreewidgetitem10);
-        __qtreewidgetitem11->setCheckState(0, Qt::Unchecked);
-        QTreeWidgetItem *__qtreewidgetitem12 = new QTreeWidgetItem(__qtreewidgetitem10);
-        __qtreewidgetitem12->setCheckState(0, Qt::Unchecked);
-        QTreeWidgetItem *__qtreewidgetitem13 = new QTreeWidgetItem(treeWidget_2);
-        __qtreewidgetitem13->setCheckState(0, Qt::PartiallyChecked);
-        QTreeWidgetItem *__qtreewidgetitem14 = new QTreeWidgetItem(__qtreewidgetitem13);
-        __qtreewidgetitem14->setCheckState(0, Qt::Checked);
-        QTreeWidgetItem *__qtreewidgetitem15 = new QTreeWidgetItem(__qtreewidgetitem13);
-        __qtreewidgetitem15->setCheckState(0, Qt::Unchecked);
         treeWidget_2->setObjectName(QString::fromUtf8("treeWidget_2"));
         QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Minimum);
         sizePolicy1.setHorizontalStretch(0);
@@ -144,26 +109,14 @@ public:
         verticalLayout_3->setSpacing(6);
         verticalLayout_3->setContentsMargins(0, 0, 0, 0);
         verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
-        label = new QLabel(frame);
-        label->setObjectName(QString::fromUtf8("label"));
-        QSizePolicy sizePolicy4(QSizePolicy::Ignored, QSizePolicy::Ignored);
-        sizePolicy4.setHorizontalStretch(0);
-        sizePolicy4.setVerticalStretch(0);
-        sizePolicy4.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
-        label->setSizePolicy(sizePolicy4);
-        label->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/sky_rendering2.jpg")));
-        label->setScaledContents(true);
-
-        verticalLayout_3->addWidget(label);
-
         splitter_2->addWidget(frame);
         tabWidget = new QTabWidget(splitter_2);
         tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
-        QSizePolicy sizePolicy5(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy5.setHorizontalStretch(0);
-        sizePolicy5.setVerticalStretch(0);
-        sizePolicy5.setHeightForWidth(tabWidget->sizePolicy().hasHeightForWidth());
-        tabWidget->setSizePolicy(sizePolicy5);
+        QSizePolicy sizePolicy4(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(tabWidget->sizePolicy().hasHeightForWidth());
+        tabWidget->setSizePolicy(sizePolicy4);
         tabWidget->setMinimumSize(QSize(0, 130));
         tabWidget->setTabsClosable(true);
         tabWidget->setMovable(true);
@@ -173,14 +126,6 @@ public:
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(0, 0, 0, 0);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        label_2 = new QLabel(tab);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
-        sizePolicy4.setHeightForWidth(label_2->sizePolicy().hasHeightForWidth());
-        label_2->setSizePolicy(sizePolicy4);
-        label_2->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/igc.png")));
-
-        gridLayout->addWidget(label_2, 0, 0, 1, 1);
-
         tabWidget->addTab(tab, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QString::fromUtf8("tab_2"));
@@ -193,7 +138,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 800, 27));
+        menuBar->setGeometry(QRect(0, 0, 800, 20));
         menuMain_Menu = new QMenu(menuBar);
         menuMain_Menu->setObjectName(QString::fromUtf8("menuMain_Menu"));
         menuView = new QMenu(menuBar);
@@ -217,47 +162,6 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Updraft", 0, QApplication::UnicodeUTF8));
-        QTreeWidgetItem *___qtreewidgetitem = treeWidget_2->headerItem();
-        ___qtreewidgetitem->setText(0, QApplication::translate("MainWindow", "Displayed Layers", 0, QApplication::UnicodeUTF8));
-
-        const bool __sortingEnabled = treeWidget_2->isSortingEnabled();
-        treeWidget_2->setSortingEnabled(false);
-        QTreeWidgetItem *___qtreewidgetitem1 = treeWidget_2->topLevelItem(0);
-        ___qtreewidgetitem1->setText(0, QApplication::translate("MainWindow", "Turn Points", 0, QApplication::UnicodeUTF8));
-        QTreeWidgetItem *___qtreewidgetitem2 = ___qtreewidgetitem1->child(0);
-        ___qtreewidgetitem2->setText(0, QApplication::translate("MainWindow", "City", 0, QApplication::UnicodeUTF8));
-        QTreeWidgetItem *___qtreewidgetitem3 = ___qtreewidgetitem1->child(1);
-        ___qtreewidgetitem3->setText(0, QApplication::translate("MainWindow", "VOR", 0, QApplication::UnicodeUTF8));
-        QTreeWidgetItem *___qtreewidgetitem4 = ___qtreewidgetitem1->child(2);
-        ___qtreewidgetitem4->setText(0, QApplication::translate("MainWindow", "Fav1", 0, QApplication::UnicodeUTF8));
-        QTreeWidgetItem *___qtreewidgetitem5 = ___qtreewidgetitem1->child(3);
-        ___qtreewidgetitem5->setText(0, QApplication::translate("MainWindow", "Fav2", 0, QApplication::UnicodeUTF8));
-        QTreeWidgetItem *___qtreewidgetitem6 = ___qtreewidgetitem1->child(4);
-        ___qtreewidgetitem6->setText(0, QApplication::translate("MainWindow", "Ad-hoc", 0, QApplication::UnicodeUTF8));
-        QTreeWidgetItem *___qtreewidgetitem7 = treeWidget_2->topLevelItem(1);
-        ___qtreewidgetitem7->setText(0, QApplication::translate("MainWindow", "Airfields", 0, QApplication::UnicodeUTF8));
-        QTreeWidgetItem *___qtreewidgetitem8 = treeWidget_2->topLevelItem(2);
-        ___qtreewidgetitem8->setText(0, QApplication::translate("MainWindow", "Weather", 0, QApplication::UnicodeUTF8));
-        QTreeWidgetItem *___qtreewidgetitem9 = ___qtreewidgetitem8->child(0);
-        ___qtreewidgetitem9->setText(0, QApplication::translate("MainWindow", "Czech Republic", 0, QApplication::UnicodeUTF8));
-        QTreeWidgetItem *___qtreewidgetitem10 = ___qtreewidgetitem8->child(1);
-        ___qtreewidgetitem10->setText(0, QApplication::translate("MainWindow", "Deutschland", 0, QApplication::UnicodeUTF8));
-        QTreeWidgetItem *___qtreewidgetitem11 = treeWidget_2->topLevelItem(3);
-        ___qtreewidgetitem11->setText(0, QApplication::translate("MainWindow", "Map layers", 0, QApplication::UnicodeUTF8));
-        QTreeWidgetItem *___qtreewidgetitem12 = ___qtreewidgetitem11->child(0);
-        ___qtreewidgetitem12->setText(0, QApplication::translate("MainWindow", "Cities", 0, QApplication::UnicodeUTF8));
-        QTreeWidgetItem *___qtreewidgetitem13 = ___qtreewidgetitem11->child(1);
-        ___qtreewidgetitem13->setText(0, QApplication::translate("MainWindow", "Boundaries", 0, QApplication::UnicodeUTF8));
-        QTreeWidgetItem *___qtreewidgetitem14 = treeWidget_2->topLevelItem(4);
-        ___qtreewidgetitem14->setText(0, QApplication::translate("MainWindow", "User Files", 0, QApplication::UnicodeUTF8));
-        QTreeWidgetItem *___qtreewidgetitem15 = ___qtreewidgetitem14->child(0);
-        ___qtreewidgetitem15->setText(0, QApplication::translate("MainWindow", "flight.igc", 0, QApplication::UnicodeUTF8));
-        QTreeWidgetItem *___qtreewidgetitem16 = ___qtreewidgetitem14->child(1);
-        ___qtreewidgetitem16->setText(0, QApplication::translate("MainWindow", "task.cup", 0, QApplication::UnicodeUTF8));
-        treeWidget_2->setSortingEnabled(__sortingEnabled);
-
-        label->setText(QString());
-        label_2->setText(QString());
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "flight.igc", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "task.cup", 0, QApplication::UnicodeUTF8));
         menuMain_Menu->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));

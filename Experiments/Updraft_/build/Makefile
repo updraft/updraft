@@ -38,10 +38,10 @@ RM = "C:\Program Files\CMake 2.8\bin\cmake.exe" -E remove -f
 CMAKE_EDIT_COMMAND = "C:\Program Files\CMake 2.8\bin\cmake-gui.exe"
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_"
+CMAKE_SOURCE_DIR = "C:\Documents and Settings\Mcc\My Documents\Mff Uk\SW Projekt\GIT\updraft\Experiments\Updraft_"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build"
+CMAKE_BINARY_DIR = "C:\Documents and Settings\Mcc\My Documents\Mff Uk\SW Projekt\GIT\updraft\Experiments\Updraft_\build"
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -68,9 +68,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles" "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles\progress.marks"
+	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Documents and Settings\Mcc\My Documents\Mff Uk\SW Projekt\GIT\updraft\Experiments\Updraft_\build\CMakeFiles" "C:\Documents and Settings\Mcc\My Documents\Mff Uk\SW Projekt\GIT\updraft\Experiments\Updraft_\build\CMakeFiles\progress.marks"
 	$(MAKE) -f CMakeFiles\Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Documents and Settings\Mcc\My Documents\QT Projects\Updraft_\build\CMakeFiles" 0
+	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Documents and Settings\Mcc\My Documents\Mff Uk\SW Projekt\GIT\updraft\Experiments\Updraft_\build\CMakeFiles" 0
 .PHONY : all
 
 # The main clean target
@@ -110,78 +110,6 @@ updraft_/fast:
 	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/build
 .PHONY : updraft_/fast
 
-main.obj: main.cpp.obj
-.PHONY : main.obj
-
-# target to build an object file
-main.cpp.obj:
-	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/main.cpp.obj
-.PHONY : main.cpp.obj
-
-main.i: main.cpp.i
-.PHONY : main.i
-
-# target to preprocess a source file
-main.cpp.i:
-	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/main.cpp.i
-.PHONY : main.cpp.i
-
-main.s: main.cpp.s
-.PHONY : main.s
-
-# target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/main.cpp.s
-.PHONY : main.cpp.s
-
-mainwindow.obj: mainwindow.cpp.obj
-.PHONY : mainwindow.obj
-
-# target to build an object file
-mainwindow.cpp.obj:
-	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/mainwindow.cpp.obj
-.PHONY : mainwindow.cpp.obj
-
-mainwindow.i: mainwindow.cpp.i
-.PHONY : mainwindow.i
-
-# target to preprocess a source file
-mainwindow.cpp.i:
-	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/mainwindow.cpp.i
-.PHONY : mainwindow.cpp.i
-
-mainwindow.s: mainwindow.cpp.s
-.PHONY : mainwindow.s
-
-# target to generate assembly for a file
-mainwindow.cpp.s:
-	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/mainwindow.cpp.s
-.PHONY : mainwindow.cpp.s
-
-moc_mainwindow.obj: moc_mainwindow.cxx.obj
-.PHONY : moc_mainwindow.obj
-
-# target to build an object file
-moc_mainwindow.cxx.obj:
-	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/moc_mainwindow.cxx.obj
-.PHONY : moc_mainwindow.cxx.obj
-
-moc_mainwindow.i: moc_mainwindow.cxx.i
-.PHONY : moc_mainwindow.i
-
-# target to preprocess a source file
-moc_mainwindow.cxx.i:
-	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/moc_mainwindow.cxx.i
-.PHONY : moc_mainwindow.cxx.i
-
-moc_mainwindow.s: moc_mainwindow.cxx.s
-.PHONY : moc_mainwindow.s
-
-# target to generate assembly for a file
-moc_mainwindow.cxx.s:
-	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/moc_mainwindow.cxx.s
-.PHONY : moc_mainwindow.cxx.s
-
 qrc_resources.obj: qrc_resources.cxx.obj
 .PHONY : qrc_resources.obj
 
@@ -206,6 +134,78 @@ qrc_resources.cxx.s:
 	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/qrc_resources.cxx.s
 .PHONY : qrc_resources.cxx.s
 
+src/main.obj: src/main.cpp.obj
+.PHONY : src/main.obj
+
+# target to build an object file
+src/main.cpp.obj:
+	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/src/main.cpp.obj
+.PHONY : src/main.cpp.obj
+
+src/main.i: src/main.cpp.i
+.PHONY : src/main.i
+
+# target to preprocess a source file
+src/main.cpp.i:
+	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/src/main.cpp.i
+.PHONY : src/main.cpp.i
+
+src/main.s: src/main.cpp.s
+.PHONY : src/main.s
+
+# target to generate assembly for a file
+src/main.cpp.s:
+	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/src/main.cpp.s
+.PHONY : src/main.cpp.s
+
+src/ui/mainwindow.obj: src/ui/mainwindow.cpp.obj
+.PHONY : src/ui/mainwindow.obj
+
+# target to build an object file
+src/ui/mainwindow.cpp.obj:
+	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/src/ui/mainwindow.cpp.obj
+.PHONY : src/ui/mainwindow.cpp.obj
+
+src/ui/mainwindow.i: src/ui/mainwindow.cpp.i
+.PHONY : src/ui/mainwindow.i
+
+# target to preprocess a source file
+src/ui/mainwindow.cpp.i:
+	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/src/ui/mainwindow.cpp.i
+.PHONY : src/ui/mainwindow.cpp.i
+
+src/ui/mainwindow.s: src/ui/mainwindow.cpp.s
+.PHONY : src/ui/mainwindow.s
+
+# target to generate assembly for a file
+src/ui/mainwindow.cpp.s:
+	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/src/ui/mainwindow.cpp.s
+.PHONY : src/ui/mainwindow.cpp.s
+
+src/ui/moc_mainwindow.obj: src/ui/moc_mainwindow.cxx.obj
+.PHONY : src/ui/moc_mainwindow.obj
+
+# target to build an object file
+src/ui/moc_mainwindow.cxx.obj:
+	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/src/ui/moc_mainwindow.cxx.obj
+.PHONY : src/ui/moc_mainwindow.cxx.obj
+
+src/ui/moc_mainwindow.i: src/ui/moc_mainwindow.cxx.i
+.PHONY : src/ui/moc_mainwindow.i
+
+# target to preprocess a source file
+src/ui/moc_mainwindow.cxx.i:
+	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/src/ui/moc_mainwindow.cxx.i
+.PHONY : src/ui/moc_mainwindow.cxx.i
+
+src/ui/moc_mainwindow.s: src/ui/moc_mainwindow.cxx.s
+.PHONY : src/ui/moc_mainwindow.s
+
+# target to generate assembly for a file
+src/ui/moc_mainwindow.cxx.s:
+	$(MAKE) -f CMakeFiles\updraft_.dir\build.make CMakeFiles/updraft_.dir/src/ui/moc_mainwindow.cxx.s
+.PHONY : src/ui/moc_mainwindow.cxx.s
+
 # Help Target
 help:
 	@$(CMAKE_COMMAND) -E echo "The following are some of the valid targets for this Makefile:"
@@ -215,18 +215,18 @@ help:
 	@$(CMAKE_COMMAND) -E echo "... edit_cache"
 	@$(CMAKE_COMMAND) -E echo "... rebuild_cache"
 	@$(CMAKE_COMMAND) -E echo "... updraft_"
-	@$(CMAKE_COMMAND) -E echo "... main.obj"
-	@$(CMAKE_COMMAND) -E echo "... main.i"
-	@$(CMAKE_COMMAND) -E echo "... main.s"
-	@$(CMAKE_COMMAND) -E echo "... mainwindow.obj"
-	@$(CMAKE_COMMAND) -E echo "... mainwindow.i"
-	@$(CMAKE_COMMAND) -E echo "... mainwindow.s"
-	@$(CMAKE_COMMAND) -E echo "... moc_mainwindow.obj"
-	@$(CMAKE_COMMAND) -E echo "... moc_mainwindow.i"
-	@$(CMAKE_COMMAND) -E echo "... moc_mainwindow.s"
 	@$(CMAKE_COMMAND) -E echo "... qrc_resources.obj"
 	@$(CMAKE_COMMAND) -E echo "... qrc_resources.i"
 	@$(CMAKE_COMMAND) -E echo "... qrc_resources.s"
+	@$(CMAKE_COMMAND) -E echo "... src/main.obj"
+	@$(CMAKE_COMMAND) -E echo "... src/main.i"
+	@$(CMAKE_COMMAND) -E echo "... src/main.s"
+	@$(CMAKE_COMMAND) -E echo "... src/ui/mainwindow.obj"
+	@$(CMAKE_COMMAND) -E echo "... src/ui/mainwindow.i"
+	@$(CMAKE_COMMAND) -E echo "... src/ui/mainwindow.s"
+	@$(CMAKE_COMMAND) -E echo "... src/ui/moc_mainwindow.obj"
+	@$(CMAKE_COMMAND) -E echo "... src/ui/moc_mainwindow.i"
+	@$(CMAKE_COMMAND) -E echo "... src/ui/moc_mainwindow.s"
 .PHONY : help
 
 

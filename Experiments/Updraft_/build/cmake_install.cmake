@@ -1,4 +1,4 @@
-# Install script for directory: C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_
+# Install script for directory: C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -33,7 +33,7 @@ ELSE(CMAKE_INSTALL_COMPONENT)
   SET(CMAKE_INSTALL_MANIFEST "install_manifest.txt")
 ENDIF(CMAKE_INSTALL_COMPONENT)
 
-FILE(WRITE "C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/${CMAKE_INSTALL_MANIFEST}" "")
+FILE(WRITE "C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/build/${CMAKE_INSTALL_MANIFEST}" "")
 FOREACH(file ${CMAKE_INSTALL_MANIFEST_FILES})
-  FILE(APPEND "C:/Documents and Settings/Mcc/My Documents/QT Projects/Updraft_/build/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
+  FILE(APPEND "C:/Documents and Settings/Mcc/My Documents/Mff Uk/SW Projekt/GIT/updraft/Experiments/Updraft_/build/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
 ENDFOREACH(file)
