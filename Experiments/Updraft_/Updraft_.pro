@@ -13,10 +13,18 @@ TEMPLATE = app
 SOURCES += src/main.cpp\
         src/ui/mainwindow.cpp
 
-HEADERS  += src/ui/mainwindow.h
+HEADERS  += src/ui/mainwindow.h \
+    src/plugininterface.h \
+    src/coreinterface.h
 
 FORMS    += src/ui/mainwindow.ui
 
 RESOURCES += \
     src/resources.qrc
+
+
+
+
+
+
 

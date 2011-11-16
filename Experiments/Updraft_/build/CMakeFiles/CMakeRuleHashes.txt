@@ -1,4 +1,0 @@
-# Hashes of file build rules.
-727a960cf76eef0c092f5170a4924507 qrc_resources.cxx
-be0cfba80f20cd8ad5713ccde22b0ac1 src/ui/moc_mainwindow.cxx
-ae13beec4df7b5cb0da1ba44a6dc60cf ui_mainwindow.h
