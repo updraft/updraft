@@ -37,15 +37,6 @@ cls
 mkdir build
 cd build
 
-::cmake -G "MinGW Makefiles" ^
-::  -DCMAKE_BUILD_TYPE=Debug ^
-::  -DPNG_LIBRARY=C:/Users/Tom/Desktop/lpng/build_debug/libpng15d.a ^
-::  -DPNG_PNG_INCLUDE_DIR=C:/Users/Tom/Desktop/lpng/build_debug ^
-::  -DZLIB_LIBRARY=C:/Users/Tom/Desktop/zlib/build/libzlib.dll.a ^
-::  -DZLIB_INCLUDE_DIR=C:/Users/Tom/Desktop/zlib/build ^
-::  -DQT_QMAKE_EXECUTABLE=C:/QtSDK/Desktop/Qt/4.7.4/mingw/bin/qmake.exe ^
-::  ..
-
 %cmake_path% -G%cmake_generator% -DCMAKE_BUILD_TYPE=%build_type% -DQT_QMAKE_EXECUTABLE=%qmake_path% ^
  ..
 
