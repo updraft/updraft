@@ -16,8 +16,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ovw->viewer->setSceneData(
                 osgDB::readNodeFile("/home/cube/updraft/Experiments/qt_and_osg/cessna.osgt")
                 );
-
-    ovw->show();
 }
 
 MainWindow::~MainWindow()

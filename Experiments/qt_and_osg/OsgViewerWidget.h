@@ -18,10 +18,12 @@ public:
     explicit OsgViewerWidget(QWidget *parent = 0);
     ~OsgViewerWidget();
 
-    void paintEvent(QPaintEvent *);
 
     osgViewer::Viewer *viewer;
     osg::Camera *camera;
+
+protected:
+    void paintEvent(QPaintEvent *);
 };
 
 #endif // OSGVIEWER_H
