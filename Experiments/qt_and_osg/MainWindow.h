@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include <QDebug>
+
 namespace Ui {
     class MainWindow;
 }
@@ -14,6 +16,11 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+    void paintEvent(){
+        qDebug() << "main window paint event";
+    }
+
 
 private:
     Ui::MainWindow *ui;
