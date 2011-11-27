@@ -28,6 +28,9 @@ public:
 	void mapLayerHidden(MapLayer *) = 0;
 	void mapLayerDisplayed(MapLayer *) = 0;
 	/// \}
+	
+	/// Click, double click, drag drop, ...
+	void mapEvent(Event *);
 };
 
 class CoreInterface{
@@ -78,5 +81,9 @@ public:
 	QVector<IPlugin *> getAllPlugins();
 	/// \}
 
-	void requestActivation();
+	/// Request activation of this plugin.
+	void activate();
+
+	/// Put some text to the status widget.
+	void addStatusHTML(QString html);
 };
