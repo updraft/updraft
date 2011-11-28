@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 #include <osg/DisplaySettings>
+#include <osgGA/TrackballManipulator>
 
 OsgViewerWidget::OsgViewerWidget(QWidget *parent) :
     QWidget(parent)
@@ -37,6 +38,7 @@ OsgViewerWidget::OsgViewerWidget(QWidget *parent) :
 
     viewer = new osgViewer::Viewer(); // osgViewer::Viewer is a subclass of osgViewer::View
     viewer->setCamera(camera);
+    viewer->setCameraManipulator( new osgGA::TrackballManipulator );
     viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
         // There's a problem with multi threaded model on linux
         // http://forum.openscenegraph.org/viewtopic.php?t=9055
@@ -45,7 +47,7 @@ OsgViewerWidget::OsgViewerWidget(QWidget *parent) :
 
     QGridLayout* grid = new QGridLayout();
     setLayout(grid);
-    grid->setContentsMargins(0, 0, 0, 0);
+    //grid->setContentsMargins(0, 0, 0, 0);
     grid->addWidget(w->getGLWidget(), 0, 0);
 }
 
