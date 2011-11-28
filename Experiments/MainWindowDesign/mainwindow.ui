@@ -20,164 +20,156 @@
    <string>Updraft</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout_3">
+   <layout class="QHBoxLayout" name="horizontalLayout">
     <property name="margin">
      <number>0</number>
     </property>
-    <item row="0" column="0">
-     <widget class="QSplitter" name="splitter">
+    <item>
+     <widget class="QSplitter" name="splitter_3">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="layoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayout">
+      <widget class="QSplitter" name="splitter">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <widget class="QTreeWidget" name="treeWidget_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="lineWidth">
+         <number>0</number>
+        </property>
+        <column>
+         <property name="text">
+          <string>Displayed Layers</string>
+         </property>
+        </column>
         <item>
-         <widget class="QTreeWidget" name="treeWidget_2">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+         <property name="text">
+          <string>Turn Points</string>
+         </property>
+         <property name="checkState">
+          <enum>PartiallyChecked</enum>
+         </property>
+         <item>
+          <property name="text">
+           <string>Czech Republic</string>
           </property>
-          <property name="lineWidth">
-           <number>0</number>
+          <property name="checkState">
+           <enum>Checked</enum>
           </property>
-          <column>
-           <property name="text">
-            <string>Displayed Layers</string>
-           </property>
-          </column>
-          <item>
-           <property name="text">
-            <string>Turn Points</string>
-           </property>
-           <property name="checkState">
-            <enum>PartiallyChecked</enum>
-           </property>
-           <item>
-            <property name="text">
-             <string>City</string>
-            </property>
-            <property name="checkState">
-             <enum>Checked</enum>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>VOR</string>
-            </property>
-            <property name="checkState">
-             <enum>Checked</enum>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Fav1</string>
-            </property>
-            <property name="checkState">
-             <enum>Checked</enum>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Fav2</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Ad-hoc</string>
-            </property>
-            <property name="checkState">
-             <enum>Checked</enum>
-            </property>
-           </item>
-          </item>
-          <item>
-           <property name="text">
-            <string>Airfields</string>
-           </property>
-           <property name="checkState">
-            <enum>Checked</enum>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Weather</string>
-           </property>
-           <property name="checkState">
-            <enum>Unchecked</enum>
-           </property>
-           <item>
-            <property name="text">
-             <string>Czech Republic</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Deutschland</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-           </item>
-          </item>
-          <item>
-           <property name="text">
-            <string>Map layers</string>
-           </property>
-           <property name="checkState">
-            <enum>Unchecked</enum>
-           </property>
-           <item>
-            <property name="text">
-             <string>Cities</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Boundaries</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-           </item>
-          </item>
-          <item>
-           <property name="text">
-            <string>User Files</string>
-           </property>
-           <property name="checkState">
-            <enum>PartiallyChecked</enum>
-           </property>
-           <item>
-            <property name="text">
-             <string>flight.igc</string>
-            </property>
-            <property name="checkState">
-             <enum>Checked</enum>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>task.cup</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-           </item>
-          </item>
-         </widget>
+         </item>
+         <item>
+          <property name="text">
+           <string>Contest1.cup</string>
+          </property>
+          <property name="checkState">
+           <enum>Unchecked</enum>
+          </property>
+         </item>
         </item>
-       </layout>
+        <item>
+         <property name="text">
+          <string>Airfields</string>
+         </property>
+         <property name="checkState">
+          <enum>Checked</enum>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Weather</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+         <item>
+          <property name="text">
+           <string>Czech Republic</string>
+          </property>
+          <property name="checkState">
+           <enum>Unchecked</enum>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Deutschland</string>
+          </property>
+          <property name="checkState">
+           <enum>Unchecked</enum>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>Map layers</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+         <item>
+          <property name="text">
+           <string>Cities</string>
+          </property>
+          <property name="checkState">
+           <enum>Unchecked</enum>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Boundaries</string>
+          </property>
+          <property name="checkState">
+           <enum>Unchecked</enum>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>User Files</string>
+         </property>
+         <property name="checkState">
+          <enum>PartiallyChecked</enum>
+         </property>
+         <item>
+          <property name="text">
+           <string>flight.igc</string>
+          </property>
+          <property name="checkState">
+           <enum>Checked</enum>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>task.cup</string>
+          </property>
+          <property name="checkState">
+           <enum>Unchecked</enum>
+          </property>
+         </item>
+        </item>
+       </widget>
+       <widget class="QTextBrowser" name="textBrowser">
+        <property name="html">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:8px; margin-bottom:8px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:x-large; font-weight:600;&quot;&gt;LKPR&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:8px; margin-bottom:8px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:large; font-weight:600;&quot;&gt;Freq&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:8px; margin-bottom:8px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Important&lt;br /&gt;Airfield&lt;br /&gt;Data&lt;/p&gt;
+&lt;p style=&quot; margin-top:8px; margin-bottom:8px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:large; font-weight:600;&quot;&gt;Runways&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:8px; margin-bottom:8px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Important&lt;br /&gt;Airfield&lt;br /&gt;Data&lt;/p&gt;
+&lt;p style=&quot; margin-top:8px; margin-bottom:8px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://secure.wikimedia.org/wikipedia/en/wiki/Prague_Airport&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Wikipedia - Prague airport&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p style=&quot; margin-top:8px; margin-bottom:8px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:x-large; font-weight:600;&quot;&gt;Some airspace&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:8px; margin-bottom:8px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Important&lt;br /&gt;Airspace&lt;br /&gt;Data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
       </widget>
       <widget class="QSplitter" name="splitter_2">
        <property name="sizePolicy">
