@@ -7,7 +7,20 @@
 #include <stdio.h>
 
 #include <osg/DisplaySettings>
-#include <osgGA/TrackballManipulator>
+#include <osgGA/OrbitManipulator>
+
+class MyViewer: public osgViewer::Viewer {
+    public:
+	void frame(double d) {
+		qDebug() << "frame!";
+		this->Viewer::frame(d);
+	}
+
+	void eventTraversal() {
+		qDebug() << "eventTraversal()";
+		this->Viewer::eventTraversal();
+	}
+};
 
 OsgViewerWidget::OsgViewerWidget(QWidget *parent) :
     QWidget(parent)
@@ -36,9 +49,11 @@ OsgViewerWidget::OsgViewerWidget(QWidget *parent) :
     camera->setProjectionMatrixAsPerspective(
                 30.0f, traits->width / (double)traits->width, 1.0f, 10000.0f);
 
-    viewer = new osgViewer::Viewer(); // osgViewer::Viewer is a subclass of osgViewer::View
+    viewer = new MyViewer(); // osgViewer::Viewer is a subclass of osgViewer::View
+    viewer->setRunFrameScheme(osgViewer::ViewerBase::ON_DEMAND);
     viewer->setCamera(camera);
-    viewer->setCameraManipulator( new osgGA::TrackballManipulator );
+    osgGA::OrbitManipulator* tm = new osgGA::OrbitManipulator();
+    viewer->setCameraManipulator( tm );
     viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
         // There's a problem with multi threaded model on linux
         // http://forum.openscenegraph.org/viewtopic.php?t=9055
@@ -51,6 +66,15 @@ OsgViewerWidget::OsgViewerWidget(QWidget *parent) :
     setLayout(grid);
     //grid->setContentsMargins(0, 0, 0, 0);
     grid->addWidget(w->getGLWidget(), 0, 0);
+
+    connect( &timer, SIGNAL(timeout()), this, SLOT(checkUpdate()) );
+    timer.start(10);
+}
+
+void OsgViewerWidget::checkUpdate() {
+    if (viewer->checkNeedToDoFrame()) {
+        viewer->frame();
+    }
 }
 
 OsgViewerWidget::~OsgViewerWidget()
@@ -59,6 +83,5 @@ OsgViewerWidget::~OsgViewerWidget()
 
 void OsgViewerWidget::paintEvent(QPaintEvent *)
 {
-    qDebug() << "paintEvent";
     viewer->frame();
 }
