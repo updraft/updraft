@@ -8,11 +8,9 @@ public:
 	/// ... before it's destroyed.
 	void deinitialize() = 0;
 
-	/// Give a file to this plugin to open.
-	/// 
-	/// \param out What we know about the file.
+	/// Give a file to this plugin to open
 	/// \return Was opening successful?
-	bool fileOpen(QString filename, struct metadata *out) { return false; }
+	bool fileOpen(QString filename) { return false; }
 
 	/// Used when the plugin gains/looses the priority.
 	/// \see CoreInterface::activate()
@@ -64,6 +62,8 @@ enum FilePersistence {
 };
 
 class CoreInterface{
+ private:
+        CoreInterface
  public:
 	static const qint PLUGIN_API_VERSION = 0;
 
@@ -112,6 +112,9 @@ class CoreInterface{
 	/// Unregisters a given file type
 	void unregisterFileType(int id);
 
+	/// Request activation of this plugin.
+	void activate();
+
 	/// Add a translator that knows how to handle strings in this plugin.
 	/// Equivalent to QApplication::instance()->instalTranslator(...)
 	void installTranslator(QTranslator *);
@@ -121,7 +124,4 @@ class CoreInterface{
 	IPlugin *getPlugin(QString name);
 	QVector<IPlugin *> getAllPlugins();
 	/// \}
-
-	/// Request activation of this plugin.
-	void activate();
 };
