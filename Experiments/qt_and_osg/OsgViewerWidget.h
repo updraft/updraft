@@ -19,8 +19,9 @@ public:
     ~OsgViewerWidget();
 
 
-    osgViewer::Viewer *viewer;
-    osg::Camera *camera;
+    osgViewer::Viewer* viewer;
+    osg::Camera* camera;
+    osg::Group* root;
 
 protected:
     void paintEvent(QPaintEvent *);

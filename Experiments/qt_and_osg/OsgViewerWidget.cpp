@@ -44,6 +44,8 @@ OsgViewerWidget::OsgViewerWidget(QWidget *parent) :
         // http://forum.openscenegraph.org/viewtopic.php?t=9055
         // https://bugreports.qt.nokia.com/browse/QTBUG-200
 
+    root = new osg::Group();
+    viewer->setSceneData(root);
 
     QGridLayout* grid = new QGridLayout();
     setLayout(grid);

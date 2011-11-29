@@ -21,6 +21,8 @@ public:
         qDebug() << "main window paint event";
     }
 
+public slots:
+    void buttonClicked();
 
 private:
     Ui::MainWindow *ui;

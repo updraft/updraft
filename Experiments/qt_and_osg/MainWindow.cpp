@@ -11,14 +11,21 @@ MainWindow::MainWindow(QWidget *parent) :
 
     OsgViewerWidget *ovw = new OsgViewerWidget();
 
-    ui->horizontalLayout->addWidget(ovw);
+    ui->verticalLayout->addWidget(ovw);
 
-    ovw->viewer->setSceneData(
+    ovw->root->addChild(
                 osgDB::readNodeFile("/home/cube/updraft/Experiments/qt_and_osg/cessna.osgt")
                 );
+
+    connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(buttonClicked()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::buttonClicked()
+{
+
 }
