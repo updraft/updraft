@@ -9,9 +9,10 @@ public:
 	void deinitialize() = 0;
 
 	/// Give a file to this plugin to open.
+	/// 
 	/// \param out What we know about the file.
 	/// \return Was opening successful?
-	bool fileOpen(QString filename, struct metadata *out) = 0;
+	bool fileOpen(QString filename, struct metadata *out) { return false; }
 
 	/// Used when the plugin gains/looses the priority.
 	/// \see CoreInterface::activate()
@@ -33,8 +34,37 @@ public:
 	void mapEvent(Event *);
 };
 
+class Menu: public QMenu {
+Q_OBJECT
+
+ public:
+    void insertAction(int pos, QAction* action);
+};
+
+class MapLayerGroup {
+ public:
+  void insertMapLayer(int pos, osg::Node* layer, QString title);
+    //XXX: we need to find out exactly how the hell one modifies the osg scene graph
+  void removeMapLayer(osg::Node* layer);
+ protected:
+   //Structures that hold some information about the layers
+};
+
+enum SystemMenu {
+	MENU_FILE,
+	MENU_EDIT,
+	MENU_CONTEXT
+};
+
+/// Says whether a file will be interpreted as a new data source to import or as
+/// a new file to temporarily open.
+enum FilePersistence {
+	PERSIST_IMPORT,
+	PERSIST_TEMPORARY
+};
+
 class CoreInterface{
-public:
+ public:
 	static const qint PLUGIN_API_VERSION = 0;
 
 	// ?????????????????????????????
@@ -48,28 +78,39 @@ public:
 	// I'm not sure about the 'where' arguments, but I dont have any other idea how to do it.
 	
 	/// Create an entry in the main menu.
-	/// \param id serves as where for other menu creating methods.
-	void createMenu(QString id, QString name);
-	
-	/// Adds an action to menu bar or context menu.
-	/// \param where Identifier of the menu ("Core.File", "Map.Context", ...)
-	/// If the menu doesn't exist something bad happens (exception?)
-	void addMenuItem(QAction *, QString where, int pos);
+	Menu* createMenu(QString title);
 
+	/// Remove an entry from the main menu
+	void removeMenu(Menu* menu);
+
+	/// Returns pointer to the instance of a system menu
+	/// \param menu which system menu instance to return
+	Menu* getSystemMenu(SystemMenu menu);
 
 	/// Same as createMenu, only for layer groups.
-	void createLayerGroup(QString id, QString name);
+	MapLayerGroup* createLayerGroup(QString title);
 
-	/// Add map layer.
-	/// \see addMenuItem
-	MapLayer *addMapLayer(osg::Node *, QString where, QString name);
+	/// Removes a layer group from the left pane
+	void removeLayerGroup(MapLayerGroup* group);
 
 	/// Open a Tab with anything.
 	/// Closing is a method of class Tab.
-	Tab *openTab(QWidget *, QString int pos);
+	Tab* createTab(QWidget* content, QString title);
+
+	/// Removes tab from the bottom pane
+	void removeTab(Tab* tab);
+
+	/// Put some text to the info widget.
+	void addInfoHTML(QString html);
 
 	/// This plugin knows how to open the file!
-	void registerFiletype(QString extension, QString description, bool persistent);
+	/// \param persist Says whether the file will be interpreted as a new data source to
+	///                import or as a new file to temporarily open.
+	/// \return Identifier of the newly registered filetype
+	int registerFiletype(QString extension, QString description, FilePersistence persist);
+
+	/// Unregisters a given file type
+	void unregisterFileType(int id);
 
 	/// Add a translator that knows how to handle strings in this plugin.
 	/// Equivalent to QApplication::instance()->instalTranslator(...)
@@ -83,7 +124,4 @@ public:
 
 	/// Request activation of this plugin.
 	void activate();
-
-	/// Put some text to the status widget.
-	void addStatusHTML(QString html);
 };
