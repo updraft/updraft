@@ -1,32 +1,37 @@
 class IPlugin{
 public:
+	/// Plugin metadata
+	/// \{
 	virtual QString getName() = 0;
 
-	/// Called after the plugin is loaded.
+	/// Priority gives the order in which plugins receive events, and other callbacks.
+	virtual unsigned getPriority() = 0;
+
+	/// Plugin's API version.
+	virtual unsigned getPluginApiVersion() { return PLUGIN_API_VERSION }
+	/// \}
+
+	/// Called after the plugin is loaded
 	virtual void initialize(CoreInterface *) = 0;
 
 	/// ... before it's destroyed.
-	virtual void deinitialize() = 0;
+	virtual void deinitialize() {}
 
 	/// Give a file to this plugin to open
+	/// This callback is sent to the file 
 	/// \return Was opening successful?
 	virtual bool fileOpen(QString filename) { return false; } 
 
-
-	/// DAVA TO VOBEC NEJAKY ZMYSEL??
-	///\{
-	virtual QString pluginApiVersion() { return QString("invalid"); }
-	virtual bool compatible (QString coreVersion) { return (pluginApiersion() == coreVersion); }
-	///\}
-
 	/// Callbacks when a registered map layer is displayed or hidden using the checkbox in left pane.
 	/// \{
-	void mapLayerHidden(MapLayer *) = 0;
-	void mapLayerDisplayed(MapLayer *) = 0;
+	void mapLayerHidden(osg::Node *) {}
+	void mapLayerDisplayed(osg::Node *) {}
 	/// \}
 	
+	void tabClosed(Tab *) {}
+	
 	/// Click, double click, drag drop, ...
-	void mapEvent(Event *);
+	void mapEvent(Event *) {}
 };
 
 class Menu: public QMenu {
@@ -41,15 +46,20 @@ class MapLayerGroup {
   void insertMapLayer(int pos, osg::Node* layer, QString title);
     //XXX: we need to find out exactly how the hell one modifies the osg scene graph
   void removeMapLayer(osg::Node* layer);
- protected:
-   //Structures that hold some information about the layers
 };
 
 enum SystemMenu {
 	MENU_FILE,
 	MENU_EDIT,
+	MENU_TOOLS,
+	MENU_HELP,
 	MENU_CONTEXT
 };
+
+enum SystemMapLayerGroup {
+	/// terrain, height map, country boundaries...
+	MAP_LAYER_GROUP_BASE
+}
 
 /// Says whether a file will be interpreted as a new data source to import or as
 /// a new file to temporarily open.
@@ -58,23 +68,25 @@ enum FilePersistence {
 	PERSIST_TEMPORARY
 };
 
+/// Version that is incremented every time the plugin API or ABI changes.
+/// Used to check if plugin will be usable with the core.
+#define PLUGIN_API_VERSION 0
+
 class CoreInterface{
  private:
-	IPlugin* plugin; // the plugin this interface works with
- public:
-	static const QString PLUGIN_API_VERSION = 0;
-	
-	CoreInterface (IPlugin* pl): plugin(pl) {};
+ 	/// Private constructor, usable only by plugin manager.
+	/// Every plugin gets its own instance of core interface.
+	CoreInterface (IPlugin* pl): plugin(pl) {}
 
-	// ?????????????????????????????
+ 	/// The plugin this interface works with
+	IPlugin* plugin;
+ public:
+
+	/// Manipulation with OSG node tree and view.
+	/// \{
 	osgViewer::View* getOsgView();
 	osg::Group* getOsgRoot();
-	// event handling is doe through getOsgView()->addEventHandler
-	// catching rendered objects
-	// ?????????????????????????????
-	
-
-	// I'm not sure about the 'where' arguments, but I dont have any other idea how to do it.
+	/// \}
 	
 	/// Create an entry in the main menu.
 	Menu* createMenu(QString title);
@@ -87,10 +99,12 @@ class CoreInterface{
 	Menu* getSystemMenu(SystemMenu menu);
 
 	/// Same as createMenu, only for layer groups.
-	MapLayerGroup* createLayerGroup(QString title);
+	MapLayerGroup* createMapLayerGroup(QString title);
 
 	/// Removes a layer group from the left pane
-	void removeLayerGroup(MapLayerGroup* group);
+	void removeMapLayerGroup(MapLayerGroup* group);
+
+	MapLayerGroup *getSystemMapLayerGroup(SystemMapLayerGroup group);
 
 	/// Open a Tab with anything.
 	/// Closing is a method of class Tab.
@@ -111,19 +125,17 @@ class CoreInterface{
 	/// Unregisters a given file type
 	void unregisterFileType(int id);
 
-	/// Add a translator that knows how to handle strings in this plugin.
-	/// Equivalent to QApplication::instance()->instalTranslator(...)
-	void installTranslator(QTranslator *);
-	
 	/// Dependencies between plugins use this:
 	IPlugin *getPlugin(QString name);
 	QVector<IPlugin *> getAllPlugins();
 
 	/// returns API version of core interface
-	QString getCoreInterfaceVersion ();
+	int getCoreInterfaceVersion ();
 
-	/// work with the camera transformation
+	/// Work with the camera transformation
+	/// \{
 	Transform getCameraTransform();
 	void setCameraTransform (Transform transformation);
+	/// \}
 
 };
