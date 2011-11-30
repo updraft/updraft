@@ -1,26 +1,23 @@
 class IPlugin{
 public:
-	QString getName();
+	virtual QString getName() = 0;
 
 	/// Called after the plugin is loaded.
-	void initialize(CoreInterface *) = 0;
+	virtual void initialize(CoreInterface *) = 0;
 
 	/// ... before it's destroyed.
-	void deinitialize() = 0;
+	virtual void deinitialize() = 0;
 
 	/// Give a file to this plugin to open
 	/// \return Was opening successful?
-	bool fileOpen(QString filename) { return false; }
+	virtual bool fileOpen(QString filename) { return false; } 
 
-	/// Used when the plugin gains/looses the priority.
-	/// \see CoreInterface::activate()
-	/// \{
-	void activated();
-	void deactivated();
-	/// \}
 
-	/// Should be the same as CoreInterface::PLUGIN_API_VERSION.
-	qint pluginApiVersion();
+	/// DAVA TO VOBEC NEJAKY ZMYSEL??
+	///\{
+	virtual QString pluginApiVersion() { return QString("invalid"); }
+	virtual bool compatible (QString coreVersion) { return (pluginApiersion() == coreVersion); }
+	///\}
 
 	/// Callbacks when a registered map layer is displayed or hidden using the checkbox in left pane.
 	/// \{
@@ -63,9 +60,11 @@ enum FilePersistence {
 
 class CoreInterface{
  private:
-        CoreInterface
+	IPlugin* plugin; // the plugin this interface works with
  public:
-	static const qint PLUGIN_API_VERSION = 0;
+	static const QString PLUGIN_API_VERSION = 0;
+	
+	CoreInterface (IPlugin* pl): plugin(pl) {};
 
 	// ?????????????????????????????
 	osgViewer::View* getOsgView();
@@ -112,16 +111,19 @@ class CoreInterface{
 	/// Unregisters a given file type
 	void unregisterFileType(int id);
 
-	/// Request activation of this plugin.
-	void activate();
-
 	/// Add a translator that knows how to handle strings in this plugin.
 	/// Equivalent to QApplication::instance()->instalTranslator(...)
 	void installTranslator(QTranslator *);
 	
 	/// Dependencies between plugins use this:
-	/// \{
 	IPlugin *getPlugin(QString name);
 	QVector<IPlugin *> getAllPlugins();
-	/// \}
+
+	/// returns API version of core interface
+	QString getCoreInterfaceVersion ();
+
+	/// work with the camera transformation
+	Transform getCameraTransform();
+	void setCameraTransform (Transform transformation);
+
 };
