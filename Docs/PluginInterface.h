@@ -29,7 +29,11 @@ class IPlugin {
   /// \}
 
   void tabSelected(Tab *tab) {}
+  void tabDeselected(Tab *tab) {}
   void tabClosed(Tab *tab) {}
+
+  /// Main window lost focus.
+  void focusLost() {}
 
   /// Click, double click, drag drop, ...
   void mapEvent(Event *e) {}
@@ -68,6 +72,15 @@ enum FilePersistence {
   PERSIST_TEMPORARY
 };
 
+class Viewer: public osgViewer::Viewer {
+ public:
+  /// Work with the camera transformation
+  /// \{
+  Transform getCameraTransform();
+  void setCameraTransform(Transform transformation);
+  /// \}
+};
+
 /// Version that is incremented every time the plugin API or ABI changes.
 /// Used to check if plugin will be usable with the core.
 #define PLUGIN_API_VERSION 0
@@ -84,7 +97,8 @@ class CoreInterface {
  public:
   /// Manipulation with OSG node tree and view.
   /// \{
-  osgViewer::View* getOsgView();
+  //// Viewer is a subclass of osgViewer::View
+  Viewer *getViewer();
   osg::Group* getOsgRoot();
   /// \}
 
@@ -127,15 +141,8 @@ class CoreInterface {
   void unregisterFileType(int id);
 
   /// Dependencies between plugins use this:
+  /// \{
   IPlugin *getPlugin(QString name);
   QVector<IPlugin *> getAllPlugins();
-
-  /// returns API version of core interface
-  int getCoreInterfaceVersion();
-
-  /// Work with the camera transformation
-  /// \{
-  Transform getCameraTransform();
-  void setCameraTransform(Transform transformation);
   /// \}
 };
