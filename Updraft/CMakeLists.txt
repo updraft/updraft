@@ -1,4 +1,4 @@
-PROJECT(updraft_)
+PROJECT(updraft)
 FIND_PACKAGE(Qt4 REQUIRED)
 
 cmake_minimum_required(VERSION 2.8)
