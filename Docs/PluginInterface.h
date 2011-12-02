@@ -37,6 +37,9 @@ class IPlugin {
 
   /// Click, double click, drag drop, ...
   void mapEvent(Event *e) {}
+
+  /// Any plugin setting was changed.
+  void settingChanged() {}
 };
 
 class Menu: public QMenu {
@@ -79,6 +82,23 @@ class Viewer: public osgViewer::Viewer {
   Transform getCameraTransform();
   void setCameraTransform(Transform transformation);
   /// \}
+};
+
+/// Class representing a single setting -- user or internal.
+template <typename T>
+class Setting {
+ public:
+  T get();
+  void set(T value);
+
+  bool isDefault();
+ 
+ private:
+  /// Edit widget edits any kind of data we migt need,
+  /// including unit conversions.
+  QWidget *getEditWidget();
+
+  friend class SettingsWindow;
 };
 
 /// Version that is incremented every time the plugin API or ABI changes.
@@ -145,4 +165,12 @@ class CoreInterface {
   IPlugin *getPlugin(QString name);
   QVector<IPlugin *> getAllPlugins();
   /// \}
+
+  template <typename T>
+  Setting<T> registerSetting(QString key, T defaultValue);
+
+  template <typename T>
+  Setting<T> registerUserSetting(QString key, T defaultValue,
+    QString title, QString description);
+
 };
