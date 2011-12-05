@@ -1,26 +1,22 @@
 #include "core/pluginmanager.h"
 
-#include <QDebug>
-#include <QPluginLoader>
+#include <QtGui>
 
-#include "core/coreinterface.h"
-#include "plugin_api.h"
+#include "pluginapi.h"
 
 namespace Updraft {
 namespace Core {
 
 /// Constructor loads static plugins.
-PluginManager::PluginManager() {
-  qDebug("Loading static plugins.");
+PluginManager::PluginManager(UpdraftParent* setParent): parent(setParent) {
+  qDebug(QT_TR_NOOP("Loading static plugins."));
 
   foreach(QObject* obj, QPluginLoader::staticInstances()) {
     finishLoading(NULL, obj);
   }
 }
 
-PluginManager::~PluginManager() {
-
-}
+PluginManager::~PluginManager() {}
 
 /// Load the plugin, initialize it and put it to the list of
 /// loaded plugins.
@@ -29,13 +25,11 @@ IPlugin* PluginManager::load(QString fileName) {
   return finishLoading(loader, loader->instance());
 }
 
-void PluginManager::unload(QString name){
-
-}
+void PluginManager::unload(QString name) {}
 
 IPlugin* PluginManager::getPlugin(QString name) {
   foreach(LoadedPlugin *p, plugins) {
-    if(p->getName() == name) {
+    if (p->plugin->getName() == name) {
       return p->plugin;
     }
   }
@@ -44,7 +38,7 @@ IPlugin* PluginManager::getPlugin(QString name) {
 }
 
 QVector<IPlugin*> PluginManager::getAllPlugins() {
-  QVector ret;
+  QVector<IPlugin*> ret;
 
   foreach(LoadedPlugin *p, plugins) {
     ret.append(p->plugin);
@@ -53,7 +47,7 @@ QVector<IPlugin*> PluginManager::getAllPlugins() {
   return ret;
 }
 
-/// Create core interface, initialize plugin and 
+/// Create core interface, initialize plugin and
 /// place it in the list of loaded plugins.
 /// Logs a debug message about the reason of failure.
 /// \return Pointer to loaded plugin or NULL.
@@ -61,44 +55,43 @@ QVector<IPlugin*> PluginManager::getAllPlugins() {
 ///   or NULL for static plugins.
 /// \param obj Loaded plugin before casting to IPlugin.
 ///   Can be NULL if loading failed (this will be logged).
+
 IPlugin* PluginManager::finishLoading(QPluginLoader* loader, QObject* obj) {
-  if(!obj) {
-    qDebug("Loading plugin failed.");
+  if (!obj) {
+    qDebug(QT_TR_NOOP("Loading plugin failed."));
     return NULL;
   }
 
   LoadedPlugin* lp = new LoadedPlugin;
-  lp->loader = loader;
+  IPlugin* plugin = qobject_cast<IPlugin*>(obj);
 
-  lp->plugin = qobject_cast<IPlugin*>(obj);
-
-  if(!lp->plugin) {
-    qDebug("Plugin doesn't have correct interface.");
-    delete lp;
+  if (!plugin) {
+    qDebug(QT_TR_NOOP("Plugin doesn't have correct interface."));
     return NULL;
   }
 
-  unsigned apiVersion = p->plugin->getPluginApiVersion();
+  unsigned apiVersion = plugin->getPluginApiVersion();
 
-  if(apiVersion != PLUGIN_API_VERSION) {
-    qDebug("Wrong version of plugin API (expected %d, got %d).",
+  if (apiVersion != PLUGIN_API_VERSION) {
+    qDebug(QT_TR_NOOP("Wrong version of plugin API (expected %d, got %d)."),
       PLUGIN_API_VERSION, apiVersion);
-    delete lp;
     return NULL;
   }
 
-  p->coreinterface = new CoreInterface(lp->plugin);
+  lp->loader = loader;
+  lp->plugin = plugin;
 
-  plugin->initialize(ci);
+  plugin->initializeCoreInterface(parent);
+  plugin->initialize();
 
   plugins.append(lp);
 
-  return lp->plugin;
+  return plugin;
 }
 
-LoadedPlugin* PluginManager::findByName(QString name) {
+PluginManager::LoadedPlugin* PluginManager::findByName(QString name) {
   foreach(LoadedPlugin *p, plugins) {
-    if(p->plugin->getName() == name) {
+    if (p->plugin->getName() == name) {
       return p;
     }
   }
@@ -106,9 +99,9 @@ LoadedPlugin* PluginManager::findByName(QString name) {
   return NULL;
 }
 
-LoadedPlugin* PluginManager::findByPointer(IPlugin* pointer) {
+PluginManager::LoadedPlugin* PluginManager::findByPointer(IPlugin* pointer) {
   foreach(LoadedPlugin *p, plugins) {
-    if(p->plugin == pointer) {
+    if (p->plugin == pointer) {
       return p;
     }
   }
@@ -116,5 +109,5 @@ LoadedPlugin* PluginManager::findByPointer(IPlugin* pointer) {
   return NULL;
 }
 
-} // namespace Core
-} // namespace Updraft
+}  // namespace Core
+}  // namespace Updraft

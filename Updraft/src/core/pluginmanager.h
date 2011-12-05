@@ -1,17 +1,20 @@
-#ifndef UPDRAFT_CORE_PLUGINMANAGER_H_
-#define UPDRAFT_CORE_PLUGINMANAGER_H_
+#ifndef UPDRAFT_SRC_CORE_PLUGINMANAGER_H_
+#define UPDRAFT_SRC_CORE_PLUGINMANAGER_H_
 
-#include <QLinkedList>
+#include <QtGui>
 
 namespace Updraft {
 
-class IPlugin {};
+// Forward declarations
+class IPlugin;
 
 namespace Core {
 
-class PluginManager{
+class UpdraftParent;
+
+class PluginManager {
  public:
-  PluginManager();
+  explicit PluginManager(UpdraftParent* setParent);
   ~PluginManager();
 
   IPlugin* load(QString fileName);
@@ -24,18 +27,20 @@ class PluginManager{
   struct LoadedPlugin {
     QPluginLoader* loader;
     IPlugin* plugin;
-    CoreInterface* coreinterface;
+    // CoreInterface* coreinterface; XXX: I don't thik this is needed. Cestmir
   };
 
-  IPlugin* finishLoading(LoadedPlugin* p, QObject* obj);
+  IPlugin* finishLoading(QPluginLoader* loader, QObject* obj);
 
   LoadedPlugin* findByName(QString name);
   LoadedPlugin* findByPointer(IPlugin *pointer);
 
   QVector<LoadedPlugin*> plugins;
+
+  UpdraftParent* parent;
 };
 
-} // namespace Core
-} // namespace Updraft
+}  // namespace Core
+}  // namespace Updraft
 
-#endif // UPDRAFT_CORE_PLUGINMANAGER_H_
+#endif  // UPDRAFT_SRC_CORE_PLUGINMANAGER_H_
