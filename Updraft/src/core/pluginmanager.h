@@ -32,10 +32,9 @@ class PluginManager {
 
   IPlugin* finishLoading(QPluginLoader* loader, QObject* obj);
 
-  LoadedPlugin* findByName(QString name);
   LoadedPlugin* findByPointer(IPlugin *pointer);
 
-  QVector<LoadedPlugin*> plugins;
+  QHash<QString, LoadedPlugin*> plugins;
 
   UpdraftParent* parent;
 };

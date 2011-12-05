@@ -16,7 +16,11 @@ PluginManager::PluginManager(UpdraftParent* setParent): parent(setParent) {
   }
 }
 
-PluginManager::~PluginManager() {}
+PluginManager::~PluginManager() {
+  foreach(LoadedPlugin* p, plugins.values()) {
+    p->plugin->deinitialize();
+  }
+}
 
 /// Load the plugin, initialize it and put it to the list of
 /// loaded plugins.
@@ -25,22 +29,25 @@ IPlugin* PluginManager::load(QString fileName) {
   return finishLoading(loader, loader->instance());
 }
 
-void PluginManager::unload(QString name) {}
+void PluginManager::unload(QString name) {
+  LoadedPlugin* lp = plugins.value(name);
+  if (!lp) return;
+
+  lp->plugin->deinitialize();
+  plugins.remove(name);
+}
 
 IPlugin* PluginManager::getPlugin(QString name) {
-  foreach(LoadedPlugin *p, plugins) {
-    if (p->plugin->getName() == name) {
-      return p->plugin;
-    }
-  }
+  LoadedPlugin* lp = plugins.value(name);
+  if (!lp) return NULL;
 
-  return NULL;
+  return lp->plugin;
 }
 
 QVector<IPlugin*> PluginManager::getAllPlugins() {
   QVector<IPlugin*> ret;
 
-  foreach(LoadedPlugin *p, plugins) {
+  foreach(LoadedPlugin *p, plugins.values()) {
     ret.append(p->plugin);
   }
 
@@ -78,29 +85,25 @@ IPlugin* PluginManager::finishLoading(QPluginLoader* loader, QObject* obj) {
     return NULL;
   }
 
+  if (plugins.contains(plugin->getName())) {
+    qDebug(QT_TR_NOOP("Plugin named %s already loaded"),
+      plugin->getName().toAscii().data());
+    return NULL;
+  }
+
   lp->loader = loader;
   lp->plugin = plugin;
 
   plugin->initializeCoreInterface(parent);
   plugin->initialize();
 
-  plugins.append(lp);
+  plugins.insert(plugin->getName(), lp);
 
   return plugin;
 }
 
-PluginManager::LoadedPlugin* PluginManager::findByName(QString name) {
-  foreach(LoadedPlugin *p, plugins) {
-    if (p->plugin->getName() == name) {
-      return p;
-    }
-  }
-
-  return NULL;
-}
-
 PluginManager::LoadedPlugin* PluginManager::findByPointer(IPlugin* pointer) {
-  foreach(LoadedPlugin *p, plugins) {
+  foreach(LoadedPlugin *p, plugins.values()) {
     if (p->plugin == pointer) {
       return p;
     }
