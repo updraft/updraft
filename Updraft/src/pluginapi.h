@@ -54,6 +54,6 @@ class IPlugin {
 
 }  // namespace Updraft
 
-Q_DECLARE_INTERFACE(Updraft::IPlugin, "Updraft::IPlugin")
+Q_DECLARE_INTERFACE(Updraft::IPlugin, "Updraft_IPlugin")
 
 #endif  // UPDRAFT_IPLUGIN_H_

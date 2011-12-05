@@ -4,6 +4,8 @@
 
 #include "pluginapi.h"
 
+Q_IMPORT_PLUGIN(TestPlugin)
+
 namespace Updraft {
 namespace Core {
 
