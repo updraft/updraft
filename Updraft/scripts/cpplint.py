@@ -563,7 +563,10 @@ class _CppLintState(object):
     for category, count in self.errors_by_category.iteritems():
       sys.stderr.write('Category \'%s\' errors found: %d\n' %
                        (category, count))
-    sys.stderr.write('Total errors found: %d\n' % self.error_count)
+    if self.error_count == 0:
+      sys.stderr.write('\033[1;32mTotal errors found: %d\033[1;m\n' % self.error_count)
+    else:
+      sys.stderr.write('\033[1;31mTotal errors found: %d\033[1;m\n' % self.error_count)
 
 _cpplint_state = _CppLintState()
 
@@ -3329,7 +3332,7 @@ def ParseArguments(args):
 
 
 def main():
-  print ("Checking all source and header files for style compliance...")
+  print ("\033[1;35mChecking all source and header files for style compliance...\033[1;m")
 
   filenames = ParseArguments(sys.argv[1:])
 

@@ -1,0 +1,5 @@
+# Vim swap files
+.*.sw[po]
+
+# OpenOffice lock
+.~lock.*#
