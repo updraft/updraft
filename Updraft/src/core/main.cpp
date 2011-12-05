@@ -1,6 +1,9 @@
 #include <QtGui/QApplication>
 #include <QTranslator>
 #include "ui/mainwindow.h"
+#include "updraftparent.h"
+
+using Updraft::Core::UpdraftParent;
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
@@ -10,6 +13,7 @@ int main(int argc, char *argv[]) {
     a.installTranslator(&trans);
 
     MainWindow w;
+    UpdraftParent parent;
     w.show();
 
     return a.exec();
