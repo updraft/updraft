@@ -1,2 +1,6 @@
 # Vim swap files
-.*.sw[po]
+.*.sw[pox]
+
+# Qt creator user files
+*.user
+
