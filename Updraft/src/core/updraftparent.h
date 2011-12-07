@@ -3,22 +3,23 @@
 
 #include "pluginmanager.h"
 
-class MainWindow;
-
 namespace Updraft {
 namespace Core {
+
+class MainWindow;
 
 /// Class that takes care of all the important objects in Updraft
 class UpdraftParent {
  public:
-  UpdraftParent();
+  explicit UpdraftParent(MainWindow* setWin);
   ~UpdraftParent() {}
 
-  void setMainWindow(MainWindow* w) { win = w; }
- private:
-  PluginManager pluginManager;
+  MainWindow* getMainWindow() { return win; }
 
+ private:
   MainWindow* win;
+
+  PluginManager pluginManager;
 };
 
 }  // End namespace Core

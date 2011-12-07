@@ -3,8 +3,8 @@
 namespace Updraft {
 namespace Core {
 
-UpdraftParent::UpdraftParent()
-: pluginManager(this) {}
+UpdraftParent::UpdraftParent(MainWindow* setWin)
+: win(setWin), pluginManager(this) {}
 
 }  // End namespace Core
 }  // End namespace Updraft

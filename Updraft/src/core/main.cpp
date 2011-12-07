@@ -12,9 +12,8 @@ int main(int argc, char *argv[]) {
     trans.load("translations/czech");
     a.installTranslator(&trans);
 
-    MainWindow w;
-    UpdraftParent parent;
-    parent.setMainWindow(&w);
+    Updraft::Core::MainWindow w(NULL);
+    UpdraftParent parent(&w);
     w.show();
 
     return a.exec();
