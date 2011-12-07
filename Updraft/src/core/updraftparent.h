@@ -3,6 +3,8 @@
 
 #include "pluginmanager.h"
 
+class MainWindow;
+
 namespace Updraft {
 namespace Core {
 
@@ -12,8 +14,11 @@ class UpdraftParent {
   UpdraftParent();
   ~UpdraftParent() {}
 
+  void setMainWindow(MainWindow* w) { win = w; }
  private:
   PluginManager pluginManager;
+
+  MainWindow* win;
 };
 
 }  // End namespace Core

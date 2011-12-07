@@ -9,11 +9,12 @@ int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
     QTranslator trans;
-    trans.load("czech");
+    trans.load("translations/czech");
     a.installTranslator(&trans);
 
     MainWindow w;
     UpdraftParent parent;
+    parent.setMainWindow(&w);
     w.show();
 
     return a.exec();
