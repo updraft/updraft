@@ -1,20 +1,36 @@
-#include "core/pluginmanager.h"
+#include "pluginmanager.h"
 
 #include <QtGui>
 
-#include "pluginapi.h"
-
-Q_IMPORT_PLUGIN(TestPlugin)
+#include "../pluginapi.h"
 
 namespace Updraft {
 namespace Core {
 
 /// Constructor loads static plugins.
 PluginManager::PluginManager(UpdraftParent* setParent): parent(setParent) {
-  qDebug(QT_TR_NOOP("Loading static plugins."));
+  qDebug(QT_TR_NOOP("Searching for plugins in plugin directory."));
 
-  foreach(QObject* obj, QPluginLoader::staticInstances()) {
-    finishLoading(NULL, obj);
+  QDir plugins;
+  if (!plugins.cd("plugins")) {
+    qDebug(QT_TR_NOOP("Could not find 'plugins' directory"));
+    return;
+  }
+
+  QStringList pluginDirs = plugins.entryList
+    (QDir::Dirs | QDir::NoDotAndDotDot);
+
+  QStringList dllsMask;
+  dllsMask.push_back(QString("*.so"));
+  dllsMask.push_back(QString("*.dll"));
+
+  foreach(QString pluginDir, pluginDirs) {
+    plugins.cd(pluginDir);
+    QStringList dlls = plugins.entryList(dllsMask);
+
+    // Not sure how else to search for plugins:
+    load(QString("plugins/%1/%2").arg(pluginDir).arg(dlls.front()));
+    plugins.cdUp();
   }
 }
 
@@ -27,6 +43,7 @@ PluginManager::~PluginManager() {
 /// Load the plugin, initialize it and put it to the list of
 /// loaded plugins.
 IPlugin* PluginManager::load(QString fileName) {
+  qDebug(QT_TR_NOOP("Loading plugin %s"), fileName.toAscii().data());
   QPluginLoader* loader = new QPluginLoader(fileName);
   return finishLoading(loader, loader->instance());
 }
