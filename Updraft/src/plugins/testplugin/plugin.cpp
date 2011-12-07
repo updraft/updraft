@@ -22,7 +22,7 @@ void TestPlugin::deinitialize() {
   qDebug("TestPlugin unloaded");
 }
 
-Q_EXPORT_PLUGIN2(TestPlugin, TestPlugin)
+Q_EXPORT_PLUGIN2(testplugin, TestPlugin)
 
-}  //End namespace Updraft
+}  // End namespace Updraft
 
