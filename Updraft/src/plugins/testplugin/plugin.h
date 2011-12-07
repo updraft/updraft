@@ -1,7 +1,7 @@
 #ifndef UPDRAFT_SRC_PLUGINS_TESTPLUGIN_PLUGIN_H_
 #define UPDRAFT_SRC_PLUGINS_TESTPLUGIN_PLUGIN_H_
 
-#include <QObject>
+#include <QtGui>
 
 #include "../../pluginapi.h"
 
@@ -21,6 +21,12 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public IPlugin {
   void initialize();
 
   void deinitialize();
+
+ public slots:
+  void showHelp();
+
+ private:
+  QAction* helpAction;
 };
 }
 
