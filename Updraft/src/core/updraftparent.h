@@ -17,6 +17,9 @@ class UpdraftParent {
   MainWindow* getMainWindow() { return win; }
 
  private:
+  // Important: MainWindow has to initialize before pluginManager (because
+  // loading plugins can reference the main window) Therefore, this member
+  // has to come before pluginManager.
   MainWindow* win;
 
   PluginManager pluginManager;
