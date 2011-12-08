@@ -5,7 +5,7 @@
 namespace Updraft {
 
 QMainWindow* CoreInterface::getMainWindow() {
-  return qobject_cast<QMainWindow*>(parent->getMainWindow());
+  return static_cast<QMainWindow*>(parent->getMainWindow());
 }
 
 Core::Menu* CoreInterface::getSystemMenu(SystemMenu menu) {
