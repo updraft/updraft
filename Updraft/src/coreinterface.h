@@ -1,7 +1,6 @@
 #ifndef UPDRAFT_CORE_INTERFACE_H_
 #define UPDRAFT_CORE_INTERFACE_H_
 
-#include <cstddef>
 #include "core/ui/menu.h"
 
 class QMainWindow;
