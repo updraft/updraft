@@ -18,7 +18,11 @@ void TestPlugin::initialize() {
   helpAction = new QAction("About testplugin...", this);
   connect(helpAction, SIGNAL(triggered()), this, SLOT(showHelp()));
 
-  core.getSystemMenu(MENU_HELP)->insertAction(0, helpAction);
+  helpAction2 = new QAction("About testplugin (higher priority)...", this);
+  connect(helpAction2, SIGNAL(triggered()), this, SLOT(showHelp()));
+
+  core.getSystemMenu(MENU_HELP)->insertAction(1, helpAction);
+  core.getSystemMenu(MENU_HELP)->insertAction(0, helpAction2);
 
   qDebug("testplugin loaded");
 }

@@ -1,6 +1,8 @@
 #ifndef UPDRAFT_SRC_CORE_UI_MENU_H_
 #define UPDRAFT_SRC_CORE_UI_MENU_H_
 
+#include <QtGui>
+
 class QMenu;
 class QAction;
 
@@ -16,6 +18,12 @@ class Menu {
   void insertAction(int position, QAction* action);
  private:
   QMenu* menu;
+
+  /// All the actions sorted by priority. Used for inserting a new action
+  QMultiMap<int, QAction*> actions;
+
+  /// Called upon insertion or removal of an action
+  void reorganizeMenu();
 };
 
 }  // End namespace Core
