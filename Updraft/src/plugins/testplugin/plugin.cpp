@@ -24,8 +24,6 @@ void TestPlugin::initialize() {
   core.getSystemMenu(MENU_HELP)->insertAction(1, helpAction);
   core.getSystemMenu(MENU_HELP)->insertAction(0, helpAction2);
 
-  qDebug("testplugin loaded");
-
   // Create a new menu and insert a test action into it as well
   myMenu = core.createMenu("Test plugin");
 
@@ -33,6 +31,11 @@ void TestPlugin::initialize() {
   connect(helpAction3, SIGNAL(triggered()), this, SLOT(showHelp()));
 
   myMenu->insertAction(0, helpAction3);
+
+  // Add an action into a context menu
+  core.getSystemMenu(MENU_CONTEXT)->insertAction(0, helpAction);
+
+  qDebug("testplugin loaded");
 }
 
 void TestPlugin::deinitialize() {

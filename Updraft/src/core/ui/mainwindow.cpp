@@ -14,6 +14,10 @@ MainWindow::MainWindow(QWidget *parent)
     menuEdit = new Menu(ui->menuEdit);
     menuTools = new Menu(ui->menuTools);
     menuHelp = new Menu(ui->menuHelp);
+
+    // TODO(cestmir): This is here just to be able to test context menu.
+    QMenu* qContextMenu = new QMenu();
+    menuContext = new Menu(qContextMenu, true);
 }
 
 MainWindow::~MainWindow() {
@@ -21,6 +25,7 @@ MainWindow::~MainWindow() {
     delete menuTools;
     delete menuEdit;
     delete menuFile;
+    delete menuContext;
     delete ui;
 }
 
@@ -38,8 +43,9 @@ Menu* MainWindow::getSystemMenu(SystemMenu menu) {
     case MENU_HELP:
       return menuHelp;
     break;
+    case MENU_CONTEXT:
     default:
-      return menuHelp;
+      return menuContext;
     break;
   }
 }
@@ -58,6 +64,10 @@ void MainWindow::removeMenu(Menu* menu) {
   if (customMenus.remove(menu)) {
     delete menu;
   }
+}
+
+void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
+  menuContext->getQMenu()->popup(event->globalPos());
 }
 
 }  // End namespace Core

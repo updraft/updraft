@@ -23,6 +23,10 @@ class MainWindow : public QMainWindow {
   Menu* createMenu(QString title);
   void removeMenu(Menu* menu);
 
+ protected:
+  // TODO(cestmir): Just a temporary method to test context menu
+  void contextMenuEvent(QContextMenuEvent* event);
+
  private:
   Ui::MainWindow *ui;
 
@@ -30,6 +34,7 @@ class MainWindow : public QMainWindow {
   Menu* menuEdit;
   Menu* menuTools;
   Menu* menuHelp;
+  Menu* menuContext;
 
   QSet<Menu*> customMenus;
 };

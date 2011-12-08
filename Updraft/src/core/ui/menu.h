@@ -23,6 +23,8 @@ class Menu {
   ~Menu();
 
   void insertAction(int position, QAction* action);
+
+  QMenu* getQMenu() { return menu; }
  private:
   QMenu* menu;
   bool ownsMenu;
