@@ -1,4 +1,4 @@
-#!/usr/bin/python2.4
+#!/usr/bin/python2
 #
 # Copyright (c) 2009 Google Inc. All rights reserved.
 #
