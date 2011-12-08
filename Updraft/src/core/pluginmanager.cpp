@@ -9,11 +9,11 @@ namespace Core {
 
 /// Constructor loads static plugins.
 PluginManager::PluginManager(UpdraftParent* setParent): parent(setParent) {
-  qDebug(QT_TR_NOOP("Searching for plugins in plugin directory."));
+  qDebug("Searching for plugins in plugin directory.");
 
   QDir plugins;
   if (!plugins.cd("plugins")) {
-    qDebug(QT_TR_NOOP("Could not find 'plugins' directory"));
+    qDebug("Could not find 'plugins' directory");
     return;
   }
 
@@ -43,7 +43,7 @@ PluginManager::~PluginManager() {
 /// Load the plugin, initialize it and put it to the list of
 /// loaded plugins.
 IPlugin* PluginManager::load(QString fileName) {
-  qDebug(QT_TR_NOOP("Loading plugin %s"), fileName.toAscii().data());
+  qDebug("Loading plugin %s", fileName.toAscii().data());
   QPluginLoader* loader = new QPluginLoader(fileName);
   return finishLoading(loader, loader->instance());
 }
@@ -84,7 +84,7 @@ QVector<IPlugin*> PluginManager::getAllPlugins() {
 
 IPlugin* PluginManager::finishLoading(QPluginLoader* loader, QObject* obj) {
   if (!obj) {
-    qDebug(QT_TR_NOOP("Loading plugin failed."));
+    qDebug("Loading plugin failed.");
     return NULL;
   }
 
@@ -92,20 +92,20 @@ IPlugin* PluginManager::finishLoading(QPluginLoader* loader, QObject* obj) {
   IPlugin* plugin = qobject_cast<IPlugin*>(obj);
 
   if (!plugin) {
-    qDebug(QT_TR_NOOP("Plugin doesn't have correct interface."));
+    qDebug("Plugin doesn't have correct interface.");
     return NULL;
   }
 
   unsigned apiVersion = plugin->getPluginApiVersion();
 
   if (apiVersion != PLUGIN_API_VERSION) {
-    qDebug(QT_TR_NOOP("Wrong version of plugin API (expected %d, got %d)."),
+    qDebug("Wrong version of plugin API (expected %d, got %d).",
       PLUGIN_API_VERSION, apiVersion);
     return NULL;
   }
 
   if (plugins.contains(plugin->getName())) {
-    qDebug(QT_TR_NOOP("Plugin named %s already loaded"),
+    qDebug("Plugin named %s already loaded",
       plugin->getName().toAscii().data());
     return NULL;
   }
