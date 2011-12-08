@@ -25,10 +25,20 @@ void TestPlugin::initialize() {
   core.getSystemMenu(MENU_HELP)->insertAction(0, helpAction2);
 
   qDebug("testplugin loaded");
+
+  // Create a new menu and insert a test action into it as well
+  myMenu = core.createMenu("Test plugin");
+
+  helpAction3 = new QAction("About testplugin...", this);
+  connect(helpAction3, SIGNAL(triggered()), this, SLOT(showHelp()));
+
+  myMenu->insertAction(0, helpAction3);
 }
 
 void TestPlugin::deinitialize() {
   delete helpAction;
+
+  core.removeMenu(myMenu);
 
   qDebug("testplugin unloaded");
 }

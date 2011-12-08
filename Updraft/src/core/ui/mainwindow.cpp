@@ -44,6 +44,22 @@ Menu* MainWindow::getSystemMenu(SystemMenu menu) {
   }
 }
 
+Menu* MainWindow::createMenu(QString title) {
+  QMenu* qMenu = new QMenu(title, ui->menuBar);
+  Menu* newMenu = new Menu(qMenu, true);  // Make the qmenu owned by our Menu
+
+  customMenus.insert(newMenu);
+  ui->menuBar->addMenu(qMenu);
+
+  return newMenu;
+}
+
+void MainWindow::removeMenu(Menu* menu) {
+  if (customMenus.remove(menu)) {
+    delete menu;
+  }
+}
+
 }  // End namespace Core
 }  // End namespace Updraft
 

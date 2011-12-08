@@ -1,7 +1,7 @@
 #ifndef UPDRAFT_SRC_CORE_UI_MAINWINDOW_H_
 #define UPDRAFT_SRC_CORE_UI_MAINWINDOW_H_
 
-#include <QMainWindow>
+#include <QtGui>
 #include "../../coreinterface.h"
 
 namespace Ui {
@@ -20,6 +20,9 @@ class MainWindow : public QMainWindow {
 
   Menu* getSystemMenu(SystemMenu menu);
 
+  Menu* createMenu(QString title);
+  void removeMenu(Menu* menu);
+
  private:
   Ui::MainWindow *ui;
 
@@ -27,6 +30,8 @@ class MainWindow : public QMainWindow {
   Menu* menuEdit;
   Menu* menuTools;
   Menu* menuHelp;
+
+  QSet<Menu*> customMenus;
 };
 
 }  // End namespace Core

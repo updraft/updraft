@@ -4,6 +4,12 @@
 namespace Updraft {
 namespace Core {
 
+Menu::~Menu() {
+  if (ownsMenu) {
+    delete menu;
+  }
+}
+
 void Menu::insertAction(int position, QAction* action) {
   actions.insert(position, action);
 

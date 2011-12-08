@@ -28,6 +28,9 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public IPlugin {
  private:
   QAction* helpAction;
   QAction* helpAction2;
+  QAction* helpAction3;
+
+  Core::Menu* myMenu;
 };
 }
 
