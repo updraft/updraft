@@ -4,3 +4,5 @@
 # Qt creator user files
 *.user
 
+# Build directory for cmake
+/build/
