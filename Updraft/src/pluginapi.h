@@ -12,6 +12,8 @@ namespace Updraft {
 namespace Core {
   class UpdraftParent;
   class PluginManager;
+
+  class Tab;
 }
 
 class IPlugin {
@@ -35,6 +37,12 @@ class IPlugin {
 
   /// Called before the plugin is unloaded.
   virtual void deinitialize() = 0;
+
+  virtual void tabSelected(Core::Tab *tab) {}
+  virtual void tabDeselected(Core::Tab *tab) {}
+
+  /// Called before the tab is closed.
+  virtual void tabClosed(Core::Tab *tab) {}
 
   /// \todo Fill this once plugin API is finished
 

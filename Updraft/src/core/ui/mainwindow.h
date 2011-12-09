@@ -9,6 +9,9 @@ namespace Ui {
 }
 
 namespace Updraft {
+
+class IPlugin;
+
 namespace Core {
 
 class MainWindow : public QMainWindow {
@@ -20,6 +23,15 @@ class MainWindow : public QMainWindow {
 
   Menu* getSystemMenu(SystemMenu menu);
 
+  Tab* createTab(QWidget* content, QString title, IPlugin* plugin);
+
+ private slots:
+  /// Called when tab in the bottom pane is closed using the little cross
+  void tabClose(int index);
+
+  /// Handles switchin an active tab in the bottom pane.
+  void tabSwitch(int index);
+
  private:
   Ui::MainWindow *ui;
 
@@ -27,6 +39,8 @@ class MainWindow : public QMainWindow {
   Menu* menuEdit;
   Menu* menuTools;
   Menu* menuHelp;
+
+  Tab* activeTab;
 };
 
 }  // End namespace Core

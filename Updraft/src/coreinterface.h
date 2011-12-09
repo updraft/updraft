@@ -2,7 +2,9 @@
 #define UPDRAFT_CORE_INTERFACE_H_
 
 #include "core/ui/menu.h"
+#include "core/ui/tab.h"
 
+class QWidget;
 class QMainWindow;
 
 namespace Updraft {
@@ -39,6 +41,13 @@ class CoreInterface {
   /// \param menu which system menu instance to return  
   Core::Menu* getSystemMenu(SystemMenu menu);
 
+  /// Open a Tab with any widget.
+  Core::Tab* createTab(QWidget* content, QString title);
+
+  /// Removes tab from the bottom pane
+  /// The tab class given to this function is deleted!
+  void removeTab(Core::Tab* tab);
+  
  private:
   IPlugin* plugin;
   Core::UpdraftParent* parent;

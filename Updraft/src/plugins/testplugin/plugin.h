@@ -26,6 +26,8 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public IPlugin {
   void showHelp();
 
  private:
+  void createTab(QString title);
+
   QAction* helpAction;
 };
 }

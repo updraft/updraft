@@ -1,4 +1,10 @@
 #include "plugin.h"
+
+#include <QPushButton>
+#include <QHBoxLayout>
+
+#include "../../core/ui/tab.h"
+
 #include "../../coreinterface.h"
 
 namespace Updraft {
@@ -20,7 +26,27 @@ void TestPlugin::initialize() {
 
   core.getSystemMenu(MENU_HELP)->insertAction(0, helpAction);
 
+  createTab("Button tab 1");
+  createTab("Button tab 2");
+
   qDebug("testplugin loaded");
+}
+
+void TestPlugin::createTab(QString title) {
+  QWidget* container = new QWidget();
+  QHBoxLayout* layout = new QHBoxLayout(container);
+
+  QPushButton* btn1 = new QPushButton("Show help", container);
+  QPushButton* btn2 = new QPushButton("Close this tab", container);
+
+  layout->addWidget(btn1);
+  layout->addWidget(btn2);
+
+  Core::Tab* tab = core.createTab(container, title);
+
+  connect(btn1, SIGNAL(clicked()), this, SLOT(showHelp()));
+  // connect(btn2, SIGNAL(clicked()), tab, SLOT(showHelp()));
+  connect(btn2, SIGNAL(clicked()), tab, SLOT(close()));
 }
 
 void TestPlugin::deinitialize() {

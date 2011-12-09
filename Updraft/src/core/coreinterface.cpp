@@ -13,5 +13,15 @@ Core::Menu* CoreInterface::getSystemMenu(SystemMenu menu) {
   return win->getSystemMenu(menu);
 }
 
+/// Create a new tab in the bottom pane.
+/// Takes ownership of content.
+Core::Tab* CoreInterface::createTab(QWidget* content, QString title) {
+    return parent->getMainWindow()->createTab(content, title, plugin);
+}
+
+void CoreInterface::removeTab(Core::Tab* tab) {
+  tab->close();
+}
+
 }  // End namespace Updraft
 

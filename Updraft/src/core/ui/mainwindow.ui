@@ -99,21 +99,6 @@
         <property name="movable">
          <bool>true</bool>
         </property>
-        <widget class="QWidget" name="tab">
-         <attribute name="title">
-          <string>flight.igc</string>
-         </attribute>
-         <layout class="QGridLayout" name="gridLayout">
-          <property name="margin">
-           <number>0</number>
-          </property>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="tab_2">
-         <attribute name="title">
-          <string>task.cup</string>
-         </attribute>
-        </widget>
        </widget>
       </widget>
      </widget>
