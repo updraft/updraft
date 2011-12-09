@@ -4,9 +4,7 @@
 #include <QMainWindow>
 #include "../../coreinterface.h"
 
-namespace Ui {
-  class MainWindow;
-}
+namespace Ui { class MainWindow; }
 
 namespace Updraft {
 

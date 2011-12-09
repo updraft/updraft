@@ -13,7 +13,6 @@ namespace Updraft {
 class IPlugin;
 namespace Core {
   class UpdraftParent;
-  class Menu;
 } //End namespace Core
 
 enum SystemMenu {
