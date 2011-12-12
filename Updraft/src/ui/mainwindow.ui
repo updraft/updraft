@@ -42,6 +42,11 @@
           <property name="lineWidth">
            <number>0</number>
           </property>
+          <column>
+           <property name="text">
+            <string notr="true">1</string>
+           </property>
+          </column>
          </widget>
         </item>
        </layout>
@@ -69,7 +74,7 @@
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
+        <layout class="QVBoxLayout" name="layoutFrame">
          <property name="margin">
           <number>0</number>
          </property>

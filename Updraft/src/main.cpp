@@ -3,14 +3,14 @@
 #include "ui/mainwindow.h"
 
 int main(int argc, char *argv[]) {
-    QApplication a(argc, argv);
+  QApplication a(argc, argv);
 
-    QTranslator trans;
-    trans.load("czech");
-    a.installTranslator(&trans);
+  QTranslator trans;
+  trans.load("czech");
+  a.installTranslator(&trans);
 
-    MainWindow w;
-    w.show();
+  MainWindow w;
+  w.show();
 
-    return a.exec();
+  return a.exec();
 }

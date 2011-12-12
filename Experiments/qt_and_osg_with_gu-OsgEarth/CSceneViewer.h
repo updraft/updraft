@@ -8,13 +8,14 @@
 class CSceneViewer : private osgViewer::Viewer
 {
    public:
-      CSceneViewer(osgViewer::ViewerBase::ThreadingModel threadingModel=osgViewer::ViewerBase::SingleThreaded, osg::Camera* camera=NULL, osg::Node* scene=NULL);
+      CSceneViewer(osgViewer::ViewerBase::ThreadingModel threadingModel=osgViewer::ViewerBase::SingleThreaded);//, osg::Camera* camera=NULL, osg::Node* scene=NULL);
       ~CSceneViewer();
 
       QWidget* getWidget();
       void redrawScene();
 private:
 	osgEarth::MapNode* mapNode;
+	osg::Camera* createCamera( int x, int y, int w, int h, const std::string& name="", bool windowDecoration=false );
 };
 
 #endif//__SCENEVIEWWIDGET_H_

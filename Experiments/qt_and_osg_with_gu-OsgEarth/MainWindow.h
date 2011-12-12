@@ -13,7 +13,7 @@ class CMainWindow : public QMainWindow
    Q_OBJECT
 
 public:
-   CMainWindow(osgViewer::ViewerBase::ThreadingModel threadingModel=osgViewer::ViewerBase::SingleThreaded);
+   CMainWindow(/*osgViewer::ViewerBase::ThreadingModel threadingModel=osgViewer::ViewerBase::SingleThreaded*/);
    ~CMainWindow();
 
 public slots:
@@ -25,7 +25,7 @@ private:
 
    QTimer* timer;
 
-   osg::Camera* createCamera( int x, int y, int w, int h, const std::string& name="", bool windowDecoration=false );
+//   osg::Camera* createCamera( int x, int y, int w, int h, const std::string& name="", bool windowDecoration=false );
    virtual void paintEvent( QPaintEvent* event );
 };
 
