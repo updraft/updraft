@@ -99,21 +99,6 @@
         <property name="movable">
          <bool>true</bool>
         </property>
-        <widget class="QWidget" name="tab">
-         <attribute name="title">
-          <string>flight.igc</string>
-         </attribute>
-         <layout class="QGridLayout" name="gridLayout">
-          <property name="margin">
-           <number>0</number>
-          </property>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="tab_2">
-         <attribute name="title">
-          <string>task.cup</string>
-         </attribute>
-        </widget>
        </widget>
       </widget>
      </widget>
@@ -129,19 +114,19 @@
      <height>20</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuMain_Menu">
+   <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>File</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuView">
+   <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>View</string>
+     <string>Edit</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuMap">
+   <widget class="QMenu" name="menuTools">
     <property name="title">
-     <string>Map</string>
+     <string>Tools</string>
     </property>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -149,9 +134,9 @@
      <string>Help</string>
     </property>
    </widget>
-   <addaction name="menuMain_Menu"/>
-   <addaction name="menuView"/>
-   <addaction name="menuMap"/>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>
  </widget>

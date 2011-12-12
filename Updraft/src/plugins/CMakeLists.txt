@@ -1,0 +1,17 @@
+FIND_PACKAGE(Qt4 REQUIRED)
+
+cmake_minimum_required(VERSION 2.8)
+
+MESSAGE("-- Configuring plugins...")
+
+FILE(GLOB PLUGIN_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/*)
+
+message("-- Plugins that will be built:")
+foreach(PLUGIN_DIR ${PLUGIN_DIRS})
+	IF(IS_DIRECTORY ${PLUGIN_DIR})
+        	GET_FILENAME_COMPONENT(PLUGIN_NAME ${PLUGIN_DIR} NAME)
+		message ("---> "${PLUGIN_NAME})
+		ADD_SUBDIRECTORY(${PLUGIN_NAME})
+	ENDIF(IS_DIRECTORY ${PLUGIN_DIR})
+endforeach(PLUGIN_DIR)
+

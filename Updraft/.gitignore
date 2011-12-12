@@ -1,0 +1,8 @@
+# Vim swap files
+.*.sw[poxn]
+
+# Qt creator user files
+*.user
+
+# Build directory for cmake
+/build/
