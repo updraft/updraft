@@ -1,0 +1,6 @@
+# Exclude Visual Studio files
+*.sln
+*.suo
+*.vcproj
+*.user
+*.ncb
