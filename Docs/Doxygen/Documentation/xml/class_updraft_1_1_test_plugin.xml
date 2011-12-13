@@ -1,0 +1,229 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6">
+  <compounddef id="class_updraft_1_1_test_plugin" kind="class" prot="public">
+    <compoundname>Updraft::TestPlugin</compoundname>
+    <basecompoundref refid="class_updraft_1_1_i_plugin" prot="public" virt="non-virtual">Updraft::IPlugin</basecompoundref>
+    <includes refid="plugin_8h" local="no">plugin.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_updraft_1_1_test_plugin_1a9c5e301b99cf3621ed6dc4966d08ca2c" prot="private" static="no" mutable="no">
+        <type>QAction *</type>
+        <definition>QAction* Updraft::TestPlugin::helpAction</definition>
+        <argsstring></argsstring>
+        <name>helpAction</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.h" line="31" bodyfile="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.h" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_updraft_1_1_test_plugin_1a9853e6775e3fc88b5f38079d6b3b911c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>Updraft::TestPlugin::TestPlugin</definition>
+        <argsstring>()</argsstring>
+        <name>TestPlugin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.h" line="15" bodyfile="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.cpp" bodystart="12" bodyend="12"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_test_plugin_1a8a75e7767dc7b9088fbbf0a82cb1a63e" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>QString</type>
+        <definition>QString Updraft::TestPlugin::getName</definition>
+        <argsstring>()</argsstring>
+        <name>getName</name>
+        <reimplements refid="class_updraft_1_1_i_plugin_1a877b6e38ce007c4849a5c234e1599644">getName</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Plugin metadata. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.h" line="17" bodyfile="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.cpp" bodystart="14" bodyend="16"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_test_plugin_1a0668cab568e738118788967fdf2badfd" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>unsigned</type>
+        <definition>unsigned Updraft::TestPlugin::getPriority</definition>
+        <argsstring>()</argsstring>
+        <name>getPriority</name>
+        <reimplements refid="class_updraft_1_1_i_plugin_1acb2dd8403b62370ea337132c08bb31d9">getPriority</reimplements>
+        <briefdescription>
+<para>Priority gives the order in which plugins receive callbacks. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.h" line="19" bodyfile="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.cpp" bodystart="18" bodyend="20"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_test_plugin_1a8dbfefc2d2f2ec3cac9f210c473e0dbc" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void Updraft::TestPlugin::initialize</definition>
+        <argsstring>()</argsstring>
+        <name>initialize</name>
+        <reimplements refid="class_updraft_1_1_i_plugin_1af5c0d1101d05f5a3452e03ec6d707c12">initialize</reimplements>
+        <briefdescription>
+<para>Called after the plugin is loaded. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.h" line="21" bodyfile="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.cpp" bodystart="22" bodyend="33"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_test_plugin_1ac934dfe9f6cd85441fcb0961b45ffc04" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void Updraft::TestPlugin::deinitialize</definition>
+        <argsstring>()</argsstring>
+        <name>deinitialize</name>
+        <reimplements refid="class_updraft_1_1_i_plugin_1a4c62128ed1d067e92bd2edb5a6a50556">deinitialize</reimplements>
+        <briefdescription>
+<para>Called before the plugin is unloaded. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.h" line="23" bodyfile="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.cpp" bodystart="52" bodyend="56"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-slot">
+      <memberdef kind="slot" id="class_updraft_1_1_test_plugin_1afe79aefd8c719231702df3660f3fd25c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Updraft::TestPlugin::showHelp</definition>
+        <argsstring>()</argsstring>
+        <name>showHelp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.h" line="26" bodyfile="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.cpp" bodystart="58" bodyend="63"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_updraft_1_1_test_plugin_1ad76d6f806d2c5954733b8f00fdded1ba" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Updraft::TestPlugin::createTab</definition>
+        <argsstring>(QString title)</argsstring>
+        <name>createTab</name>
+        <param>
+          <type>QString</type>
+          <declname>title</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.h" line="29" bodyfile="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.cpp" bodystart="35" bodyend="50"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="609">
+        <label>Updraft::IPlugin</label>
+        <link refid="class_updraft_1_1_i_plugin"/>
+      </node>
+      <node id="608">
+        <label>Updraft::TestPlugin</label>
+        <link refid="class_updraft_1_1_test_plugin"/>
+        <childnode refid="609" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="611">
+        <label>Updraft::IPlugin</label>
+        <link refid="class_updraft_1_1_i_plugin"/>
+        <childnode refid="612" relation="usage">
+          <edgelabel>core</edgelabel>
+        </childnode>
+      </node>
+      <node id="613">
+        <label>Updraft::Core::UpdraftParent</label>
+        <link refid="class_updraft_1_1_core_1_1_updraft_parent"/>
+        <childnode refid="614" relation="usage">
+          <edgelabel>win</edgelabel>
+        </childnode>
+        <childnode refid="617" relation="usage">
+          <edgelabel>pluginManager</edgelabel>
+        </childnode>
+      </node>
+      <node id="616">
+        <label>Updraft::Core::Tab</label>
+        <link refid="class_updraft_1_1_core_1_1_tab"/>
+        <childnode refid="611" relation="usage">
+          <edgelabel>plugin</edgelabel>
+        </childnode>
+      </node>
+      <node id="610">
+        <label>Updraft::TestPlugin</label>
+        <link refid="class_updraft_1_1_test_plugin"/>
+        <childnode refid="611" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="614">
+        <label>Updraft::Core::MainWindow</label>
+        <link refid="class_updraft_1_1_core_1_1_main_window"/>
+        <childnode refid="615" relation="usage">
+          <edgelabel>menuFile</edgelabel>
+          <edgelabel>menuEdit</edgelabel>
+          <edgelabel>menuHelp</edgelabel>
+          <edgelabel>menuTools</edgelabel>
+        </childnode>
+        <childnode refid="616" relation="usage">
+          <edgelabel>activeTab</edgelabel>
+        </childnode>
+      </node>
+      <node id="615">
+        <label>Updraft::Core::Menu</label>
+        <link refid="class_updraft_1_1_core_1_1_menu"/>
+      </node>
+      <node id="617">
+        <label>Updraft::Core::PluginManager</label>
+        <link refid="class_updraft_1_1_core_1_1_plugin_manager"/>
+        <childnode refid="613" relation="usage">
+          <edgelabel>parent</edgelabel>
+        </childnode>
+      </node>
+      <node id="612">
+        <label>Updraft::CoreInterface</label>
+        <link refid="class_updraft_1_1_core_interface"/>
+        <childnode refid="613" relation="usage">
+          <edgelabel>parent</edgelabel>
+        </childnode>
+        <childnode refid="611" relation="usage">
+          <edgelabel>plugin</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.h" line="10" bodyfile="C:/Users/Alik/updraft/Updraft/src/plugins/testplugin/plugin.h" bodystart="10" bodyend="32"/>
+    <listofallmembers>
+      <member refid="class_updraft_1_1_i_plugin_1a60b0ac823f74b2216f6f81b5982d70fa" prot="protected" virt="non-virtual"><scope>Updraft::TestPlugin</scope><name>core</name></member>
+      <member refid="class_updraft_1_1_test_plugin_1ad76d6f806d2c5954733b8f00fdded1ba" prot="private" virt="non-virtual"><scope>Updraft::TestPlugin</scope><name>createTab</name></member>
+      <member refid="class_updraft_1_1_test_plugin_1ac934dfe9f6cd85441fcb0961b45ffc04" prot="public" virt="virtual"><scope>Updraft::TestPlugin</scope><name>deinitialize</name></member>
+      <member refid="class_updraft_1_1_test_plugin_1a8a75e7767dc7b9088fbbf0a82cb1a63e" prot="public" virt="virtual"><scope>Updraft::TestPlugin</scope><name>getName</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1a96fa3c02407ece1863cd4bd66fed494c" prot="public" virt="virtual"><scope>Updraft::TestPlugin</scope><name>getPluginApiVersion</name></member>
+      <member refid="class_updraft_1_1_test_plugin_1a0668cab568e738118788967fdf2badfd" prot="public" virt="virtual"><scope>Updraft::TestPlugin</scope><name>getPriority</name></member>
+      <member refid="class_updraft_1_1_test_plugin_1a9c5e301b99cf3621ed6dc4966d08ca2c" prot="private" virt="non-virtual"><scope>Updraft::TestPlugin</scope><name>helpAction</name></member>
+      <member refid="class_updraft_1_1_test_plugin_1a8dbfefc2d2f2ec3cac9f210c473e0dbc" prot="public" virt="virtual"><scope>Updraft::TestPlugin</scope><name>initialize</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1adaa4286c019e11cd7c310882551be24e" prot="public" virt="non-virtual"><scope>Updraft::TestPlugin</scope><name>initializeCoreInterface</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1a66a63b687797dc4dbfc2df51f1ea546b" prot="public" virt="non-virtual"><scope>Updraft::TestPlugin</scope><name>IPlugin</name></member>
+      <member refid="class_updraft_1_1_test_plugin_1afe79aefd8c719231702df3660f3fd25c" prot="public" virt="non-virtual"><scope>Updraft::TestPlugin</scope><name>showHelp</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1a8bd47b38b90cd492a3198ef3b8325192" prot="public" virt="virtual"><scope>Updraft::TestPlugin</scope><name>tabClosed</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1a1f9c79308642cd035a049ae0730357ed" prot="public" virt="virtual"><scope>Updraft::TestPlugin</scope><name>tabDeselected</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1a472312fe268acda3b8ef6c07c6a9bcc0" prot="public" virt="virtual"><scope>Updraft::TestPlugin</scope><name>tabSelected</name></member>
+      <member refid="class_updraft_1_1_test_plugin_1a9853e6775e3fc88b5f38079d6b3b911c" prot="public" virt="non-virtual"><scope>Updraft::TestPlugin</scope><name>TestPlugin</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1a7fe7c99740a5aca189c8ca7230638800" prot="public" virt="virtual"><scope>Updraft::TestPlugin</scope><name>~IPlugin</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

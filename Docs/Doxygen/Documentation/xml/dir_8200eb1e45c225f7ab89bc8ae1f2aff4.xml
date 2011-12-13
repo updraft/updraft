@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6">
+  <compounddef id="dir_8200eb1e45c225f7ab89bc8ae1f2aff4" kind="dir">
+    <compoundname>C:/Users/Alik/updraft/Updraft/src/core/ui/</compoundname>
+    <innerfile refid="mainwindow_8cpp">mainwindow.cpp</innerfile>
+    <innerfile refid="mainwindow_8h">mainwindow.h</innerfile>
+    <innerfile refid="menu_8cpp">menu.cpp</innerfile>
+    <innerfile refid="menu_8h">menu.h</innerfile>
+    <innerfile refid="tab_8cpp">tab.cpp</innerfile>
+    <innerfile refid="tab_8h">tab.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/"/>
+  </compounddef>
+</doxygen>

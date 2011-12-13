@@ -1,0 +1,301 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6">
+  <compounddef id="class_updraft_1_1_i_plugin" kind="class" prot="public">
+    <compoundname>Updraft::IPlugin</compoundname>
+    <derivedcompoundref refid="class_updraft_1_1_test_plugin" prot="public" virt="non-virtual">Updraft::TestPlugin</derivedcompoundref>
+    <includes refid="pluginapi_8h" local="no">pluginapi.h</includes>
+      <sectiondef kind="user-defined">
+      <memberdef kind="function" id="class_updraft_1_1_i_plugin_1a877b6e38ce007c4849a5c234e1599644" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>QString</type>
+        <definition>virtual QString Updraft::IPlugin::getName</definition>
+        <argsstring>()=0</argsstring>
+        <name>getName</name>
+        <reimplementedby refid="class_updraft_1_1_test_plugin_1a8a75e7767dc7b9088fbbf0a82cb1a63e">getName</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Plugin metadata. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" line="26"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_i_plugin_1acb2dd8403b62370ea337132c08bb31d9" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>unsigned</type>
+        <definition>virtual unsigned Updraft::IPlugin::getPriority</definition>
+        <argsstring>()=0</argsstring>
+        <name>getPriority</name>
+        <reimplementedby refid="class_updraft_1_1_test_plugin_1a0668cab568e738118788967fdf2badfd">getPriority</reimplementedby>
+        <briefdescription>
+<para>Priority gives the order in which plugins receive callbacks. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" line="29"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_i_plugin_1a96fa3c02407ece1863cd4bd66fed494c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>unsigned</type>
+        <definition>virtual unsigned Updraft::IPlugin::getPluginApiVersion</definition>
+        <argsstring>()</argsstring>
+        <name>getPluginApiVersion</name>
+        <briefdescription>
+<para>Plugin&apos;s API version. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" line="32" bodyfile="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" bodystart="32" bodyend="32"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="class_updraft_1_1_i_plugin_1a60b0ac823f74b2216f6f81b5982d70fa" prot="protected" static="no" mutable="no">
+        <type><ref refid="class_updraft_1_1_core_interface" kindref="compound">CoreInterface</ref></type>
+        <definition>CoreInterface Updraft::IPlugin::core</definition>
+        <argsstring></argsstring>
+        <name>core</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" line="59" bodyfile="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_updraft_1_1_i_plugin_1a66a63b687797dc4dbfc2df51f1ea546b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Updraft::IPlugin::IPlugin</definition>
+        <argsstring>()</argsstring>
+        <name>IPlugin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" line="21" bodyfile="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" bodystart="21" bodyend="21"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_i_plugin_1a7fe7c99740a5aca189c8ca7230638800" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual Updraft::IPlugin::~IPlugin</definition>
+        <argsstring>()</argsstring>
+        <name>~IPlugin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" line="22" bodyfile="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" bodystart="22" bodyend="22"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_i_plugin_1af5c0d1101d05f5a3452e03ec6d707c12" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void Updraft::IPlugin::initialize</definition>
+        <argsstring>()=0</argsstring>
+        <name>initialize</name>
+        <reimplementedby refid="class_updraft_1_1_test_plugin_1a8dbfefc2d2f2ec3cac9f210c473e0dbc">initialize</reimplementedby>
+        <briefdescription>
+<para>Called after the plugin is loaded. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" line="36"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_i_plugin_1a4c62128ed1d067e92bd2edb5a6a50556" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void Updraft::IPlugin::deinitialize</definition>
+        <argsstring>()=0</argsstring>
+        <name>deinitialize</name>
+        <reimplementedby refid="class_updraft_1_1_test_plugin_1ac934dfe9f6cd85441fcb0961b45ffc04">deinitialize</reimplementedby>
+        <briefdescription>
+<para>Called before the plugin is unloaded. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" line="39"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_i_plugin_1a472312fe268acda3b8ef6c07c6a9bcc0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void Updraft::IPlugin::tabSelected</definition>
+        <argsstring>(Core::Tab *tab)</argsstring>
+        <name>tabSelected</name>
+        <param>
+          <type><ref refid="class_updraft_1_1_core_1_1_tab" kindref="compound">Core::Tab</ref> *</type>
+          <declname>tab</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" line="41" bodyfile="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" bodystart="41" bodyend="41"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_i_plugin_1a1f9c79308642cd035a049ae0730357ed" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void Updraft::IPlugin::tabDeselected</definition>
+        <argsstring>(Core::Tab *tab)</argsstring>
+        <name>tabDeselected</name>
+        <param>
+          <type><ref refid="class_updraft_1_1_core_1_1_tab" kindref="compound">Core::Tab</ref> *</type>
+          <declname>tab</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" line="42" bodyfile="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" bodystart="42" bodyend="42"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_i_plugin_1a8bd47b38b90cd492a3198ef3b8325192" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void Updraft::IPlugin::tabClosed</definition>
+        <argsstring>(Core::Tab *tab)</argsstring>
+        <name>tabClosed</name>
+        <param>
+          <type><ref refid="class_updraft_1_1_core_1_1_tab" kindref="compound">Core::Tab</ref> *</type>
+          <declname>tab</declname>
+        </param>
+        <briefdescription>
+<para>Called before the tab is closed. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" line="45" bodyfile="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" bodystart="45" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_i_plugin_1adaa4286c019e11cd7c310882551be24e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Updraft::IPlugin::initializeCoreInterface</definition>
+        <argsstring>(Core::UpdraftParent *parent)</argsstring>
+        <name>initializeCoreInterface</name>
+        <param>
+          <type><ref refid="class_updraft_1_1_core_1_1_updraft_parent" kindref="compound">Core::UpdraftParent</ref> *</type>
+          <declname>parent</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><xrefsect id="todo_1_todo000002"><xreftitle>Todo</xreftitle><xrefdescription><para>Fill this once plugin API is finished </para></xrefdescription></xrefsect></para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" line="49" bodyfile="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" bodystart="49" bodyend="51"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_updraft_1_1_i_plugin_1a6561a01ee92d8634424576bfc23c95b3" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Updraft::IPlugin::IPlugin</definition>
+        <argsstring>(const IPlugin &amp;other)</argsstring>
+        <name>IPlugin</name>
+        <param>
+          <type>const <ref refid="class_updraft_1_1_i_plugin" kindref="compound">IPlugin</ref> &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" line="55" bodyfile="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" bodystart="55" bodyend="55"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="392">
+        <label>Updraft::IPlugin</label>
+        <link refid="class_updraft_1_1_i_plugin"/>
+      </node>
+      <node id="393">
+        <label>Updraft::TestPlugin</label>
+        <link refid="class_updraft_1_1_test_plugin"/>
+        <childnode refid="392" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="394">
+        <label>Updraft::IPlugin</label>
+        <link refid="class_updraft_1_1_i_plugin"/>
+        <childnode refid="395" relation="usage">
+          <edgelabel>core</edgelabel>
+        </childnode>
+      </node>
+      <node id="396">
+        <label>Updraft::Core::UpdraftParent</label>
+        <link refid="class_updraft_1_1_core_1_1_updraft_parent"/>
+        <childnode refid="397" relation="usage">
+          <edgelabel>win</edgelabel>
+        </childnode>
+        <childnode refid="400" relation="usage">
+          <edgelabel>pluginManager</edgelabel>
+        </childnode>
+      </node>
+      <node id="399">
+        <label>Updraft::Core::Tab</label>
+        <link refid="class_updraft_1_1_core_1_1_tab"/>
+        <childnode refid="394" relation="usage">
+          <edgelabel>plugin</edgelabel>
+        </childnode>
+      </node>
+      <node id="397">
+        <label>Updraft::Core::MainWindow</label>
+        <link refid="class_updraft_1_1_core_1_1_main_window"/>
+        <childnode refid="398" relation="usage">
+          <edgelabel>menuFile</edgelabel>
+          <edgelabel>menuEdit</edgelabel>
+          <edgelabel>menuHelp</edgelabel>
+          <edgelabel>menuTools</edgelabel>
+        </childnode>
+        <childnode refid="399" relation="usage">
+          <edgelabel>activeTab</edgelabel>
+        </childnode>
+      </node>
+      <node id="398">
+        <label>Updraft::Core::Menu</label>
+        <link refid="class_updraft_1_1_core_1_1_menu"/>
+      </node>
+      <node id="400">
+        <label>Updraft::Core::PluginManager</label>
+        <link refid="class_updraft_1_1_core_1_1_plugin_manager"/>
+        <childnode refid="396" relation="usage">
+          <edgelabel>parent</edgelabel>
+        </childnode>
+      </node>
+      <node id="395">
+        <label>Updraft::CoreInterface</label>
+        <link refid="class_updraft_1_1_core_interface"/>
+        <childnode refid="396" relation="usage">
+          <edgelabel>parent</edgelabel>
+        </childnode>
+        <childnode refid="394" relation="usage">
+          <edgelabel>plugin</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" line="19" bodyfile="C:/Users/Alik/updraft/Updraft/src/pluginapi.h" bodystart="19" bodyend="61"/>
+    <listofallmembers>
+      <member refid="class_updraft_1_1_i_plugin_1a60b0ac823f74b2216f6f81b5982d70fa" prot="protected" virt="non-virtual"><scope>Updraft::IPlugin</scope><name>core</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1a4c62128ed1d067e92bd2edb5a6a50556" prot="public" virt="pure-virtual"><scope>Updraft::IPlugin</scope><name>deinitialize</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1a877b6e38ce007c4849a5c234e1599644" prot="public" virt="pure-virtual"><scope>Updraft::IPlugin</scope><name>getName</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1a96fa3c02407ece1863cd4bd66fed494c" prot="public" virt="virtual"><scope>Updraft::IPlugin</scope><name>getPluginApiVersion</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1acb2dd8403b62370ea337132c08bb31d9" prot="public" virt="pure-virtual"><scope>Updraft::IPlugin</scope><name>getPriority</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1af5c0d1101d05f5a3452e03ec6d707c12" prot="public" virt="pure-virtual"><scope>Updraft::IPlugin</scope><name>initialize</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1adaa4286c019e11cd7c310882551be24e" prot="public" virt="non-virtual"><scope>Updraft::IPlugin</scope><name>initializeCoreInterface</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1a66a63b687797dc4dbfc2df51f1ea546b" prot="public" virt="non-virtual"><scope>Updraft::IPlugin</scope><name>IPlugin</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1a6561a01ee92d8634424576bfc23c95b3" prot="private" virt="non-virtual"><scope>Updraft::IPlugin</scope><name>IPlugin</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1a8bd47b38b90cd492a3198ef3b8325192" prot="public" virt="virtual"><scope>Updraft::IPlugin</scope><name>tabClosed</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1a1f9c79308642cd035a049ae0730357ed" prot="public" virt="virtual"><scope>Updraft::IPlugin</scope><name>tabDeselected</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1a472312fe268acda3b8ef6c07c6a9bcc0" prot="public" virt="virtual"><scope>Updraft::IPlugin</scope><name>tabSelected</name></member>
+      <member refid="class_updraft_1_1_i_plugin_1a7fe7c99740a5aca189c8ca7230638800" prot="public" virt="virtual"><scope>Updraft::IPlugin</scope><name>~IPlugin</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

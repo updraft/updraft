@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6">
+  <compounddef id="class_updraft_1_1_core_1_1_updraft_parent" kind="class" prot="public">
+    <compoundname>Updraft::Core::UpdraftParent</compoundname>
+    <includes refid="updraftparent_8h" local="no">updraftparent.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_updraft_1_1_core_1_1_updraft_parent_1a1e52c2d4a07c26a87e7b13890fe57a33" prot="private" static="no" mutable="no">
+        <type><ref refid="class_updraft_1_1_core_1_1_main_window" kindref="compound">MainWindow</ref> *</type>
+        <definition>MainWindow* Updraft::Core::UpdraftParent::win</definition>
+        <argsstring></argsstring>
+        <name>win</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/updraftparent.h" line="23" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/updraftparent.h" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_updraft_1_1_core_1_1_updraft_parent_1ab33828e374d2940961d9ffd4899f90f9" prot="private" static="no" mutable="no">
+        <type><ref refid="class_updraft_1_1_core_1_1_plugin_manager" kindref="compound">PluginManager</ref></type>
+        <definition>PluginManager Updraft::Core::UpdraftParent::pluginManager</definition>
+        <argsstring></argsstring>
+        <name>pluginManager</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/updraftparent.h" line="25" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/updraftparent.h" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_updraft_1_1_core_1_1_updraft_parent_1af655f3d1e1b31761d8db23e89f11613a" prot="public" static="no" const="no" explicit="yes" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>Updraft::Core::UpdraftParent::UpdraftParent</definition>
+        <argsstring>(MainWindow *setWin)</argsstring>
+        <name>UpdraftParent</name>
+        <param>
+          <type><ref refid="class_updraft_1_1_core_1_1_main_window" kindref="compound">MainWindow</ref> *</type>
+          <declname>setWin</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/updraftparent.h" line="14" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/updraftparent.cpp" bodystart="6" bodyend="7"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_core_1_1_updraft_parent_1a2796d2b9912f53a52d866b553fe0c31e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Updraft::Core::UpdraftParent::~UpdraftParent</definition>
+        <argsstring>()</argsstring>
+        <name>~UpdraftParent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/updraftparent.h" line="15" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/updraftparent.h" bodystart="15" bodyend="15"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_core_1_1_updraft_parent_1af91c348d5104e64cddd48273f2f4992c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="class_updraft_1_1_core_1_1_main_window" kindref="compound">MainWindow</ref> *</type>
+        <definition>MainWindow* Updraft::Core::UpdraftParent::getMainWindow</definition>
+        <argsstring>()</argsstring>
+        <name>getMainWindow</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/updraftparent.h" line="17" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/updraftparent.h" bodystart="17" bodyend="17"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Class that takes care of all the important objects in <ref refid="namespace_updraft" kindref="compound">Updraft</ref>. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="632">
+        <label>Updraft::IPlugin</label>
+        <link refid="class_updraft_1_1_i_plugin"/>
+        <childnode refid="633" relation="usage">
+          <edgelabel>core</edgelabel>
+        </childnode>
+      </node>
+      <node id="628">
+        <label>Updraft::Core::UpdraftParent</label>
+        <link refid="class_updraft_1_1_core_1_1_updraft_parent"/>
+        <childnode refid="629" relation="usage">
+          <edgelabel>win</edgelabel>
+        </childnode>
+        <childnode refid="634" relation="usage">
+          <edgelabel>pluginManager</edgelabel>
+        </childnode>
+      </node>
+      <node id="631">
+        <label>Updraft::Core::Tab</label>
+        <link refid="class_updraft_1_1_core_1_1_tab"/>
+        <childnode refid="632" relation="usage">
+          <edgelabel>plugin</edgelabel>
+        </childnode>
+      </node>
+      <node id="629">
+        <label>Updraft::Core::MainWindow</label>
+        <link refid="class_updraft_1_1_core_1_1_main_window"/>
+        <childnode refid="630" relation="usage">
+          <edgelabel>menuFile</edgelabel>
+          <edgelabel>menuEdit</edgelabel>
+          <edgelabel>menuHelp</edgelabel>
+          <edgelabel>menuTools</edgelabel>
+        </childnode>
+        <childnode refid="631" relation="usage">
+          <edgelabel>activeTab</edgelabel>
+        </childnode>
+      </node>
+      <node id="630">
+        <label>Updraft::Core::Menu</label>
+        <link refid="class_updraft_1_1_core_1_1_menu"/>
+      </node>
+      <node id="634">
+        <label>Updraft::Core::PluginManager</label>
+        <link refid="class_updraft_1_1_core_1_1_plugin_manager"/>
+        <childnode refid="628" relation="usage">
+          <edgelabel>parent</edgelabel>
+        </childnode>
+      </node>
+      <node id="633">
+        <label>Updraft::CoreInterface</label>
+        <link refid="class_updraft_1_1_core_interface"/>
+        <childnode refid="628" relation="usage">
+          <edgelabel>parent</edgelabel>
+        </childnode>
+        <childnode refid="632" relation="usage">
+          <edgelabel>plugin</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/Alik/updraft/Updraft/src/core/updraftparent.h" line="12" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/updraftparent.h" bodystart="12" bodyend="26"/>
+    <listofallmembers>
+      <member refid="class_updraft_1_1_core_1_1_updraft_parent_1af91c348d5104e64cddd48273f2f4992c" prot="public" virt="non-virtual"><scope>Updraft::Core::UpdraftParent</scope><name>getMainWindow</name></member>
+      <member refid="class_updraft_1_1_core_1_1_updraft_parent_1ab33828e374d2940961d9ffd4899f90f9" prot="private" virt="non-virtual"><scope>Updraft::Core::UpdraftParent</scope><name>pluginManager</name></member>
+      <member refid="class_updraft_1_1_core_1_1_updraft_parent_1af655f3d1e1b31761d8db23e89f11613a" prot="public" virt="non-virtual"><scope>Updraft::Core::UpdraftParent</scope><name>UpdraftParent</name></member>
+      <member refid="class_updraft_1_1_core_1_1_updraft_parent_1a1e52c2d4a07c26a87e7b13890fe57a33" prot="private" virt="non-virtual"><scope>Updraft::Core::UpdraftParent</scope><name>win</name></member>
+      <member refid="class_updraft_1_1_core_1_1_updraft_parent_1a2796d2b9912f53a52d866b553fe0c31e" prot="public" virt="non-virtual"><scope>Updraft::Core::UpdraftParent</scope><name>~UpdraftParent</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6">
+  <compounddef id="tab_8h" kind="file">
+    <compoundname>tab.h</compoundname>
+    <includes local="no">QString</includes>
+    <includes local="no">QWidget</includes>
+    <includedby refid="coreinterface_8h" local="yes">coreinterface.h</includedby>
+    <includedby refid="tab_8cpp" local="yes">tab.cpp</includedby>
+    <includedby refid="plugin_8cpp" local="yes">plugin.cpp</includedby>
+    <incdepgraph>
+      <node id="142">
+        <label>tab.h</label>
+        <link refid="tab.h"/>
+        <childnode refid="143" relation="include">
+        </childnode>
+        <childnode refid="144" relation="include">
+        </childnode>
+      </node>
+      <node id="144">
+        <label>QWidget</label>
+      </node>
+      <node id="143">
+        <label>QString</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="148">
+        <label>mainwindow.h</label>
+        <link refid="mainwindow_8h"/>
+        <childnode refid="147" relation="include">
+        </childnode>
+        <childnode refid="149" relation="include">
+        </childnode>
+        <childnode refid="150" relation="include">
+        </childnode>
+      </node>
+      <node id="149">
+        <label>main.cpp</label>
+        <link refid="main_8cpp"/>
+      </node>
+      <node id="146">
+        <label>coreinterface.h</label>
+        <link refid="coreinterface_8h"/>
+        <childnode refid="147" relation="include">
+        </childnode>
+        <childnode refid="148" relation="include">
+        </childnode>
+        <childnode refid="151" relation="include">
+        </childnode>
+        <childnode refid="155" relation="include">
+        </childnode>
+      </node>
+      <node id="145">
+        <label>tab.h</label>
+        <link refid="tab.h"/>
+        <childnode refid="146" relation="include">
+        </childnode>
+        <childnode refid="153" relation="include">
+        </childnode>
+        <childnode refid="155" relation="include">
+        </childnode>
+      </node>
+      <node id="152">
+        <label>pluginmanager.cpp</label>
+        <link refid="pluginmanager_8cpp"/>
+      </node>
+      <node id="147">
+        <label>coreinterface.cpp</label>
+        <link refid="coreinterface_8cpp"/>
+      </node>
+      <node id="154">
+        <label>plugin.h</label>
+        <link refid="plugin_8h"/>
+        <childnode refid="155" relation="include">
+        </childnode>
+      </node>
+      <node id="155">
+        <label>plugin.cpp</label>
+        <link refid="plugin_8cpp"/>
+      </node>
+      <node id="153">
+        <label>tab.cpp</label>
+        <link refid="tab_8cpp"/>
+      </node>
+      <node id="150">
+        <label>mainwindow.cpp</label>
+        <link refid="mainwindow_8cpp"/>
+      </node>
+      <node id="151">
+        <label>pluginapi.h</label>
+        <link refid="pluginapi_8h"/>
+        <childnode refid="152" relation="include">
+        </childnode>
+        <childnode refid="153" relation="include">
+        </childnode>
+        <childnode refid="154" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="class_updraft_1_1_core_1_1_tab" prot="public">Updraft::Core::Tab</innerclass>
+    <innernamespace refid="namespace_updraft">Updraft</innernamespace>
+    <innernamespace refid="namespace_updraft_1_1_core">Updraft::Core</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>UPDRAFT_SRC_CORE_UI_TAB_H_</highlight></codeline>
+<codeline lineno="2"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>UPDRAFT_SRC_CORE_UI_TAB_H_</highlight></codeline>
+<codeline lineno="3"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;QString&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;QWidget&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">QTabWidget;</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">Updraft<sp/>{</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">IPlugin;</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">Core<sp/>{</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MainWindow;</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17" refid="class_updraft_1_1_core_1_1_tab" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_updraft_1_1_core_1_1_tab" kindref="compound">Tab</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>QWidget<sp/>{</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/>Q_OBJECT</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><ref refid="class_updraft_1_1_core_1_1_tab_1af05d7a42c8470cc7c7989f1cab61ca14" kindref="member">Tab</ref>(QWidget*<sp/>content,<sp/>QString<sp/>title,<sp/>QTabWidget*<sp/>parent,<sp/><ref refid="class_updraft_1_1_i_plugin" kindref="compound">IPlugin</ref>*<sp/>owner);</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23" refid="class_updraft_1_1_core_1_1_tab_1a00847fc6e3afae6a1607add9150c5839" refkind="member"><highlight class="normal"><sp/><sp/>QWidget*<sp/><ref refid="class_updraft_1_1_core_1_1_tab_1a00847fc6e3afae6a1607add9150c5839" kindref="member">getWidget</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="class_updraft_1_1_core_1_1_tab_1a968352af8e02511f4b4fe400f98f9683" kindref="member">widget</ref>;<sp/>}</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>slots:</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="class_updraft_1_1_core_1_1_tab_1aa3f892ded927d84e7afd45b6df4393ea" kindref="member">close</ref>();</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="class_updraft_1_1_core_1_1_tab_1ae1a7bd9d400186057b1492efb2955b74" kindref="member">deselected</ref>();</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="class_updraft_1_1_core_1_1_tab_1a79f221c90526a85bed16452ade064b13" kindref="member">selected</ref>();</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32" refid="class_updraft_1_1_core_1_1_tab_1a968352af8e02511f4b4fe400f98f9683" refkind="member"><highlight class="normal"><sp/><sp/>QWidget*<sp/><ref refid="class_updraft_1_1_core_1_1_tab_1a968352af8e02511f4b4fe400f98f9683" kindref="member">widget</ref>;</highlight></codeline>
+<codeline lineno="33" refid="class_updraft_1_1_core_1_1_tab_1a2bbc69dbb2adaf6d4587db1fc3923fcf" refkind="member"><highlight class="normal"><sp/><sp/>QTabWidget*<sp/><ref refid="class_updraft_1_1_core_1_1_tab_1a2bbc69dbb2adaf6d4587db1fc3923fcf" kindref="member">tabWidget</ref>;</highlight></codeline>
+<codeline lineno="34" refid="class_updraft_1_1_core_1_1_tab_1a3f1aad5b500d356ad92703d0aaa44722" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="class_updraft_1_1_i_plugin" kindref="compound">IPlugin</ref>*<sp/><ref refid="class_updraft_1_1_core_1_1_tab_1a3f1aad5b500d356ad92703d0aaa44722" kindref="member">plugin</ref>;</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36" refid="class_updraft_1_1_core_1_1_tab_1af9db4b672c4d3104f5541893e08e1809" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">friend</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_updraft_1_1_core_1_1_main_window" kindref="compound">MainWindow</ref>;</highlight></codeline>
+<codeline lineno="37"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal">}<sp/><sp/></highlight><highlight class="comment">//<sp/>End<sp/>namespace<sp/>Core</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal">}<sp/><sp/></highlight><highlight class="comment">//<sp/>End<sp/>namespace<sp/>Updraft</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/><sp/>//<sp/>UPDRAFT_SRC_CORE_UI_TAB_H_</highlight></codeline>
+<codeline lineno="43"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h"/>
+  </compounddef>
+</doxygen>

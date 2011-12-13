@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6">
+  <compounddef id="namespace_updraft" kind="namespace">
+    <compoundname>Updraft</compoundname>
+    <innerclass refid="class_updraft_1_1_core_interface" prot="public">Updraft::CoreInterface</innerclass>
+    <innerclass refid="class_updraft_1_1_i_plugin" prot="public">Updraft::IPlugin</innerclass>
+    <innerclass refid="class_updraft_1_1_test_plugin" prot="public">Updraft::TestPlugin</innerclass>
+    <innernamespace refid="namespace_updraft_1_1_core">Updraft::Core</innernamespace>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="namespace_updraft_1a62058b1ac3478d90b76952ba7982a2a2" prot="public" static="no">
+        <name>SystemMenu</name>
+        <enumvalue id="namespace_updraft_1a62058b1ac3478d90b76952ba7982a2a2a319e54ce4c392821279b0f90face1cb2" prot="public">
+          <name>MENU_FILE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespace_updraft_1a62058b1ac3478d90b76952ba7982a2a2aec15c4d3721b6ab5f5ae1eddc455baca" prot="public">
+          <name>MENU_EDIT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespace_updraft_1a62058b1ac3478d90b76952ba7982a2a2aa0f7fbc0f18887cfbfab29e3dc0e8000" prot="public">
+          <name>MENU_TOOLS</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespace_updraft_1a62058b1ac3478d90b76952ba7982a2a2af3c1e1b23894f374aaad992e90aeb53d" prot="public">
+          <name>MENU_HELP</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespace_updraft_1a62058b1ac3478d90b76952ba7982a2a2a7f83a89b06a58cfb6d117314dc23a86c" prot="public">
+          <name>MENU_CONTEXT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" line="18" bodyfile="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" bodystart="18" bodyend="24"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/Alik/updraft/Updraft/src/core/coreinterface.cpp" line="5"/>
+  </compounddef>
+</doxygen>

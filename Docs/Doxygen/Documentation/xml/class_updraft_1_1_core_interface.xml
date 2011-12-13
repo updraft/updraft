@@ -1,0 +1,236 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6">
+  <compounddef id="class_updraft_1_1_core_interface" kind="class" prot="public">
+    <compoundname>Updraft::CoreInterface</compoundname>
+    <includes refid="coreinterface_8h" local="no">coreinterface.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_updraft_1_1_core_interface_1ab17bc4b15c078fa98e4ef5833e6ccf84" prot="private" static="no" mutable="no">
+        <type><ref refid="class_updraft_1_1_i_plugin" kindref="compound">IPlugin</ref> *</type>
+        <definition>IPlugin* Updraft::CoreInterface::plugin</definition>
+        <argsstring></argsstring>
+        <name>plugin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" line="51" bodyfile="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_updraft_1_1_core_interface_1a1bda9bbe836fb0ffacc365d641bb6759" prot="private" static="no" mutable="no">
+        <type><ref refid="class_updraft_1_1_core_1_1_updraft_parent" kindref="compound">Core::UpdraftParent</ref> *</type>
+        <definition>Core::UpdraftParent* Updraft::CoreInterface::parent</definition>
+        <argsstring></argsstring>
+        <name>parent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" line="52" bodyfile="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_updraft_1_1_core_interface_1a8e1c0b0410789fc4c8e0bd330af9100c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Updraft::CoreInterface::CoreInterface</definition>
+        <argsstring>()</argsstring>
+        <name>CoreInterface</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><xrefsect id="todo_1_todo000001"><xreftitle>Todo</xreftitle><xrefdescription><para>Fill this once plugin API is finished </para></xrefdescription></xrefsect></para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" line="29" bodyfile="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" bodystart="29" bodyend="29"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_core_interface_1adfdba27f15f98b2fd09a116c38fc8d3a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Updraft::CoreInterface::CoreInterface</definition>
+        <argsstring>(Core::UpdraftParent *par, IPlugin *pl)</argsstring>
+        <name>CoreInterface</name>
+        <param>
+          <type><ref refid="class_updraft_1_1_core_1_1_updraft_parent" kindref="compound">Core::UpdraftParent</ref> *</type>
+          <declname>par</declname>
+        </param>
+        <param>
+          <type><ref refid="class_updraft_1_1_i_plugin" kindref="compound">IPlugin</ref> *</type>
+          <declname>pl</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" line="31" bodyfile="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" bodystart="30" bodyend="31"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_core_interface_1a760f5dc78696082ef65f13b797e6de89" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>QMainWindow *</type>
+        <definition>QMainWindow * Updraft::CoreInterface::getMainWindow</definition>
+        <argsstring>()</argsstring>
+        <name>getMainWindow</name>
+        <briefdescription>
+<para>Returns main window pointer. Used for example for modal dialogs. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" line="34" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/coreinterface.cpp" bodystart="7" bodyend="9"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_core_interface_1aeccc34a37e1b0fca67798c1984aa80b1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool Updraft::CoreInterface::valid</definition>
+        <argsstring>()</argsstring>
+        <name>valid</name>
+        <briefdescription>
+<para>Checks, whether the class was correctly constructed. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" line="37" bodyfile="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" bodystart="37" bodyend="37"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_core_interface_1ac5867383e4856d166e4d7e014728f213" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="class_updraft_1_1_core_1_1_menu" kindref="compound">Core::Menu</ref> *</type>
+        <definition>Core::Menu * Updraft::CoreInterface::getSystemMenu</definition>
+        <argsstring>(SystemMenu menu)</argsstring>
+        <name>getSystemMenu</name>
+        <param>
+          <type><ref refid="namespace_updraft_1a62058b1ac3478d90b76952ba7982a2a2" kindref="member">SystemMenu</ref></type>
+          <declname>menu</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns pointer to the instance of a system menu <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>menu</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>which system menu instance to return </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" line="41" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/coreinterface.cpp" bodystart="11" bodyend="14"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_core_interface_1a2fc6d0a01826a125c7bbbf708ffede39" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="class_updraft_1_1_core_1_1_tab" kindref="compound">Core::Tab</ref> *</type>
+        <definition>Core::Tab * Updraft::CoreInterface::createTab</definition>
+        <argsstring>(QWidget *content, QString title)</argsstring>
+        <name>createTab</name>
+        <param>
+          <type>QWidget *</type>
+          <declname>content</declname>
+        </param>
+        <param>
+          <type>QString</type>
+          <declname>title</declname>
+        </param>
+        <briefdescription>
+<para>Open a Tab with any widget. </para>        </briefdescription>
+        <detaileddescription>
+<para>Create a new tab in the bottom pane. Takes ownership of content. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" line="44" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/coreinterface.cpp" bodystart="18" bodyend="20"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_core_interface_1ab9d33982afaf7e589d6d2167fb5b92bf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Updraft::CoreInterface::removeTab</definition>
+        <argsstring>(Core::Tab *tab)</argsstring>
+        <name>removeTab</name>
+        <param>
+          <type><ref refid="class_updraft_1_1_core_1_1_tab" kindref="compound">Core::Tab</ref> *</type>
+          <declname>tab</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Removes tab from the bottom pane The tab class given to this function is deleted! </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" line="48" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/coreinterface.cpp" bodystart="22" bodyend="24"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="275">
+        <label>Updraft::IPlugin</label>
+        <link refid="class_updraft_1_1_i_plugin"/>
+        <childnode refid="270" relation="usage">
+          <edgelabel>core</edgelabel>
+        </childnode>
+      </node>
+      <node id="271">
+        <label>Updraft::Core::UpdraftParent</label>
+        <link refid="class_updraft_1_1_core_1_1_updraft_parent"/>
+        <childnode refid="272" relation="usage">
+          <edgelabel>win</edgelabel>
+        </childnode>
+        <childnode refid="276" relation="usage">
+          <edgelabel>pluginManager</edgelabel>
+        </childnode>
+      </node>
+      <node id="274">
+        <label>Updraft::Core::Tab</label>
+        <link refid="class_updraft_1_1_core_1_1_tab"/>
+        <childnode refid="275" relation="usage">
+          <edgelabel>plugin</edgelabel>
+        </childnode>
+      </node>
+      <node id="272">
+        <label>Updraft::Core::MainWindow</label>
+        <link refid="class_updraft_1_1_core_1_1_main_window"/>
+        <childnode refid="273" relation="usage">
+          <edgelabel>menuFile</edgelabel>
+          <edgelabel>menuEdit</edgelabel>
+          <edgelabel>menuHelp</edgelabel>
+          <edgelabel>menuTools</edgelabel>
+        </childnode>
+        <childnode refid="274" relation="usage">
+          <edgelabel>activeTab</edgelabel>
+        </childnode>
+      </node>
+      <node id="273">
+        <label>Updraft::Core::Menu</label>
+        <link refid="class_updraft_1_1_core_1_1_menu"/>
+      </node>
+      <node id="276">
+        <label>Updraft::Core::PluginManager</label>
+        <link refid="class_updraft_1_1_core_1_1_plugin_manager"/>
+        <childnode refid="271" relation="usage">
+          <edgelabel>parent</edgelabel>
+        </childnode>
+      </node>
+      <node id="270">
+        <label>Updraft::CoreInterface</label>
+        <link refid="class_updraft_1_1_core_interface"/>
+        <childnode refid="271" relation="usage">
+          <edgelabel>parent</edgelabel>
+        </childnode>
+        <childnode refid="275" relation="usage">
+          <edgelabel>plugin</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" line="26" bodyfile="C:/Users/Alik/updraft/Updraft/src/coreinterface.h" bodystart="26" bodyend="53"/>
+    <listofallmembers>
+      <member refid="class_updraft_1_1_core_interface_1a8e1c0b0410789fc4c8e0bd330af9100c" prot="public" virt="non-virtual"><scope>Updraft::CoreInterface</scope><name>CoreInterface</name></member>
+      <member refid="class_updraft_1_1_core_interface_1adfdba27f15f98b2fd09a116c38fc8d3a" prot="public" virt="non-virtual"><scope>Updraft::CoreInterface</scope><name>CoreInterface</name></member>
+      <member refid="class_updraft_1_1_core_interface_1a2fc6d0a01826a125c7bbbf708ffede39" prot="public" virt="non-virtual"><scope>Updraft::CoreInterface</scope><name>createTab</name></member>
+      <member refid="class_updraft_1_1_core_interface_1a760f5dc78696082ef65f13b797e6de89" prot="public" virt="non-virtual"><scope>Updraft::CoreInterface</scope><name>getMainWindow</name></member>
+      <member refid="class_updraft_1_1_core_interface_1ac5867383e4856d166e4d7e014728f213" prot="public" virt="non-virtual"><scope>Updraft::CoreInterface</scope><name>getSystemMenu</name></member>
+      <member refid="class_updraft_1_1_core_interface_1a1bda9bbe836fb0ffacc365d641bb6759" prot="private" virt="non-virtual"><scope>Updraft::CoreInterface</scope><name>parent</name></member>
+      <member refid="class_updraft_1_1_core_interface_1ab17bc4b15c078fa98e4ef5833e6ccf84" prot="private" virt="non-virtual"><scope>Updraft::CoreInterface</scope><name>plugin</name></member>
+      <member refid="class_updraft_1_1_core_interface_1ab9d33982afaf7e589d6d2167fb5b92bf" prot="public" virt="non-virtual"><scope>Updraft::CoreInterface</scope><name>removeTab</name></member>
+      <member refid="class_updraft_1_1_core_interface_1aeccc34a37e1b0fca67798c1984aa80b1" prot="public" virt="non-virtual"><scope>Updraft::CoreInterface</scope><name>valid</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

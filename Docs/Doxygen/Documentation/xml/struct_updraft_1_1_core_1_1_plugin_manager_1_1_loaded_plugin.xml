@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6">
+  <compounddef id="struct_updraft_1_1_core_1_1_plugin_manager_1_1_loaded_plugin" kind="struct" prot="private">
+    <compoundname>Updraft::Core::PluginManager::LoadedPlugin</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_updraft_1_1_core_1_1_plugin_manager_1_1_loaded_plugin_1a36c7a74c4bc76d6c17c96f213b24ce76" prot="public" static="no" mutable="no">
+        <type>QPluginLoader *</type>
+        <definition>QPluginLoader* Updraft::Core::PluginManager::LoadedPlugin::loader</definition>
+        <argsstring></argsstring>
+        <name>loader</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/pluginmanager.h" line="28" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/pluginmanager.h" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_updraft_1_1_core_1_1_plugin_manager_1_1_loaded_plugin_1aa284f6f1f434343959ead6c01d324bd1" prot="public" static="no" mutable="no">
+        <type><ref refid="class_updraft_1_1_i_plugin" kindref="compound">IPlugin</ref> *</type>
+        <definition>IPlugin* Updraft::Core::PluginManager::LoadedPlugin::plugin</definition>
+        <argsstring></argsstring>
+        <name>plugin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/pluginmanager.h" line="29" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/pluginmanager.h" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="450">
+        <label>Updraft::IPlugin</label>
+        <link refid="class_updraft_1_1_i_plugin"/>
+        <childnode refid="451" relation="usage">
+          <edgelabel>core</edgelabel>
+        </childnode>
+      </node>
+      <node id="452">
+        <label>Updraft::Core::UpdraftParent</label>
+        <link refid="class_updraft_1_1_core_1_1_updraft_parent"/>
+        <childnode refid="453" relation="usage">
+          <edgelabel>win</edgelabel>
+        </childnode>
+        <childnode refid="456" relation="usage">
+          <edgelabel>pluginManager</edgelabel>
+        </childnode>
+      </node>
+      <node id="455">
+        <label>Updraft::Core::Tab</label>
+        <link refid="class_updraft_1_1_core_1_1_tab"/>
+        <childnode refid="450" relation="usage">
+          <edgelabel>plugin</edgelabel>
+        </childnode>
+      </node>
+      <node id="453">
+        <label>Updraft::Core::MainWindow</label>
+        <link refid="class_updraft_1_1_core_1_1_main_window"/>
+        <childnode refid="454" relation="usage">
+          <edgelabel>menuFile</edgelabel>
+          <edgelabel>menuEdit</edgelabel>
+          <edgelabel>menuHelp</edgelabel>
+          <edgelabel>menuTools</edgelabel>
+        </childnode>
+        <childnode refid="455" relation="usage">
+          <edgelabel>activeTab</edgelabel>
+        </childnode>
+      </node>
+      <node id="454">
+        <label>Updraft::Core::Menu</label>
+        <link refid="class_updraft_1_1_core_1_1_menu"/>
+      </node>
+      <node id="456">
+        <label>Updraft::Core::PluginManager</label>
+        <link refid="class_updraft_1_1_core_1_1_plugin_manager"/>
+        <childnode refid="452" relation="usage">
+          <edgelabel>parent</edgelabel>
+        </childnode>
+      </node>
+      <node id="449">
+        <label>Updraft::Core::PluginManager::LoadedPlugin</label>
+        <link refid="struct_updraft_1_1_core_1_1_plugin_manager_1_1_loaded_plugin"/>
+        <childnode refid="450" relation="usage">
+          <edgelabel>plugin</edgelabel>
+        </childnode>
+      </node>
+      <node id="451">
+        <label>Updraft::CoreInterface</label>
+        <link refid="class_updraft_1_1_core_interface"/>
+        <childnode refid="452" relation="usage">
+          <edgelabel>parent</edgelabel>
+        </childnode>
+        <childnode refid="450" relation="usage">
+          <edgelabel>plugin</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/Alik/updraft/Updraft/src/core/pluginmanager.h" line="27" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/pluginmanager.h" bodystart="27" bodyend="31"/>
+    <listofallmembers>
+      <member refid="struct_updraft_1_1_core_1_1_plugin_manager_1_1_loaded_plugin_1a36c7a74c4bc76d6c17c96f213b24ce76" prot="public" virt="non-virtual"><scope>Updraft::Core::PluginManager::LoadedPlugin</scope><name>loader</name></member>
+      <member refid="struct_updraft_1_1_core_1_1_plugin_manager_1_1_loaded_plugin_1aa284f6f1f434343959ead6c01d324bd1" prot="public" virt="non-virtual"><scope>Updraft::Core::PluginManager::LoadedPlugin</scope><name>plugin</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

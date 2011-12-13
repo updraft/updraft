@@ -1,0 +1,226 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6">
+  <compounddef id="class_updraft_1_1_core_1_1_tab" kind="class" prot="public">
+    <compoundname>Updraft::Core::Tab</compoundname>
+    <includes refid="tab_8h" local="no">tab.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_updraft_1_1_core_1_1_tab_1a968352af8e02511f4b4fe400f98f9683" prot="private" static="no" mutable="no">
+        <type>QWidget *</type>
+        <definition>QWidget* Updraft::Core::Tab::widget</definition>
+        <argsstring></argsstring>
+        <name>widget</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h" line="32" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_updraft_1_1_core_1_1_tab_1a2bbc69dbb2adaf6d4587db1fc3923fcf" prot="private" static="no" mutable="no">
+        <type>QTabWidget *</type>
+        <definition>QTabWidget* Updraft::Core::Tab::tabWidget</definition>
+        <argsstring></argsstring>
+        <name>tabWidget</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h" line="33" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_updraft_1_1_core_1_1_tab_1a3f1aad5b500d356ad92703d0aaa44722" prot="private" static="no" mutable="no">
+        <type><ref refid="class_updraft_1_1_i_plugin" kindref="compound">IPlugin</ref> *</type>
+        <definition>IPlugin* Updraft::Core::Tab::plugin</definition>
+        <argsstring></argsstring>
+        <name>plugin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h" line="34" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="class_updraft_1_1_core_1_1_tab_1af9db4b672c4d3104f5541893e08e1809" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class MainWindow</definition>
+        <argsstring></argsstring>
+        <name>MainWindow</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h" line="36" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_updraft_1_1_core_1_1_tab_1af05d7a42c8470cc7c7989f1cab61ca14" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>Updraft::Core::Tab::Tab</definition>
+        <argsstring>(QWidget *content, QString title, QTabWidget *parent, IPlugin *owner)</argsstring>
+        <name>Tab</name>
+        <param>
+          <type>QWidget *</type>
+          <declname>content</declname>
+        </param>
+        <param>
+          <type>QString</type>
+          <declname>title</declname>
+        </param>
+        <param>
+          <type>QTabWidget *</type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type><ref refid="class_updraft_1_1_i_plugin" kindref="compound">IPlugin</ref> *</type>
+          <declname>owner</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Add a new tab to parent. Takes ownership of content. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h" line="21" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.cpp" bodystart="24" bodyend="30"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_core_1_1_tab_1a00847fc6e3afae6a1607add9150c5839" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>QWidget *</type>
+        <definition>QWidget* Updraft::Core::Tab::getWidget</definition>
+        <argsstring>()</argsstring>
+        <name>getWidget</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h" line="23" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h" bodystart="23" bodyend="23"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-slot">
+      <memberdef kind="slot" id="class_updraft_1_1_core_1_1_tab_1aa3f892ded927d84e7afd45b6df4393ea" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Updraft::Core::Tab::close</definition>
+        <argsstring>()</argsstring>
+        <name>close</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Close this tab. This method deletes the tab and its widget. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h" line="26" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.cpp" bodystart="13" bodyend="20"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_updraft_1_1_core_1_1_tab_1ae1a7bd9d400186057b1492efb2955b74" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Updraft::Core::Tab::deselected</definition>
+        <argsstring>()</argsstring>
+        <name>deselected</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h" line="29" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.cpp" bodystart="32" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_core_1_1_tab_1a79f221c90526a85bed16452ade064b13" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Updraft::Core::Tab::selected</definition>
+        <argsstring>()</argsstring>
+        <name>selected</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h" line="30" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.cpp" bodystart="36" bodyend="38"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="602">
+        <label>Updraft::IPlugin</label>
+        <link refid="class_updraft_1_1_i_plugin"/>
+        <childnode refid="603" relation="usage">
+          <edgelabel>core</edgelabel>
+        </childnode>
+      </node>
+      <node id="604">
+        <label>Updraft::Core::UpdraftParent</label>
+        <link refid="class_updraft_1_1_core_1_1_updraft_parent"/>
+        <childnode refid="605" relation="usage">
+          <edgelabel>win</edgelabel>
+        </childnode>
+        <childnode refid="607" relation="usage">
+          <edgelabel>pluginManager</edgelabel>
+        </childnode>
+      </node>
+      <node id="601">
+        <label>Updraft::Core::Tab</label>
+        <link refid="class_updraft_1_1_core_1_1_tab"/>
+        <childnode refid="602" relation="usage">
+          <edgelabel>plugin</edgelabel>
+        </childnode>
+      </node>
+      <node id="605">
+        <label>Updraft::Core::MainWindow</label>
+        <link refid="class_updraft_1_1_core_1_1_main_window"/>
+        <childnode refid="606" relation="usage">
+          <edgelabel>menuFile</edgelabel>
+          <edgelabel>menuEdit</edgelabel>
+          <edgelabel>menuHelp</edgelabel>
+          <edgelabel>menuTools</edgelabel>
+        </childnode>
+        <childnode refid="601" relation="usage">
+          <edgelabel>activeTab</edgelabel>
+        </childnode>
+      </node>
+      <node id="606">
+        <label>Updraft::Core::Menu</label>
+        <link refid="class_updraft_1_1_core_1_1_menu"/>
+      </node>
+      <node id="607">
+        <label>Updraft::Core::PluginManager</label>
+        <link refid="class_updraft_1_1_core_1_1_plugin_manager"/>
+        <childnode refid="604" relation="usage">
+          <edgelabel>parent</edgelabel>
+        </childnode>
+      </node>
+      <node id="603">
+        <label>Updraft::CoreInterface</label>
+        <link refid="class_updraft_1_1_core_interface"/>
+        <childnode refid="604" relation="usage">
+          <edgelabel>parent</edgelabel>
+        </childnode>
+        <childnode refid="602" relation="usage">
+          <edgelabel>plugin</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h" line="17" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/ui/tab.h" bodystart="17" bodyend="37"/>
+    <listofallmembers>
+      <member refid="class_updraft_1_1_core_1_1_tab_1aa3f892ded927d84e7afd45b6df4393ea" prot="public" virt="non-virtual"><scope>Updraft::Core::Tab</scope><name>close</name></member>
+      <member refid="class_updraft_1_1_core_1_1_tab_1ae1a7bd9d400186057b1492efb2955b74" prot="private" virt="non-virtual"><scope>Updraft::Core::Tab</scope><name>deselected</name></member>
+      <member refid="class_updraft_1_1_core_1_1_tab_1a00847fc6e3afae6a1607add9150c5839" prot="public" virt="non-virtual"><scope>Updraft::Core::Tab</scope><name>getWidget</name></member>
+      <member refid="class_updraft_1_1_core_1_1_tab_1af9db4b672c4d3104f5541893e08e1809" prot="private" virt="non-virtual"><scope>Updraft::Core::Tab</scope><name>MainWindow</name></member>
+      <member refid="class_updraft_1_1_core_1_1_tab_1a3f1aad5b500d356ad92703d0aaa44722" prot="private" virt="non-virtual"><scope>Updraft::Core::Tab</scope><name>plugin</name></member>
+      <member refid="class_updraft_1_1_core_1_1_tab_1a79f221c90526a85bed16452ade064b13" prot="private" virt="non-virtual"><scope>Updraft::Core::Tab</scope><name>selected</name></member>
+      <member refid="class_updraft_1_1_core_1_1_tab_1af05d7a42c8470cc7c7989f1cab61ca14" prot="public" virt="non-virtual"><scope>Updraft::Core::Tab</scope><name>Tab</name></member>
+      <member refid="class_updraft_1_1_core_1_1_tab_1a2bbc69dbb2adaf6d4587db1fc3923fcf" prot="private" virt="non-virtual"><scope>Updraft::Core::Tab</scope><name>tabWidget</name></member>
+      <member refid="class_updraft_1_1_core_1_1_tab_1a968352af8e02511f4b4fe400f98f9683" prot="private" virt="non-virtual"><scope>Updraft::Core::Tab</scope><name>widget</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

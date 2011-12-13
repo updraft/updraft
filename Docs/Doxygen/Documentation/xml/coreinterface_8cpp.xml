@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6">
+  <compounddef id="coreinterface_8cpp" kind="file">
+    <compoundname>coreinterface.cpp</compoundname>
+    <includes refid="coreinterface_8h" local="yes">../coreinterface.h</includes>
+    <includes refid="updraftparent_8h" local="yes">updraftparent.h</includes>
+    <includes refid="mainwindow_8h" local="yes">ui/mainwindow.h</includes>
+    <incdepgraph>
+      <node id="9">
+        <label>ui/mainwindow.h</label>
+        <link refid="mainwindow_8h"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>../coreinterface.h</label>
+        <link refid="coreinterface_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>QMainWindow</label>
+      </node>
+      <node id="7">
+        <label>pluginmanager.h</label>
+        <link refid="pluginmanager_8h"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>updraftparent.h</label>
+        <link refid="updraftparent_8h"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>core/ui/tab.h</label>
+        <link refid="tab_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="0">
+        <label>coreinterface.cpp</label>
+        <link refid="coreinterface.cpp"/>
+        <childnode refid="1" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>QWidget</label>
+      </node>
+      <node id="4">
+        <label>QString</label>
+      </node>
+      <node id="2">
+        <label>core/ui/menu.h</label>
+        <link refid="menu_8h"/>
+      </node>
+      <node id="8">
+        <label>QtGui</label>
+      </node>
+    </incdepgraph>
+    <innernamespace refid="namespace_updraft">Updraft</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&quot;../coreinterface.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="updraftparent_8h" kindref="compound">updraftparent.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="mainwindow_8h" kindref="compound">ui/mainwindow.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5" refid="namespace_updraft" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">Updraft<sp/>{</highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal">QMainWindow*<sp/><ref refid="class_updraft_1_1_core_interface_1a760f5dc78696082ef65f13b797e6de89" kindref="member" tooltip="Returns main window pointer. Used for example for modal dialogs.">CoreInterface::getMainWindow</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="normal">QMainWindow*</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="class_updraft_1_1_core_interface_1a1bda9bbe836fb0ffacc365d641bb6759" kindref="member">parent</ref>-&gt;<ref refid="class_updraft_1_1_core_1_1_updraft_parent_1af91c348d5104e64cddd48273f2f4992c" kindref="member">getMainWindow</ref>());</highlight></codeline>
+<codeline lineno="9"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"><ref refid="class_updraft_1_1_core_1_1_menu" kindref="compound">Core::Menu</ref>*<sp/><ref refid="class_updraft_1_1_core_interface_1ac5867383e4856d166e4d7e014728f213" kindref="member">CoreInterface::getSystemMenu</ref>(<ref refid="namespace_updraft_1a62058b1ac3478d90b76952ba7982a2a2" kindref="member">SystemMenu</ref><sp/>menu)<sp/>{</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><ref refid="class_updraft_1_1_core_1_1_main_window" kindref="compound">Core::MainWindow</ref>*<sp/>win<sp/>=<sp/><ref refid="class_updraft_1_1_core_interface_1a1bda9bbe836fb0ffacc365d641bb6759" kindref="member">parent</ref>-&gt;<ref refid="class_updraft_1_1_core_1_1_updraft_parent_1af91c348d5104e64cddd48273f2f4992c" kindref="member">getMainWindow</ref>();</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>win-&gt;<ref refid="class_updraft_1_1_core_1_1_main_window_1a6e87dadcb44490fb7340dafa356d011f" kindref="member">getSystemMenu</ref>(menu);</highlight></codeline>
+<codeline lineno="14"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><ref refid="class_updraft_1_1_core_1_1_tab" kindref="compound">Core::Tab</ref>*<sp/><ref refid="class_updraft_1_1_core_interface_1a2fc6d0a01826a125c7bbbf708ffede39" kindref="member" tooltip="Open a Tab with any widget.">CoreInterface::createTab</ref>(QWidget*<sp/>content,<sp/>QString<sp/>title)<sp/>{</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="class_updraft_1_1_core_interface_1a1bda9bbe836fb0ffacc365d641bb6759" kindref="member">parent</ref>-&gt;<ref refid="class_updraft_1_1_core_1_1_updraft_parent_1af91c348d5104e64cddd48273f2f4992c" kindref="member">getMainWindow</ref>()-&gt;<ref refid="class_updraft_1_1_core_1_1_main_window_1a32b550fb3173f4de0c787329b2db3bb4" kindref="member">createTab</ref>(content,<sp/>title,<sp/><ref refid="class_updraft_1_1_core_interface_1ab17bc4b15c078fa98e4ef5833e6ccf84" kindref="member">plugin</ref>);</highlight></codeline>
+<codeline lineno="20"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="class_updraft_1_1_core_interface_1ab9d33982afaf7e589d6d2167fb5b92bf" kindref="member">CoreInterface::removeTab</ref>(<ref refid="class_updraft_1_1_core_1_1_tab" kindref="compound">Core::Tab</ref>*<sp/>tab)<sp/>{</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/>tab-&gt;<ref refid="class_updraft_1_1_core_1_1_tab_1aa3f892ded927d84e7afd45b6df4393ea" kindref="member">close</ref>();</highlight></codeline>
+<codeline lineno="24"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal">}<sp/><sp/></highlight><highlight class="comment">//<sp/>End<sp/>namespace<sp/>Updraft</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/Alik/updraft/Updraft/src/core/coreinterface.cpp"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6">
+  <compounddef id="dir_d2b5376dde73b416b1cf5374267139ca" kind="dir">
+    <compoundname>C:/Users/Alik/updraft/Updraft/scripts/</compoundname>
+    <innerfile refid="cpplint_8py">cpplint.py</innerfile>
+    <innerfile refid="newclass_8py">newclass.py</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/Alik/updraft/Updraft/scripts/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6">
+  <compounddef id="class_updraft_1_1_core_1_1_menu" kind="class" prot="public">
+    <compoundname>Updraft::Core::Menu</compoundname>
+    <includes refid="menu_8h" local="no">menu.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_updraft_1_1_core_1_1_menu_1a4dee353c9dd8cb2a0a67ffb2ec79f12b" prot="private" static="no" mutable="no">
+        <type>QMenu *</type>
+        <definition>QMenu* Updraft::Core::Menu::menu</definition>
+        <argsstring></argsstring>
+        <name>menu</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/menu.h" line="18" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/ui/menu.h" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_updraft_1_1_core_1_1_menu_1a4a828532b1fdda2b77802249881805d4" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Updraft::Core::Menu::Menu</definition>
+        <argsstring>(QMenu *setMenu)</argsstring>
+        <name>Menu</name>
+        <param>
+          <type>QMenu *</type>
+          <declname>setMenu</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/menu.h" line="14" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/ui/menu.h" bodystart="14" bodyend="14"/>
+      </memberdef>
+      <memberdef kind="function" id="class_updraft_1_1_core_1_1_menu_1aed827c86b9a221d0252585cc3ac86624" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Updraft::Core::Menu::insertAction</definition>
+        <argsstring>(int position, QAction *action)</argsstring>
+        <name>insertAction</name>
+        <param>
+          <type>int</type>
+          <declname>position</declname>
+        </param>
+        <param>
+          <type>QAction *</type>
+          <declname>action</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/menu.h" line="16" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/ui/menu.cpp" bodystart="7" bodyend="10"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/menu.h" line="12" bodyfile="C:/Users/Alik/updraft/Updraft/src/core/ui/menu.h" bodystart="12" bodyend="19"/>
+    <listofallmembers>
+      <member refid="class_updraft_1_1_core_1_1_menu_1aed827c86b9a221d0252585cc3ac86624" prot="public" virt="non-virtual"><scope>Updraft::Core::Menu</scope><name>insertAction</name></member>
+      <member refid="class_updraft_1_1_core_1_1_menu_1a4dee353c9dd8cb2a0a67ffb2ec79f12b" prot="private" virt="non-virtual"><scope>Updraft::Core::Menu</scope><name>menu</name></member>
+      <member refid="class_updraft_1_1_core_1_1_menu_1a4a828532b1fdda2b77802249881805d4" prot="public" virt="non-virtual"><scope>Updraft::Core::Menu</scope><name>Menu</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6">
+  <compounddef id="updraftparent_8cpp" kind="file">
+    <compoundname>updraftparent.cpp</compoundname>
+    <includes refid="updraftparent_8h" local="yes">updraftparent.h</includes>
+    <incdepgraph>
+      <node id="156">
+        <label>updraftparent.cpp</label>
+        <link refid="updraftparent.cpp"/>
+        <childnode refid="157" relation="include">
+        </childnode>
+      </node>
+      <node id="158">
+        <label>pluginmanager.h</label>
+        <link refid="pluginmanager_8h"/>
+        <childnode refid="159" relation="include">
+        </childnode>
+      </node>
+      <node id="157">
+        <label>updraftparent.h</label>
+        <link refid="updraftparent_8h"/>
+        <childnode refid="158" relation="include">
+        </childnode>
+      </node>
+      <node id="159">
+        <label>QtGui</label>
+      </node>
+    </incdepgraph>
+    <innernamespace refid="namespace_updraft">Updraft</innernamespace>
+    <innernamespace refid="namespace_updraft_1_1_core">Updraft::Core</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&quot;<ref refid="updraftparent_8h" kindref="compound">updraftparent.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">Updraft<sp/>{</highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">Core<sp/>{</highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"><ref refid="class_updraft_1_1_core_1_1_updraft_parent_1af655f3d1e1b31761d8db23e89f11613a" kindref="member">UpdraftParent::UpdraftParent</ref>(MainWindow*<sp/>setWin)</highlight></codeline>
+<codeline lineno="7"><highlight class="normal">:<sp/>win(setWin),<sp/>pluginManager(this)<sp/>{}</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal">}<sp/><sp/></highlight><highlight class="comment">//<sp/>End<sp/>namespace<sp/>Core</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal">}<sp/><sp/></highlight><highlight class="comment">//<sp/>End<sp/>namespace<sp/>Updraft</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/Alik/updraft/Updraft/src/core/updraftparent.cpp"/>
+  </compounddef>
+</doxygen>

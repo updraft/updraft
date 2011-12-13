@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.7.6">
+  <compounddef id="menu_8h" kind="file">
+    <compoundname>menu.h</compoundname>
+    <includedby refid="coreinterface_8h" local="yes">coreinterface.h</includedby>
+    <includedby refid="mainwindow_8cpp" local="yes">mainwindow.cpp</includedby>
+    <includedby refid="menu_8cpp" local="yes">menu.cpp</includedby>
+    <invincdepgraph>
+      <node id="70">
+        <label>mainwindow.h</label>
+        <link refid="mainwindow_8h"/>
+        <childnode refid="69" relation="include">
+        </childnode>
+        <childnode refid="71" relation="include">
+        </childnode>
+        <childnode refid="72" relation="include">
+        </childnode>
+      </node>
+      <node id="71">
+        <label>main.cpp</label>
+        <link refid="main_8cpp"/>
+      </node>
+      <node id="68">
+        <label>coreinterface.h</label>
+        <link refid="coreinterface_8h"/>
+        <childnode refid="69" relation="include">
+        </childnode>
+        <childnode refid="70" relation="include">
+        </childnode>
+        <childnode refid="73" relation="include">
+        </childnode>
+        <childnode refid="77" relation="include">
+        </childnode>
+      </node>
+      <node id="78">
+        <label>menu.cpp</label>
+        <link refid="menu_8cpp"/>
+      </node>
+      <node id="74">
+        <label>pluginmanager.cpp</label>
+        <link refid="pluginmanager_8cpp"/>
+      </node>
+      <node id="69">
+        <label>coreinterface.cpp</label>
+        <link refid="coreinterface_8cpp"/>
+      </node>
+      <node id="76">
+        <label>plugin.h</label>
+        <link refid="plugin_8h"/>
+        <childnode refid="77" relation="include">
+        </childnode>
+      </node>
+      <node id="77">
+        <label>plugin.cpp</label>
+        <link refid="plugin_8cpp"/>
+      </node>
+      <node id="67">
+        <label>menu.h</label>
+        <link refid="menu.h"/>
+        <childnode refid="68" relation="include">
+        </childnode>
+        <childnode refid="72" relation="include">
+        </childnode>
+        <childnode refid="78" relation="include">
+        </childnode>
+      </node>
+      <node id="75">
+        <label>tab.cpp</label>
+        <link refid="tab_8cpp"/>
+      </node>
+      <node id="72">
+        <label>mainwindow.cpp</label>
+        <link refid="mainwindow_8cpp"/>
+      </node>
+      <node id="73">
+        <label>pluginapi.h</label>
+        <link refid="pluginapi_8h"/>
+        <childnode refid="74" relation="include">
+        </childnode>
+        <childnode refid="75" relation="include">
+        </childnode>
+        <childnode refid="76" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="class_updraft_1_1_core_1_1_menu" prot="public">Updraft::Core::Menu</innerclass>
+    <innernamespace refid="namespace_updraft">Updraft</innernamespace>
+    <innernamespace refid="namespace_updraft_1_1_core">Updraft::Core</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>UPDRAFT_SRC_CORE_UI_MENU_H_</highlight></codeline>
+<codeline lineno="2"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>UPDRAFT_SRC_CORE_UI_MENU_H_</highlight></codeline>
+<codeline lineno="3"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">QMenu;</highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">QAction;</highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">Updraft<sp/>{</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">Core<sp/>{</highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">//<sp/>TODO(cestmir):<sp/>We<sp/>should<sp/>take<sp/>care<sp/>about<sp/>the<sp/>destruction<sp/>of<sp/>the<sp/>parent<sp/>menu.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">//<sp/>So<sp/>far,<sp/>it&apos;s<sp/>not<sp/>a<sp/>problem<sp/>because<sp/>we<sp/>don&apos;t<sp/>create<sp/>the<sp/>menus<sp/>dynamically</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12" refid="class_updraft_1_1_core_1_1_menu" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_updraft_1_1_core_1_1_menu" kindref="compound">Menu</ref><sp/>{</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="14" refid="class_updraft_1_1_core_1_1_menu_1a4a828532b1fdda2b77802249881805d4" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">explicit</highlight><highlight class="normal"><sp/><ref refid="class_updraft_1_1_core_1_1_menu_1a4a828532b1fdda2b77802249881805d4" kindref="member">Menu</ref>(QMenu*<sp/>setMenu):<sp/><ref refid="class_updraft_1_1_core_1_1_menu_1a4dee353c9dd8cb2a0a67ffb2ec79f12b" kindref="member">menu</ref>(setMenu)<sp/>{}</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="class_updraft_1_1_core_1_1_menu_1aed827c86b9a221d0252585cc3ac86624" kindref="member">insertAction</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>position,<sp/>QAction*<sp/>action);</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="18" refid="class_updraft_1_1_core_1_1_menu_1a4dee353c9dd8cb2a0a67ffb2ec79f12b" refkind="member"><highlight class="normal"><sp/><sp/>QMenu*<sp/><ref refid="class_updraft_1_1_core_1_1_menu_1a4dee353c9dd8cb2a0a67ffb2ec79f12b" kindref="member">menu</ref>;</highlight></codeline>
+<codeline lineno="19"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal">}<sp/><sp/></highlight><highlight class="comment">//<sp/>End<sp/>namespace<sp/>Core</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal">}<sp/><sp/></highlight><highlight class="comment">//<sp/>End<sp/>namespace<sp/>Updraft</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/><sp/>//<sp/>UPDRAFT_SRC_CORE_UI_MENU_H_</highlight></codeline>
+<codeline lineno="25"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/Alik/updraft/Updraft/src/core/ui/menu.h"/>
+  </compounddef>
+</doxygen>
