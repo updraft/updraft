@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "../../coreinterface.h"
 #include "../sceneviewer.h"
+#include <QTimer>
 
 namespace Ui { class MainWindow; }
 
