@@ -20,6 +20,10 @@ MainWindow::MainWindow(QWidget *parent)
       this, SLOT(tabClose(int))); // NOLINT
     connect(ui->tabWidget, SIGNAL(currentChanged(int)), // NOLINT
       this, SLOT(tabSwitch(int))); // NOLINT
+
+    // TODO(cestmir): This is here just to be able to test context menu.
+    QMenu* qContextMenu = new QMenu();
+    menuContext = new Menu(qContextMenu, true);
 }
 
 MainWindow::~MainWindow() {
@@ -27,6 +31,7 @@ MainWindow::~MainWindow() {
     delete menuTools;
     delete menuEdit;
     delete menuFile;
+    delete menuContext;
     delete ui;
 }
 
@@ -44,8 +49,9 @@ Menu* MainWindow::getSystemMenu(SystemMenu menu) {
     case MENU_HELP:
       return menuHelp;
     break;
+    case MENU_CONTEXT:
     default:
-      return menuHelp;
+      return menuContext;
     break;
   }
 }
@@ -74,6 +80,26 @@ void MainWindow::tabSwitch(int index) {
     activeTab = static_cast<Tab*>(ui->tabWidget->widget(index));
     activeTab->selected();
   }
+}
+
+Menu* MainWindow::createMenu(QString title) {
+  QMenu* qMenu = new QMenu(title, ui->menuBar);
+  Menu* newMenu = new Menu(qMenu, true);  // Make the qmenu owned by our Menu
+
+  customMenus.insert(newMenu);
+  ui->menuBar->addMenu(qMenu);
+
+  return newMenu;
+}
+
+void MainWindow::removeMenu(Menu* menu) {
+  if (customMenus.remove(menu)) {
+    delete menu;
+  }
+}
+
+void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
+  menuContext->getQMenu()->popup(event->globalPos());
 }
 
 }  // End namespace Core

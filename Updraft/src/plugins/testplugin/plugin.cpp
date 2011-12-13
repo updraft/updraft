@@ -24,7 +24,22 @@ void TestPlugin::initialize() {
   helpAction = new QAction("About testplugin...", this);
   connect(helpAction, SIGNAL(triggered()), this, SLOT(showHelp()));
 
-  core.getSystemMenu(MENU_HELP)->insertAction(0, helpAction);
+  helpAction2 = new QAction("About testplugin (higher priority)...", this);
+  connect(helpAction2, SIGNAL(triggered()), this, SLOT(showHelp()));
+
+  core.getSystemMenu(MENU_HELP)->insertAction(1, helpAction);
+  core.getSystemMenu(MENU_HELP)->insertAction(0, helpAction2);
+
+  // Create a new menu and insert a test action into it as well
+  myMenu = core.createMenu("Test plugin");
+
+  helpAction3 = new QAction("About testplugin...", this);
+  connect(helpAction3, SIGNAL(triggered()), this, SLOT(showHelp()));
+
+  myMenu->insertAction(0, helpAction3);
+
+  // Add an action into a context menu
+  core.getSystemMenu(MENU_CONTEXT)->insertAction(0, helpAction);
 
   createTab("Button tab 1");
   createTab("Button tab 2");
@@ -51,6 +66,8 @@ void TestPlugin::createTab(QString title) {
 
 void TestPlugin::deinitialize() {
   delete helpAction;
+
+  core.removeMenu(myMenu);
 
   qDebug("testplugin unloaded");
 }

@@ -36,6 +36,12 @@ class CoreInterface {
   /// Checks, whether the class was correctly constructed.
   bool valid() { return (plugin != NULL && parent != NULL); }
 
+  /// Create an entry in the main menu.
+  Core::Menu* createMenu(QString title);
+
+  /// Remove an entry from the main menu
+  void removeMenu(Core::Menu* menu);
+
   /// Returns pointer to the instance of a system menu
   /// \param menu which system menu instance to return  
   Core::Menu* getSystemMenu(SystemMenu menu);
