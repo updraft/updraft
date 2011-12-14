@@ -66,7 +66,7 @@
 #    ctor(s?), dtor, friend declarations, methods, member vars)
 #
 
-"""Does google-lint on c++ files.
+"""Does google-lint modified for Updraft project on c++ files.
 
 The goal of this script is to identify places in the code that *may*
 be in non-compliance with google style.  It does not attempt to fix
@@ -2836,8 +2836,10 @@ def CheckCStyleCast(filename, linenum, line, raw_line, cast_type, pattern,
         function_match.group(3) == ';' or
         ('MockCallback<' not in raw_line and
          '/*' not in raw_line)):
-      error(filename, linenum, 'readability/function', 3,
-            'All parameters should be named in a function')
+      signalslot_match = Match(r'.*(SIGNAL|SLOT).*', line[0:match.start(1) - 1])
+      if not signalslot_match:
+          error(filename, linenum, 'readability/function', 3,
+                'All parameters should be named in a function')
     return True
 
   # At this point, all that should be left is actual casts.

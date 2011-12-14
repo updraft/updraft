@@ -16,10 +16,10 @@ MainWindow::MainWindow(QWidget *parent)
     menuTools = new Menu(ui->menuTools);
     menuHelp = new Menu(ui->menuHelp);
 
-    connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), // NOLINT
-      this, SLOT(tabClose(int))); // NOLINT
-    connect(ui->tabWidget, SIGNAL(currentChanged(int)), // NOLINT
-      this, SLOT(tabSwitch(int))); // NOLINT
+    connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)),
+      this, SLOT(tabClose(int)));
+    connect(ui->tabWidget, SIGNAL(currentChanged(int)),
+      this, SLOT(tabSwitch(int)));
 
     // TODO(cestmir): This is here just to be able to test context menu.
     QMenu* qContextMenu = new QMenu();
