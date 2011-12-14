@@ -30,7 +30,7 @@ PluginManager::PluginManager(UpdraftParent* setParent): parent(setParent) {
 
     // Not sure how else to search for plugins:
     if (!dlls.empty()) {
-      load(QString("plugins/%1/%2").arg(pluginDir).arg(dlls.front()));
+      load(plugins.absolutePath() + "/" + dlls.front());
     }
     plugins.cdUp();
   }
@@ -47,7 +47,9 @@ PluginManager::~PluginManager() {
 IPlugin* PluginManager::load(QString fileName) {
   qDebug("Loading plugin %s", fileName.toAscii().data());
   QPluginLoader* loader = new QPluginLoader(fileName);
-  return finishLoading(loader, loader->instance());
+  qDebug("Loading error report: %s ", loader->errorString().toAscii().data());
+  QObject *pluginInstance = loader->instance();
+  return finishLoading(loader, pluginInstance);
 }
 
 void PluginManager::unload(QString name) {
