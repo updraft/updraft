@@ -29,7 +29,9 @@ PluginManager::PluginManager(UpdraftParent* setParent): parent(setParent) {
     QStringList dlls = plugins.entryList(dllsMask);
 
     // Not sure how else to search for plugins:
-    load(QString("plugins/%1/%2").arg(pluginDir).arg(dlls.front()));
+    if (!dlls.empty()) {
+      load(QString("plugins/%1/%2").arg(pluginDir).arg(dlls.front()));
+    }
     plugins.cdUp();
   }
 }
