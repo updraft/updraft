@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
+SET(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
+
 ADD_SUBDIRECTORY( src/plugins )
 ADD_SUBDIRECTORY( src/core )
 
