@@ -11,7 +11,7 @@ namespace Core {
 PluginManager::PluginManager(UpdraftParent* setParent): parent(setParent) {
   qDebug("Searching for plugins in plugin directory.");
 
-  QDir plugins;
+  QDir plugins(QCoreApplication::applicationDirPath());
   if (!plugins.cd("plugins")) {
     qDebug("Could not find 'plugins' directory");
     return;
