@@ -44,6 +44,27 @@ ADD_EXECUTABLE(
 	${style-check}
 )
 
+# Handling of output filenames and directories on Windows
+IF(WIN32)
+	# Sets properties for generic no-config case
+	SET_TARGET_PROPERTIES(
+		updraft
+		PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY ${WIN_UPDRAFT_BIN_DIR}
+		DEBUG_POSTFIX d
+	)
+
+	# Sets output path for each config.
+	foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
+		string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
+		SET_TARGET_PROPERTIES(
+			updraft
+			PROPERTIES
+			RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${WIN_UPDRAFT_BIN_DIR}
+		)
+	endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
+ENDIF(WIN32)
+
 ADD_CUSTOM_COMMAND(
 	TARGET updraft
 	PRE_BUILD

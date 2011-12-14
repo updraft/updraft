@@ -2,6 +2,13 @@ cmake_minimum_required(VERSION 2.8)
 
 SET(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 
+# Handling of output filenames and directories on Windows
+IF(WIN32)
+	SET(WIN_UPDRAFT_BIN_DIR ${PROJECT_BINARY_DIR}/bin)
+	SET(WIN_UPDRAFT_PLUGINS_DIR ${WIN_UPDRAFT_BIN_DIR}/plugins)
+	SET(WIN_UPDRAFT_LIB_DIR ${PROJECT_BINARY_DIR}/lib)
+ENDIF(WIN32)
+
 ADD_SUBDIRECTORY( src/plugins )
 ADD_SUBDIRECTORY( src/core )
 
