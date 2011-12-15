@@ -9,11 +9,11 @@ class QMainWindow;
 
 namespace Updraft {
 
-//Forward declarations
 class IPlugin;
 namespace Core {
-  class UpdraftParent;
-} //End namespace Core
+  class Tab;
+  class FileType;
+}
 
 enum SystemMenu {
   MENU_FILE,
@@ -21,6 +21,11 @@ enum SystemMenu {
   MENU_TOOLS,
   MENU_HELP,
   MENU_CONTEXT
+};
+
+enum FileCategory {
+  CATEGORY_PERSISTENT,
+  CATEGORY_TEMPORARY
 };
 
 class CoreInterface {
@@ -53,6 +58,14 @@ class CoreInterface {
   /// The tab class given to this function is deleted!
   void removeTab(Core::Tab* tab);
   
+  /// This plugin knows how to open the file!
+  /// \return Identifier of the newly registered filetype
+  int registerFiletype(QString extension, QString description,
+    FileCategory category);
+
+  /// Unregisters a given file type
+  void unregisterFileType(int id);
+
  private:
   IPlugin* plugin;
   Core::UpdraftParent* parent;

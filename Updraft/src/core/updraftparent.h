@@ -23,6 +23,7 @@ class UpdraftParent {
   MainWindow* win;
 
   PluginManager pluginManager;
+  FileTypeManager fileTypeManager;
 };
 
 }  // End namespace Core

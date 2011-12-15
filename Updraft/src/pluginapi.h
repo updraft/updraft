@@ -10,10 +10,8 @@ namespace Updraft {
 
 // Forward declarations
 namespace Core {
-  class UpdraftParent;
-  class PluginManager;
-
   class Tab;
+  class FileType;
 }
 
 class IPlugin {
@@ -43,6 +41,10 @@ class IPlugin {
 
   /// Called before the tab is closed.
   virtual void tabClosed(Core::Tab *tab) {}
+
+  /// Callback to open a file.
+  /// \return Was opening successful?
+  virtual bool fileOpen(QString filename) { return false; }
 
   /// \todo Fill this once plugin API is finished
 
