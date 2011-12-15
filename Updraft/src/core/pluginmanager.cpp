@@ -48,7 +48,8 @@ IPlugin* PluginManager::load(QString fileName) {
   qDebug("Loading plugin %s", fileName.toAscii().data());
   QPluginLoader* loader = new QPluginLoader(fileName);
   QObject *pluginInstance = loader->instance();
-  qDebug("Loading error report: %s ", loader->errorString().toAscii().data());
+  if (pluginInstance == NULL)
+    qDebug("Loading error report: %s ", loader->errorString().toAscii().data());
   return finishLoading(loader, pluginInstance);
 }
 
