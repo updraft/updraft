@@ -11,7 +11,7 @@ namespace Core {
 PluginManager::PluginManager(UpdraftParent* setParent): parent(setParent) {
   qDebug("Searching for plugins in plugin directory.");
 
-  QDir plugins;
+  QDir plugins(QCoreApplication::applicationDirPath());
   if (!plugins.cd("plugins")) {
     qDebug("Could not find 'plugins' directory");
     return;
@@ -29,7 +29,9 @@ PluginManager::PluginManager(UpdraftParent* setParent): parent(setParent) {
     QStringList dlls = plugins.entryList(dllsMask);
 
     // Not sure how else to search for plugins:
-    load(QString("plugins/%1/%2").arg(pluginDir).arg(dlls.front()));
+    if (!dlls.empty()) {
+      load(plugins.absolutePath() + "/" + dlls.front());
+    }
     plugins.cdUp();
   }
 }
@@ -45,7 +47,9 @@ PluginManager::~PluginManager() {
 IPlugin* PluginManager::load(QString fileName) {
   qDebug("Loading plugin %s", fileName.toAscii().data());
   QPluginLoader* loader = new QPluginLoader(fileName);
-  return finishLoading(loader, loader->instance());
+  QObject *pluginInstance = loader->instance();
+  qDebug("Loading error report: %s ", loader->errorString().toAscii().data());
+  return finishLoading(loader, pluginInstance);
 }
 
 void PluginManager::unload(QString name) {
