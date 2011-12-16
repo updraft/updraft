@@ -9,12 +9,6 @@ class QMainWindow;
 
 namespace Updraft {
 
-//Forward declarations
-class IPlugin;
-namespace Core {
-  class UpdraftParent;
-} //End namespace Core
-
 enum SystemMenu {
   MENU_FILE,
   MENU_EDIT,
@@ -23,39 +17,31 @@ enum SystemMenu {
   MENU_CONTEXT
 };
 
+/// Exposes core functionalities to plugins.
+/// A call to methods of this interface automagically contains
+/// a pointer to calling plugin (this is ensured in core/coreimplementation.cpp)
 class CoreInterface {
-  /// \todo Fill this once plugin API is finished
  public:
-  CoreInterface(): plugin(NULL), parent(NULL) {}
-  CoreInterface(Core::UpdraftParent* par, IPlugin *pl) :
-    plugin(pl), parent(par) {}
-
   /// Returns main window pointer. Used for example for modal dialogs
-  QMainWindow* getMainWindow();
-
-  /// Checks, whether the class was correctly constructed.
-  bool valid() { return (plugin != NULL && parent != NULL); }
+  virtual QMainWindow* getMainWindow() = 0;
 
   /// Create an entry in the main menu.
-  Core::Menu* createMenu(QString title);
+  virtual Core::Menu* createMenu(QString title) = 0;
 
   /// Remove an entry from the main menu
-  void removeMenu(Core::Menu* menu);
+  virtual void removeMenu(Core::Menu* menu) = 0;
 
   /// Returns pointer to the instance of a system menu
   /// \param menu which system menu instance to return  
-  Core::Menu* getSystemMenu(SystemMenu menu);
+  virtual Core::Menu* getSystemMenu(SystemMenu menu) = 0;
 
   /// Open a Tab with any widget.
-  Core::Tab* createTab(QWidget* content, QString title);
+  /// Takes ownership of content.
+  virtual Core::Tab* createTab(QWidget* content, QString title) = 0;
 
   /// Removes tab from the bottom pane
   /// The tab class given to this function is deleted!
-  void removeTab(Core::Tab* tab);
-  
- private:
-  IPlugin* plugin;
-  Core::UpdraftParent* parent;
+  virtual void removeTab(Core::Tab* tab) = 0;
 };
 
 }  // End namespace Updraft

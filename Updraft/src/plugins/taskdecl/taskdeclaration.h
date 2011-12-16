@@ -2,14 +2,14 @@
 #define UPDRAFT_SRC_PLUGINS_TASKDECL_TASKDECLARATION_H_
 
 #include <QtGui>
-#include "../../pluginapi.h"
+#include "../../pluginbase.h"
 
 namespace Updraft {
 namespace Core {
 
-class Q_DECL_EXPORT TaskDeclaration: public QObject, public IPlugin {
+class Q_DECL_EXPORT TaskDeclaration: public QObject, public PluginBase {
   Q_OBJECT
-  Q_INTERFACES(Updraft::IPlugin)
+  Q_INTERFACES(Updraft::PluginBase)
 
  public:
   QString getName();

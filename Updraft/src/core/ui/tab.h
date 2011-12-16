@@ -8,7 +8,7 @@ class QTabWidget;
 
 namespace Updraft {
 
-class IPlugin;
+class PluginBase;
 
 namespace Core {
 
@@ -18,7 +18,7 @@ class Tab : public QWidget {
   Q_OBJECT
 
  public:
-  Tab(QWidget* content, QString title, QTabWidget* parent, IPlugin* owner);
+  Tab(QWidget* content, QString title, QTabWidget* parent, PluginBase* owner);
 
   QWidget* getWidget() { return widget; }
 
@@ -31,7 +31,7 @@ class Tab : public QWidget {
 
   QWidget* widget;
   QTabWidget* tabWidget;
-  IPlugin* plugin;
+  PluginBase* plugin;
 
   friend class MainWindow;
 };

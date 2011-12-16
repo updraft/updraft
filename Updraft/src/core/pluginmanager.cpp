@@ -2,7 +2,8 @@
 
 #include <QtGui>
 
-#include "../pluginapi.h"
+#include "../pluginbase.h"
+#include "coreimplementation.h"
 
 namespace Updraft {
 namespace Core {
@@ -44,7 +45,7 @@ PluginManager::~PluginManager() {
 
 /// Load the plugin, initialize it and put it to the list of
 /// loaded plugins.
-IPlugin* PluginManager::load(QString fileName) {
+PluginBase* PluginManager::load(QString fileName) {
   qDebug("Loading plugin %s", fileName.toAscii().data());
   QPluginLoader* loader = new QPluginLoader(fileName);
   QObject *pluginInstance = loader->instance();
@@ -61,15 +62,15 @@ void PluginManager::unload(QString name) {
   plugins.remove(name);
 }
 
-IPlugin* PluginManager::getPlugin(QString name) {
+PluginBase* PluginManager::getPlugin(QString name) {
   LoadedPlugin* lp = plugins.value(name);
   if (!lp) return NULL;
 
   return lp->plugin;
 }
 
-QVector<IPlugin*> PluginManager::getAllPlugins() {
-  QVector<IPlugin*> ret;
+QVector<PluginBase*> PluginManager::getAllPlugins() {
+  QVector<PluginBase*> ret;
 
   foreach(LoadedPlugin *p, plugins.values()) {
     ret.append(p->plugin);
@@ -84,17 +85,16 @@ QVector<IPlugin*> PluginManager::getAllPlugins() {
 /// \return Pointer to loaded plugin or NULL.
 /// \param loader Plugin loader that was used for getting the plugin
 ///   or NULL for static plugins.
-/// \param obj Loaded plugin before casting to IPlugin.
+/// \param obj Loaded plugin before casting to PluginBase.
 ///   Can be NULL if loading failed (this will be logged).
-
-IPlugin* PluginManager::finishLoading(QPluginLoader* loader, QObject* obj) {
+PluginBase* PluginManager::finishLoading(QPluginLoader* loader, QObject* obj) {
   if (!obj) {
     qDebug("Loading plugin failed.");
     return NULL;
   }
 
   LoadedPlugin* lp = new LoadedPlugin;
-  IPlugin* plugin = qobject_cast<IPlugin*>(obj);
+  PluginBase* plugin = qobject_cast<PluginBase*>(obj);
 
   if (!plugin) {
     qDebug("Plugin doesn't have correct interface.");
@@ -118,7 +118,7 @@ IPlugin* PluginManager::finishLoading(QPluginLoader* loader, QObject* obj) {
   lp->loader = loader;
   lp->plugin = plugin;
 
-  plugin->initializeCoreInterface(parent);
+  lp->plugin->setCoreInterface(new CoreImplementation(parent, plugin));
   plugin->initialize();
 
   plugins.insert(plugin->getName(), lp);
@@ -126,7 +126,7 @@ IPlugin* PluginManager::finishLoading(QPluginLoader* loader, QObject* obj) {
   return plugin;
 }
 
-PluginManager::LoadedPlugin* PluginManager::findByPointer(IPlugin* pointer) {
+PluginManager::LoadedPlugin* PluginManager::findByPointer(PluginBase* pointer) {
   foreach(LoadedPlugin *p, plugins.values()) {
     if (p->plugin == pointer) {
       return p;

@@ -2,13 +2,14 @@
 #define UPDRAFT_SRC_CORE_UI_MAINWINDOW_H_
 
 #include <QtGui>
+
 #include "../../coreinterface.h"
 
 namespace Ui { class MainWindow; }
 
 namespace Updraft {
 
-class IPlugin;
+class PluginBase;
 
 namespace Core {
 
@@ -21,7 +22,7 @@ class MainWindow : public QMainWindow {
 
   Menu* getSystemMenu(SystemMenu menu);
 
-  Tab* createTab(QWidget* content, QString title, IPlugin* plugin);
+  Tab* createTab(QWidget* content, QString title, PluginBase* plugin);
 
   Menu* createMenu(QString title);
   void removeMenu(Menu* menu);
