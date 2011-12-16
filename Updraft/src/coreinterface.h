@@ -9,6 +9,8 @@ class QMainWindow;
 
 namespace Updraft {
 
+namespace Core { struct FileType; }
+
 enum SystemMenu {
   MENU_FILE,
   MENU_EDIT,
@@ -50,11 +52,11 @@ class CoreInterface {
   
   /// This plugin knows how to open the file!
   /// \return Identifier of the newly registered filetype
-  virtual int registerFiletype(QString extension, QString description,
+  virtual FileType* registerFiletype(QString extension, QString description,
     FileCategory category) = 0;
 
   /// Unregisters a given file type
-  virtual void unregisterFileType(int id) = 0;
+  virtual void unregisterFileType(FileType* type) = 0;
 };
 
 }  // End namespace Updraft
