@@ -60,7 +60,7 @@ Menu* MainWindow::getSystemMenu(SystemMenu menu) {
 /// Takes ownership of content.
 /// \param plugin
 Core::Tab* MainWindow::createTab(QWidget* content, QString title,
-  IPlugin* plugin) {
+  PluginBase* plugin) {
   return new Core::Tab(content, title, ui->tabWidget, plugin);
 }
 

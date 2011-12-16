@@ -3,7 +3,7 @@
 #include <QTabWidget>
 #include <QHBoxLayout>
 
-#include "../../pluginapi.h"
+#include "../../pluginbase.h"
 
 namespace Updraft {
 namespace Core {
@@ -21,7 +21,7 @@ void Tab::close() {
 
 /// Add a new tab to parent.
 /// Takes ownership of content.
-Tab::Tab(QWidget* content, QString title, QTabWidget* parent, IPlugin* owner)
+Tab::Tab(QWidget* content, QString title, QTabWidget* parent, PluginBase* owner)
   : widget(content), tabWidget(parent), plugin(owner) {
   QHBoxLayout* layout = new QHBoxLayout(this);
   layout->addWidget(widget);

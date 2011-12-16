@@ -14,10 +14,12 @@ namespace Core {
   class FileType;
 }
 
-class IPlugin {
+/// Base class for plugins.
+/// All mehtods of this class must be pure virtual or inline!
+class PluginBase {
  public:
-  IPlugin() {};
-  virtual ~IPlugin() {};
+  PluginBase() {}
+  virtual ~PluginBase() {}
 
   /// Plugin metadata.
   /// \{
@@ -48,22 +50,22 @@ class IPlugin {
 
   /// \todo Fill this once plugin API is finished
 
-  void initializeCoreInterface(Core::UpdraftParent* parent) {
-    core = CoreInterface(parent, this);
+  void setCoreInterface(CoreInterface *coreInterface) {
+    core = coreInterface;
   }
 
  private:
   //Disallow copying
-  IPlugin(const IPlugin& other) {};
+  PluginBase(const PluginBase& other) {};
 
  protected:
   //This serves for calling CoreInterface methods
-  CoreInterface core;
+  CoreInterface *core;
 
 };
 
 }  // namespace Updraft
 
-Q_DECLARE_INTERFACE(Updraft::IPlugin, "Updraft_IPlugin")
+Q_DECLARE_INTERFACE(Updraft::PluginBase, "Updraft_PluginBase")
 
 #endif  // UPDRAFT_IPLUGIN_H_
