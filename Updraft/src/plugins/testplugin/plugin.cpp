@@ -65,10 +65,6 @@ void TestPlugin::createTab(QString title) {
 }
 
 void TestPlugin::deinitialize() {
-  delete helpAction;
-
-  core->removeMenu(myMenu);
-
   qDebug("testplugin unloaded");
 }
 

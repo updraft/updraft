@@ -28,9 +28,6 @@ class CoreInterface {
   /// Create an entry in the main menu.
   virtual Core::Menu* createMenu(QString title) = 0;
 
-  /// Remove an entry from the main menu
-  virtual void removeMenu(Core::Menu* menu) = 0;
-
   /// Returns pointer to the instance of a system menu
   /// \param menu which system menu instance to return  
   virtual Core::Menu* getSystemMenu(SystemMenu menu) = 0;

@@ -18,14 +18,12 @@ class PluginManager {
   ~PluginManager();
 
   PluginBase* load(QString fileName);
-  void unload(QString name);
 
   PluginBase* getPlugin(QString name);
   QVector<PluginBase*> getAllPlugins();
 
  private:
   struct LoadedPlugin {
-    QPluginLoader* loader;
     PluginBase* plugin;
     // CoreInterface* coreinterface; XXX: I don't thik this is needed. Cestmir
   };

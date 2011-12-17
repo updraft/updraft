@@ -97,12 +97,6 @@ Menu* MainWindow::createMenu(QString title) {
   return newMenu;
 }
 
-void MainWindow::removeMenu(Menu* menu) {
-  if (customMenus.remove(menu)) {
-    delete menu;
-  }
-}
-
 void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
   menuContext->getQMenu()->popup(event->globalPos());
 }
