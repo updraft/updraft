@@ -8,8 +8,14 @@ Menu::~Menu() {
   if (ownsMenu) {
     delete menu;
   }
+
+  foreach(QAction* action, actions) {
+    delete action;
+  }
 }
 
+/// Insert action into this menu.
+/// Takes ownership of action
 void Menu::insertAction(int position, QAction* action) {
   actions.insert(position, action);
 
@@ -19,8 +25,7 @@ void Menu::insertAction(int position, QAction* action) {
 void Menu::reorganizeMenu() {
   menu->clear();
 
-  QList<QAction*> actionList = actions.values();
-  foreach(QAction* action, actionList) {
+  foreach(QAction* action, actions) {
     menu->addAction(action);
   }
 }

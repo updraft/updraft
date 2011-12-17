@@ -11,10 +11,10 @@ MainWindow::MainWindow(QWidget *parent)
       activeTab(NULL) {
     ui->setupUi(this);
 
-    menuFile = new Menu(ui->menuFile);
-    menuEdit = new Menu(ui->menuEdit);
-    menuTools = new Menu(ui->menuTools);
-    menuHelp = new Menu(ui->menuHelp);
+    menuFile = new Menu(ui->menuFile, false);
+    menuEdit = new Menu(ui->menuEdit, false);
+    menuTools = new Menu(ui->menuTools, false);
+    menuHelp = new Menu(ui->menuHelp, false);
 
     connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)),
       this, SLOT(tabClose(int)));
@@ -33,6 +33,11 @@ MainWindow::~MainWindow() {
     delete menuFile;
     delete menuContext;
     delete ui;
+
+    // TODO(Kuba): Delete the built-in menus together with custom menus?
+    foreach(Menu* menu, customMenus) {
+        delete menu;
+    }
 }
 
 Menu* MainWindow::getSystemMenu(SystemMenu menu) {
