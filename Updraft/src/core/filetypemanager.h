@@ -1,14 +1,14 @@
 #ifndef UPDRAFT_SRC_CORE_FILETYPEMANAGER_H_
 #define UPDRAFT_SRC_CORE_FILETYPEMANAGER_H_
 
-#include <QMultiMap>
+#include <QList>
 #include <QString>
 
 #include "../coreinterface.h"
 
 namespace Updraft {
 
-class IPlugin;
+class PluginBase;
 
 namespace Core {
 
@@ -16,19 +16,20 @@ struct FileType {
   QString extension;
   QString description;
   FileCategory category;
+  PluginBase *plugin;
 };
 
+/// Handles file types, opening of files.
+/// Dispatches file opens to plugins.
 class FileTypeManager {
  public:
-  /// This plugin knows how to open the file!
-  /// \return Identifier of the newly registered filetype
-  FileType* registerFiletype(QString extension, QString description,
-    FileCategory category);
+  void registerFiletype(const QString extension, const QString description,
+    FileCategory category, PluginBase* plugin);
 
-  /// Unregisters a given file type
-  void unregisterFileType(FileType *t);
+  bool openFile(const QString path, FileCategory category = CATEGORY_ANY);
+
  private:
-  QVector<FileType*> registered;
+  QList<FileType> registered;
 };
 
 }  // End namespace Core

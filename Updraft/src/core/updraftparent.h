@@ -2,6 +2,7 @@
 #define UPDRAFT_SRC_CORE_UPDRAFTPARENT_H_
 
 #include "pluginmanager.h"
+#include "filetypemanager.h"
 
 namespace Updraft {
 namespace Core {
@@ -15,6 +16,7 @@ class UpdraftParent {
   ~UpdraftParent() {}
 
   MainWindow* getMainWindow() { return win; }
+  FileTypeManager* getFileTypeManager() { return &fileTypeManager; }
 
  private:
   // Important: MainWindow has to initialize before pluginManager (because

@@ -26,11 +26,8 @@ class CoreImplementation : public CoreInterface {
 
   /// This plugin knows how to open the file!
   /// \return Identifier of the newly registered filetype
-  int registerFiletype(QString extension, QString description,
+  void registerFiletype(QString extension, QString description,
     FileCategory category);
-
-  /// Unregisters a given file type
-  void unregisterFileType(int id);
 
  private:
   PluginBase* plugin;

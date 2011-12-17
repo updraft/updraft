@@ -20,8 +20,9 @@ enum SystemMenu {
 };
 
 enum FileCategory {
-  CATEGORY_PERSISTENT,
-  CATEGORY_TEMPORARY
+  CATEGORY_ANY = 0xff,
+  CATEGORY_PERSISTENT = 1,
+  CATEGORY_TEMPORARY = 2
 };
 
 /// Exposes core functionalities to plugins.
@@ -49,11 +50,8 @@ class CoreInterface {
   
   /// This plugin knows how to open the file!
   /// \return Identifier of the newly registered filetype
-  virtual FileType* registerFiletype(QString extension, QString description,
+  virtual void registerFiletype(QString extension, QString description,
     FileCategory category) = 0;
-
-  /// Unregisters a given file type
-  virtual void unregisterFileType(FileType* type) = 0;
 };
 
 }  // End namespace Updraft

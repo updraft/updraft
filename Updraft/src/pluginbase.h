@@ -46,7 +46,16 @@ class PluginBase {
 
   /// Callback to open a file.
   /// \return Was opening successful?
-  virtual bool fileOpen(QString filename) { return false; }
+  /// \param roles List of role indices (roles are
+  ///   returned by fileIdentification().)
+  virtual bool fileOpen(QString filename, QList<int> roles) { return false; }
+
+  /// Asking a plugin to identify data in a file.
+  /// \return List of role descriptions.
+  /// \see fileOpen()
+  virtual QList<QString> fileIdentification(QString filename) {
+    return QList<QString>();
+  }
 
   /// \todo Fill this once plugin API is finished
 
