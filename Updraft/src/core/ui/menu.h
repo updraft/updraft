@@ -17,7 +17,7 @@ class Menu {
   /// \param ownsQMenu Whether the QMenu passed to this constructor should
   //                   be destoryed when the Menu instance is destroyed.
   //                   Default: false
-  explicit Menu(QMenu* setMenu, bool ownsQMenu = false)
+  explicit Menu(QMenu* setMenu, bool ownsQMenu)
   : menu(setMenu), ownsMenu(ownsQMenu) {}
 
   ~Menu();

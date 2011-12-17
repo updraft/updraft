@@ -54,14 +54,6 @@ PluginBase* PluginManager::load(QString fileName) {
   return finishLoading(loader, pluginInstance);
 }
 
-void PluginManager::unload(QString name) {
-  LoadedPlugin* lp = plugins.value(name);
-  if (!lp) return;
-
-  lp->plugin->deinitialize();
-  plugins.remove(name);
-}
-
 PluginBase* PluginManager::getPlugin(QString name) {
   LoadedPlugin* lp = plugins.value(name);
   if (!lp) return NULL;
@@ -115,7 +107,6 @@ PluginBase* PluginManager::finishLoading(QPluginLoader* loader, QObject* obj) {
     return NULL;
   }
 
-  lp->loader = loader;
   lp->plugin = plugin;
 
   lp->plugin->setCoreInterface(new CoreImplementation(parent, plugin));

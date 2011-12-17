@@ -18,12 +18,6 @@ Menu* CoreImplementation::createMenu(QString title) {
   return win->createMenu(title);
 }
 
-void CoreImplementation::removeMenu(Menu* menu) {
-  MainWindow* win = parent->getMainWindow();
-
-  win->removeMenu(menu);
-}
-
 Menu* CoreImplementation::getSystemMenu(SystemMenu menu) {
   MainWindow* win = parent->getMainWindow();
   return win->getSystemMenu(menu);
