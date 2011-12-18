@@ -18,8 +18,8 @@ class CoreImplementation : public CoreInterface {
 
   QMainWindow* getMainWindow();
 
-  Menu* createMenu(QString title);
-  Menu* getSystemMenu(SystemMenu menu);
+  MenuInterface* createMenu(QString title);
+  MenuInterface* getSystemMenu(SystemMenu menu);
 
   TabInterface* createTab(QWidget* content, QString title);
   void removeTab(TabInterface* tab);

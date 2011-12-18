@@ -12,13 +12,13 @@ QMainWindow* CoreImplementation::getMainWindow() {
   return static_cast<QMainWindow*>(parent->getMainWindow());
 }
 
-Menu* CoreImplementation::createMenu(QString title) {
+MenuInterface* CoreImplementation::createMenu(QString title) {
   MainWindow* win = parent->getMainWindow();
 
   return win->createMenu(title);
 }
 
-Menu* CoreImplementation::getSystemMenu(SystemMenu menu) {
+MenuInterface* CoreImplementation::getSystemMenu(SystemMenu menu) {
   MainWindow* win = parent->getMainWindow();
   return win->getSystemMenu(menu);
 }

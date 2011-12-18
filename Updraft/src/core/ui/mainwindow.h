@@ -4,7 +4,9 @@
 #include <QtGui>
 
 #include "../../coreinterface.h"
+#include "menu.h"
 #include "tab.h"
+
 
 namespace Ui { class MainWindow; }
 

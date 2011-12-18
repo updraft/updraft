@@ -14,8 +14,6 @@ Menu::~Menu() {
   }
 }
 
-/// Insert action into this menu.
-/// Takes ownership of action
 void Menu::insertAction(int position, QAction* action) {
   actions.insert(position, action);
 

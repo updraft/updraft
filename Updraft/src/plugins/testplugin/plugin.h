@@ -32,7 +32,7 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
   QAction* helpAction2;
   QAction* helpAction3;
 
-  Core::Menu* myMenu;
+  MenuInterface* myMenu;
 };
 }
 
