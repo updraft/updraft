@@ -3,8 +3,6 @@
 
 #include <QMainWindow>
 #include "../../coreinterface.h"
-#include "../sceneviewer.h"
-#include <QTimer>
 
 namespace Ui { class MainWindow; }
 
@@ -25,15 +23,14 @@ class MainWindow : public QMainWindow {
 
   Tab* createTab(QWidget* content, QString title, IPlugin* plugin);
 
+  void setMapWidget (QWidget* widget);
+
  private slots:
   /// Called when tab in the bottom pane is closed using the little cross
   void tabClose(int index);
 
   /// Handles switchin an active tab in the bottom pane.
   void tabSwitch(int index);
-  
-  /// Forces the map drawing.
-  void doUpdate();
   
  private:
   Ui::MainWindow *ui;
@@ -44,12 +41,6 @@ class MainWindow : public QMainWindow {
   Menu* menuHelp;
 
   Tab* activeTab;
-  
-  /// Map view.
-  SceneViewer *sceneViewer;
-  QTimer* timer;
-  
-  virtual void paintEvent( QPaintEvent* event );
 };
 
 }  // End namespace Core

@@ -2,11 +2,11 @@
 #define UPDRAFT_SRC_CORE_UPDRAFTPARENT_H_
 
 #include "pluginmanager.h"
+#include "scenemanager.h"
+#include "ui/mainwindow.h"
 
 namespace Updraft {
 namespace Core {
-
-class MainWindow;
 
 /// Class that takes care of all the important objects in Updraft
 class UpdraftParent {
@@ -23,6 +23,7 @@ class UpdraftParent {
   MainWindow* win;
 
   PluginManager pluginManager;
+  SceneManager* sceneManager;
 };
 
 }  // End namespace Core

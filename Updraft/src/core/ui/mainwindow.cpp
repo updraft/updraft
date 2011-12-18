@@ -20,16 +20,6 @@ MainWindow::MainWindow(QWidget *parent)
       this, SLOT(tabClose(int))); // NOLINT
     connect(ui->tabWidget, SIGNAL(currentChanged(int)), // NOLINT
       this, SLOT(tabSwitch(int))); // NOLINT
-      
-    // Set the map view:
-    // Add osgEarth viewer into the layout
-    sceneViewer = new SceneViewer ();  
-    ui->layoutFrame->addWidget (sceneViewer->getWidget());
-
-    // Set timer to update map view
-    timer = new QTimer ();
-    connect( timer, SIGNAL(timeout()), this, SLOT(doUpdate()));
-    timer->start(10);
 }
 
 MainWindow::~MainWindow() {
@@ -86,12 +76,8 @@ void MainWindow::tabSwitch(int index) {
   }
 }
 
-void MainWindow::doUpdate() {
-    update();
-}
-
-void MainWindow::paintEvent( QPaintEvent* event ) {
-    sceneViewer->redrawScene();
+void MainWindow::setMapWidget(QWidget *widget){
+  ui->layoutFrame->addWidget(widget);
 }
 
 }  // End namespace Core
