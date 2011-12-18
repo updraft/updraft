@@ -21,8 +21,8 @@ class CoreImplementation : public CoreInterface {
   Menu* createMenu(QString title);
   Menu* getSystemMenu(SystemMenu menu);
 
-  Tab* createTab(QWidget* content, QString title);
-  void removeTab(Tab* tab);
+  TabInterface* createTab(QWidget* content, QString title);
+  void removeTab(TabInterface* tab);
 
  private:
   PluginBase* plugin;

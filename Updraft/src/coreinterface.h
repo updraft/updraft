@@ -2,7 +2,7 @@
 #define UPDRAFT_CORE_INTERFACE_H_
 
 #include "core/ui/menu.h"
-#include "core/ui/tab.h"
+#include "tabinterface.h"
 
 class QWidget;
 class QMainWindow;
@@ -34,11 +34,12 @@ class CoreInterface {
 
   /// Open a Tab with any widget.
   /// Takes ownership of content.
-  virtual Core::Tab* createTab(QWidget* content, QString title) = 0;
+  virtual TabInterface* createTab(QWidget* content, QString title) = 0;
 
   /// Removes tab from the bottom pane
   /// The tab class given to this function is deleted!
-  virtual void removeTab(Core::Tab* tab) = 0;
+  /// Equivalent to tab->close()
+  virtual void removeTab(TabInterface* tab) = 0;
 };
 
 }  // End namespace Updraft

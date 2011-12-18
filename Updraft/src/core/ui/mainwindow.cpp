@@ -63,10 +63,8 @@ Menu* MainWindow::getSystemMenu(SystemMenu menu) {
 
 /// Create a new tab in the bottom pane.
 /// Takes ownership of content.
-/// \param plugin
-Core::Tab* MainWindow::createTab(QWidget* content, QString title,
-  PluginBase* plugin) {
-  return new Core::Tab(content, title, ui->tabWidget, plugin);
+Core::Tab* MainWindow::createTab(QWidget* content, QString title) {
+  return new Core::Tab(content, title, ui->tabWidget);
 }
 
 void MainWindow::tabClose(int index) {
@@ -76,14 +74,14 @@ void MainWindow::tabClose(int index) {
 
 void MainWindow::tabSwitch(int index) {
   if (activeTab) {
-    activeTab->deselected();
+    emit activeTab->deselected();
   }
 
   if (index == -1) {
     activeTab = NULL;
   } else {
     activeTab = static_cast<Tab*>(ui->tabWidget->widget(index));
-    activeTab->selected();
+    emit activeTab->selected();
   }
 }
 

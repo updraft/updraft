@@ -23,11 +23,11 @@ Menu* CoreImplementation::getSystemMenu(SystemMenu menu) {
   return win->getSystemMenu(menu);
 }
 
-Tab* CoreImplementation::createTab(QWidget* content, QString title) {
-    return parent->getMainWindow()->createTab(content, title, plugin);
+TabInterface* CoreImplementation::createTab(QWidget* content, QString title) {
+    return parent->getMainWindow()->createTab(content, title);
 }
 
-void CoreImplementation::removeTab(Tab* tab) {
+void CoreImplementation::removeTab(TabInterface* tab) {
   tab->close();
 }
 

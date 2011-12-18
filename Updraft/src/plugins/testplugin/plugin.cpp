@@ -3,8 +3,6 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 
-#include "../../core/ui/tab.h"
-
 #include "../../coreinterface.h"
 
 namespace Updraft {
@@ -57,11 +55,11 @@ void TestPlugin::createTab(QString title) {
   layout->addWidget(btn1);
   layout->addWidget(btn2);
 
-  Core::Tab* tab = core->createTab(container, title);
+  TabInterface* tab = core->createTab(container, title);
 
   connect(btn1, SIGNAL(clicked()), this, SLOT(showHelp()));
   // connect(btn2, SIGNAL(clicked()), tab, SLOT(showHelp()));
-  connect(btn2, SIGNAL(clicked()), tab, SLOT(close()));
+  tab->connectSlotClose(btn2, SIGNAL(clicked()));
 }
 
 void TestPlugin::deinitialize() {
