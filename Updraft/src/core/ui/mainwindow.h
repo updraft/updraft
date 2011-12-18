@@ -4,6 +4,9 @@
 #include <QtGui>
 
 #include "../../coreinterface.h"
+#include "menu.h"
+#include "tab.h"
+
 
 namespace Ui { class MainWindow; }
 
@@ -22,7 +25,7 @@ class MainWindow : public QMainWindow {
 
   Menu* getSystemMenu(SystemMenu menu);
 
-  Tab* createTab(QWidget* content, QString title, PluginBase* plugin);
+  Tab* createTab(QWidget* content, QString title);
 
   Menu* createMenu(QString title);
   void removeMenu(Menu* menu);

@@ -3,6 +3,8 @@
 
 #include <QtGui>
 
+#include "../../menuinterface.h"
+
 class QMenu;
 class QAction;
 
@@ -11,7 +13,7 @@ namespace Core {
 
 // TODO(cestmir): We should take care about the destruction of the parent menu.
 // So far, it's not a problem because we don't create the menus dynamically
-class Menu {
+class Menu : public MenuInterface {
  public:
   /// Constructor
   /// \param ownsQMenu Whether the QMenu passed to this constructor should

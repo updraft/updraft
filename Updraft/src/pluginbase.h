@@ -2,7 +2,9 @@
 #define UPDRAFT_PLUGIN_API_H_
 
 #include <QtGui>
+
 #include "coreinterface.h"
+#include "tabinterface.h"
 
 #define PLUGIN_API_VERSION 0
 
@@ -10,8 +12,8 @@ namespace Updraft {
 
 // Forward declarations
 namespace Core {
-  class Tab;
-  class FileType;
+  class UpdraftParent;
+  class PluginManager;
 }
 
 /// Base class for plugins.
@@ -38,12 +40,6 @@ class PluginBase {
   /// Called before the plugin is unloaded.
   virtual void deinitialize() = 0;
 
-  virtual void tabSelected(Core::Tab *tab) {}
-  virtual void tabDeselected(Core::Tab *tab) {}
-
-  /// Called before the tab is closed.
-  virtual void tabClosed(Core::Tab *tab) {}
-
   /// Callback to open a file.
   /// \return Was opening successful?
   /// \param roles List of role indices (roles are
@@ -56,8 +52,6 @@ class PluginBase {
   virtual QList<QString> fileIdentification(QString filename) {
     return QList<QString>();
   }
-
-  /// \todo Fill this once plugin API is finished
 
   void setCoreInterface(CoreInterface *coreInterface) {
     core = coreInterface;

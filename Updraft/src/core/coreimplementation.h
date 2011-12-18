@@ -18,11 +18,11 @@ class CoreImplementation : public CoreInterface {
 
   QMainWindow* getMainWindow();
 
-  Menu* createMenu(QString title);
-  Menu* getSystemMenu(SystemMenu menu);
+  MenuInterface* createMenu(QString title);
+  MenuInterface* getSystemMenu(SystemMenu menu);
 
-  Tab* createTab(QWidget* content, QString title);
-  void removeTab(Tab* tab);
+  TabInterface* createTab(QWidget* content, QString title);
+  void removeTab(TabInterface* tab);
 
   /// This plugin knows how to open the file!
   /// \return Identifier of the newly registered filetype
