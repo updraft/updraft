@@ -1,4 +1,5 @@
-After running Cmake, it is neccessary to add paths to OSG and OSGEarth libraries. Namely:
+After running Cmake, it is neccessary to add paths to OSG and OSGEarth libraries in the project "updraft". 
+Namely:
 
 Do the following for Debug and Release version settings. 
 
