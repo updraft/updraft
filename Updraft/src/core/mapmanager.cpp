@@ -15,7 +15,8 @@ MapManager::MapManager(QString earthFile) {
   this->map = mapNode->getMap();
 
     // set image layers
-  // TODO(Maria): parse image layers from the map built from earth file and set them in the structure.
+  // TODO(Maria): parse image layers from the map built
+  // from earth file and set them in the structure.
 }
 
 osgEarth::MapNode* MapManager::getMapNode() {
@@ -39,6 +40,5 @@ osgEarth::MapNode* MapManager::createMap(QString earthFile) {
 
   return mapNode;
 }
-
 }
 }

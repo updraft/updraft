@@ -5,7 +5,7 @@ namespace Core {
 
 UpdraftParent::UpdraftParent(MainWindow* setWin)
 : win(setWin), pluginManager(this) {
-  sceneManager = new SceneManager("C:/data/arc_imagery-elevation-cache.earth");
+  sceneManager = new SceneManager("data/arc_imagery-elevation-cache.earth");
   win->setMapWidget(sceneManager->getWidget());
 }
 

@@ -12,12 +12,12 @@ namespace Updraft {
 namespace Core {
 
 class SceneManager: public QObject {
-
- Q_OBJECT
+  Q_OBJECT
 
  public:
-  SceneManager(QString baseEarthFile, 
-      osgViewer::ViewerBase::ThreadingModel threadingModel = osgViewer::ViewerBase::SingleThreaded);
+  SceneManager(QString baseEarthFile,
+      osgViewer::ViewerBase::ThreadingModel threadingModel =
+      osgViewer::ViewerBase::SingleThreaded);
   ~SceneManager();
 
   QWidget* getWidget();
@@ -35,8 +35,11 @@ class SceneManager: public QObject {
   osgQt::GraphicsWindowQt* graphicsWindow;
   QTimer* timer;
 
-  osg::GraphicsContext::Traits* createGraphicsTraits(int x, int y, int w, int h, const std::string& name = "", bool windowDecoration = false);
-  osgQt::GraphicsWindowQt* createGraphicsWindow(osg::GraphicsContext::Traits* traits);
+  osg::GraphicsContext::Traits* createGraphicsTraits
+    (int x, int y, int w, int h, const std::string& name = "",
+    bool windowDecoration = false);
+  osgQt::GraphicsWindowQt* createGraphicsWindow
+    (osg::GraphicsContext::Traits* traits);
   osg::Camera* createCamera(osg::GraphicsContext::Traits* traits);
   osg::Group* createInitialScene(osgEarth::MapNode* mapNode);
 };
