@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "menu.h"
+#include "maplayergroup.h"
 
 namespace Updraft {
 namespace Core {
@@ -93,6 +94,10 @@ Menu* MainWindow::createMenu(QString title) {
   ui->menuBar->addMenu(qMenu);
 
   return newMenu;
+}
+
+MapLayerGroup* MainWindow::createMapLayerGroup(const QString &title) {
+  return new MapLayerGroup(ui->treeWidget_2, title);
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent* event) {

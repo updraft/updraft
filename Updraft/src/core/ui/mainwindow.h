@@ -12,7 +12,7 @@ namespace Ui { class MainWindow; }
 
 namespace Updraft {
 
-class PluginBase;
+class MapLayerGroup;
 
 namespace Core {
 
@@ -30,6 +30,10 @@ class MainWindow : public QMainWindow {
   Menu* createMenu(QString title);
   void removeMenu(Menu* menu);
   void setMapWidget(QWidget *widget);
+
+  /// This method creates new map layer group.
+  /// It is wrapped by CoreInterface::createMapLayerGroup.
+  MapLayerGroup* createMapLayerGroup(const QString &title);
 
  private slots:
   /// Called when tab in the bottom pane is closed using the little cross

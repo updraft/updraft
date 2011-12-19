@@ -23,6 +23,10 @@ MenuInterface* CoreImplementation::getSystemMenu(SystemMenu menu) {
   return win->getSystemMenu(menu);
 }
 
+MapLayerGroup* CoreImplementation::createMapLayerGroup(const QString &title) {
+  return parent->getMainWindow()->createMapLayerGroup(title);
+}
+
 TabInterface* CoreImplementation::createTab(QWidget* content, QString title) {
     return parent->getMainWindow()->createTab(content, title);
 }

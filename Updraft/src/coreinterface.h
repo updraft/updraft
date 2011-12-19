@@ -11,6 +11,8 @@ class QMainWindow;
 
 namespace Updraft {
 
+class MapLayerGroup;
+
 /// Exposes core functionalities to plugins.
 /// A call to methods of this interface automagically contains
 /// a pointer to calling plugin (this is ensured in core/coreimplementation.cpp)
@@ -25,6 +27,12 @@ class CoreInterface {
   /// Returns pointer to the instance of a system menu
   /// \param menu which system menu instance to return  
   virtual MenuInterface* getSystemMenu(SystemMenu menu) = 0;
+
+  /// Creates map layer group and adds it to the tree view in the left pane.
+  /// To remove MapLayerGroup use C++ delete.
+  /// \param title label for the item in the tree view
+  /// \return Pointer to the new MapLayerGroup
+  virtual MapLayerGroup* createMapLayerGroup(const QString &title) = 0;
 
   /// Open a Tab with any widget.
   /// Takes ownership of content.
