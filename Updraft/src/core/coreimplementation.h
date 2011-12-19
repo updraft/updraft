@@ -21,6 +21,8 @@ class CoreImplementation : public CoreInterface {
   MenuInterface* createMenu(QString title);
   MenuInterface* getSystemMenu(SystemMenu menu);
 
+  virtual MapLayerGroup* createMapLayerGroup(const QString &title);
+
   TabInterface* createTab(QWidget* content, QString title);
   void removeTab(TabInterface* tab);
 
