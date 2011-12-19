@@ -3,8 +3,6 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 
-#include "../../core/ui/tab.h"
-
 #include "../../coreinterface.h"
 
 namespace Updraft {
@@ -24,7 +22,22 @@ void TestPlugin::initialize() {
   helpAction = new QAction("About testplugin...", this);
   connect(helpAction, SIGNAL(triggered()), this, SLOT(showHelp()));
 
-  core.getSystemMenu(MENU_HELP)->insertAction(0, helpAction);
+  helpAction2 = new QAction("About testplugin (higher priority)...", this);
+  connect(helpAction2, SIGNAL(triggered()), this, SLOT(showHelp()));
+
+  core->getSystemMenu(MENU_HELP)->insertAction(1, helpAction);
+  core->getSystemMenu(MENU_HELP)->insertAction(0, helpAction2);
+
+  // Create a new menu and insert a test action into it as well
+  myMenu = core->createMenu("Test plugin");
+
+  helpAction3 = new QAction("About testplugin...", this);
+  connect(helpAction3, SIGNAL(triggered()), this, SLOT(showHelp()));
+
+  myMenu->insertAction(0, helpAction3);
+
+  // Add an action into a context menu
+  core->getSystemMenu(MENU_CONTEXT)->insertAction(0, helpAction);
 
   createTab("Button tab 1");
   createTab("Button tab 2");
@@ -42,21 +55,19 @@ void TestPlugin::createTab(QString title) {
   layout->addWidget(btn1);
   layout->addWidget(btn2);
 
-  Core::Tab* tab = core.createTab(container, title);
+  TabInterface* tab = core->createTab(container, title);
 
   connect(btn1, SIGNAL(clicked()), this, SLOT(showHelp()));
   // connect(btn2, SIGNAL(clicked()), tab, SLOT(showHelp()));
-  connect(btn2, SIGNAL(clicked()), tab, SLOT(close()));
+  tab->connectSlotClose(btn2, SIGNAL(clicked()));
 }
 
 void TestPlugin::deinitialize() {
-  delete helpAction;
-
   qDebug("testplugin unloaded");
 }
 
 void TestPlugin::showHelp() {
-  QMainWindow* win = core.getMainWindow();
+  QMainWindow* win = core->getMainWindow();
 
   QMessageBox::information(win, "About testplugin",
     "Testplugin is just a test plugin to see whether our api is working");

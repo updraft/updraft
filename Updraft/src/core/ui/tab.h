@@ -4,34 +4,44 @@
 #include <QString>
 #include <QWidget>
 
+#include "../../tabinterface.h"
+
 class QTabWidget;
 
 namespace Updraft {
 
-class IPlugin;
+class PluginBase;
 
 namespace Core {
 
 class MainWindow;
 
-class Tab : public QWidget {
+class Tab : public QWidget, public TabInterface {
   Q_OBJECT
 
  public:
-  Tab(QWidget* content, QString title, QTabWidget* parent, IPlugin* owner);
+  Tab(QWidget* content, QString title, QTabWidget* parent);
+  ~Tab();
 
   QWidget* getWidget() { return widget; }
+
+  void connectSlotClose(const QObject* sender, const char *signal);
+  void connectSignalClosed(const QObject* receiver, const char *method);
+  void connectSignalSelected(const QObject* receiver, const char *method);
+  void connectSignalDeselected(const QObject* receiver, const char *method);
 
  public slots:
   void close();
 
- private:
-  void deselected();
+ signals:
+  void closed();
   void selected();
+  void deselected();
 
+ private:
   QWidget* widget;
   QTabWidget* tabWidget;
-  IPlugin* plugin;
+  PluginBase* plugin;
 
   friend class MainWindow;
 };

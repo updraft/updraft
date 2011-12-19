@@ -15,7 +15,7 @@ MapManager::MapManager(QString earthFile) {
   this->map = mapNode->getMap();
 
     // set image layers
-  // TODO
+  // TODO(Maria): parse image layers from the map built from earth file and set them in the structure.
 }
 
 osgEarth::MapNode* MapManager::getMapNode() {
@@ -25,18 +25,17 @@ osgEarth::MapNode* MapManager::getMapNode() {
 osgEarth::MapNode* MapManager::createMap(QString earthFile) {
   // delete the old map
   if (mapNode != NULL) {
-    // TODO: is this correct way of deleting the whole map?
-    //delete (mapNode);
+    // TODO(Maria): is this correct way of deleting the whole map?
+    // delete (mapNode);
     mapNode = NULL;
     map = NULL;
   }
-
   osg::Node* loadedMap = osgDB::readNodeFile(earthFile.toStdString());
   this->mapNode = osgEarth::MapNode::findMapNode(loadedMap);
   this->map = mapNode->getMap();
 
     // set image layers
-  // TODO
+  // TODO(Maria): parse image layers from the map build from the earth file.
 
   return mapNode;
 }

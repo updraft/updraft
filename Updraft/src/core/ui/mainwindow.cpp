@@ -11,15 +11,19 @@ MainWindow::MainWindow(QWidget *parent)
       activeTab(NULL) {
     ui->setupUi(this);
 
-    menuFile = new Menu(ui->menuFile);
-    menuEdit = new Menu(ui->menuEdit);
-    menuTools = new Menu(ui->menuTools);
-    menuHelp = new Menu(ui->menuHelp);
+    menuFile = new Menu(ui->menuFile, false);
+    menuEdit = new Menu(ui->menuEdit, false);
+    menuTools = new Menu(ui->menuTools, false);
+    menuHelp = new Menu(ui->menuHelp, false);
 
-    connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), // NOLINT
-      this, SLOT(tabClose(int))); // NOLINT
-    connect(ui->tabWidget, SIGNAL(currentChanged(int)), // NOLINT
-      this, SLOT(tabSwitch(int))); // NOLINT
+    connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)),
+      this, SLOT(tabClose(int)));
+    connect(ui->tabWidget, SIGNAL(currentChanged(int)),
+      this, SLOT(tabSwitch(int)));
+
+    // TODO(cestmir): This is here just to be able to test context menu.
+    QMenu* qContextMenu = new QMenu();
+    menuContext = new Menu(qContextMenu, true);
 }
 
 MainWindow::~MainWindow() {
@@ -27,7 +31,13 @@ MainWindow::~MainWindow() {
     delete menuTools;
     delete menuEdit;
     delete menuFile;
+    delete menuContext;
     delete ui;
+
+    // TODO(Kuba): Delete the built-in menus together with custom menus?
+    foreach(Menu* menu, customMenus) {
+        delete menu;
+    }
 }
 
 Menu* MainWindow::getSystemMenu(SystemMenu menu) {
@@ -44,18 +54,17 @@ Menu* MainWindow::getSystemMenu(SystemMenu menu) {
     case MENU_HELP:
       return menuHelp;
     break;
+    case MENU_CONTEXT:
     default:
-      return menuHelp;
+      return menuContext;
     break;
   }
 }
 
 /// Create a new tab in the bottom pane.
 /// Takes ownership of content.
-/// \param plugin
-Core::Tab* MainWindow::createTab(QWidget* content, QString title,
-  IPlugin* plugin) {
-  return new Core::Tab(content, title, ui->tabWidget, plugin);
+Core::Tab* MainWindow::createTab(QWidget* content, QString title) {
+  return new Core::Tab(content, title, ui->tabWidget);
 }
 
 void MainWindow::tabClose(int index) {
@@ -65,18 +74,32 @@ void MainWindow::tabClose(int index) {
 
 void MainWindow::tabSwitch(int index) {
   if (activeTab) {
-    activeTab->deselected();
+    emit activeTab->deselected();
   }
 
   if (index == -1) {
     activeTab = NULL;
   } else {
     activeTab = static_cast<Tab*>(ui->tabWidget->widget(index));
-    activeTab->selected();
+    emit activeTab->selected();
   }
 }
 
-void MainWindow::setMapWidget(QWidget *widget){
+Menu* MainWindow::createMenu(QString title) {
+  QMenu* qMenu = new QMenu(title, ui->menuBar);
+  Menu* newMenu = new Menu(qMenu, true);  // Make the qmenu owned by our Menu
+
+  customMenus.insert(newMenu);
+  ui->menuBar->addMenu(qMenu);
+
+  return newMenu;
+}
+
+void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
+  menuContext->getQMenu()->popup(event->globalPos());
+}
+
+void MainWindow::setMapWidget(QWidget *widget) {
   ui->layoutFrame->addWidget(widget);
 }
 

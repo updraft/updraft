@@ -1,14 +1,18 @@
 #ifndef UPDRAFT_SRC_CORE_UI_MAINWINDOW_H_
 #define UPDRAFT_SRC_CORE_UI_MAINWINDOW_H_
 
-#include <QMainWindow>
+#include <QtGui>
+
 #include "../../coreinterface.h"
+#include "menu.h"
+#include "tab.h"
+
 
 namespace Ui { class MainWindow; }
 
 namespace Updraft {
 
-class IPlugin;
+class PluginBase;
 
 namespace Core {
 
@@ -21,9 +25,11 @@ class MainWindow : public QMainWindow {
 
   Menu* getSystemMenu(SystemMenu menu);
 
-  Tab* createTab(QWidget* content, QString title, IPlugin* plugin);
+  Tab* createTab(QWidget* content, QString title);
 
-  void setMapWidget (QWidget* widget);
+  Menu* createMenu(QString title);
+  void removeMenu(Menu* menu);
+  void setMapWidget(QWidget *widget);
 
  private slots:
   /// Called when tab in the bottom pane is closed using the little cross
@@ -31,7 +37,11 @@ class MainWindow : public QMainWindow {
 
   /// Handles switchin an active tab in the bottom pane.
   void tabSwitch(int index);
-  
+
+ protected:
+  // TODO(cestmir): Just a temporary method to test context menu
+  void contextMenuEvent(QContextMenuEvent* event);
+
  private:
   Ui::MainWindow *ui;
 
@@ -40,7 +50,11 @@ class MainWindow : public QMainWindow {
   Menu* menuTools;
   Menu* menuHelp;
 
+  Menu* menuContext;
+
   Tab* activeTab;
+
+  QSet<Menu*> customMenus;
 };
 
 }  // End namespace Core

@@ -3,13 +3,13 @@
 
 #include <QtGui>
 
-#include "../../pluginapi.h"
+#include "../../pluginbase.h"
 
 namespace Updraft {
 
-class Q_DECL_EXPORT TestPlugin: public QObject, public IPlugin {
+class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
   Q_OBJECT
-  Q_INTERFACES(Updraft::IPlugin)
+  Q_INTERFACES(Updraft::PluginBase)
 
  public:
   TestPlugin();
@@ -29,6 +29,10 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public IPlugin {
   void createTab(QString title);
 
   QAction* helpAction;
+  QAction* helpAction2;
+  QAction* helpAction3;
+
+  MenuInterface* myMenu;
 };
 }
 

@@ -4,9 +4,28 @@
 namespace Updraft {
 namespace Core {
 
+Menu::~Menu() {
+  if (ownsMenu) {
+    delete menu;
+  }
+
+  foreach(QAction* action, actions) {
+    delete action;
+  }
+}
+
 void Menu::insertAction(int position, QAction* action) {
-  // TODO(cestmir): use the position argument
-  menu->addAction(action);
+  actions.insert(position, action);
+
+  reorganizeMenu();
+}
+
+void Menu::reorganizeMenu() {
+  menu->clear();
+
+  foreach(QAction* action, actions) {
+    menu->addAction(action);
+  }
 }
 
 }  // End namespace Core

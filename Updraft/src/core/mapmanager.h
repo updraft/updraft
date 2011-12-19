@@ -14,12 +14,12 @@ namespace Core {
 class MapManager {
  public:
   MapManager();
-  MapManager(QString earthFile);
+  explicit MapManager(QString earthFile);
   ~MapManager();
 
   osgEarth::MapNode* getMapNode();
   osgEarth::MapNode* createMap(QString earthFile);
- 
+
  private:
   osgEarth::MapNode* mapNode;
   osgEarth::Map* map;
@@ -27,7 +27,7 @@ class MapManager {
   QVector<osgEarth::ElevationLayer*> elevationLayers;
 };
 
-} // namespace Core
-} // namespace Updraft
+}  // namespace Core
+}  // namespace Updraft
 
 #endif  // UPDRAFT_SRC_CORE_MAPMANAGER_H_

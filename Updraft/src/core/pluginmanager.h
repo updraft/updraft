@@ -6,7 +6,7 @@
 namespace Updraft {
 
 // Forward declarations
-class IPlugin;
+class PluginBase;
 
 namespace Core {
 
@@ -17,22 +17,20 @@ class PluginManager {
   explicit PluginManager(UpdraftParent* setParent);
   ~PluginManager();
 
-  IPlugin* load(QString fileName);
-  void unload(QString name);
+  PluginBase* load(QString fileName);
 
-  IPlugin* getPlugin(QString name);
-  QVector<IPlugin*> getAllPlugins();
+  PluginBase* getPlugin(QString name);
+  QVector<PluginBase*> getAllPlugins();
 
  private:
   struct LoadedPlugin {
-    QPluginLoader* loader;
-    IPlugin* plugin;
+    PluginBase* plugin;
     // CoreInterface* coreinterface; XXX: I don't thik this is needed. Cestmir
   };
 
-  IPlugin* finishLoading(QPluginLoader* loader, QObject* obj);
+  PluginBase* finishLoading(QPluginLoader* loader, QObject* obj);
 
-  LoadedPlugin* findByPointer(IPlugin *pointer);
+  LoadedPlugin* findByPointer(PluginBase *pointer);
 
   QHash<QString, LoadedPlugin*> plugins;
 
