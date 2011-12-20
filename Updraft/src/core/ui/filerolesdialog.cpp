@@ -9,3 +9,7 @@ FileRolesDialog::FileRolesDialog(QWidget *parent)
 FileRolesDialog::~FileRolesDialog() {
   delete ui;
 }
+
+void FileRolesDialog::setList(QStandardItemModel *model) {
+  ui->listView->setModel(model);
+}

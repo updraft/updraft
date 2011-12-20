@@ -22,6 +22,9 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
 
   void deinitialize();
 
+  bool fileOpen(QString filename, QList<int> roles);
+  QStringList fileIdentification(QString filename);
+
  public slots:
   void showHelp();
 

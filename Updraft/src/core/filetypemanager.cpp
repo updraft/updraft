@@ -1,17 +1,34 @@
 #include "filetypemanager.h"
 
 #include <QDebug>
+#include <QStandardItemModel>
 
 #include "../pluginbase.h"
+#include "ui/filerolesdialog.h"
 
 namespace Updraft {
 namespace Core {
 
-struct IdentifyResult {
+/// Represents a single option to open a file.
+class FileOpenOption : public QStandardItem {
+ public:
+  FileOpenOption(PluginBase *plugin_, int role_, QString text);
+
+  /// QStandardItem requires this.
+  int type() const {
+    return UserType;
+  }
+
   PluginBase* plugin;
   int role;
-  QString description;
 };
+
+
+FileOpenOption::FileOpenOption(PluginBase *plugin_, int role_, QString text)
+  : QStandardItem(text), plugin(plugin_), role(role_) {
+  setCheckable(true);
+  setCheckState(Qt::Checked);
+}
 
 /// Register a file extension that can be opened by a plugin.
 /// \param extension File name extension with a dot (i.e. ".txt").
@@ -37,9 +54,12 @@ void FileTypeManager::registerFiletype(QString extension, QString description,
 ///   If category contains more than one category flags any of the flags is
 ///   sufficient. CATEGORY_ALL will use all file types regardless of
 ///   category flags.
+/// \param showDialog If this is false, then all found options for opeing the
+///   file are used and no gui elements are displayed.
 /// \return true if opening was successful.
-bool FileTypeManager::openFile(QString path, FileCategory category) {
-  QList<IdentifyResult> identifyResults;
+bool FileTypeManager::openFile(QString path, FileCategory category,
+  bool showDialog) {
+  QStandardItemModel options;
 
   qDebug() << "Opening file " << path << ".";
 
@@ -55,27 +75,62 @@ bool FileTypeManager::openFile(QString path, FileCategory category) {
       QList<QString> roles = type.plugin->fileIdentification(path);
 
       for (int i = 0; i < roles.count(); ++i) {
-        IdentifyResult r;
-        r.plugin = type.plugin;
-        r.role = i;
-        r.description = roles[i];
-        identifyResults.append(r);
+        options.appendRow(new FileOpenOption(type.plugin, i, roles[i]));
       }
     }
   }
 
-  if (!identifyResults.count()) {
-    qDebug("No plugin can open this file (%i identifications tried.)",
-      identificationsTried);
+  if (!options.rowCount()) {
+    qDebug() << "No plugin can open this file (" << identificationsTried <<
+      " identifications tried.)";
 
     return false;
   }
 
-  // use the dialog to filter results
-
-  foreach(IdentifyResult r, identifyResults) {
-    // do something
+  if (showDialog) {
+    FileRolesDialog dlg(NULL);  // TODO(Kuba): set the main window as parent.
+    dlg.setList(&options);
+    if (!dlg.exec()) {
+      qDebug() << "Open was canceled.";
+      return false;
+    }
   }
+
+  bool success = true;
+
+  QList<int> roles;
+  PluginBase* prevPlugin = NULL;
+
+  for (int i = 0; i < options.rowCount(); ++i) {
+    FileOpenOption* option = static_cast<FileOpenOption*>(options.item(i));
+    if (option->checkState() != Qt::Checked) {
+      continue;
+    }
+
+    if (prevPlugin == NULL) {
+      prevPlugin = option->plugin;
+    } else if (prevPlugin != option->plugin) {
+      bool ret = option->plugin->fileOpen(path, roles);
+      if (!ret) {
+        qDebug() << "Plugin " << option->plugin->getName() <<
+          " failed to open file.";
+        success = false;
+      }
+
+      roles.clear();
+      prevPlugin = option->plugin;
+    }
+    roles.append(option->role);
+  }
+
+  bool ret = prevPlugin->fileOpen(path, roles);
+  if (!ret) {
+    qDebug() << "Plugin " << prevPlugin->getName() <<
+      " failed to open file.";
+    success = false;
+  }
+
+  return success;
 }
 
 }  // End namespace Core

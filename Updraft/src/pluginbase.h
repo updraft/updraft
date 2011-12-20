@@ -2,6 +2,7 @@
 #define UPDRAFT_PLUGIN_API_H_
 
 #include <QtGui>
+#include <QStringList>
 
 #include "coreinterface.h"
 #include "tabinterface.h"
@@ -49,8 +50,8 @@ class PluginBase {
   /// Asking a plugin to identify data in a file.
   /// \return List of role descriptions.
   /// \see fileOpen()
-  virtual QList<QString> fileIdentification(QString filename) {
-    return QList<QString>();
+  virtual QStringList fileIdentification(QString filename) {
+    return QStringList();
   }
 
   void setCoreInterface(CoreInterface *coreInterface) {
