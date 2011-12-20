@@ -1,5 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+
+#include <QFileDialog>
+
 #include "menu.h"
 
 namespace Updraft {
@@ -24,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
     // TODO(cestmir): This is here just to be able to test context menu.
     QMenu* qContextMenu = new QMenu();
     menuContext = new Menu(qContextMenu, true);
+
+    standardMenuItems();
 }
 
 MainWindow::~MainWindow() {
@@ -97,6 +102,27 @@ Menu* MainWindow::createMenu(QString title) {
 
 void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
   menuContext->getQMenu()->popup(event->globalPos());
+}
+
+/// Add the standard menu items to menu.
+/// This includes Open / Save, Help ...
+void MainWindow::standardMenuItems() {
+  QAction* openAction = new QAction(tr("&Open File...")
+  menuFile->insertAction(0, openAction);
+  connect(openAction, SIGNAL(triggered()), this, SLOT(openFile()));
+
+  QAction* importAction = new QAction(tr("Import...")
+  menuFile->insertAction(1, importAction);
+  connect(openAction, SIGNAL(triggered()), this, SLOT(importFile()));
+}
+
+void MainWindow::openFile() {
+  QFileDialog dialog(this);
+  dialog.setFileMode(QFileDialog::ExistingFile);
+  dialog.setNameFilters()
+}
+
+void MainWindow::importFile() {
 }
 
 }  // End namespace Core

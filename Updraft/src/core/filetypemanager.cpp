@@ -133,6 +133,26 @@ bool FileTypeManager::openFile(QString path, FileCategory category,
   return success;
 }
 
+/// Returns a list of file name filters suitable
+/// for QFileDialog::setNameFilters().
+/// \param category Limit usable file types only to category.
+///   If category contains more than one category flags any of the flags is
+///   sufficient. CATEGORY_ALL will use all file types regardless of
+///   category flags.
+QStringList getFilters(FileCategory category = CATEGORY_ANY) {
+  QStringList ret;
+
+  foreach(FileType type, registered) {
+    if (!(category & type.category)) {
+      continue;
+    }
+
+    ret.append(type->description + " (*" + type->extension + ")");
+  }
+
+  return ret;
+}
+
 }  // End namespace Core
 }  // End namespace Updraft
 

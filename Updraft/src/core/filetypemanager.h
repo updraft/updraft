@@ -29,6 +29,8 @@ class FileTypeManager {
   bool openFile(const QString path, FileCategory category = CATEGORY_ANY,
     bool showDialog = true);
 
+  QStringList getFilters(FileCategory category = CATEGORY_ANY);
+
  private:
   QList<FileType> registered;
 };
