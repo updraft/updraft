@@ -9,9 +9,19 @@
 #
 # Based on FindOSG.cmake Created by Robert Osfield
 #   with revisions by the Delta3D team
-# Modified by Th3flyboy
+# Modified by Th3flyboy and then modified again for Updraft project
 
-FIND_PATH(OSGEARTH_INCLUDE_DIR osgEarth/EarthFile
+FIND_PATH(OSGEARTH_INCLUDE_DIR osgEarth/Version
+    ${OSG_DIR}/include
+    ${OSG_DIR}
+    ${OSGDIR}/include
+    ${OSGDIR}
+    ${OSG_ROOT}/include
+    ${OSGEARTH_DIR}/include
+    ${OSGEARTH_DIR}
+    ${OSGEARTHDIR}/include
+    ${OSGEARTHDIR}
+    ${OSGEARTH_ROOT}/include
     $ENV{OSG_DIR}/include
     $ENV{OSG_DIR}
     $ENV{OSGDIR}/include
@@ -40,6 +50,20 @@ MACRO(FIND_OSGEARTH_LIBRARY MYLIBRARY MYLIBRARYNAME)
     FIND_LIBRARY(${MYLIBRARY}
         NAMES ${MYLIBRARYNAME}
         PATHS
+        ${OSG_DIR}/lib
+        ${OSG_DIR}/build/lib
+        ${OSG_DIR}
+        ${OSGDIR}/lib
+        ${OSGDIR}
+        ${OSG_ROOT}/lib
+        ${OSG_ROOT}/build/lib
+        ${OSGEARTH_DIR}/lib
+        ${OSGEARTH_DIR}/build/lib
+        ${OSGEARTH_DIR}
+        ${OSGEARTHDIR}/lib
+        ${OSGEARTHDIR}
+        ${OSGEARTH_ROOT}/lib
+        ${OSGEARTH_ROOT}/build/lib
         $ENV{OSG_DIR}/lib
         $ENV{OSG_DIR}/build/lib
         $ENV{OSG_DIR}
@@ -54,7 +78,7 @@ MACRO(FIND_OSGEARTH_LIBRARY MYLIBRARY MYLIBRARYNAME)
         $ENV{OSGEARTHDIR}
         $ENV{OSGEARTH_ROOT}/lib
         $ENV{OSGEARTH_ROOT}/build/lib
-		$ENV{CSPDEVPACK}/lib
+        $ENV{CSPDEVPACK}/lib
         ~/Library/Frameworks
         /Library/Frameworks
         /usr/local/lib
@@ -81,7 +105,18 @@ FIND_OSGEARTH_LIBRARY(OSGEARTHSYMBOLOGY_LIBRARY_DEBUG osgEarthSymbologyd)
 FIND_OSGEARTH_LIBRARY(OSGEARTHUTIL_LIBRARY_DEBUG osgEarthUtild)
 FIND_OSGEARTH_LIBRARY(OSGEARTHFEATURES_LIBRARY_DEBUG osgEarthFeaturesd)
 
-SET(OSGEARTH_FOUND "NO")
-IF(OSGEARTH_LIBRARY AND OSGEARTH_INCLUDE_DIR)
-    SET(OSGEARTH_FOUND "YES")
-ENDIF(OSGEARTH_LIBRARY AND OSGEARTH_INCLUDE_DIR)
+SET(OSGEARTH_LIBRARIES
+    ${OSGEARTH_LIBRARY}
+    ${OSGEARTHSYMBOLOGY_LIBRARY}
+    ${OSGEARTHUTIL_LIBRARY}
+    ${OSGEARTHFEATURES_LIBRARY})
+SET(OSGEARTH_LIBRARIES_DEBUG
+    ${OSGEARTH_LIBRARY_DEBUG}
+    ${OSGEARTHSYMBOLOGY_LIBRARY_DEBUG}
+    ${OSGEARTHUTIL_LIBRARY_DEBUG}
+    ${OSGEARTHFEATURES_LIBRARY_DEGUG})
+SET(OSGEARTH_INCLUDE_DIRS ${OSGEARTH_INCLUDE_DIR})
+
+# handle the QUIETLY and REQUIRED arguments and set LIBXML2_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args(OsgEarth DEFAULT_MSG OSGEARTH_LIBRARY OSGEARTH_INCLUDE_DIR)
