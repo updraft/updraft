@@ -1,5 +1,5 @@
-#ifndef UPDRAFT_PLUGIN_API_H_
-#define UPDRAFT_PLUGIN_API_H_
+#ifndef UPDRAFT_SRC_PLUGINBASE_H_
+#define UPDRAFT_SRC_PLUGINBASE_H_
 
 #include <QtGui>
 
@@ -45,17 +45,16 @@ class PluginBase {
   }
 
  private:
-  //Disallow copying
-  PluginBase(const PluginBase& other) {};
+  /// Disallow copying
+  PluginBase(const PluginBase& other) {}
 
  protected:
-  //This serves for calling CoreInterface methods
+  /// This serves for calling CoreInterface methods
   CoreInterface *core;
-
 };
 
 }  // namespace Updraft
 
 Q_DECLARE_INTERFACE(Updraft::PluginBase, "Updraft_PluginBase")
 
-#endif  // UPDRAFT_IPLUGIN_H_
+#endif  // UPDRAFT_SRC_PLUGINBASE_H_

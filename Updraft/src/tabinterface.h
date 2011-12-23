@@ -8,6 +8,8 @@ namespace Updraft {
 /// An interface wrapping a single tab in bottom pane.
 class TabInterface {
  public:
+  virtual ~TabInterface() {}
+
   /// Connect to the close(void) slot of tab.
   /// After this slot is called signal closed is emited
   /// and pointer to this becomes invalid.
@@ -30,7 +32,7 @@ class TabInterface {
   /// \see QObject::connect()
   virtual void connectSignalDeselected(const QObject* receiver,
     const char *method) = 0;
- 
+
   /// Close this tab.
   /// This method deletes the tab and its widget.
   virtual void close() = 0;

@@ -1,5 +1,5 @@
-#ifndef UPDRAFT_CORE_INTERFACE_H_
-#define UPDRAFT_CORE_INTERFACE_H_
+#ifndef UPDRAFT_SRC_COREINTERFACE_H_
+#define UPDRAFT_SRC_COREINTERFACE_H_
 
 #include <QString>
 
@@ -18,6 +18,8 @@ class MapLayerGroup;
 /// a pointer to calling plugin (this is ensured in core/coreimplementation.cpp)
 class CoreInterface {
  public:
+  virtual ~CoreInterface() {}
+
   /// Returns main window pointer. Used for example for modal dialogs
   virtual QMainWindow* getMainWindow() = 0;
 
@@ -25,7 +27,7 @@ class CoreInterface {
   virtual MenuInterface* createMenu(QString title) = 0;
 
   /// Returns pointer to the instance of a system menu
-  /// \param menu which system menu instance to return  
+  /// \param menu which system menu instance to return
   virtual MenuInterface* getSystemMenu(SystemMenu menu) = 0;
 
   /// Creates map layer group and adds it to the tree view in the left pane.
@@ -46,5 +48,5 @@ class CoreInterface {
 
 }  // End namespace Updraft
 
-#endif
+#endif  // UPDRAFT_SRC_COREINTERFACE_H_
 

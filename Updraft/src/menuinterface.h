@@ -16,6 +16,8 @@ enum SystemMenu {
 /// Interface to menu used by plugins.
 class MenuInterface {
  public:
+  virtual ~MenuInterface() {}
+
   /// Insert action into this menu.
   /// Takes ownership of action.
   /// \param position Priority of this action. Actions with
