@@ -3,6 +3,10 @@
 
 #include <QApplication>
 
+#include "ui/mainwindow.h"
+#include "pluginmanager.h"
+#include "scenemanager.h"
+
 /// Pointer to the instance of Updraft object.
 #define updraft (static_cast<Updraft*>(Updraft::instance()))
 
@@ -12,8 +16,10 @@ namespace Core {
 /// Top level object of updraft project.
 class Updraft : public QApplication {
  public:
-  Updraft(int &argc, char** argv);
+  Updraft(int argc, char** argv);
   ~Updraft();
+
+  int exec();
 
   MainWindow* mainWindow;
   PluginManager* pluginManager;

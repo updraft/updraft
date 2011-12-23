@@ -14,7 +14,7 @@ class UpdraftParent;
 
 class PluginManager {
  public:
-  explicit PluginManager(UpdraftParent* setParent);
+  explicit PluginManager();
   ~PluginManager();
 
   PluginBase* load(QString fileName);
@@ -33,8 +33,6 @@ class PluginManager {
   LoadedPlugin* findByPointer(PluginBase *pointer);
 
   QHash<QString, LoadedPlugin*> plugins;
-
-  UpdraftParent* parent;
 };
 
 }  // namespace Core

@@ -1,34 +1,35 @@
 #include "coreimplementation.h"
 
 #include "ui/mainwindow.h"
+#include "updraft.h"
 
 namespace Updraft {
 namespace Core {
 
-CoreImplementation::CoreImplementation(UpdraftParent* par, PluginBase *pl)
-    : plugin(pl), parent(par) {}
+CoreImplementation::CoreImplementation(PluginBase *pl)
+    : plugin(pl) {}
 
 QMainWindow* CoreImplementation::getMainWindow() {
-  return static_cast<QMainWindow*>(parent->getMainWindow());
+  return static_cast<QMainWindow*>(updraft->mainWindow);
 }
 
 MenuInterface* CoreImplementation::createMenu(QString title) {
-  MainWindow* win = parent->getMainWindow();
+  MainWindow* win = updraft->mainWindow;
 
   return win->createMenu(title);
 }
 
 MenuInterface* CoreImplementation::getSystemMenu(SystemMenu menu) {
-  MainWindow* win = parent->getMainWindow();
+  MainWindow* win = updraft->mainWindow;
   return win->getSystemMenu(menu);
 }
 
 MapLayerGroup* CoreImplementation::createMapLayerGroup(const QString &title) {
-  return parent->getMainWindow()->createMapLayerGroup(title);
+  return updraft->mainWindow->createMapLayerGroup(title);
 }
 
 TabInterface* CoreImplementation::createTab(QWidget* content, QString title) {
-    return parent->getMainWindow()->createTab(content, title);
+    return updraft->mainWindow->createTab(content, title);
 }
 
 void CoreImplementation::removeTab(TabInterface* tab) {

@@ -3,7 +3,8 @@
 namespace Updraft {
 namespace Core {
 
-Updraft::Updraft(int &argc, char** argv) {
+Updraft::Updraft(int argc, char** argv)
+  : QApplication(argc, argv) {
   QTranslator trans;
   trans.load("translations/czech");
 
@@ -13,13 +14,20 @@ Updraft::Updraft(int &argc, char** argv) {
   pluginManager = new PluginManager();
   sceneManager = new SceneManager("data/initial.earth");
 
-  win->setMapWidget(sceneManager->getWidget());
+  mainWindow->setMapWidget(sceneManager->getWidget());
 }
 
 Updraft::~Updraft() {
   delete sceneManager;
   delete pluginManager;
   delete mainWindow;
+}
+
+/// Pull the lever.
+/// Shows main window, and enters event loop.
+int Updraft::exec() {
+  mainWindow->show();
+  return QApplication::exec();
 }
 
 }  // End namespace Core
