@@ -9,7 +9,7 @@ namespace Updraft {
 namespace Core {
 
 /// Constructor loads static plugins.
-PluginManager::PluginManager(UpdraftParent* setParent): parent(setParent) {
+PluginManager::PluginManager() {
   qDebug("Searching for plugins in plugin directory.");
 
   QDir plugins(QCoreApplication::applicationDirPath());
@@ -109,7 +109,7 @@ PluginBase* PluginManager::finishLoading(QPluginLoader* loader, QObject* obj) {
 
   lp->plugin = plugin;
 
-  lp->plugin->setCoreInterface(new CoreImplementation(parent, plugin));
+  lp->plugin->setCoreInterface(new CoreImplementation(plugin));
   plugin->initialize();
 
   plugins.insert(plugin->getName(), lp);
