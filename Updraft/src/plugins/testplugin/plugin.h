@@ -5,6 +5,10 @@
 
 #include "../../pluginbase.h"
 
+namespace osg {
+  class Node;
+}
+
 namespace Updraft {
 
 class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
@@ -13,6 +17,7 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
 
  public:
   TestPlugin();
+  virtual ~TestPlugin();
 
   QString getName();
 
@@ -27,6 +32,8 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
 
  public slots:
   void showHelp();
+  void mapLayerDisplayed(osg::Node* layer);
+  void mapLayerHidden(osg::Node* layer);
 
  private:
   void createTab(QString title);
@@ -36,6 +43,8 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
   QAction* helpAction3;
 
   MenuInterface* myMenu;
+
+  MapLayerGroup *mapLayerGroup;
 };
 }
 

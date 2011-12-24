@@ -1,20 +1,6 @@
-#include <QtGui/QApplication>
-#include <QTranslator>
-#include "ui/mainwindow.h"
-#include "updraftparent.h"
-
-using Updraft::Core::UpdraftParent;
+#include "updraft.h"
 
 int main(int argc, char *argv[]) {
-    QApplication a(argc, argv);
-
-    QTranslator trans;
-    trans.load("translations/czech");
-    a.installTranslator(&trans);
-
-    Updraft::Core::MainWindow w(NULL);
-    UpdraftParent parent(&w);
-    w.show();
-
-    return a.exec();
+  Updraft::Core::Updraft app(argc, argv);
+  return app.exec();
 }

@@ -9,27 +9,17 @@
         <translation>Stoupák</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="104"/>
-        <source>flight.igc</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwindow.ui" line="114"/>
-        <source>task.cup</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwindow.ui" line="134"/>
+        <location filename="../ui/mainwindow.ui" line="119"/>
         <source>File</source>
         <translation>Soubor</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="139"/>
+        <location filename="../ui/mainwindow.ui" line="124"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="144"/>
+        <location filename="../ui/mainwindow.ui" line="129"/>
         <source>Tools</source>
         <translation type="unfinished"></translation>
     </message>
@@ -42,7 +32,7 @@
         <translation type="obsolete">Mapa</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="149"/>
+        <location filename="../ui/mainwindow.ui" line="134"/>
         <source>Help</source>
         <translation>Nápověda</translation>
     </message>
@@ -50,39 +40,32 @@
 <context>
     <name>Updraft::Core::PluginManager</name>
     <message>
-        <location filename="../pluginmanager.cpp" line="12"/>
         <source>Searching for plugins in plugin directory.</source>
-        <translation>Hledám moduly v adresáři plugins.</translation>
+        <translation type="obsolete">Hledám moduly v adresáři plugins.</translation>
     </message>
     <message>
-        <location filename="../pluginmanager.cpp" line="16"/>
         <source>Could not find &apos;plugins&apos; directory</source>
-        <translation>Nemohu najít adresář &apos;plugins&apos;</translation>
+        <translation type="obsolete">Nemohu najít adresář &apos;plugins&apos;</translation>
     </message>
     <message>
-        <location filename="../pluginmanager.cpp" line="46"/>
         <source>Loading plugin %s</source>
-        <translation>Načítám modul %s</translation>
+        <translation type="obsolete">Načítám modul %s</translation>
     </message>
     <message>
-        <location filename="../pluginmanager.cpp" line="87"/>
         <source>Loading plugin failed.</source>
-        <translation>Načítání modulu selhalo.</translation>
+        <translation type="obsolete">Načítání modulu selhalo.</translation>
     </message>
     <message>
-        <location filename="../pluginmanager.cpp" line="95"/>
         <source>Plugin doesn&apos;t have correct interface.</source>
-        <translation>Modul nemá správné rozhraní.</translation>
+        <translation type="obsolete">Modul nemá správné rozhraní.</translation>
     </message>
     <message>
-        <location filename="../pluginmanager.cpp" line="102"/>
         <source>Wrong version of plugin API (expected %d, got %d).</source>
-        <translation>Špatná verze API (očekávám %d, dostal jsem %d).</translation>
+        <translation type="obsolete">Špatná verze API (očekávám %d, dostal jsem %d).</translation>
     </message>
     <message>
-        <location filename="../pluginmanager.cpp" line="108"/>
         <source>Plugin named %s already loaded</source>
-        <translation>Modul s názvem %s už byl nahrán</translation>
+        <translation type="obsolete">Modul s názvem %s už byl nahrán</translation>
     </message>
 </context>
 </TS>

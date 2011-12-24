@@ -2,7 +2,6 @@
 #define UPDRAFT_SRC_CORE_COREIMPLEMENTATION_H_
 
 #include "../coreinterface.h"
-#include "updraftparent.h"
 
 namespace Updraft {
 
@@ -14,12 +13,14 @@ namespace Core {
 /// There is an instance of this class for every loaded plugin.
 class CoreImplementation : public CoreInterface {
  public:
-  CoreImplementation(UpdraftParent* par, PluginBase *pl);
+  explicit CoreImplementation(PluginBase *pl);
 
   QMainWindow* getMainWindow();
 
   MenuInterface* createMenu(QString title);
   MenuInterface* getSystemMenu(SystemMenu menu);
+
+  virtual MapLayerGroup* createMapLayerGroup(const QString &title);
 
   TabInterface* createTab(QWidget* content, QString title);
   void removeTab(TabInterface* tab);
@@ -31,7 +32,6 @@ class CoreImplementation : public CoreInterface {
 
  private:
   PluginBase* plugin;
-  UpdraftParent* parent;
 };
 
 }  // End namespace Core

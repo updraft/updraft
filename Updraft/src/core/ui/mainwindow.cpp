@@ -4,6 +4,7 @@
 #include <QFileDialog>
 
 #include "menu.h"
+#include "maplayergroup.h"
 
 namespace Updraft {
 namespace Core {
@@ -100,6 +101,10 @@ Menu* MainWindow::createMenu(QString title) {
   return newMenu;
 }
 
+MapLayerGroup* MainWindow::createMapLayerGroup(const QString &title) {
+  return new MapLayerGroup(ui->treeWidget_2, title);
+}
+
 void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
   menuContext->getQMenu()->popup(event->globalPos());
 }
@@ -123,6 +128,11 @@ void MainWindow::openFile() {
 }
 
 void MainWindow::importFile() {
+
+}
+
+void MainWindow::setMapWidget(QWidget *widget) {
+  ui->layoutFrame->addWidget(widget);
 }
 
 }  // End namespace Core

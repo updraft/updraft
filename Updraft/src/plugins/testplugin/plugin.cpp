@@ -4,10 +4,15 @@
 #include <QHBoxLayout>
 
 #include "../../coreinterface.h"
+#include "../../core/ui/maplayergroup.h"
 
 namespace Updraft {
 
 TestPlugin::TestPlugin() {}
+
+TestPlugin::~TestPlugin() {
+  delete mapLayerGroup;
+}
 
 QString TestPlugin::getName() {
   return "testplugin";
@@ -48,6 +53,19 @@ void TestPlugin::initialize() {
     "Png image. Maybe a map?", CATEGORY_PERSISTENT);
   core->registerFiletype(".html",
     "bzzzz", CATEGORY_TEMPORARY);
+
+  // Create map layers items in the left pane.
+  mapLayerGroup = core->createMapLayerGroup("Test group");
+  if (mapLayerGroup != NULL) {
+    mapLayerGroup->insertMapLayer(0, (osg::Node*)0, "Layer A");
+    mapLayerGroup->insertMapLayer(1, (osg::Node*)1, "Layer B");
+
+    // Connect display/hide signals with slots.
+    connect(mapLayerGroup, SIGNAL(mapLayerDisplayed(osg::Node*)),
+            this, SLOT(mapLayerDisplayed(osg::Node*)));
+    connect(mapLayerGroup, SIGNAL(mapLayerHidden(osg::Node*)),
+            this, SLOT(mapLayerHidden(osg::Node*)));
+  }
 
   qDebug("testplugin loaded");
 }
@@ -98,6 +116,13 @@ QStringList TestPlugin::fileIdentification(QString filename) {
     ret.append("other file, the only role");
   }
   return ret;
+
+void TestPlugin::mapLayerDisplayed(osg::Node* layer) {
+  qDebug("testplugin: Map layer displayed.");
+}
+
+void TestPlugin::mapLayerHidden(osg::Node* layer) {
+  qDebug("testplugin: Map layer hidden.");
 }
 
 Q_EXPORT_PLUGIN2(testplugin, TestPlugin)
