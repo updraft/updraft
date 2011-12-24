@@ -77,7 +77,7 @@ Core::Tab* MainWindow::createTab(QWidget* content, QString title) {
 
 void MainWindow::tabClose(int index) {
   QWidget* tab = ui->tabWidget->widget(index);
-  delete static_cast<Tab*>(tab);
+  static_cast<Tab*>(tab)->close();
 }
 
 void MainWindow::tabSwitch(int index) {
