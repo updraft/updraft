@@ -142,14 +142,22 @@ bool FileTypeManager::openFile(QString path, FileCategory category,
 ///   category flags.
 QStringList FileTypeManager::getFilters(FileCategory category) {
   QStringList ret;
+  QStringList allFilters;
 
   foreach(FileType type, registered) {
     if (!(category & type.category)) {
       continue;
     }
 
-    ret.append(type.description + " (*" + type.extension + ")");
+    QString filter = "*" + type.extension;
+
+    allFilters.append(filter);
+    ret.append(type.description + " (" + filter + ")");
   }
+
+  allFilters.removeDuplicates();
+  QString filter = allFilters.join(" ");
+  ret.prepend(QObject::tr("All supported types") + " (" + filter + ")");
 
   return ret;
 }
