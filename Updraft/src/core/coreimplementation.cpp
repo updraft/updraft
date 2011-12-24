@@ -40,8 +40,8 @@ void CoreImplementation::removeTab(TabInterface* tab) {
 /// \return Identifier of the newly registered filetype
 void CoreImplementation::registerFiletype(QString extension,
   QString description, FileCategory category) {
-  parent->getFileTypeManager()->registerFiletype(extension, description,
-    category, plugin);
+  FileTypeManager *manager = updraft->fileTypeManager;
+  manager->registerFiletype(extension, description, category, plugin);
 }
 
 }  // End namespace Core

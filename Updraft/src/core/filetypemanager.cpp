@@ -5,6 +5,7 @@
 
 #include "../pluginbase.h"
 #include "ui/filerolesdialog.h"
+#include "updraft.h"
 
 namespace Updraft {
 namespace Core {
@@ -88,7 +89,7 @@ bool FileTypeManager::openFile(QString path, FileCategory category,
   }
 
   if (showDialog) {
-    FileRolesDialog dlg(NULL);  // TODO(Kuba): set the main window as parent.
+    FileRolesDialog dlg(updraft->mainWindow);
     dlg.setList(&options);
     if (!dlg.exec()) {
       qDebug() << "Open was canceled.";
@@ -139,7 +140,7 @@ bool FileTypeManager::openFile(QString path, FileCategory category,
 ///   If category contains more than one category flags any of the flags is
 ///   sufficient. CATEGORY_ALL will use all file types regardless of
 ///   category flags.
-QStringList getFilters(FileCategory category = CATEGORY_ANY) {
+QStringList FileTypeManager::getFilters(FileCategory category) {
   QStringList ret;
 
   foreach(FileType type, registered) {
@@ -147,10 +148,31 @@ QStringList getFilters(FileCategory category = CATEGORY_ANY) {
       continue;
     }
 
-    ret.append(type->description + " (*" + type->extension + ")");
+    ret.append(type.description + " (*" + type.extension + ")");
   }
 
   return ret;
+}
+
+/// Display a file open dialog, and open the selected files.
+/// \param category Limit usable file types only to category.
+///   If category contains more than one category flags any of the flags is
+///   sufficient. CATEGORY_ALL will use all file types regardless of
+///   category flags.
+void FileTypeManager::openFileDialog(FileCategory category, QString caption) {
+  QFileDialog dialog(updraft->mainWindow, caption);
+  dialog.setFileMode(QFileDialog::ExistingFile);
+  dialog.setNameFilters(updraft->fileTypeManager->getFilters(category));
+
+  if (!dialog.exec()) {
+    return;
+  }
+
+  QStringList list = dialog.selectedFiles();
+
+  foreach(QString file, list) {
+    openFile(file, category, true);
+  }
 }
 
 }  // End namespace Core

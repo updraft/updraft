@@ -1,10 +1,12 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 
 #include <QFileDialog>
 
+#include "ui_mainwindow.h"
+
 #include "menu.h"
 #include "maplayergroup.h"
+#include "updraft.h"
 
 namespace Updraft {
 namespace Core {
@@ -112,23 +114,25 @@ void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
 /// Add the standard menu items to menu.
 /// This includes Open / Save, Help ...
 void MainWindow::standardMenuItems() {
-  QAction* openAction = new QAction(tr("&Open File...")
+  QAction* openAction = new QAction(tr("&Open File..."), this);
   menuFile->insertAction(0, openAction);
   connect(openAction, SIGNAL(triggered()), this, SLOT(openFile()));
 
-  QAction* importAction = new QAction(tr("Import...")
+  QAction* importAction = new QAction(tr("Import..."), this);
   menuFile->insertAction(1, importAction);
-  connect(openAction, SIGNAL(triggered()), this, SLOT(importFile()));
+  connect(importAction, SIGNAL(triggered()), this, SLOT(importFile()));
 }
 
+/// Handle File->Open... menu action.
 void MainWindow::openFile() {
-  QFileDialog dialog(this);
-  dialog.setFileMode(QFileDialog::ExistingFile);
-  dialog.setNameFilters()
+  updraft->fileTypeManager->openFileDialog(CATEGORY_TEMPORARY,
+    static_cast<QAction*>(sender())->text());
 }
 
+/// Handle File->Import... menu action.
 void MainWindow::importFile() {
-
+  updraft->fileTypeManager->openFileDialog(CATEGORY_PERSISTENT,
+    static_cast<QAction*>(sender())->text());
 }
 
 void MainWindow::setMapWidget(QWidget *widget) {

@@ -116,6 +116,7 @@ QStringList TestPlugin::fileIdentification(QString filename) {
     ret.append("other file, the only role");
   }
   return ret;
+}
 
 void TestPlugin::mapLayerDisplayed(osg::Node* layer) {
   qDebug("testplugin: Map layer displayed.");

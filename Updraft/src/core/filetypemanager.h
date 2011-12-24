@@ -26,10 +26,12 @@ class FileTypeManager {
   void registerFiletype(const QString extension, const QString description,
     FileCategory category, PluginBase* plugin);
 
-  bool openFile(const QString path, FileCategory category = CATEGORY_ANY,
+  bool openFile(const QString path, FileCategory category,
     bool showDialog = true);
 
-  QStringList getFilters(FileCategory category = CATEGORY_ANY);
+  QStringList getFilters(FileCategory category);
+
+  void openFileDialog(FileCategory category, QString caption);
 
  private:
   QList<FileType> registered;
