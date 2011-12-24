@@ -25,6 +25,11 @@ class CoreImplementation : public CoreInterface {
   TabInterface* createTab(QWidget* content, QString title);
   void removeTab(TabInterface* tab);
 
+  /// This plugin knows how to open the file!
+  /// \return Identifier of the newly registered filetype
+  void registerFiletype(QString extension, QString description,
+    FileCategory category);
+
  private:
   PluginBase* plugin;
 };

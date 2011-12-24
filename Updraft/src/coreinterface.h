@@ -11,6 +11,12 @@ class QMainWindow;
 
 namespace Updraft {
 
+enum FileCategory {
+  CATEGORY_ANY = 0xff,
+  CATEGORY_PERSISTENT = 1,
+  CATEGORY_TEMPORARY = 2
+};
+
 class MapLayerGroup;
 
 /// Exposes core functionalities to plugins.
@@ -44,6 +50,11 @@ class CoreInterface {
   /// The tab class given to this function is deleted!
   /// Equivalent to tab->close()
   virtual void removeTab(TabInterface* tab) = 0;
+
+  /// This plugin knows how to open the file!
+  /// \return Identifier of the newly registered filetype
+  virtual void registerFiletype(QString extension, QString description,
+    FileCategory category) = 0;
 };
 
 }  // End namespace Updraft

@@ -42,11 +42,16 @@ class MainWindow : public QMainWindow {
   /// Handles switchin an active tab in the bottom pane.
   void tabSwitch(int index);
 
+  void openFile();
+  void importFile();
+
  protected:
   // TODO(cestmir): Just a temporary method to test context menu
   void contextMenuEvent(QContextMenuEvent* event);
 
  private:
+  void standardMenuItems();
+
   Ui::MainWindow *ui;
 
   Menu* menuFile;

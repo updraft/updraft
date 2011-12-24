@@ -47,6 +47,13 @@ void TestPlugin::initialize() {
   createTab("Button tab 1");
   createTab("Button tab 2");
 
+  core->registerFiletype(".txt",
+    "Just a text file; in all categories", CATEGORY_ANY);
+  core->registerFiletype(".png",
+    "Png image. Maybe a map?", CATEGORY_PERSISTENT);
+  core->registerFiletype(".html",
+    "bzzzz", CATEGORY_TEMPORARY);
+
   // Create map layers items in the left pane.
   mapLayerGroup = core->createMapLayerGroup("Test group");
   if (mapLayerGroup != NULL) {
@@ -89,6 +96,26 @@ void TestPlugin::showHelp() {
 
   QMessageBox::information(win, "About testplugin",
     "Testplugin is just a test plugin to see whether our api is working");
+}
+
+bool TestPlugin::fileOpen(QString filename, QList<int> roles) {
+  foreach(int role, roles) {
+    qDebug() << "Testplugin opens file " << filename << ", role " << role;
+  }
+
+  return true;
+}
+
+QStringList TestPlugin::fileIdentification(QString filename) {
+  QStringList ret;
+  if (filename.endsWith("txt")) {
+    ret.append("Txt file, role 1");
+    ret.append("Txt file, role 2");
+    ret.append("Txt file, role 3");
+  } else {
+    ret.append("other file, the only role");
+  }
+  return ret;
 }
 
 void TestPlugin::mapLayerDisplayed(osg::Node* layer) {

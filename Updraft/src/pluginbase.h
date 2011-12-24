@@ -2,6 +2,7 @@
 #define UPDRAFT_SRC_PLUGINBASE_H_
 
 #include <QtGui>
+#include <QStringList>
 
 #include "coreinterface.h"
 #include "tabinterface.h"
@@ -39,6 +40,19 @@ class PluginBase {
 
   /// Called before the plugin is unloaded.
   virtual void deinitialize() = 0;
+
+  /// Callback to open a file.
+  /// \return Was opening successful?
+  /// \param roles List of role indices (roles are
+  ///   returned by fileIdentification().)
+  virtual bool fileOpen(QString filename, QList<int> roles) { return false; }
+
+  /// Asking a plugin to identify data in a file.
+  /// \return List of role descriptions.
+  /// \see fileOpen()
+  virtual QStringList fileIdentification(QString filename) {
+    return QStringList();
+  }
 
   void setCoreInterface(CoreInterface *coreInterface) {
     core = coreInterface;

@@ -1,7 +1,12 @@
 #include "mainwindow.h"
+
+#include <QFileDialog>
+
 #include "ui_mainwindow.h"
+
 #include "menu.h"
 #include "maplayergroup.h"
+#include "updraft.h"
 
 namespace Updraft {
 namespace Core {
@@ -25,6 +30,8 @@ MainWindow::MainWindow(QWidget *parent)
     // TODO(cestmir): This is here just to be able to test context menu.
     QMenu* qContextMenu = new QMenu();
     menuContext = new Menu(qContextMenu, true);
+
+    standardMenuItems();
 }
 
 MainWindow::~MainWindow() {
@@ -102,6 +109,30 @@ MapLayerGroup* MainWindow::createMapLayerGroup(const QString &title) {
 
 void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
   menuContext->getQMenu()->popup(event->globalPos());
+}
+
+/// Add the standard menu items to menu.
+/// This includes Open / Save, Help ...
+void MainWindow::standardMenuItems() {
+  QAction* openAction = new QAction(tr("&Open File..."), this);
+  menuFile->insertAction(0, openAction);
+  connect(openAction, SIGNAL(triggered()), this, SLOT(openFile()));
+
+  QAction* importAction = new QAction(tr("Import..."), this);
+  menuFile->insertAction(1, importAction);
+  connect(importAction, SIGNAL(triggered()), this, SLOT(importFile()));
+}
+
+/// Handle File->Open... menu action.
+void MainWindow::openFile() {
+  updraft->fileTypeManager->openFileDialog(CATEGORY_TEMPORARY,
+    static_cast<QAction*>(sender())->text());
+}
+
+/// Handle File->Import... menu action.
+void MainWindow::importFile() {
+  updraft->fileTypeManager->openFileDialog(CATEGORY_PERSISTENT,
+    static_cast<QAction*>(sender())->text());
 }
 
 void MainWindow::setMapWidget(QWidget *widget) {

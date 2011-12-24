@@ -4,6 +4,7 @@
 #include <QApplication>
 
 #include "ui/mainwindow.h"
+#include "filetypemanager.h"
 #include "pluginmanager.h"
 #include "scenemanager.h"
 
@@ -22,6 +23,7 @@ class Updraft : public QApplication {
   int exec();
 
   MainWindow* mainWindow;
+  FileTypeManager* fileTypeManager;
   PluginManager* pluginManager;
   SceneManager* sceneManager;
 };
