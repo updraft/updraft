@@ -15,13 +15,6 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QCheckBox" name="checkBox">
-     <property name="text">
-      <string>Select All</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QListView" name="listView">
      <property name="alternatingRowColors">
       <bool>true</bool>
