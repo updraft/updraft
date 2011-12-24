@@ -19,7 +19,6 @@ class MenuInterface {
   virtual ~MenuInterface() {}
 
   /// Insert action into this menu.
-  /// Takes ownership of action.
   /// \param position Priority of this action. Actions with
   ///   lower value are closer to the top.
   virtual void insertAction(int position, QAction* action) = 0;
