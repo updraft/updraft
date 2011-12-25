@@ -1,5 +1,10 @@
 #include <osgQt/GraphicsWindowQt>
-#include <osgEarth/ViewPoint>
+// TODO(Kuba) Remove the #ifdefs once we know the correct includes
+#ifdef __linux__
+#  include <osgEarthUtil/Viewpoint>
+#else
+#  include <osgEarth/ViewPoint>
+#endif
 #include <osgEarthUtil/ObjectPlacer>
 #include <osgEarth/Map>
 #include <osgEarth/MapNode>
@@ -33,7 +38,13 @@ SceneManager::SceneManager(QString baseEarthFile,
   viewer->setSceneData(sceneRoot);
 
   // set manipulator
-  osgEarth::Viewpoint start(14.42046, 50.087811, 0, 0.0, -90.0, /*6e3*/6e7);
+#ifdef __linux__
+  osgEarth::Util::Viewpoint start(14.42046, 50.087811,
+    0, 0.0, -90.0, /*6e3*/6e7);
+#else
+  osgEarth::Viewpoint start(14.42046, 50.087811,
+    0, 0.0, -90.0, /*6e3*/6e7);
+#endif
   // osgEarth::Util::EarthManipulator* manipulator =
   //   new osgEarth::Util::EarthManipulator();
   MapManipulator* manipulator = new MapManipulator();
