@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
+SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
+
 SET(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 
 # Handling of output filenames and directories on Windows

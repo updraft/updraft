@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 2.8)
 
 PROJECT(updraft)
 
-SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../../CMakeModules;${CMAKE_MODULE_PATH}")
-
 FIND_PACKAGE(Qt4 REQUIRED)
 FIND_PACKAGE(OpenSceneGraph REQUIRED osgUtil osgDB osgViewer osgQt)
 FIND_PACKAGE(OsgEarth REQUIRED)
