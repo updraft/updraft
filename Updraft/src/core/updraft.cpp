@@ -11,6 +11,7 @@ Updraft::Updraft(int argc, char** argv)
   installTranslator(&trans);
 
   mainWindow = new MainWindow(NULL);
+  settingsManager = new SettingsManager();
   fileTypeManager = new FileTypeManager();
   pluginManager = new PluginManager();
   sceneManager = new SceneManager("data/initial.earth");

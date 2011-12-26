@@ -7,6 +7,7 @@
 #include "filetypemanager.h"
 #include "pluginmanager.h"
 #include "scenemanager.h"
+#include "settingsmanager.h"
 
 /// Pointer to the instance of Updraft object.
 #define updraft (static_cast<Updraft*>(Updraft::instance()))
@@ -26,6 +27,7 @@ class Updraft : public QApplication {
   FileTypeManager* fileTypeManager;
   PluginManager* pluginManager;
   SceneManager* sceneManager;
+  SettingsManager* settingsManager;
 };
 
 }  // End namespace Core

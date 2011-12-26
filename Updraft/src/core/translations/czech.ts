@@ -64,4 +64,12 @@
         <translation>Otevřít soubor...</translation>
     </message>
 </context>
+<context>
+    <name>Updraft::Core::SettingsManager</name>
+    <message>
+        <location filename="../settingsmanager.cpp" line="18"/>
+        <source>Settings...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 </TS>
