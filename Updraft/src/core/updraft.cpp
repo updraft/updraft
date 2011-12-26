@@ -14,13 +14,13 @@ Updraft::Updraft(int argc, char** argv)
   settingsManager = new SettingsManager();
   fileTypeManager = new FileTypeManager();
   pluginManager = new PluginManager();
-  sceneManager = new SceneManager("data/initial.earth");
+//  sceneManager = new SceneManager("data/initial.earth");
 
-  mainWindow->setMapWidget(sceneManager->getWidget());
+//  mainWindow->setMapWidget(sceneManager->getWidget());
 }
 
 Updraft::~Updraft() {
-  delete sceneManager;
+//  delete sceneManager;
   delete pluginManager;
   delete fileTypeManager;
   delete mainWindow;
