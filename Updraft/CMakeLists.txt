@@ -5,6 +5,8 @@ INCLUDE(StyleCheck)
 
 SET(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 
+SET(SLOPPY_BUILD OFF CACHE BOOL "Don't require style checks to pass.")
+
 # Handling of output filenames and directories on Windows
 IF(WIN32)
 	SET(WIN_UPDRAFT_BIN_DIR ${PROJECT_BINARY_DIR}/bin)
