@@ -92,7 +92,7 @@ import unicodedata
 
 _USAGE = """
 Syntax: cpplint.py [--verbose=#] [--output=vs7] [--filter=-x,+y,...]
-                   [--counting=total|toplevel|detailed]
+                   [--counting=total|toplevel|detailed] [--nonfatal]
         <file> [file] ...
 
   The style guidelines this tries to follow are those in
@@ -3292,10 +3292,12 @@ def ParseArguments(args):
   Returns:
     The list of filenames to lint.
   """
+  global nonfatal
+
   try:
     (opts, filenames) = getopt.getopt(args, '', ['help', 'output=', 'verbose=',
                                                  'counting=',
-                                                 'filter='])
+                                                 'filter=', 'nonfatal'])
   except getopt.GetoptError:
     PrintUsage('Invalid arguments.')
 
@@ -3303,6 +3305,7 @@ def ParseArguments(args):
   output_format = _OutputFormat()
   filters = ''
   counting_style = ''
+  nonfatal = False
 
   for (opt, val) in opts:
     if opt == '--help':
@@ -3320,6 +3323,8 @@ def ParseArguments(args):
     elif opt == '--counting':
       if val not in ('total', 'toplevel', 'detailed'):
         PrintUsage('Valid counting options are total, toplevel, and detailed')
+    elif opt == '--nonfatal':
+      nonfatal = True
       counting_style = val
 
   if not filenames:
@@ -3350,7 +3355,10 @@ def main():
     ProcessFile(filename, _cpplint_state.verbose_level)
   _cpplint_state.PrintErrorCounts()
 
-  sys.exit(_cpplint_state.error_count > 0)
+  if nonfatal:
+    sys.exit(0)
+  else:
+    sys.exit(_cpplint_state.error_count > 0)
 
 
 if __name__ == '__main__':
