@@ -22,6 +22,16 @@ SettingsManager::SettingsManager() {
 
   // TODO(cestmir): Populate the test model with some testing data for now
   QStandardItem* firstRow = new QStandardItem();
+  QStandardItem* setting1 = new QStandardItem();
+  QStandardItem* setting2 = new QStandardItem();
+  QStandardItem* setting3 = new QStandardItem();
+
+  setting1->setData("String data", Qt::DisplayRole);
+  firstRow->appendRow(setting1);
+
+  firstRow->setData("Map settings", Qt::DisplayRole);
+  firstRow->setIcon(QIcon(":/core/icons/configure.png"));
+  model->appendRow(firstRow);
 }
 
 SettingsManager::~SettingsManager() {
