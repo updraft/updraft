@@ -9,7 +9,9 @@ namespace Updraft {
 namespace Core {
 
 SettingsManager::SettingsManager() {
-  dialog = new SettingsDialog(NULL);
+  model = new QStandardItemModel(this);
+
+  dialog = new SettingsDialog(NULL, model);
 
   // Create an action that shows the dialog and add it to the menu
   MainWindow* win = updraft->mainWindow;

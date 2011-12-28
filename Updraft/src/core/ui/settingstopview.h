@@ -6,7 +6,7 @@
 namespace Updraft {
 namespace Core {
 
-class SettingsTopView: public QAbstractItemView {
+class SettingsTopView: public QListView {
 Q_OBJECT
 
  public:

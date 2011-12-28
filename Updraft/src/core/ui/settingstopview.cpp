@@ -3,7 +3,7 @@
 namespace Updraft {
 namespace Core {
 
-SettingsTopView::SettingsTopView(QWidget* parent): QAbstractItemView(parent) {}
+SettingsTopView::SettingsTopView(QWidget* parent): QListView(parent) {}
 
 }  // End namespace Core
 }  // End namespace Updraft
