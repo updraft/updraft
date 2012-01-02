@@ -8,12 +8,11 @@ Menu::~Menu() {
   if (ownsMenu) {
     delete menu;
   }
-
-  foreach(QAction* action, actions) {
-    delete action;
-  }
 }
 
+/// Insert action into this menu.
+/// \param position Priority of this action. Actions with
+///   lower value are closer to the top.
 void Menu::insertAction(int position, QAction* action) {
   actions.insert(position, action);
 

@@ -77,7 +77,7 @@ Core::Tab* MainWindow::createTab(QWidget* content, QString title) {
 
 void MainWindow::tabClose(int index) {
   QWidget* tab = ui->tabWidget->widget(index);
-  delete static_cast<Tab*>(tab);
+  static_cast<Tab*>(tab)->close();
 }
 
 void MainWindow::tabSwitch(int index) {
@@ -126,13 +126,13 @@ void MainWindow::standardMenuItems() {
 /// Handle File->Open... menu action.
 void MainWindow::openFile() {
   updraft->fileTypeManager->openFileDialog(CATEGORY_TEMPORARY,
-    static_cast<QAction*>(sender())->text());
+    tr("Open File..."));
 }
 
 /// Handle File->Import... menu action.
 void MainWindow::importFile() {
   updraft->fileTypeManager->openFileDialog(CATEGORY_PERSISTENT,
-    static_cast<QAction*>(sender())->text());
+    tr("Import..."));
 }
 
 void MainWindow::setMapWidget(QWidget *widget) {

@@ -18,14 +18,14 @@ Tab::Tab(QWidget* content, QString title, QTabWidget* parent)
 
 Tab::~Tab() {
   emit closed();
-
-  int id = tabWidget->indexOf(this);
-  tabWidget->removeTab(id);
 }
 
 /// Close this tab.
 /// This method deletes the tab and its widget.
 void Tab::close() {
+  int id = tabWidget->indexOf(this);
+  tabWidget->removeTab(id);
+
   delete this;
 }
 
