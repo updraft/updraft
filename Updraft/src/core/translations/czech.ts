@@ -46,6 +46,14 @@
     </message>
 </context>
 <context>
+    <name>SettingsDialog</name>
+    <message>
+        <location filename="../ui/settingsdialog.ui" line="14"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Updraft::Core::MainWindow</name>
     <message>
         <location filename="../ui/mainwindow.cpp" line="117"/>

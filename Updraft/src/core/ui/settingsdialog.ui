@@ -42,13 +42,34 @@
       </widget>
      </item>
      <item>
-      <widget class="QWidget" name="bottomView" native="true">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+      <widget class="QScrollArea" name="scrollArea">
+       <property name="widgetResizable">
+        <bool>true</bool>
        </property>
+       <widget class="QWidget" name="scrollAreaWidgetContents">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>305</width>
+          <height>425</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="Updraft::Core::SettingsBottomView" name="bottomView"/>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </item>
     </layout>
@@ -70,6 +91,11 @@
    <class>Updraft::Core::SettingsTopView</class>
    <extends>QListView</extends>
    <header>ui/settingstopview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Updraft::Core::SettingsBottomView</class>
+   <extends>QListView</extends>
+   <header>ui/settingsbottomview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -11,6 +11,10 @@ SettingsDialog::SettingsDialog(QWidget* parent, QStandardItemModel* model)
 
   ui->topView->setModel(model);
   ui->topView->resize(sizeHint());
+  ui->bottomView->setModel(model);
+  ui->bottomView->resize(sizeHint());
+
+  connect(ui->topView, SIGNAL(clicked(const QModelIndex&)), ui->bottomView, SLOT(setTopIndex(const QModelIndex&)));
 }
 
 SettingsDialog::~SettingsDialog() {
