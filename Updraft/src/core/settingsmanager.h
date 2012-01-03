@@ -3,6 +3,7 @@
 
 #include <QtGui>
 #include "ui/settingsdialog.h"
+#include "../settinginterface.h"
 
 namespace Updraft {
 namespace Core {
@@ -14,7 +15,20 @@ Q_OBJECT
   SettingsManager();
   ~SettingsManager();
 
+  SettingInterface* addSetting(
+    const QString& settingId,
+    const QString& description,
+    QVariant initValue);
+
+  QModelIndex addGroup(
+    const QString& groupId,
+    const QString& description,
+    QIcon icon);
+
  private:
+  QModelIndex getGroup(const QString& groupId);
+  QModelIndex getSetting(const QString& settingId, QModelIndex groupIndex);
+
   QAction* settingsAction;
 
   SettingsDialog* dialog;
@@ -22,6 +36,8 @@ Q_OBJECT
   // TODO(cestmir): This needs to be converted to our own editable model
   // So far, this is here only to test the specialized settings view
   QStandardItemModel* model;
+
+  QRegExp idRegExp;
 };
 
 }  // End namespace Core

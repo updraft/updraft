@@ -71,14 +71,17 @@ void SettingsBottomView::createEditors() {
     layout = new QGridLayout();
     QList<QWidget*>* childrenPage = new QList<QWidget*>;
 
-    index = model()->index(page, 0);
+    index = model()->index(page, 1);
     for (int row = 0; row < model()->rowCount(index); ++row) {
-      QModelIndex child     = model()->index(row, 1, index);
+      QModelIndex child     = model()->index(row, 2, index);
+      QModelIndex childDesc = model()->index(row, 1, index);
       QModelIndex childName = model()->index(row, 0, index);
       QAbstractItemDelegate* delegate = itemDelegate(child);
 
-      QVariant nameData = model()->data(childName);
-      QLabel* label = new QLabel(nameData.toString(), NULL);
+      qDebug() << "Child is " << child;
+
+      QVariant descData = model()->data(childDesc);
+      QLabel* label = new QLabel(descData.toString(), NULL);
       layout->addWidget(label, row, 0);
 
       QStyleOptionViewItem sovi;
