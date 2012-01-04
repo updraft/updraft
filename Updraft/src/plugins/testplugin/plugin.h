@@ -48,6 +48,8 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
   MapLayerGroup *mapLayerGroup;
 
   SettingInterface* testSetting;
+  SettingInterface* testSetting2;
+  SettingInterface* testSetting3;
 };
 }
 
