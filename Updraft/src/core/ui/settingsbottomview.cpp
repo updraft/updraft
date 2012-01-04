@@ -35,7 +35,6 @@ QRect SettingsBottomView::visualRect(const QModelIndex& index) const {
 void SettingsBottomView::setModel(QAbstractItemModel* model) {
   QAbstractItemView::setModel(model);
 
-  // TODO(cestmir): Are old editors destroyed?
   createEditors();
 }
 
@@ -53,13 +52,12 @@ void SettingsBottomView::createEditors() {
   QModelIndex index;
   QGridLayout* layout;
 
-  // TODO(cestmir): Remove debugging messages
   if (!model()) {
-    qDebug() << "Model is null";
     return;
-  } else {
-    qDebug() << "Model is NOT null";
   }
+
+  delete stack;
+  stack = new QStackedWidget(this);
 
   for (int page = 0; page < model()->rowCount(); ++page) {
     layout = new QGridLayout();
