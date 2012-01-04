@@ -23,6 +23,13 @@ void SettingsDialog::setModel(QStandardItemModel* model) {
   ui->bottomView->resize(sizeHint());
 }
 
+void SettingsDialog::recalculateTopViewWidth() {
+  int newColumnWidth = ui->topView->sizeHintForColumn(0);
+  QSize maxSize = ui->topView->maximumSize();
+  maxSize.setWidth(newColumnWidth + 10);   // Add some extra space
+  ui->topView->setMaximumSize(maxSize);
+}
+
 }  // End namespace Core
 }  // End namespace Updraft
 

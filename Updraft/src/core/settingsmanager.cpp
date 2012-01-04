@@ -121,10 +121,7 @@ QModelIndex SettingsManager::addGroup(
     model->setData(descIndex, icon, Qt::DecorationRole);
   }
 
-  int newColumnWidth = dialog->ui->topView->sizeHintForColumn(0);
-  QSize maxSize = dialog->ui->topView->maximumSize();
-  maxSize.setWidth(newColumnWidth + 10);   // Add some extra space
-  dialog->ui->topView->setMaximumSize(maxSize);
+  dialog->recalculateTopViewWidth();
 
   return groupIndex;
 }

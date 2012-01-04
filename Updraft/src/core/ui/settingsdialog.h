@@ -18,8 +18,11 @@ class SettingsDialog: public QDialog {
 
   void setModel(QStandardItemModel* model);
 
-  Ui::SettingsDialog* ui;
+  void recalculateTopViewWidth();
+
  private:
+  Ui::SettingsDialog* ui;
+
   SettingsTopView* topView;
 };
 
