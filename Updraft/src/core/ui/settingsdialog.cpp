@@ -1,18 +1,23 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
+#include "settingsdelegate.h"
 
 namespace Updraft {
 namespace Core {
 
 SettingsDialog::SettingsDialog(QWidget* parent)
-: QDialog(parent), ui(new Ui::SettingsDialog) {
+: QDialog(parent), ui(new Ui::SettingsDialog), settingsDelegate(new SettingsDelegate) {
   ui->setupUi(this);
+
+  ui->bottomView->setItemDelegate(settingsDelegate);
+
   setWindowTitle(tr("Settings"));
 
   connect(ui->topView, SIGNAL(clicked(const QModelIndex&)), ui->bottomView, SLOT(setTopIndex(const QModelIndex&)));
 }
 
 SettingsDialog::~SettingsDialog() {
+  delete settingsDelegate;
   delete ui;
 }
 
@@ -28,6 +33,14 @@ void SettingsDialog::recalculateTopViewWidth() {
   QSize maxSize = ui->topView->maximumSize();
   maxSize.setWidth(newColumnWidth + 10);   // Add some extra space
   ui->topView->setMaximumSize(maxSize);
+}
+
+void SettingsDialog::commitEditorData() {
+  ui->bottomView->commit();
+}
+
+void SettingsDialog::resetEditors() {
+  ui->bottomView->reset();
 }
 
 }  // End namespace Core

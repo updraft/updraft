@@ -9,6 +9,8 @@ namespace Ui { class SettingsDialog; }
 namespace Updraft {
 namespace Core {
 
+class SettingsDelegate;
+
 class SettingsDialog: public QDialog {
   Q_OBJECT
 
@@ -20,10 +22,15 @@ class SettingsDialog: public QDialog {
 
   void recalculateTopViewWidth();
 
+  /// Commits the data of the bottom view editors to the model.
+  void commitEditorData();
+
+  /// Reverts data of the bottom view editors to values present in the model.
+  void resetEditors();
  private:
   Ui::SettingsDialog* ui;
 
-  SettingsTopView* topView;
+  SettingsDelegate* settingsDelegate;
 };
 
 }  // End namespace Core

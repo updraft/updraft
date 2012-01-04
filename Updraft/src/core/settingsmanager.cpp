@@ -25,7 +25,7 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL)) {
 
   settingsAction = new QAction(QIcon(":/core/icons/configure.png"), tr("Settings..."), this); // NOLINT
   settingsAction->setIconVisibleInMenu(true);
-  QObject::connect(settingsAction, SIGNAL(triggered()), dialog, SLOT(exec()));
+  QObject::connect(settingsAction, SIGNAL(triggered()), this, SLOT(execDialog()));
   toolsMenu->insertAction(100, settingsAction);
 }
 
@@ -124,6 +124,14 @@ QModelIndex SettingsManager::addGroup(
   dialog->recalculateTopViewWidth();
 
   return groupIndex;
+}
+
+void SettingsManager::execDialog() {
+  if (dialog->exec() == QDialog::Accepted) {
+    dialog->commitEditorData();
+  } else {
+    dialog->resetEditors();
+  }
 }
 
 QModelIndex SettingsManager::getGroup(const QString& groupId) {

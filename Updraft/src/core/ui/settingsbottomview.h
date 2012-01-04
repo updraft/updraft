@@ -21,6 +21,8 @@ class SettingsBottomView: public QAbstractItemView {
 
  public slots:
   void setTopIndex(const QModelIndex& index);
+  void commit();
+  void reset();
 
  protected:
   void createEditors();

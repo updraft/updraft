@@ -46,6 +46,28 @@ void SettingsBottomView::setTopIndex(const QModelIndex& index) {
   return;
 }
 
+void SettingsBottomView::commit() {
+  int pages = stack->count();
+
+  for (int p = 0; p < pages; ++p) {
+    QWidget* page = stack->widget(p);
+    QGridLayout* layout = qobject_cast<QGridLayout*>(page->layout());
+    QModelIndex pageIndex = model()->index(p, 1);
+
+    for (int i = 0; i < layout->rowCount(); ++i) {
+      QLayoutItem* item = layout->itemAtPosition(i, 1);
+      QWidget* editor = item->widget();
+      QModelIndex dataIndex = model()->index(i, 2, pageIndex);
+
+      itemDelegate()->setModelData(editor, model(), dataIndex);
+    }
+  }
+}
+
+void SettingsBottomView::reset() {
+
+}
+
 void SettingsBottomView::createEditors() {
   QModelIndex index;
   QGridLayout* layout;

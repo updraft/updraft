@@ -25,6 +25,9 @@ Q_OBJECT
     const QString& description,
     QIcon icon);
 
+ public slots:
+  void execDialog();
+
  private:
   QModelIndex getGroup(const QString& groupId);
   QModelIndex getSetting(const QString& settingId, QModelIndex groupIndex);
