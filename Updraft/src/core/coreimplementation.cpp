@@ -44,6 +44,20 @@ void CoreImplementation::registerFiletype(QString extension,
   manager->registerFiletype(extension, description, category, plugin);
 }
 
+void CoreImplementation::addSettingsGroup(
+    const QString& groupId,
+    const QString& description,
+    QIcon icon) {
+  updraft->settingsManager->addGroup(groupId, description, icon);
+}
+
+SettingInterface* CoreImplementation::addSetting(
+    const QString& settingId,
+    const QString& description,
+    QVariant initValue) {
+  return updraft->settingsManager->addSetting(settingId, description, initValue);
+}
+
 }  // End namespace Core
 }  // End namespace Updraft
 

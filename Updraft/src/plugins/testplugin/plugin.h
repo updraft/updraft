@@ -32,6 +32,7 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
 
  public slots:
   void showHelp();
+  void showPi();
   void mapLayerDisplayed(osg::Node* layer);
   void mapLayerHidden(osg::Node* layer);
 
@@ -45,6 +46,8 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
   MenuInterface* myMenu;
 
   MapLayerGroup *mapLayerGroup;
+
+  SettingInterface* testSetting;
 };
 }
 

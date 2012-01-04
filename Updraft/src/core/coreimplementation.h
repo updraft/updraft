@@ -30,6 +30,16 @@ class CoreImplementation : public CoreInterface {
   void registerFiletype(QString extension, QString description,
     FileCategory category);
 
+  void addSettingsGroup(
+    const QString& groupId,
+    const QString& description,
+    QIcon icon);
+
+  SettingInterface* addSetting(
+    const QString& settingId,
+    const QString& description,
+    QVariant initValue);
+
  private:
   PluginBase* plugin;
 };

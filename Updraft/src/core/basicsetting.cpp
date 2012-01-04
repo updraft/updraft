@@ -4,7 +4,7 @@ namespace Updraft {
 namespace Core {
 
 QVariant BasicSetting::get() {
-  return item->data();
+  return item->data(Qt::EditRole);
 }
 
 void BasicSetting::set(const QVariant& newValue) {

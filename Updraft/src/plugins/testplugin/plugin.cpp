@@ -67,6 +67,10 @@ void TestPlugin::initialize() {
             this, SLOT(mapLayerHidden(osg::Node*)));
   }
 
+  // Settings
+  core->addSettingsGroup("testplugin", "Test Plugin");
+  testSetting = core->addSetting("testplugin:testsetting", "Value of PI", 3.14);
+
   qDebug("testplugin loaded");
 }
 
@@ -76,18 +80,23 @@ void TestPlugin::createTab(QString title) {
 
   QPushButton* btn1 = new QPushButton("Show help", container);
   QPushButton* btn2 = new QPushButton("Close this tab", container);
+  QPushButton* btn3 = new QPushButton("Value of PI", container);
 
   layout->addWidget(btn1);
   layout->addWidget(btn2);
+  layout->addWidget(btn3);
 
   TabInterface* tab = core->createTab(container, title);
 
   connect(btn1, SIGNAL(clicked()), this, SLOT(showHelp()));
   // connect(btn2, SIGNAL(clicked()), tab, SLOT(showHelp()));
   tab->connectSlotClose(btn2, SIGNAL(clicked()));
+  connect(btn3, SIGNAL(clicked()), this, SLOT(showPi()));
 }
 
 void TestPlugin::deinitialize() {
+  delete testSetting;
+
   qDebug("testplugin unloaded");
 }
 
@@ -96,6 +105,15 @@ void TestPlugin::showHelp() {
 
   QMessageBox::information(win, "About testplugin",
     "Testplugin is just a test plugin to see whether our api is working");
+}
+
+void TestPlugin::showPi() {
+  QMainWindow* win = core->getMainWindow();
+
+  QString message = "The value of PI is %1";
+  message = message.arg(testSetting->get().toFloat());
+
+  QMessageBox::information(win, "Value of PI", message);
 }
 
 bool TestPlugin::fileOpen(QString filename, QList<int> roles) {
