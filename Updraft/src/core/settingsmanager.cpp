@@ -19,21 +19,6 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL)) {
   // Set the dialog's model
   dialog->setModel(model);
 
-
-  // TODO(cestmir): Populate the test model with some testing data for now
-  addGroup("map", "Map settings", QIcon(":/core/icons/configure.png"));
-  addGroup("other", "Other settings", QIcon(":/core/icons/configure.png"));
-
-  qDebug() << "----------------";
-  delete addSetting("map:setting1", "String data", "The data");
-  qDebug() << "----------------";
-  delete addSetting("map:setting2", "Value of PI", 3.14);
-  qDebug() << "----------------";
-  delete addSetting("map:setting3", "The answer", 42);
-
-  qDebug() << "----------------";
-  delete addSetting("other:setting3", "Red color", QColor(255, 0, 0));
-
   // Create an action that shows the dialog and add it to the menu
   MainWindow* win = updraft->mainWindow;
   Menu* toolsMenu = win->getSystemMenu(MENU_TOOLS);
@@ -77,18 +62,14 @@ SettingInterface* SettingsManager::addSetting(
 
   QModelIndex groupIndex = getGroup(groupIdPart);
   if (!groupIndex.isValid()) {
-    qDebug() << "Adding new group";
     groupIndex = addGroup(
       groupIdPart,
       groupIdPart,
       QIcon(":/core/icons/configure.png"));
   }
 
-  qDebug() << "Group index is " << groupIndex;
-
   // Try to find the setting
   QModelIndex settingIndex = getSetting(settingIdPart, groupIndex);
-  qDebug() << "Setting index is " << settingIndex;
 
   QStandardItem* valueItem;
   if (!settingIndex.isValid()) {
@@ -99,7 +80,6 @@ SettingInterface* SettingsManager::addSetting(
 
     QStandardItem* groupItem = model->itemFromIndex(groupIndex);
     int groupRows = groupItem->rowCount();
-    qDebug() << "group Rows = " << groupRows;
     groupItem->setChild(groupRows, 0, idItem);
     groupItem->setChild(groupRows, 1, descItem);
     groupItem->setChild(groupRows, 2, valueItem);
@@ -142,7 +122,6 @@ QModelIndex SettingsManager::addGroup(
   }
 
   int newColumnWidth = dialog->ui->topView->sizeHintForColumn(0);
-  qDebug() << "Size hint for column 0 is " << newColumnWidth;
   QSize maxSize = dialog->ui->topView->maximumSize();
   maxSize.setWidth(newColumnWidth + 10);   // Add some extra space
   dialog->ui->topView->setMaximumSize(maxSize);
@@ -153,14 +132,10 @@ QModelIndex SettingsManager::addGroup(
 QModelIndex SettingsManager::getGroup(const QString& groupId) {
   QModelIndex groupIndex;
 
-  qDebug() << "Getting group " << groupId;
-
   int i;
   for (i = 0; i < model->rowCount(); i++) {
-    qDebug() << "  Row: " << i;
     groupIndex = model->index(i, 1);
     QVariant modelGroupId = groupIndex.data();
-    qDebug() << "  Group data: " << modelGroupId;
     if (modelGroupId.toString() == groupId)
       break;
   }
@@ -174,15 +149,10 @@ QModelIndex SettingsManager::getGroup(const QString& groupId) {
 QModelIndex SettingsManager::getSetting(const QString& settingId, QModelIndex groupIndex) {
   QModelIndex settingIndex;
 
-  qDebug() << "getting setting " << settingId << " in group " << groupIndex;
-
   int i;
   for (i = 0; i < model->rowCount(groupIndex); i++) {
-    qDebug() << "  row " << i;
     settingIndex = model->index(i, 0, groupIndex);
-    qDebug() << "  Setting index = " << settingIndex;
     QVariant modelSettingId = settingIndex.data();
-    qDebug() << "  setting data = " << modelSettingId;
     if (modelSettingId.toString() == settingId)
       break;
   }

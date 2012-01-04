@@ -39,8 +39,6 @@ void SettingsBottomView::setModel(QAbstractItemModel* model) {
 }
 
 void SettingsBottomView::setTopIndex(const QModelIndex& index) {
-  qDebug() << "Bottom View changed. New index: " << index.row() << ":" << index.column();
-
   if (stack->currentIndex() != index.row()) {
     stack->setCurrentIndex(index.row());
   }
@@ -68,8 +66,6 @@ void SettingsBottomView::createEditors() {
       QModelIndex childDesc = model()->index(row, 1, index);
       QModelIndex childName = model()->index(row, 0, index);
 
-      qDebug() << "Child is " << child;
-
       QVariant descData = model()->data(childDesc);
       QLabel* label = new QLabel(descData.toString(), NULL);
       layout->addWidget(label, row, 0);
@@ -78,9 +74,6 @@ void SettingsBottomView::createEditors() {
 
       layout->addWidget(editor, row, 1);
       editor->show();
-
-      if (!editor) qDebug() << "No delegate :-(";
-      else qDebug() << "Delegate is of type " << editor->metaObject()->className();
     }
 
     QWidget* page = new QWidget(NULL);
@@ -103,23 +96,18 @@ QWidget* SettingsBottomView::createEditorForIndex(const QModelIndex& index) {
 }
 
 void SettingsBottomView::paintEvent(QPaintEvent * event) {
-  qDebug() << "Painting...";
 }
 
 int SettingsBottomView::horizontalOffset() const {
-
 }
 
 bool SettingsBottomView::isIndexHidden(const QModelIndex & index) const {
-
 }
 
 QModelIndex SettingsBottomView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers) {
-
 }
 
 void SettingsBottomView::setSelection(const QRect & rect, QItemSelectionModel::SelectionFlags flags) {
-
 }
 
 int SettingsBottomView::verticalOffset() const {
@@ -127,16 +115,12 @@ int SettingsBottomView::verticalOffset() const {
 }
 
 QRegion SettingsBottomView::visualRegionForSelection(const QItemSelection & selection) const {
-
 }
 
 void SettingsBottomView::commitData(QWidget* editor) {
-  qDebug() << "Commit data";
 }
 
 void SettingsBottomView::dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight) {
-  qDebug() << "Data changed: " << topLeft << " - " << bottomRight;
-
   // If modifying data for a group, don't do anything
   if (!insertionIndex.isValid()) return;
 
@@ -177,8 +161,6 @@ void SettingsBottomView::dataChanged(const QModelIndex& topLeft, const QModelInd
 }
 
 void SettingsBottomView::rowsInserted(const QModelIndex& parent, int start, int end) {
-  qDebug() << "Rows inserted: " << parent;
-
   QModelIndex index;
   QGridLayout* layout;
   QWidget* page;
