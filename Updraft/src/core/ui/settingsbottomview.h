@@ -6,8 +6,6 @@
 namespace Updraft {
 namespace Core {
 
-typedef QList< QList<QWidget*>* > EditorList;
-
 class SettingsBottomView: public QAbstractItemView {
   Q_OBJECT
 
@@ -26,6 +24,7 @@ class SettingsBottomView: public QAbstractItemView {
 
  protected:
   void createEditors();
+  QWidget* createEditorForIndex(const QModelIndex& index);
 
   void paintEvent(QPaintEvent * event);
   int horizontalOffset() const;
@@ -37,17 +36,15 @@ class SettingsBottomView: public QAbstractItemView {
 
  protected slots:
   void commitData(QWidget* editor);
-  void commitEditorData(QWidget* editor) const;
-
   void dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
   void rowsInserted(const QModelIndex& parent, int start, int end);
 
  private:
-  /// List of all the child widgets
-  EditorList children;
-
   /// Stack of the top-level widgets
   QStackedWidget* stack;
+
+  /// A helper index used when reacting to a setting data row insertion
+  QModelIndex insertionIndex;
 };
 
 }  // End namespace Core

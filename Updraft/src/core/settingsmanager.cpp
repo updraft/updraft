@@ -5,15 +5,20 @@
 #include "menu.h"
 #include "../menuinterface.h"
 #include "basicsetting.h"
+#include "ui_settingsdialog.h"
 
 namespace Updraft {
 namespace Core {
 
-SettingsManager::SettingsManager() {
+SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL)) {
   // Initialize id regexp for identifier pattern matching
   idRegExp = QRegExp("[a-zA-Z0-9_]+");
 
   model = new QStandardItemModel(this);
+
+  // Set the dialog's model
+  dialog->setModel(model);
+
 
   // TODO(cestmir): Populate the test model with some testing data for now
   addGroup("map", "Map settings", QIcon(":/core/icons/configure.png"));
@@ -28,9 +33,6 @@ SettingsManager::SettingsManager() {
 
   qDebug() << "----------------";
   delete addSetting("other:setting3", "Red color", QColor(255, 0, 0));
-
-  // Create the dialog
-  dialog = new SettingsDialog(NULL, model);
 
   // Create an action that shows the dialog and add it to the menu
   MainWindow* win = updraft->mainWindow;
@@ -138,6 +140,12 @@ QModelIndex SettingsManager::addGroup(
     model->setData(descIndex, description, Qt::DisplayRole);
     model->setData(descIndex, icon, Qt::DecorationRole);
   }
+
+  int newColumnWidth = dialog->ui->topView->sizeHintForColumn(0);
+  qDebug() << "Size hint for column 0 is " << newColumnWidth;
+  QSize maxSize = dialog->ui->topView->maximumSize();
+  maxSize.setWidth(newColumnWidth + 10);   // Add some extra space
+  dialog->ui->topView->setMaximumSize(maxSize);
 
   return groupIndex;
 }
