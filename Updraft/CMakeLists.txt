@@ -26,6 +26,7 @@ ENDIF(WIN32)
 ENABLE_TESTING()
 
 ADD_SUBDIRECTORY( src/plugins )
+ADD_SUBDIRECTORY( src/libraries )
 ADD_SUBDIRECTORY( src/core )
 ADD_SUBDIRECTORY( src/libs )
 

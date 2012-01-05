@@ -11,8 +11,13 @@ MapManager::MapManager() {
 
 MapManager::MapManager(QString earthFile) {
   osg::Node* loadedMap = osgDB::readNodeFile(earthFile.toStdString());
-  this->mapNode = osgEarth::MapNode::findMapNode(loadedMap);
-  this->map = mapNode->getMap();
+  if (loadedMap != NULL) {
+    this->mapNode = osgEarth::MapNode::findMapNode(loadedMap);
+    this->map = mapNode->getMap();
+  } else {
+    this->map = new osgEarth::Map();
+    this->mapNode = new osgEarth::MapNode(this->map);
+  }
 
     // set image layers
   // TODO(Maria): parse image layers from the map built

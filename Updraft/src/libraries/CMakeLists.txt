@@ -1,0 +1,17 @@
+FIND_PACKAGE(Qt4 REQUIRED)
+
+cmake_minimum_required(VERSION 2.8)
+
+MESSAGE("-- Configuring libraries...")
+
+FILE(GLOB LIBRARY_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/*)
+
+message("-- Libraries that will be built:")
+foreach(LIBRARY_DIR ${LIBRARY_DIRS})
+	IF(IS_DIRECTORY ${LIBRARY_DIR})
+		GET_FILENAME_COMPONENT(LIBRARY_NAME ${LIBRARY_DIR} NAME)
+		message ("---> "${LIBRARY_NAME})
+		ADD_SUBDIRECTORY(${LIBRARY_NAME})
+	ENDIF(IS_DIRECTORY ${LIBRARY_DIR})
+endforeach(LIBRARY_DIR)
+

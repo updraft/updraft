@@ -1,9 +1,9 @@
 #include <osgQt/GraphicsWindowQt>
 // TODO(Kuba) Remove the #ifdefs once we know the correct includes
 #ifdef __linux__
-#  include <osgEarthUtil/Viewpoint>
+  #include <osgEarthUtil/Viewpoint>
 #else
-#  include <osgEarth/ViewPoint>
+  #include <osgEarth/Viewpoint>
 #endif
 #include <osgEarthUtil/ObjectPlacer>
 #include <osgEarth/Map>
@@ -38,15 +38,10 @@ SceneManager::SceneManager(QString baseEarthFile,
   viewer->setSceneData(sceneRoot);
 
   // set manipulator
-#ifdef __linux__
   osgEarth::Util::Viewpoint start(14.42046, 50.087811,
     0, 0.0, -90.0, /*6e3*/6e7);
-#else
-  osgEarth::Viewpoint start(14.42046, 50.087811,
-    0, 0.0, -90.0, /*6e3*/6e7);
-#endif
   // osgEarth::Util::EarthManipulator* manipulator =
-  //   new osgEarth::Util::EarthManipulator();
+    // new osgEarth::Util::EarthManipulator();
   MapManipulator* manipulator = new MapManipulator();
   manipulator->setNode(mapManager->getMapNode());
   manipulator->setHomeViewpoint(start);
@@ -54,7 +49,7 @@ SceneManager::SceneManager(QString baseEarthFile,
   viewer->setCameraManipulator(manipulator);
   // or set one specific view:
   // camera->setViewMatrixAsLookAt(osg::Vec3d(0, 0, -6e7),
-  //   osg::Vec3d(0, 0, 0), osg::Vec3d(0, 1, 0));
+    // osg::Vec3d(0, 0, 0), osg::Vec3d(0, 1, 0));
 
   // start drawing
   timer = new QTimer(this);
