@@ -8,6 +8,12 @@
 #include <QString>
 #include <QTextCodec>
 
+#ifdef LIB_INTERNAL
+  #define LIBIGC_EXPORT Q_DECL_EXPORT
+#else
+  #define LIBIGC_EXPORT Q_DECL_IMPORT
+#endif
+
 namespace Updraft {
 namespace Libigc {
 
@@ -23,7 +29,7 @@ struct Event {
 struct Fix : public Event {
   qreal lat;
   qreal lon;
-  char validity;
+  char valid;
   qreal pressureAlt;
   qreal gpsAlt;
 };
@@ -32,7 +38,7 @@ struct Fix : public Event {
 struct PilotEvent : public Event {};
 
 /// A class that loads an IGC file.
-class Q_DECL_EXPORT Igc {
+class LIBIGC_EXPORT Igc {
  public:
   bool load(QString path, QTextCodec *codec = 0);
   bool load(QIODevice *file, QTextCodec *codec = 0);
@@ -48,7 +54,7 @@ class Q_DECL_EXPORT Igc {
 
   /// Return glider competition ID or empty string.
   QString competitionId() { return competitionId_; }
-  
+
   /// Return FR manufacturer or empty string.
   QString manufacturer() { return manufacturer_; }
 
@@ -69,13 +75,17 @@ class Q_DECL_EXPORT Igc {
 
  private:
   class Event {
-   public:
+ public:
     QDateTime timestamp;
   };
 
   bool isEndOfFile();
 
-  bool parseOneRecord();
+  void parseOneRecord();
+
+  QTime parseTimestamp(QByteArray bytes);
+  qreal parseLatLon(QByteArray bytes);
+  qreal parseDecimal(QByteArray bytes);
 
   void processRecordB();
   void processRecordH();
