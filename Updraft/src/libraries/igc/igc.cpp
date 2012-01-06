@@ -4,7 +4,7 @@
 #include <QFile>
 
 namespace Updraft {
-namespace Libigc {
+namespace Igc {
 
 /// Open a file with given path and
 /// load it.
@@ -229,6 +229,6 @@ void Igc::processRecordL() {
   }
 }
 
-}  // End namespace Libigc
+}  // End namespace Igc
 }  // End namespace Updraft
 

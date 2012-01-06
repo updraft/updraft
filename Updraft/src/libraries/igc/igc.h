@@ -1,5 +1,5 @@
-#ifndef UPDRAFT_SRC_LIBS_LIBIGC_IGC_H_
-#define UPDRAFT_SRC_LIBS_LIBIGC_IGC_H_
+#ifndef UPDRAFT_SRC_LIBRARIES_IGC_IGC_H_
+#define UPDRAFT_SRC_LIBRARIES_IGC_IGC_H_
 
 #include <QByteArray>
 #include <QTime>
@@ -8,14 +8,14 @@
 #include <QString>
 #include <QTextCodec>
 
-#ifdef LIB_INTERNAL
+#ifdef UPDRAFT_LIB_INTERNAL
   #define LIBIGC_EXPORT Q_DECL_EXPORT
 #else
   #define LIBIGC_EXPORT Q_DECL_IMPORT
 #endif
 
 namespace Updraft {
-namespace Libigc {
+namespace Igc {
 
 /// A single event from the igc file.
 struct Event {
@@ -111,8 +111,8 @@ class LIBIGC_EXPORT Igc {
   /// \}
 };
 
-}  // End namespace LibIgc
+}  // End namespace Igc
 }  // End namespace Updraft
 
-#endif  // UPDRAFT_SRC_LIBS_LIBIGC_IGC_H_
+#endif  // UPDRAFT_SRC_LIBRARIES_IGC_IGC_H_
 

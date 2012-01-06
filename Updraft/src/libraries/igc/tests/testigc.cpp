@@ -1,17 +1,17 @@
-#include "testlibigc.h"
+#include "testigc.h"
 
 #include <QtTest>
 
 #include "igc.h"
 
 namespace Updraft {
-namespace Libigc {
+namespace Igc {
 namespace Test {
 
 /// Reads a manually crafted IGC file and verifies that values from
 /// H records are as expected.
-void TestLibigc::testHRecords() {
-  Updraft::Libigc::Igc igc;
+void TestIgc::testHRecords() {
+  Updraft::Igc::Igc igc;
   QVERIFY(igc.load(TEST_DATA_DIR "/h_records.igc"));
 
   QCOMPARE(igc.altimeterSetting(), 1.0);
@@ -26,7 +26,7 @@ void TestLibigc::testHRecords() {
 }
 
 }  // End namespace Test
-}  // End namespace Libigc
+}  // End namespace Igc
 }  // End namespace Updraft
 
-QTEST_MAIN(Updraft::Libigc::Test::TestLibigc)
+QTEST_MAIN(Updraft::Igc::Test::TestIgc)
