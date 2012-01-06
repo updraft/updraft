@@ -7,7 +7,6 @@
 #include <QtCore/qtextstream.h>
 #include <QtCore/qlist.h>
 
-#include "airspace.h"
 
 #ifdef OPENAIRSPACE_LIB
 # define OPENAIRSPACE_EXPORT Q_DECL_EXPORT

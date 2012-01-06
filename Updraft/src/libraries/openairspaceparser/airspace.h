@@ -141,39 +141,39 @@ namespace Updraft {
     /// UserAirspace class constructor code.
     /// This takes the filename in Userirspace free format and parses
     /// the data contained into private variables
-    Airspace::Airspace();
-    Airspace::Airspace(QTextStream* ts);
+    Airspace();
+    Airspace(QTextStream* ts);
 
     /// Returns the name of the AirSpace
-    inline const QString& Airspace::GetName() { return this->AN; }
+    inline const QString& GetName() { return this->AN; }
 
     /// Returns the class of the AirSpace
-    inline const int Airspace::GetClass() { return this->AC; }
+    inline const int GetClass() { return this->AC; }
 
     /// Returns the floor of the AirSpace
-    inline const QString& Airspace::GetFloor() { return this->AL; }
+    inline const QString& GetFloor() { return this->AL; }
 
     /// Returns the ceiling of the AirSpace
-    inline const QString& Airspace::GetCeiling() { return this->AH; }
+    inline const QString& GetCeiling() { return this->AH; }
 
     /// Returns the tag coordinates of the AirSpace
-    inline const QList<Updraft::Airspace::Coordinate>& Airspace::GetTagCoor() {
+    inline const QList<Updraft::Airspace::Coordinate>& GetTagCoor() {
       return this->AT; }
 
     /// Returns the arcs type I
-    inline const QList<Updraft::Airspace::ArcI>& Airspace::GetArcI() {
+    inline const QList<Updraft::Airspace::ArcI>& GetArcI() {
       return this->DA; }
 
     /// Returns the arcs type I
-    inline const QList<Updraft::Airspace::ArcII>& Airspace::GetArcII() {
+    inline const QList<Updraft::Airspace::ArcII>& GetArcII() {
       return this->DB; }
 
     /// Returns the circles
-    inline const QList<Updraft::Airspace::Circle>& Airspace::GetCircle() {
+    inline const QList<Updraft::Airspace::Circle>& GetCircle() {
       return this->DC; }
 
     /// Returns the AirWay
-    inline const QList<Updraft::Airspace::Coordinate>& Airspace::GetAirWay() {
+    inline const QList<Updraft::Airspace::Coordinate>& GetAirWay() {
       return this->DY; }
 
 
@@ -185,7 +185,7 @@ namespace Updraft {
 
   private :
     /// Parse the coordinates from string
-    Coordinate Airspace::ParseCoord(const QString& parse);
+    Coordinate ParseCoord(const QString& parse);
 
     /// Airspace class type.
     ACType AC;
