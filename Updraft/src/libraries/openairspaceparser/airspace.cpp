@@ -1,4 +1,4 @@
-#include "Airspace.h"
+#include "airspace.h"
 
 Updraft::Airspace::Coordinate Updraft::Airspace::X;
 

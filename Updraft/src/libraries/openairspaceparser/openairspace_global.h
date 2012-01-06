@@ -1,11 +1,11 @@
-#ifndef UPDRAFT_SRC_PLUGINS_AIRSPACES_PARSER_OPENAIRSPACE_GLOBAL_H_
-#define UPDRAFT_SRC_PLUGINS_AIRSPACES_PARSER_OPENAIRSPACE_GLOBAL_H_
+#ifndef UPDRAFT_SRC_LIBRARIES_OPENAIRSPACEPARSER_OPENAIRSPACE_GLOBAL_H_
+#define UPDRAFT_SRC_LIBRARIES_OPENAIRSPACEPARSER_OPENAIRSPACE_GLOBAL_H_
 
 #include <QtCore/qglobal.h>
-#include <QtCore\qvector.h>
-#include <QtCore\qfile.h>
-#include <QtCore\qtextstream.h>
-#include <QtCore\qlist.h>
+#include <QtCore/qvector.h>
+#include <QtCore/qfile.h>
+#include <QtCore/qtextstream.h>
+#include <QtCore/qlist.h>
 
 #include "Airspace.h"
 
@@ -15,4 +15,4 @@
 # define OPENAIRSPACE_EXPORT Q_DECL_IMPORT
 #endif
 
-#endif  // UPDRAFT_SRC_PLUGINS_AIRSPACES_PARSER_OPENAIRSPACE_GLOBAL_H_
+#endif  // UPDRAFT_SRC_LIBRARIES_OPENAIRSPACEPARSER_OPENAIRSPACE_GLOBAL_H_

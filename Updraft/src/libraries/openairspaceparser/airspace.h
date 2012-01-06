@@ -1,21 +1,9 @@
 // UserAirspace.h
 
-#pragma once
-#ifndef UPDRAFT_SRC_PLUGINS_AIRSPACES_PARSER_AIRSPACE_H_
-#define UPDRAFT_SRC_PLUGINS_AIRSPACES_PARSER_AIRSPACE_H_
+#ifndef UPDRAFT_SRC_LIBRARIES_OPENAIRSPACEPARSER_AIRSPACE_H_
+#define UPDRAFT_SRC_LIBRARIES_OPENAIRSPACEPARSER_AIRSPACE_H_
 
-#include <QtCore\qglobal.h>
-#include <QtCore\qvector.h>
-#include <QtCore\qfile.h>
-#include <QtCore\qtextstream.h>
-#include <QtCore\qlist.h>
-/*
-#ifdef USERAIRSPACE_LIB
-# define USERAIRSPACE_EXPORT Q_DECL_EXPORT
-#else
-# define USERAIRSPACE_EXPORT Q_DECL_IMPORT
-#endif
-*/
+#include "openairspace_global.h"
 
 /*!
 UserAirspace parser library.
@@ -280,4 +268,4 @@ namespace Updraft {
 }  // Updraft
 
 
-#endif  // UPDRAFT_SRC_PLUGINS_AIRSPACES_PARSER_AIRSPACE_H_
+#endif  // UPDRAFT_SRC_LIBRARIES_OPENAIRSPACEPARSER_AIRSPACE_H_
