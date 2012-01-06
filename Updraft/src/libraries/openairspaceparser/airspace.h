@@ -141,8 +141,7 @@ namespace Updraft {
     /// UserAirspace class constructor code.
     /// This takes the filename in Userirspace free format and parses
     /// the data contained into private variables
-    Airspace();
-    Airspace(QTextStream* ts);
+    explicit Airspace(QTextStream* ts);
 
     /// Returns the name of the AirSpace
     inline const QString& GetName() { return this->AN; }

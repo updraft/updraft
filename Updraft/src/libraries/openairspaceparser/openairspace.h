@@ -77,7 +77,7 @@ namespace Updraft {
     /// OpenAirspace class constructor code.
     /// This takes the filename in Userirspace free format and parses
     /// the data contained into private variables
-    OpenAirspace(QString fileName);
+    explicit OpenAirspace(QString fileName);
 
     /// Returns the name of the AirSpace
     inline const QString& GetName(int i) {
@@ -126,7 +126,7 @@ namespace Updraft {
 
 
     /// OpenAirspace destructor code here.
-    OpenAirspace::~OpenAirspace();
+    ~OpenAirspace();
 
   private :
     /// OpenAirspace contains several airspaces.
