@@ -73,7 +73,7 @@ class CUP_EXPORT CupFile {
   /// \param task a reference to the struct containing task data
   void addTask(const Task &task);
 
-  friend CupLoader;
+  friend class CupLoader;
 };
 
 /// Performs loading of SeeYou cup files.
@@ -103,16 +103,17 @@ class CUP_EXPORT CupLoader {
 
   /// Parses one line stored in QByteArray.
   /// \param strLine a string storing one line of the file
-  void CupLoader::parseLine(const QString &strLine);
+  void parseLine(const QString &strLine);
 
   /// Parses line containing turn-point definition.
   /// \param strLine a string storing one line of the file
-  void CupLoader::parseTP(const QString &strLine);
+  void parseTP(const QString &strLine);
 
   /// Parses line containing task declaration.
   /// \param strLine a string storing one line of the file
-  void CupLoader::parseTask(const QString &strLine);
+  void parseTask(const QString &strLine);
 };
+
 }  // End namespace Cup
 
 #endif  // UPDRAFT_SRC_LIBRARIES_CUP_CUP_H_
