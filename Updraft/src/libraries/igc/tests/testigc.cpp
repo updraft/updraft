@@ -69,11 +69,11 @@ void TestIgc::testBRecords() {
       static_cast<int>(pressureAlt),
       static_cast<int>(gpsAlt));
     
-    Event* ev = iterator.next();
+    Event const* ev = iterator.next();
   
     QCOMPARE(ev->type, Event::FIX);
 
-    Fix* fix = static_cast<Fix*>(ev);
+    Fix const* fix = static_cast<Fix const*>(ev);
 
     QCOMPARE(fix->timestamp, time);
     QCOMPARE(fix->lat, lat);

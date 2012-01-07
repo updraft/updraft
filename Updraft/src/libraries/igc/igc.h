@@ -46,8 +46,8 @@ struct PilotEvent : public Event {};
 /// A class that loads an IGC file.
 class LIBIGC_EXPORT IgcFile {
  public:
-  typedef QList<Event*> EventList;
-  typedef QListIterator<Event*> EventListIterator;
+  typedef QList<Event const*> EventList;
+  typedef QListIterator<Event const*> EventListIterator;
 
   ~IgcFile() { clear(); }
 
@@ -60,34 +60,34 @@ class LIBIGC_EXPORT IgcFile {
   /// if it was not specified.
   /// This value doesn't affect altitudes returned in fixes in any way.
   /// All recorded altitudes use 113.25 as a base pressure.
-  qreal altimeterSetting() { return altimeterSetting_; }
+  qreal altimeterSetting() const { return altimeterSetting_; }
 
   /// Return competition class or empty string.
-  QString competitionClass() { return competitionClass_; }
+  QString competitionClass() const { return competitionClass_; }
 
   /// Return glider competition ID or empty string.
-  QString competitionId() { return competitionId_; }
+  QString competitionId() const { return competitionId_; }
 
   /// Return FR manufacturer or empty string.
-  QString manufacturer() { return manufacturer_; }
+  QString manufacturer() const { return manufacturer_; }
 
   /// Return FR type or empty string.
-  QString frType() { return frType_; }
+  QString frType() const { return frType_; }
 
   /// Return glider registration number or empty string.
-  QString gliderId() { return gliderId_; }
+  QString gliderId() const { return gliderId_; }
 
   /// Return GPS receiver type or empty string.
-  QString gps() { return gps_; }
+  QString gps() const { return gps_; }
 
   /// Return glider model or empty string.
-  QString gliderType() { return gliderType_; }
+  QString gliderType() const { return gliderType_; }
 
   /// Return pilot name or empty string.
-  QString pilot() { return pilot_; }
+  QString pilot() const { return pilot_; }
 
   /// Return a const reference to the event map.
-  const EventList& events() { return eventList; }
+  const EventList& events() const { return eventList; }
 
  private:
   bool isEndOfFile();

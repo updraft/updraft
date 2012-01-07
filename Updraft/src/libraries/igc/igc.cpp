@@ -63,7 +63,7 @@ void IgcFile::clear() {
   gliderType_ = "";
   pilot_ = "";
 
-  foreach(Event* ev, eventList) {
+  foreach(Event const* ev, eventList) {
     delete ev;
   }
 
