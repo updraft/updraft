@@ -44,12 +44,12 @@ struct Fix : public Event {
 struct PilotEvent : public Event {};
 
 /// A class that loads an IGC file.
-class LIBIGC_EXPORT Igc {
+class LIBIGC_EXPORT IgcFile {
  public:
   typedef QMultiMap<QTime, Event*> EventMap;
   typedef QMapIterator<QTime, Event*> EventMapIterator;
 
-  ~Igc() { clear(); }
+  ~IgcFile() { clear(); }
 
   bool load(QString path, QTextCodec *codec = 0);
   bool load(QIODevice *file, QTextCodec *codec = 0);

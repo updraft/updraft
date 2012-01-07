@@ -8,7 +8,7 @@ namespace Igc {
 
 /// Open a file with given path and
 /// load it.
-bool Igc::load(QString path, QTextCodec* codec) {
+bool IgcFile::load(QString path, QTextCodec* codec) {
   QFile f(path);
 
   if (!f.open(QIODevice::ReadOnly)) {
@@ -20,7 +20,7 @@ bool Igc::load(QString path, QTextCodec* codec) {
 }
 
 /// Load a file from opened QIODevice.
-bool Igc::load(QIODevice *dev, QTextCodec* codec) {
+bool IgcFile::load(QIODevice *dev, QTextCodec* codec) {
   clear();
 
   file = dev;
@@ -49,7 +49,7 @@ bool Igc::load(QIODevice *dev, QTextCodec* codec) {
 }
 
 /// Delete all loaded data.
-void Igc::clear() {
+void IgcFile::clear() {
   altimeterSetting_ = 0;
   competitionClass_ = "";
   competitionId_ = "";
@@ -68,7 +68,7 @@ void Igc::clear() {
 }
 
 /// Parse a single record stored in the buffer.
-void Igc::parseOneRecord() {
+void IgcFile::parseOneRecord() {
   switch (buffer[0]) {
     case 'A':
       /* Do nothing */
@@ -111,7 +111,7 @@ void Igc::parseOneRecord() {
 
 /// Fid out if the current IGC file has ended.
 /// This happens either if the file ends, or after the last G record.
-bool Igc::isEndOfFile() {
+bool IgcFile::isEndOfFile() {
   if (file->atEnd()) {
     return true;
   }
@@ -136,7 +136,7 @@ bool Igc::isEndOfFile() {
 
 /// Parse time from IGC encoding.
 /// HHMMSS
-QTime Igc::parseTimestamp(QByteArray bytes) {
+QTime IgcFile::parseTimestamp(QByteArray bytes) {
   Q_ASSERT(bytes.size() == 6);
   int h = bytes.mid(0, 2).toInt();
   int m = bytes.mid(2, 2).toInt();
@@ -147,7 +147,7 @@ QTime Igc::parseTimestamp(QByteArray bytes) {
 /// Parse latitude or longitude from IGC encoding.
 /// \return Degrees. Negative values go south and west.
 /// DDMMmmm[NS] or DDDMMmmm[EW]
-qreal Igc::parseLatLon(QByteArray bytes) {
+qreal IgcFile::parseLatLon(QByteArray bytes) {
   Q_ASSERT(bytes.size() == 8 || bytes.size() == 9);
 
   int degreesSize = (bytes.size() == 8) ? 2 : 3;
@@ -167,7 +167,7 @@ qreal Igc::parseLatLon(QByteArray bytes) {
 }
 
 /// Parse a decimal number in igc format.
-qreal Igc::parseDecimal(QByteArray bytes) {
+qreal IgcFile::parseDecimal(QByteArray bytes) {
   int whole = bytes.left(bytes.size() - 2).toInt();
   int decimal = bytes.right(2).toInt();
 
@@ -175,7 +175,7 @@ qreal Igc::parseDecimal(QByteArray bytes) {
 }
 
 /// Process a single record of type B (fix data) stored in buffer.
-void Igc::processRecordB() {
+void IgcFile::processRecordB() {
   Fix* ret = new Fix;
 
   ret->type = Event::FIX;
@@ -191,7 +191,7 @@ void Igc::processRecordB() {
 }
 
 /// Process a single record of type H (headers) stored in buffer.
-void Igc::processRecordH() {
+void IgcFile::processRecordH() {
   // char dataSource = buffer[1];
   QByteArray subtype = buffer.mid(2, 3);
   QByteArray data = buffer.mid(5);
@@ -230,7 +230,7 @@ void Igc::processRecordH() {
 }
 
 /// Process a single record of type L (comments) stored in buffer.
-void Igc::processRecordL() {
+void IgcFile::processRecordL() {
   if (buffer.mid(1, 4) == "CU::") {
     // This is a special seeyou comment.
     // Causes the rest of line to be read as a new record.

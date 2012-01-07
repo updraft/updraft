@@ -35,7 +35,7 @@ void TestIgc::testBRecords() {
   int value = 1;
   QTime time0(0, 0, 0, 0);
 
-  Igc::EventMapIterator iterator(igc.events());
+  IgcFile::EventMapIterator iterator(igc.events());
 
   for(int i = 0; i < count; ++i) {
     QVERIFY(iterator.hasNext());
@@ -105,7 +105,7 @@ void TestIgc::testClean() {
   QCOMPARE(igc.gliderType(), QString());
   QCOMPARE(igc.pilot(), QString());
 
-  Igc::EventMapIterator iterator(igc.events());
+  IgcFile::EventMapIterator iterator(igc.events());
   QVERIFY(!iterator.hasNext());
 
   loadTestFile();

@@ -21,7 +21,7 @@ class TestIgc: public QObject {
 
  private:
   void loadTestFile();
-  Updraft::Igc::Igc igc;
+  Updraft::Igc::IgcFile igc;
 };
 
 }  // End namespace Test
