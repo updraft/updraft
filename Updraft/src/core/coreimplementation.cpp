@@ -1,6 +1,5 @@
 #include "coreimplementation.h"
 
-#include "ui/mainwindow.h"
 #include "updraft.h"
 
 namespace Updraft {
