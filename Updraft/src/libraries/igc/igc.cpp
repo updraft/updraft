@@ -1,5 +1,6 @@
 #include "igc.h"
 
+#include <QtAlgorithms>
 #include <QDebug>
 #include <QFile>
 
@@ -45,6 +46,8 @@ bool IgcFile::load(QIODevice *dev, QTextCodec* codec) {
     previousRecord = buffer[0];
   }
 
+  qSort(eventList.begin(), eventList.end(), eventLessThan);
+
   return true;
 }
 
@@ -60,11 +63,11 @@ void IgcFile::clear() {
   gliderType_ = "";
   pilot_ = "";
 
-  foreach(Event* ev, eventMap) {
+  foreach(Event* ev, eventList) {
     delete ev;
   }
 
-  eventMap.clear();
+  eventList.clear();
 }
 
 /// Parse a single record stored in the buffer.
@@ -187,7 +190,7 @@ void IgcFile::processRecordB() {
   ret->pressureAlt = buffer.mid(25, 5).toInt();
   ret->gpsAlt = buffer.mid(30, 5).toInt();
 
-  eventMap.insert(ret->timestamp, ret);
+  eventList.append(ret);
 }
 
 /// Process a single record of type H (headers) stored in buffer.
@@ -239,6 +242,11 @@ void IgcFile::processRecordL() {
     buffer = buffer.mid(5);
     parseOneRecord();
   }
+}
+
+/// Comparator function for sorting events in the list according to timestamp.
+bool IgcFile::eventLessThan(Event const* e1, Event const* e2) {
+  return e1->timestamp < e2->timestamp;
 }
 
 }  // End namespace Igc

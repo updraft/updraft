@@ -2,11 +2,11 @@
 #define UPDRAFT_SRC_LIBRARIES_IGC_IGC_H_
 
 #include <QByteArray>
-#include <QTime>
 #include <QIODevice>
-#include <QMultiMap>
+#include <QList>
 #include <QString>
 #include <QTextCodec>
+#include <QTime>
 
 #ifdef UPDRAFT_LIB_INTERNAL
   #define LIBIGC_EXPORT Q_DECL_EXPORT
@@ -46,8 +46,8 @@ struct PilotEvent : public Event {};
 /// A class that loads an IGC file.
 class LIBIGC_EXPORT IgcFile {
  public:
-  typedef QMultiMap<QTime, Event*> EventMap;
-  typedef QMapIterator<QTime, Event*> EventMapIterator;
+  typedef QList<Event*> EventList;
+  typedef QListIterator<Event*> EventListIterator;
 
   ~IgcFile() { clear(); }
 
@@ -87,7 +87,7 @@ class LIBIGC_EXPORT IgcFile {
   QString pilot() { return pilot_; }
 
   /// Return a const reference to the event map.
-  const EventMap& events() { return eventMap; }
+  const EventList& events() { return eventList; }
 
  private:
   bool isEndOfFile();
@@ -102,7 +102,9 @@ class LIBIGC_EXPORT IgcFile {
   void processRecordH();
   void processRecordL();
 
-  EventMap eventMap;
+  static bool eventLessThan(Event const* e1, Event const* e2);
+
+  EventList eventList;
 
   QByteArray buffer;
 

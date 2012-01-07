@@ -35,7 +35,7 @@ void TestIgc::testBRecords() {
   int value = 1;
   QTime time0(0, 0, 0, 0);
 
-  IgcFile::EventMapIterator iterator(igc.events());
+  IgcFile::EventListIterator iterator(igc.events());
 
   for(int i = 0; i < count; ++i) {
     QVERIFY(iterator.hasNext());
@@ -69,8 +69,7 @@ void TestIgc::testBRecords() {
       static_cast<int>(pressureAlt),
       static_cast<int>(gpsAlt));
     
-    iterator.next();
-    Event* ev = iterator.value();
+    Event* ev = iterator.next();
   
     QCOMPARE(ev->type, Event::FIX);
 
@@ -90,7 +89,7 @@ void TestIgc::testBRecords() {
 
 
 /// Test that the clean method really deletes all information
-/// and empties the eventMap.
+/// and empties the eventList.
 /// Loads the test file again after checking everything.
 void TestIgc::testClean() {
   igc.clear();
@@ -105,7 +104,7 @@ void TestIgc::testClean() {
   QCOMPARE(igc.gliderType(), QString());
   QCOMPARE(igc.pilot(), QString());
 
-  IgcFile::EventMapIterator iterator(igc.events());
+  IgcFile::EventListIterator iterator(igc.events());
   QVERIFY(!iterator.hasNext());
 
   loadTestFile();
