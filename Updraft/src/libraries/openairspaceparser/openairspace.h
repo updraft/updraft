@@ -2,6 +2,7 @@
 #define UPDRAFT_SRC_LIBRARIES_OPENAIRSPACEPARSER_OPENAIRSPACE_H_
 
 #include "openairspace_global.h"
+#include "airspace.h"
 
 /*!
 OpenAirspace parser library.
@@ -76,56 +77,56 @@ namespace Updraft {
     /// OpenAirspace class constructor code.
     /// This takes the filename in Userirspace free format and parses
     /// the data contained into private variables
-    OpenAirspace::OpenAirspace(QString fileName);
+    explicit OpenAirspace(QString fileName);
 
     /// Returns the name of the AirSpace
-    inline const QString& OpenAirspace::GetName(int i) {
+    inline const QString& GetName(int i) {
       return this->allAirspaces[i].GetName();}
 
     /// Returns the used airspaces count
-    inline size_t OpenAirspace::size() {
+    inline size_t size() {
       return this->allAirspaces.size(); }
 
     /// Returns the class of the AirSpace
-    inline const int OpenAirspace::GetClass(int i) {
+    inline const int GetClass(int i) {
       return this->allAirspaces[i].GetClass();}
 
     /// Returns the floor of the AirSpace
-    inline const QString& OpenAirspace::GetFloor(int i) {
+    inline const QString& GetFloor(int i) {
       return this->allAirspaces[i].GetFloor(); }
 
     /// Returns the ceiling of the AirSpace
-    inline const QString& OpenAirspace::GetCeiling(int i) {
+    inline const QString& GetCeiling(int i) {
       return this->allAirspaces[i].GetCeiling(); }
 
     /// Returns the tag coordinates of the AirSpace
     inline const
-      QList<Updraft::Airspace::Coordinate>& OpenAirspace::GetTagCoor(int i) {
+      QList<Updraft::Airspace::Coordinate>& GetTagCoor(int i) {
       return this->allAirspaces[i].GetTagCoor(); }
 
     /// Returns the arcs type I
     inline const
-      QList<Updraft::Airspace::ArcI>& OpenAirspace::GetArcI(int i) {
+      QList<Updraft::Airspace::ArcI>& GetArcI(int i) {
       return this->allAirspaces[i].GetArcI(); }
 
     /// Returns the arcs type I
     inline const
-      QList<Updraft::Airspace::ArcII>& OpenAirspace::GetArcII(int i) {
+      QList<Updraft::Airspace::ArcII>& GetArcII(int i) {
       return this->allAirspaces[i].GetArcII(); }
 
     /// Returns the circles
     inline const
-      QList<Updraft::Airspace::Circle>& OpenAirspace::GetCircle(int i) {
+      QList<Updraft::Airspace::Circle>& GetCircle(int i) {
       return this->allAirspaces[i].GetCircle(); }
 
     /// Returns the AirWay
     inline const
-      QList<Updraft::Airspace::Coordinate>& OpenAirspace::GetAirWay(int i) {
+      QList<Updraft::Airspace::Coordinate>& GetAirWay(int i) {
       return this->allAirspaces[i].GetAirWay(); }
 
 
     /// OpenAirspace destructor code here.
-    OpenAirspace::~OpenAirspace();
+    ~OpenAirspace();
 
   private :
     /// OpenAirspace contains several airspaces.
