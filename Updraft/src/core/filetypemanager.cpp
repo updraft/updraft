@@ -157,7 +157,7 @@ QStringList FileTypeManager::getFilters(FileCategory category) {
 
   allFilters.removeDuplicates();
   QString filter = allFilters.join(" ");
-  ret.prepend(QObject::tr("All supported types") + " (" + filter + ")");
+  ret.prepend(tr("All supported types") + " (" + filter + ")");
 
   return ret;
 }

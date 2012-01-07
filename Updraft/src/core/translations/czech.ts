@@ -10,6 +10,14 @@
     </message>
 </context>
 <context>
+    <name>FileTypeManager</name>
+    <message>
+        <location filename="../filetypemanager.cpp" line="160"/>
+        <source>All supported types</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <location filename="../ui/mainwindow.ui" line="20"/>
@@ -34,14 +42,6 @@
     <message>
         <location filename="../ui/mainwindow.ui" line="134"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QObject</name>
-    <message>
-        <location filename="../filetypemanager.cpp" line="160"/>
-        <source>All supported types</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

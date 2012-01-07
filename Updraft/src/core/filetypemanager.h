@@ -1,6 +1,7 @@
 #ifndef UPDRAFT_SRC_CORE_FILETYPEMANAGER_H_
 #define UPDRAFT_SRC_CORE_FILETYPEMANAGER_H_
 
+#include <QCoreApplication>  // For Q_DECLARE_TR_FUNCTIONS
 #include <QList>
 #include <QString>
 
@@ -34,6 +35,7 @@ class FileTypeManager {
   void openFileDialog(FileCategory category, QString caption);
 
  private:
+  Q_DECLARE_TR_FUNCTIONS(FileTypeManager);
   QList<FileType> registered;
 };
 
