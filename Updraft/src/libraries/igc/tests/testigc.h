@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include "igc.h"
+
 namespace Updraft {
 namespace Igc {
 namespace Test {
@@ -10,7 +12,13 @@ namespace Test {
 class TestIgc: public QObject {
   Q_OBJECT
  private slots:
+  void initTestCase();
   void testHRecords();
+  void testBRecords();
+
+ private:
+  void loadTestFile();
+  Updraft::Igc::Igc igc;
 };
 
 }  // End namespace Test

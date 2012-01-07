@@ -21,18 +21,10 @@ bool Igc::load(QString path, QTextCodec* codec) {
 
 /// Load a file from opened QIODevice.
 bool Igc::load(QIODevice *dev, QTextCodec* codec) {
+  clear();
+
   file = dev;
   previousRecord = '\0';
-
-  altimeterSetting_ = 0;
-  competitionClass_ = "";
-  competitionId_ = "";
-  manufacturer_ = "";
-  frType_ = "";
-  gliderId_ = "";
-  gps_ = "";
-  gliderType_ = "";
-  pilot_ = "";
 
   if (codec) {
     activeCodec = codec;
@@ -43,7 +35,7 @@ bool Igc::load(QIODevice *dev, QTextCodec* codec) {
   while (!isEndOfFile()) {
     buffer = file->readLine().trimmed();
 
-    if (buffer.size() == 0) {
+    if (buffer.size() == 0 && !file->atEnd()) {
       qDebug() << "Error reading file (" << file->errorString() << ")";
       return false;
     }
@@ -52,7 +44,27 @@ bool Igc::load(QIODevice *dev, QTextCodec* codec) {
 
     previousRecord = buffer[0];
   }
+
   return true;
+}
+
+/// Delete all loaded data.
+void Igc::clear() {
+  altimeterSetting_ = 0;
+  competitionClass_ = "";
+  competitionId_ = "";
+  manufacturer_ = "";
+  frType_ = "";
+  gliderId_ = "";
+  gps_ = "";
+  gliderType_ = "";
+  pilot_ = "";
+
+  foreach(Event* ev, eventMap) {
+    delete ev;
+  }
+
+  eventMap.clear();
 }
 
 /// Parse a single record stored in the buffer.
@@ -94,8 +106,6 @@ void Igc::parseOneRecord() {
     case 'L':
       processRecordL();
       break;
-    default:
-      qDebug() << "Unrecognized record '" << buffer[0] << "'.";
   }
 }
 
@@ -146,7 +156,7 @@ qreal Igc::parseLatLon(QByteArray bytes) {
   int m = bytes.mid(degreesSize, 2).toInt();
   int mDecimal = bytes.mid(degreesSize + 2, 3).toInt();
 
-  qreal ret = d + m / 60.0 + mDecimal / 60000;
+  qreal ret = d + m / 60.0 + mDecimal / 60000.0;
 
   char lastChar = bytes[bytes.size() - 1];
   if (lastChar == 'S' || lastChar == 'W') {
@@ -168,14 +178,16 @@ qreal Igc::parseDecimal(QByteArray bytes) {
 void Igc::processRecordB() {
   Fix* ret = new Fix;
 
-  ret->type = 'B';
+  ret->type = Event::FIX;
 
   ret->timestamp = parseTimestamp(buffer.mid(1, 6));
   ret->lat = parseLatLon(buffer.mid(7, 8));
   ret->lon = parseLatLon(buffer.mid(15, 9));
-  ret->valid = buffer[24];
+  ret->valid = (buffer[24] == 'A');
   ret->pressureAlt = buffer.mid(25, 5).toInt();
   ret->gpsAlt = buffer.mid(30, 5).toInt();
+
+  eventMap.insert(ret->timestamp, ret);
 }
 
 /// Process a single record of type H (headers) stored in buffer.

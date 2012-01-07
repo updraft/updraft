@@ -18,30 +18,43 @@ namespace Updraft {
 namespace Igc {
 
 /// A single event from the igc file.
+/// the field type determines which subclass of Event
+/// this is.
 struct Event {
-  /// Type of the event. Indicates what subclass of Event is used.
-  char type;
+  enum EventType {
+    FIX = 1,
+    PILOT_EVENT = 2
+  };
+
+  EventType type;
 
   QTime timestamp;
 };
 
-/// GPS fix event. Type is 'B'.
+/// GPS fix event.
 struct Fix : public Event {
   qreal lat;
   qreal lon;
-  char valid;
+  bool valid;
   qreal pressureAlt;
   qreal gpsAlt;
 };
 
-/// Pilot event. Type is 'P'.
+/// Pilot event.
 struct PilotEvent : public Event {};
 
 /// A class that loads an IGC file.
 class LIBIGC_EXPORT Igc {
  public:
+  typedef QMultiMap<QTime, Event*> EventMap;
+  typedef QMapIterator<QTime, Event*> EventMapIterator;
+
+  ~Igc() { clear(); }
+
   bool load(QString path, QTextCodec *codec = 0);
   bool load(QIODevice *file, QTextCodec *codec = 0);
+
+  void clear();
 
   /// Return altimeter pressure setting in hectopascals or zero
   /// if it was not specified.
@@ -73,12 +86,10 @@ class LIBIGC_EXPORT Igc {
   /// Return pilot name or empty string.
   QString pilot() { return pilot_; }
 
- private:
-  class Event {
- public:
-    QDateTime timestamp;
-  };
+  /// Return a const reference to the event map.
+  const EventMap& events() { return eventMap; }
 
+ private:
   bool isEndOfFile();
 
   void parseOneRecord();
@@ -90,6 +101,8 @@ class LIBIGC_EXPORT Igc {
   void processRecordB();
   void processRecordH();
   void processRecordL();
+
+  EventMap eventMap;
 
   QByteArray buffer;
 
