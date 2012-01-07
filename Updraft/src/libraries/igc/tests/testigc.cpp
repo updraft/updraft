@@ -88,6 +88,29 @@ void TestIgc::testBRecords() {
   QVERIFY(!iterator.hasNext());
 }
 
+
+/// Test that the clean method really deletes all information
+/// and empties the eventMap.
+/// Loads the test file again after checking everything.
+void TestIgc::testClean() {
+  igc.clear();
+
+  QCOMPARE(igc.altimeterSetting(), 0.0);
+  QCOMPARE(igc.competitionClass(), QString());
+  QCOMPARE(igc.competitionId(), QString());
+  QCOMPARE(igc.manufacturer(), QString());
+  QCOMPARE(igc.frType(), QString());
+  QCOMPARE(igc.gliderId(), QString());
+  QCOMPARE(igc.gps(), QString());
+  QCOMPARE(igc.gliderType(), QString());
+  QCOMPARE(igc.pilot(), QString());
+
+  Igc::EventMapIterator iterator(igc.events());
+  QVERIFY(!iterator.hasNext());
+
+  loadTestFile();
+}
+
 /// Loads a test file.
 void TestIgc::loadTestFile() {
   QVERIFY(igc.load(TEST_DATA_DIR "/testigc.igc"));

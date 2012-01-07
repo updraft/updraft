@@ -13,8 +13,11 @@ class TestIgc: public QObject {
   Q_OBJECT
  private slots:
   void initTestCase();
+
   void testHRecords();
   void testBRecords();
+
+  void testClean();
 
  private:
   void loadTestFile();
