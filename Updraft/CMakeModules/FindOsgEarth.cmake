@@ -109,8 +109,8 @@ FOREACH(library osgEarth osgEarthSymbology osgEarthUtil osgEarthFeatures)
         LIST(APPEND OSGEARTH_LIBRARIES ${${library_uc}_LIBRARY})
     ELSE()
         LIST(APPEND OSGEARTH_LIBRARIES
-            debug ${library_uc}_LIBRARY_DEBUG
-            optimized ${library_uc}_LIBRARY})
+            debug ${${library_uc}_LIBRARY_DEBUG}
+            optimized ${${library_uc}_LIBRARY})
     ENDIF()
     
 ENDFOREACH()
@@ -120,6 +120,3 @@ SET(OSGEARTH_INCLUDE_DIRS ${OSGEARTH_INCLUDE_DIR})
 # handle the QUIETLY and REQUIRED arguments and set LIBXML2_FOUND to TRUE
 # if all listed variables are TRUE
 find_package_handle_standard_args(OsgEarth DEFAULT_MSG OSGEARTH_LIBRARY OSGEARTH_INCLUDE_DIR)
-
-FIND_PACKAGE_MESSAGE(OsgEarth "Found OsgEarth: ${OSGEARTH_LIBRARY}"
-    "${OSGEARTH_LIBRARIES}, ${OSGEARTH_INCLUDE_DIRS}")
