@@ -1,4 +1,5 @@
 #include "settingsdelegate.h"
+#include "basicsetting.h"
 
 namespace Updraft {
 namespace Core {
@@ -9,6 +10,14 @@ void SettingsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, 
   // Only set the value if the property differs from the value in the model
   if (!variantsEqual(model->data(index, Qt::EditRole), editor->property(propertyName))) {
     QStyledItemDelegate::setModelData(editor, model, index);
+
+    // If the data was changed, let all the settings know about this
+    for (int inst = 0; inst < model->rowCount(index); ++inst) {
+      QModelIndex instanceIndex = model->index(inst, 0, index);
+      QVariant instance = model->data(instanceIndex, Qt::EditRole);
+      BasicSetting* instancePtr = (BasicSetting*)instance.value<void*>();
+      instancePtr->emitValueChanged();
+    }
   }
 }
 

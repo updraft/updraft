@@ -5,12 +5,17 @@
 
 namespace Updraft {
 
-class SettingInterface {
+class SettingInterface: public QObject {
+ Q_OBJECT
+
  public:
   virtual ~SettingInterface() {}
 
   virtual QVariant get() = 0;
   virtual void set(const QVariant& value) = 0;
+
+ signals:
+  void valueChanged();
 };
 
 }  // End namespace Updraft

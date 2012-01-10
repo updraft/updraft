@@ -14,6 +14,7 @@ SettingsDialog::SettingsDialog(QWidget* parent)
   setWindowTitle(tr("Settings"));
 
   connect(ui->topView, SIGNAL(clicked(const QModelIndex&)), ui->bottomView, SLOT(setTopIndex(const QModelIndex&)));
+  connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(buttonBoxClicked(QAbstractButton*)));
 }
 
 SettingsDialog::~SettingsDialog() {
@@ -41,6 +42,19 @@ void SettingsDialog::commitEditorData() {
 
 void SettingsDialog::resetEditors() {
   ui->bottomView->reset();
+}
+
+void SettingsDialog::buttonBoxClicked(QAbstractButton* button) {
+  switch (ui->buttonBox->buttonRole(button)) {
+    case QDialogButtonBox::ResetRole:
+      resetEditors();
+    break;
+    case QDialogButtonBox::ApplyRole:
+      commitEditorData();
+    break;
+    default:
+    break;
+  }
 }
 
 }  // End namespace Core

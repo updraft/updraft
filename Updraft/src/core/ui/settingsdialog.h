@@ -27,7 +27,11 @@ class SettingsDialog: public QDialog {
 
   /// Reverts data of the bottom view editors to values present in the model.
   void resetEditors();
- private:
+
+ protected slots:
+  void buttonBoxClicked(QAbstractButton* button);
+
+ protected:
   Ui::SettingsDialog* ui;
 
   SettingsDelegate* settingsDelegate;
