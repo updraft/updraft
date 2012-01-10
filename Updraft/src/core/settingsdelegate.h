@@ -8,7 +8,8 @@ namespace Core {
 
 class SettingsDelegate: public QStyledItemDelegate {
  public:
-  void setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const;
+  void setModelData(QWidget* editor, QAbstractItemModel* model,
+    const QModelIndex& index) const;
   void setEditorData(QWidget* editor, const QModelIndex& index) const;
 
  private:

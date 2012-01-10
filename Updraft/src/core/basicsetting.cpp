@@ -29,7 +29,8 @@ void BasicSetting::set(const QVariant& newValue) {
       QStandardItem* instanceItem = parent->child(row);
       if (instanceItem != item) {
         QVariant instance = instanceItem->data(Qt::EditRole);
-        BasicSetting* instancePtr = (BasicSetting*)instance.value<void*>();
+        BasicSetting* instancePtr =
+          reinterpret_cast<BasicSetting*>(instance.value<void*>());
         instancePtr->emitValueChanged();
       }
     }
@@ -38,7 +39,8 @@ void BasicSetting::set(const QVariant& newValue) {
 
 BasicSetting::BasicSetting(QStandardItem* settingItem) {
   QStandardItem* ptrItem = new QStandardItem();
-  ptrItem->setData(qVariantFromValue((void*)this), Qt::EditRole);
+  ptrItem->setData(qVariantFromValue(reinterpret_cast<void*>(this)),
+    Qt::EditRole);
 
   settingItem->appendRow(ptrItem);
   item = ptrItem;

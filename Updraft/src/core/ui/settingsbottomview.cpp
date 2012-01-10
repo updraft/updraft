@@ -131,32 +131,41 @@ QWidget* SettingsBottomView::createEditorForIndex(const QModelIndex& index) {
   return editor;
 }
 
-void SettingsBottomView::paintEvent(QPaintEvent * event) {
-}
+void SettingsBottomView::paintEvent(QPaintEvent * event) {}
 
 int SettingsBottomView::horizontalOffset() const {
+  return 0;
 }
 
 bool SettingsBottomView::isIndexHidden(const QModelIndex & index) const {
+  return false;
 }
 
-QModelIndex SettingsBottomView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers) {
+QModelIndex SettingsBottomView::moveCursor(
+  CursorAction cursorAction,
+  Qt::KeyboardModifiers modifiers) {
+  return QModelIndex();
 }
 
-void SettingsBottomView::setSelection(const QRect & rect, QItemSelectionModel::SelectionFlags flags) {
-}
+void SettingsBottomView::setSelection(
+  const QRect & rect,
+  QItemSelectionModel::SelectionFlags flags) {}
 
 int SettingsBottomView::verticalOffset() const {
   return 5;
 }
 
-QRegion SettingsBottomView::visualRegionForSelection(const QItemSelection & selection) const {
+QRegion SettingsBottomView::visualRegionForSelection(
+  const QItemSelection & selection) const {
+  return QRegion();
 }
 
 void SettingsBottomView::commitData(QWidget* editor) {
 }
 
-void SettingsBottomView::dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight) {
+void SettingsBottomView::dataChanged(
+  const QModelIndex& topLeft,
+  const QModelIndex& bottomRight) {
   // If modifying data for a group, don't do anything
   if (!insertionIndex.isValid()) return;
 
@@ -196,7 +205,8 @@ void SettingsBottomView::dataChanged(const QModelIndex& topLeft, const QModelInd
   }
 }
 
-void SettingsBottomView::rowsInserted(const QModelIndex& parent, int start, int end) {
+void SettingsBottomView::rowsInserted(
+  const QModelIndex& parent, int start, int end) {
   QModelIndex index;
   QGridLayout* layout;
   QWidget* page;

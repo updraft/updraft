@@ -83,7 +83,7 @@ class CoreInterface {
   /// \param initValue This is the initial value for the setting if it is newly
   ///        created.
   /// \return Interface for setting and reading the setting value. In case of
-  ///         failure, NULL is returned. 
+  ///         failure, NULL is returned.
   virtual SettingInterface* addSetting(
     const QString& settingId,
     const QString& description,

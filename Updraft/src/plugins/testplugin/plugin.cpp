@@ -70,8 +70,10 @@ void TestPlugin::initialize() {
   // Settings
   core->addSettingsGroup("testplugin", "Test Plugin");
   testSetting = core->addSetting("testplugin:testsetting", "Value of PI", 3.14);
-  testSetting2 = core->addSetting("testplugin:testsetting2", "Number of silver squirters", 333);
-  testSetting3 = core->addSetting("testplugin:testsetting3", "Name of the application", "Updraft");
+  testSetting2 = core->addSetting("testplugin:testsetting2",
+    "Number of silver squirters", 333);
+  testSetting3 = core->addSetting("testplugin:testsetting3",
+    "Name of the application", "Updraft");
 
   connect(testSetting, SIGNAL(valueChanged()), this, SLOT(showPi()));
 

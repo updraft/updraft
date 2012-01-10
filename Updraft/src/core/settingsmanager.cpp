@@ -23,9 +23,11 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL)) {
   MainWindow* win = updraft->mainWindow;
   Menu* toolsMenu = win->getSystemMenu(MENU_TOOLS);
 
-  settingsAction = new QAction(QIcon(":/core/icons/configure.png"), tr("Settings..."), this); // NOLINT
+  settingsAction = new QAction(QIcon(":/core/icons/configure.png"),
+    tr("Settings..."), this);
   settingsAction->setIconVisibleInMenu(true);
-  QObject::connect(settingsAction, SIGNAL(triggered()), this, SLOT(execDialog()));
+  QObject::connect(settingsAction, SIGNAL(triggered()),
+    this, SLOT(execDialog()));
   toolsMenu->insertAction(100, settingsAction);
 }
 
@@ -38,7 +40,6 @@ SettingInterface* SettingsManager::addSetting(
   const QString& settingId,
   const QString& description,
   QVariant initValue) {
-
   QStringList identifiers = settingId.split(':');
   if (identifiers.size() != 2) {
     qDebug() <<
@@ -84,7 +85,8 @@ SettingInterface* SettingsManager::addSetting(
     groupItem->setChild(groupRows, 1, descItem);
     groupItem->setChild(groupRows, 2, valueItem);
   } else {
-    QModelIndex valueIndex = model->sibling(settingIndex.row(), 2, settingIndex);
+    QModelIndex valueIndex =
+      model->sibling(settingIndex.row(), 2, settingIndex);
     valueItem = model->itemFromIndex(valueIndex);
   }
 
@@ -151,7 +153,9 @@ QModelIndex SettingsManager::getGroup(const QString& groupId) {
   return groupIndex;
 }
 
-QModelIndex SettingsManager::getSetting(const QString& settingId, QModelIndex groupIndex) {
+QModelIndex SettingsManager::getSetting(
+  const QString& settingId,
+  QModelIndex groupIndex) {
   QModelIndex settingIndex;
 
   int i;

@@ -6,15 +6,19 @@ namespace Updraft {
 namespace Core {
 
 SettingsDialog::SettingsDialog(QWidget* parent)
-: QDialog(parent), ui(new Ui::SettingsDialog), settingsDelegate(new SettingsDelegate) {
+: QDialog(parent),
+  ui(new Ui::SettingsDialog),
+  settingsDelegate(new SettingsDelegate) {
   ui->setupUi(this);
 
   ui->bottomView->setItemDelegate(settingsDelegate);
 
   setWindowTitle(tr("Settings"));
 
-  connect(ui->topView, SIGNAL(clicked(const QModelIndex&)), ui->bottomView, SLOT(setTopIndex(const QModelIndex&)));
-  connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(buttonBoxClicked(QAbstractButton*)));
+  connect(ui->topView, SIGNAL(clicked(const QModelIndex&)),
+    ui->bottomView, SLOT(setTopIndex(const QModelIndex&)));
+  connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)),
+    this, SLOT(buttonBoxClicked(QAbstractButton*)));
 }
 
 SettingsDialog::~SettingsDialog() {
