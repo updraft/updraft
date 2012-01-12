@@ -12,7 +12,7 @@
 <context>
     <name>FileTypeManager</name>
     <message>
-        <location filename="../filetypemanager.cpp" line="160"/>
+        <location filename="../filetypemanager.cpp" line="213"/>
         <source>All supported types</source>
         <translation type="unfinished"></translation>
     </message>

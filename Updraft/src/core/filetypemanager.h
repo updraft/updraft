@@ -28,14 +28,25 @@ class FileTypeManager {
     FileCategory category, PluginBase* plugin);
 
   bool openFile(const QString path, FileCategory category,
-    bool showDialog = true);
+    bool showDialog = true) const;
 
-  QStringList getFilters(FileCategory category);
-
-  void openFileDialog(FileCategory category, QString caption);
+  void openFileDialog(FileCategory category, QString caption) const;
 
  private:
-  Q_DECLARE_TR_FUNCTIONS(FileTypeManager);
+  Q_DECLARE_TR_FUNCTIONS(FileTypeManager);  // Creates context for translations
+
+  class FileOpenOption;
+  class FileOpenOptionModel;
+
+  void getOpenOptions(QString path, FileCategory category,
+    FileOpenOptionModel* out) const;
+  QStringList getFilters(FileCategory category) const;
+
+  bool openFileInternal(const QString path,
+    FileOpenOptionModel const* model) const;
+  bool openFileOnePlugin(PluginBase* plugin,
+    const QString path, QList<int> roles) const;
+
   QList<FileType> registered;
 };
 
