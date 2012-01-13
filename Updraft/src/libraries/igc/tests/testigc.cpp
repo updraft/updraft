@@ -96,14 +96,14 @@ void TestIgc::testClean() {
   igc.clear();
 
   QCOMPARE(igc.altimeterSetting(), 0.0);
-  QCOMPARE(igc.competitionClass(), QString());
-  QCOMPARE(igc.competitionId(), QString());
-  QCOMPARE(igc.manufacturer(), QString());
-  QCOMPARE(igc.frType(), QString());
-  QCOMPARE(igc.gliderId(), QString());
-  QCOMPARE(igc.gps(), QString());
-  QCOMPARE(igc.gliderType(), QString());
-  QCOMPARE(igc.pilot(), QString());
+  QVERIFY(igc.competitionClass().isNull());
+  QVERIFY(igc.competitionId().isNull());
+  QVERIFY(igc.manufacturer().isNull());
+  QVERIFY(igc.frType().isNull());
+  QVERIFY(igc.gliderId().isNull());
+  QVERIFY(igc.gps().isNull());
+  QVERIFY(igc.gliderType().isNull());
+  QVERIFY(igc.pilot().isNull());
 
   IgcFile::EventListIterator iterator(igc.events());
   QVERIFY(!iterator.hasNext());

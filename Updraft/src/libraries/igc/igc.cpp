@@ -54,14 +54,14 @@ bool IgcFile::load(QIODevice *dev, QTextCodec* codec) {
 /// Delete all loaded data.
 void IgcFile::clear() {
   altimeterSetting_ = 0;
-  competitionClass_ = "";
-  competitionId_ = "";
-  manufacturer_ = "";
-  frType_ = "";
-  gliderId_ = "";
-  gps_ = "";
-  gliderType_ = "";
-  pilot_ = "";
+  competitionClass_ = QString();
+  competitionId_ = QString();
+  manufacturer_ = QString();
+  frType_ = QString();
+  gliderId_ = QString();
+  gps_ = QString();
+  gliderType_ = QString();
+  pilot_ = QString();
 
   foreach(Event const* ev, eventList) {
     delete ev;

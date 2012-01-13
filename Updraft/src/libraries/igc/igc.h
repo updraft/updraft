@@ -60,34 +60,34 @@ class LIBIGC_EXPORT IgcFile {
   /// Return altimeter pressure setting in hectopascals or zero
   /// if it was not specified.
   /// This value doesn't affect altitudes returned in fixes in any way.
-  /// All recorded altitudes use 113.25 as a base pressure.
+  /// All recorded altitudes use 1013.25 as a base pressure.
   qreal altimeterSetting() const { return altimeterSetting_; }
 
-  /// Return competition class or empty string.
+  /// Return competition class or null string.
   QString competitionClass() const { return competitionClass_; }
 
-  /// Return glider competition ID or empty string.
+  /// Return glider competition ID or null string.
   QString competitionId() const { return competitionId_; }
 
   /// Return date of the recording.
   QDate date() const { return date_; }
 
-  /// Return FR manufacturer or empty string.
+  /// Return FR manufacturer or null string.
   QString manufacturer() const { return manufacturer_; }
 
-  /// Return FR type or empty string.
+  /// Return FR type or null string.
   QString frType() const { return frType_; }
 
-  /// Return glider registration number or empty string.
+  /// Return glider registration number or null string.
   QString gliderId() const { return gliderId_; }
 
-  /// Return GPS receiver type or empty string.
+  /// Return GPS receiver type or null string.
   QString gps() const { return gps_; }
 
-  /// Return glider model or empty string.
+  /// Return glider model or null string.
   QString gliderType() const { return gliderType_; }
 
-  /// Return pilot name or empty string.
+  /// Return pilot name or null string.
   QString pilot() const { return pilot_; }
 
   /// Return a const reference to the event map.
