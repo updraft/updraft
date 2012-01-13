@@ -2,6 +2,7 @@
 #define UPDRAFT_SRC_LIBRARIES_IGC_IGC_H_
 
 #include <QByteArray>
+#include <QDate>
 #include <QIODevice>
 #include <QList>
 #include <QString>
@@ -68,6 +69,9 @@ class LIBIGC_EXPORT IgcFile {
   /// Return glider competition ID or empty string.
   QString competitionId() const { return competitionId_; }
 
+  /// Return date of the recording.
+  QDate date() const { return date_; }
+
   /// Return FR manufacturer or empty string.
   QString manufacturer() const { return manufacturer_; }
 
@@ -97,6 +101,7 @@ class LIBIGC_EXPORT IgcFile {
   QTime parseTimestamp(QByteArray bytes);
   qreal parseLatLon(QByteArray bytes);
   qreal parseDecimal(QByteArray bytes);
+  QDate parseDate(QByteArray bytes);
 
   void processRecordB();
   void processRecordH();
@@ -117,6 +122,7 @@ class LIBIGC_EXPORT IgcFile {
   qreal altimeterSetting_;
   QString competitionClass_;
   QString competitionId_;
+  QDate date_;
   QString manufacturer_;
   QString frType_;
   QString gliderId_;

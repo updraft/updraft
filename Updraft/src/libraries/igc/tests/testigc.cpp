@@ -25,6 +25,7 @@ void TestIgc::testHRecords() {
   QCOMPARE(igc.gps(), QString("7"));
   QCOMPARE(igc.gliderType(), QString("11"));
   QCOMPARE(igc.pilot(), QString("12"));
+  QCOMPARE(igc.date(), QDate(15, 14, 13));
 }
 
 /// Reads a manually crafted IGC file and tests

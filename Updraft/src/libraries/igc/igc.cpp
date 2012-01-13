@@ -177,6 +177,17 @@ qreal IgcFile::parseDecimal(QByteArray bytes) {
   return whole + decimal / 100.0;
 }
 
+/// Parse date specification.
+/// \bug Date field in igc files has only two digits for year.
+///   Now we're just adding 2000 to it, but maybe there is some
+///   smarter way around?
+QDate IgcFile::parseDate(QByteArray bytes) {
+  return QDate(
+    bytes.mid(4, 2).toInt() + 2000,
+    bytes.mid(2, 2).toInt(),
+    bytes.mid(0, 2).toInt());
+}
+
 /// Process a single record of type B (fix data) stored in buffer.
 void IgcFile::processRecordB() {
   Fix* ret = new Fix;
@@ -212,6 +223,8 @@ void IgcFile::processRecordH() {
     competitionClass_ = activeCodec->toUnicode(value);
   } else if (subtype == "CID") {
     competitionId_ = activeCodec->toUnicode(value);
+  } else if (subtype == "DTE") {
+    date_ = parseDate(data);
   } else if (subtype == "DTM") {
     if (data.left(3) != "100") {
       qDebug() << "We only support WGS84!";
