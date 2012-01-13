@@ -5,6 +5,7 @@
 #include <QStandardItemModel>
 
 #include "../pluginbase.h"
+#include "ui/fileopendialog.h"
 #include "ui/filerolesdialog.h"
 #include "updraft.h"
 
@@ -28,19 +29,6 @@ class FileTypeManager::FileOpenOption : public QStandardItem {
 
   PluginBase* plugin;
   int role;
-};
-
-/// Model for file open options. Wraps the two most needed methods, but don't
-/// put anything else than FileItemOptions in!
-class FileTypeManager::FileOpenOptionModel : public QStandardItemModel {
- public:
-  void appendRow(FileOpenOption* item) {
-    QStandardItemModel::appendRow(item);
-  }
-
-  FileOpenOption* item(int r, int c = 0) const {
-    return static_cast<FileOpenOption*>(QStandardItemModel::item(r, c));
-  }
 };
 
 FileTypeManager::FileOpenOption::FileOpenOption(
@@ -79,13 +67,14 @@ void FileTypeManager::registerFiletype(QString extension, QString description,
 /// \return true if opening was successful.
 bool FileTypeManager::openFile(QString path, FileCategory category,
   bool showDialog) const {
-  FileOpenOptionModel model;
+  QStandardItemModel model;
 
   qDebug() << "Opening file " << path << ".";
   getOpenOptions(path, category, &model);
 
   if (!model.rowCount()) {
-    return false;  // This is already logged in getOpenOptions()
+    qDebug() << "No plugin can open this file.";
+    return false;
   }
 
   if (showDialog) {
@@ -109,16 +98,22 @@ bool FileTypeManager::openFile(QString path, FileCategory category,
 ///   category flags.
 /// \param [out] model Model that contains the options for opening the file.
 ///   Only items that are checked are
+/// \param model Model with FileOpenOption instances. This is a little fragile
+///   -- if the model contains something else than FileOpenOption bad things
+///   will happen.
 /// \return true if opening was successful.
 bool FileTypeManager::openFileInternal(QString path,
-  FileOpenOptionModel const* model) const {
+  QStandardItemModel const* model) const {
   bool success = true;
 
   QList<int> roles;
   PluginBase* prevPlugin = NULL;
 
   for (int i = 0; i < model->rowCount(); ++i) {
-    FileOpenOption* option = model->item(i);
+    QStandardItem *item = model->item(i);
+
+    FileOpenOption* option = static_cast<FileOpenOption*>(item);
+
     if (!option->selected()) {
       continue;
     }
@@ -159,7 +154,7 @@ bool FileTypeManager::openFileOnePlugin(PluginBase* plugin,
 /// \param [out] model Model that will contain the options.
 ///   The model is cleared before, and each item is initially selected.
 void FileTypeManager::getOpenOptions(QString path, FileCategory category,
-  FileOpenOptionModel* model) const {
+  QStandardItemModel* model) const {
   int identificationsTried = 0;
   model->clear();
 
@@ -179,39 +174,6 @@ void FileTypeManager::getOpenOptions(QString path, FileCategory category,
       model->appendRow(new FileOpenOption(type.plugin, i, roles[i]));
     }
   }
-
-  if (!model->rowCount()) {
-    qDebug() << "No plugin can open this file (" << identificationsTried <<
-      " identifications tried.)";
-  }
-}
-
-/// Returns a list of file name filters suitable
-/// for QFileDialog::setNameFilters().
-/// \param category Limit usable file types only to category.
-///   If category contains more than one category flags any of the flags is
-///   sufficient. CATEGORY_ALL will use all file types regardless of
-///   category flags.
-QStringList FileTypeManager::getFilters(FileCategory category) const {
-  QStringList ret;
-  QStringList allFilters;
-
-  foreach(FileType type, registered) {
-    if (!(category & type.category)) {
-      continue;
-    }
-
-    QString filter = "*" + type.extension;
-
-    allFilters.append(filter);
-    ret.append(type.description + " (" + filter + ")");
-  }
-
-  allFilters.removeDuplicates();
-  QString filter = allFilters.join(" ");
-  ret.prepend(tr("All supported types") + " (" + filter + ")");
-
-  return ret;
 }
 
 /// Display a file open dialog, and open the selected files.
@@ -219,21 +181,16 @@ QStringList FileTypeManager::getFilters(FileCategory category) const {
 ///   If category contains more than one category flags any of the flags is
 ///   sufficient. CATEGORY_ALL will use all file types regardless of
 ///   category flags.
+/// \param caption Title of the file open dialog.
+/// \note This method uses dark magic and eats babies.
+/// Also it depends on the implementation of QFileDialog, which may later
+/// change, because ther is no clean way to do the required functionality
+/// in current versions of Qt. We're doing some checks to avoid total
+/// screw-ups though.
 void FileTypeManager::openFileDialog(FileCategory category,
 QString caption) const {
-  QFileDialog dialog(updraft->mainWindow, caption);
-  dialog.setFileMode(QFileDialog::ExistingFile);
-  dialog.setNameFilters(updraft->fileTypeManager->getFilters(category));
-
-  if (!dialog.exec()) {
-    return;
-  }
-
-  QStringList list = dialog.selectedFiles();
-
-  foreach(QString file, list) {
-    openFile(file, category, true);
-  }
+  FileOpenDialog dialog(updraft->mainWindow, caption, category);
+  dialog.openIt();
 }
 
 }  // End namespace Core
