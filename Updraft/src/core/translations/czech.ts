@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="cs" sourcelanguage="en">
 <context>
     <name>FileRolesDialog</name>
     <message>
         <location filename="../ui/filerolesdialog.ui" line="14"/>
         <source>File Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>FileTypeManager</name>
-    <message>
-        <location filename="../filetypemanager.cpp" line="213"/>
-        <source>All supported types</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubor</translation>
     </message>
 </context>
 <context>
@@ -22,27 +14,35 @@
     <message>
         <location filename="../ui/mainwindow.ui" line="20"/>
         <source>Updraft</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoupák</translation>
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="119"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubor</translation>
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="124"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Úpravy</translation>
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="129"/>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Nástroje</translation>
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="134"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Nápověda</translation>
+    </message>
+</context>
+<context>
+    <name>Updraft::Core::FileOpenDialog</name>
+    <message>
+        <location filename="../ui/fileopendialog.cpp" line="66"/>
+        <source>All supported types</source>
+        <translation>Všechny známé typy</translation>
     </message>
 </context>
 <context>
@@ -50,18 +50,18 @@
     <message>
         <location filename="../ui/mainwindow.cpp" line="117"/>
         <source>&amp;Open File...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Otevřít soubor...</translation>
     </message>
     <message>
         <location filename="../ui/mainwindow.cpp" line="121"/>
         <location filename="../ui/mainwindow.cpp" line="135"/>
         <source>Import...</source>
-        <translation type="unfinished"></translation>
+        <translation>Import...</translation>
     </message>
     <message>
         <location filename="../ui/mainwindow.cpp" line="129"/>
         <source>Open File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít soubor...</translation>
     </message>
 </context>
 </TS>
