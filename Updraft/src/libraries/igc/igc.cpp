@@ -233,7 +233,6 @@ void IgcFile::processRecordH() {
     QList<QByteArray> list = value.split(',');
     manufacturer_ = activeCodec->toUnicode(list[0]);
     frType_ = activeCodec->toUnicode(list[1]);
-    gliderId_ = activeCodec->toUnicode(value);
   } else if (subtype == "GID") {
     gliderId_ = activeCodec->toUnicode(value);
   } else if (subtype == "GPS") {
