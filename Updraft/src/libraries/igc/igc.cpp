@@ -56,6 +56,7 @@ void IgcFile::clear() {
   altimeterSetting_ = 0;
   competitionClass_ = QString();
   competitionId_ = QString();
+  date_ = QDate();
   manufacturer_ = QString();
   frType_ = QString();
   gliderId_ = QString();

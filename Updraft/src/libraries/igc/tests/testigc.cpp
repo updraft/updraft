@@ -23,9 +23,9 @@ void TestIgc::testHRecords() {
   QCOMPARE(igc.frType(), QString("5"));
   QCOMPARE(igc.gliderId(), QString("6"));
   QCOMPARE(igc.gps(), QString("7"));
-  QCOMPARE(igc.gliderType(), QString("11"));
-  QCOMPARE(igc.pilot(), QString("12"));
-  QCOMPARE(igc.date(), QDate(15, 14, 13));
+  QCOMPARE(igc.date(), QDate(2013, 12, 11));
+  QCOMPARE(igc.gliderType(), QString("14"));
+  QCOMPARE(igc.pilot(), QString("15"));
 }
 
 /// Reads a manually crafted IGC file and tests
@@ -104,6 +104,7 @@ void TestIgc::testClean() {
   QVERIFY(igc.gps().isNull());
   QVERIFY(igc.gliderType().isNull());
   QVERIFY(igc.pilot().isNull());
+  QVERIFY(igc.date().isNull());
 
   IgcFile::EventListIterator iterator(igc.events());
   QVERIFY(!iterator.hasNext());
