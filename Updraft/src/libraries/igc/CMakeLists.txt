@@ -27,6 +27,7 @@ ADD_LIBRARY(
 	${LIBRARY_NAME}
 	SHARED
 	${LIBRARY_SOURCES}
+	${LIBRARY_HEADERS}
 )
 
 # Handling of output filenames and directories on Windows
