@@ -4,8 +4,6 @@
 #include <QtGui>
 #include "../../pluginbase.h"
 
-#include "../../libraries/cup/cup.h"
-
 namespace Updraft {
 namespace Core {
 
@@ -21,13 +19,6 @@ class Q_DECL_EXPORT TaskDeclaration: public QObject, public PluginBase {
   void initialize();
 
   void deinitialize();
-
-  bool fileOpen(QString filename, QList<int> roles);
-
-  QStringList fileIdentification(QString filename);
-
- private:
-  Cup::CupLoader cupLoader;
 };
 
 }  // End namespace Core
