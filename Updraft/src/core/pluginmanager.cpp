@@ -29,9 +29,12 @@ PluginManager::PluginManager() {
     plugins.cd(pluginDir);
     QStringList dlls = plugins.entryList(dllsMask);
 
-    // Not sure how else to search for plugins:
-    if (!dlls.empty()) {
-      load(plugins.absolutePath() + "/" + dlls.front());
+    // Search for the first loadable library.
+    for (QList<QString>::iterator itDll = dlls.begin();
+        itDll != dlls.end(); ++itDll) {
+      if (load(plugins.absolutePath() + "/" + (*itDll)) != NULL) {
+        break;
+      }
     }
     plugins.cdUp();
   }

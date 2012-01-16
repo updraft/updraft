@@ -4,19 +4,16 @@
 ::
 
 
-:: Change the following declarations to right values before run!!!!
-
-set cmake_path=cmake
-set osg_dir=c:/Users/Tom/Desktop/UpdraftDependencies/osg
-set osgearth_dir=c:/Users/Tom/Desktop/UpdraftDependencies/osgEarth
-
-:: End of variables declaration -----------------------------------
-
+:: Before run:
+:: make sure that you have set path to cmake in PATH variable
+:: and also set following 2 environment variables:
+:: 1)osg_dir      ...path of osg libraries (e.g.: C:\osg)
+:: 2)osgearth_dir ...path of osgEarth libraries (e.g.: C:\osgEarth)
 
 cls
 mkdir build
 cd build
 
-%cmake_path% -DOSG_DIR=%osg_dir% -DOSGEARTH_DIR=%osgearth_dir% ..
+cmake -DOSG_DIR=%osg_dir% -DOSGEARTH_DIR=%osgearth_dir% ..
 
 cd ..
