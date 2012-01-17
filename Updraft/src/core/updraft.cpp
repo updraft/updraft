@@ -12,9 +12,9 @@ Updraft::Updraft(int argc, char** argv)
 
   mainWindow = new MainWindow(NULL);
   fileTypeManager = new FileTypeManager();
-  pluginManager = new PluginManager();
   sceneManager = new SceneManager(
     QCoreApplication::applicationDirPath() + "/data/initial.earth");
+  pluginManager = new PluginManager();
 
   mainWindow->setMapWidget(sceneManager->getWidget());
 }

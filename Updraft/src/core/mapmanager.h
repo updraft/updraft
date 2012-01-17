@@ -25,6 +25,7 @@ class MapManager {
   osgEarth::Map* map;
   QVector<osgEarth::ImageLayer*> imageLayers;
   QVector<osgEarth::ElevationLayer*> elevationLayers;
+  QVector<osgEarth::ModelLayer*> modelLayers;
 };
 
 }  // namespace Core

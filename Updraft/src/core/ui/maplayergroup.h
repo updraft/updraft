@@ -5,6 +5,11 @@
 
 namespace osg {
   class Node;
+  class Group;
+}
+
+namespace osgEarth {
+  class MapNode;
 }
 
 namespace Updraft {
@@ -20,7 +25,9 @@ class MapLayerGroup : public QObject {
   /// Creates new map layer group in the target tree widget.
   /// For creating new instances use CoreInterface.
   /// \param widget pointer to the tree widget
-  MapLayerGroup(QTreeWidget *widget, const QString &title);
+  /// \param nodeGroup pointer to scene subtree of this layer group
+  MapLayerGroup(QTreeWidget *widget, const QString &title,
+    osg::Group* nodeGroup, osgEarth::MapNode* map);
 
   /// Destroys MapLayerGroup
   /// Removes coresponding tree widget from GUI.
@@ -39,6 +46,9 @@ class MapLayerGroup : public QObject {
   /// \param layer pointer to node which will be removed
   virtual void removeMapLayer(osg::Node* layer);
 
+  /// Returns the map node.
+  virtual osgEarth::MapNode* getMapNode();
+
  signals:
   /// Called when layer is displayed.
   /// \param layer pointer to node which visibility has been changed
@@ -49,7 +59,7 @@ class MapLayerGroup : public QObject {
   void mapLayerHidden(osg::Node* layer);
 
  private slots:
-  /// Called when a map layer is about to be displayed/hiden.
+  /// Called when a map layer is about to be displayed/hidden.
   /// \param item pointer to QTreeWidgetItem item which have been changed
   /// \param column horizontal position in tree view (not used)
   virtual void itemChanged(QTreeWidgetItem *item, int column);
@@ -58,6 +68,10 @@ class MapLayerGroup : public QObject {
   QTreeWidgetItem *treeItem;
   typedef QMap<osg::Node*, QTreeWidgetItem*> TMapLayers;
   TMapLayers mapLayers;
+
+  /// Pointer to the subtree of the scene associated with this layer.
+  osg::Group* nodeGroup;
+  osgEarth::MapNode* mapNode;
 };
 
 }  // End namespace Updraft

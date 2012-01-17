@@ -34,7 +34,18 @@ SceneManager::SceneManager(QString baseEarthFile,
   mapManager = new MapManager(baseEarthFile);
 
   // create and set scene
-  sceneRoot = createInitialScene(mapManager->getMapNode());
+  sceneRoot = new osg::Group();
+    // create and add background
+  background = new osg::ClearNode();
+  background->setClearColor(osg::Vec4(0.8f, 0.8f, 0.8f, 1.0f));
+  sceneRoot->addChild(background);
+    // add basic map
+  mapNode = mapManager->getMapNode();
+  sceneRoot->addChild(mapNode);
+
+  // EXPERIMENT:
+  // sceneRoot->addChild(mapManager->createMap("data/initial2.earth"));
+  // END EXPERIMENT;
   viewer->setSceneData(sceneRoot);
 
   // set manipulator
@@ -72,6 +83,20 @@ void SceneManager::redrawScene() {
   viewer->frame();
 }
 
+osg::Group* SceneManager::newGroup() {
+  osg::Group* group = new osg::Group();
+  sceneRoot->addChild(group);
+  return group;
+}
+
+bool SceneManager::removeGroup(osg::Group* group) {
+  return sceneRoot->removeChild(group);
+}
+
+osgEarth::MapNode* SceneManager::getMapNode() {
+  return mapNode;
+}
+
 osg::GraphicsContext::Traits* SceneManager::createGraphicsTraits
     (int x, int y, int w, int h, const std::string& name,
     bool windowDecoration) {
@@ -107,19 +132,6 @@ osg::Camera* SceneManager::createCamera(osg::GraphicsContext::Traits* traits) {
     static_cast<double>(traits->height),
     1.0f, 10000.0f);
   return camera;
-}
-
-osg::Group* SceneManager::createInitialScene(osgEarth::MapNode* mapNode) {
-  osg::Group* root = new osg::Group();
-
-  // add background
-  osg::ClearNode* background = new osg::ClearNode();
-  background->setClearColor(osg::Vec4(0.8f, 0.8f, 0.8f, 1.0f));
-  root->addChild(background);
-
-  // add basic map
-  root->addChild(mapNode);
-  return root;
 }
 
 }  // end namespace Core

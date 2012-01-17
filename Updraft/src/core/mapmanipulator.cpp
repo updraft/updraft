@@ -28,7 +28,7 @@ void MapManipulator::handleMovementAction(const ActionType& type, double dx,
         else
           dx = 0.0;
       } */
-      // rotate(dx, dy);
+      rotate(dx, dy);
       break;
     case ACTION_ZOOM:
       zoom(dx, dy);
