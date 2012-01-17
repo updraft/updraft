@@ -26,6 +26,10 @@ Updraft::~Updraft() {
   delete mainWindow;
 }
 
+QString Updraft::getDataDirectory() {
+  return QCoreApplication::applicationDirPath() + "/data";
+}
+
 /// Pull the lever.
 /// Shows main window, and enters event loop.
 int Updraft::exec() {

@@ -47,12 +47,58 @@ void TestPlugin::initialize() {
   createTab("Button tab 1");
   createTab("Button tab 2");
 
-  core->registerFiletype(".txt",
-    "Just a text file; in all categories", CATEGORY_ANY);
-  core->registerFiletype(".png",
-    "Png image. Maybe a map?", CATEGORY_PERSISTENT);
-  core->registerFiletype(".html",
-    "bzzzz", CATEGORY_TEMPORARY);
+  FileRegistration regTxt1;
+  regTxt1.category = CATEGORY_TEMPORARY;
+  regTxt1.extension = ".txt";
+  regTxt1.typeDescription = "Just a text file";
+  regTxt1.roleDescription = "Open text file for reading";
+  regTxt1.roleId = 1;
+  regTxt1.plugin = this;
+
+  core->registerFiletype(regTxt1);
+
+  FileRegistration regTxt2;
+  regTxt2.category = CATEGORY_PERSISTENT;
+  regTxt2.extension = ".txt";
+  regTxt2.typeDescription = "Labels file";
+  regTxt2.roleDescription = "Import city names";
+  regTxt2.importDirectory = "testTxt";
+  regTxt2.roleId = 2;
+  regTxt2.plugin = this;
+
+  core->registerFiletype(regTxt2);
+
+  FileRegistration regTxt3;
+  regTxt3.category = CATEGORY_PERSISTENT;
+  regTxt3.extension = ".txt";
+  regTxt3.typeDescription = "Secret file";
+  regTxt3.roleDescription = "Import something important";
+  regTxt3.importDirectory = "testImportantTxt";
+  regTxt3.roleId = 3;
+  regTxt3.plugin = this;
+
+  core->registerFiletype(regTxt3);
+
+  FileRegistration regPng;
+  regPng.category = CATEGORY_PERSISTENT;
+  regPng.extension = ".png";
+  regPng.typeDescription = "Png image. Maybe a map?";
+  regPng.roleDescription = "Import map layer";
+  regPng.importDirectory = "testPngFiles";
+  regPng.roleId = 4;
+  regPng.plugin = this;
+
+  core->registerFiletype(regPng);
+
+  FileRegistration regHtml;
+  regHtml.category = CATEGORY_TEMPORARY;
+  regHtml.extension = ".png";
+  regHtml.typeDescription = "bzzzz";
+  regHtml.roleDescription = "Import it";
+  regHtml.roleId = 5;
+  regHtml.plugin = this;
+
+  core->registerFiletype(regHtml);
 
   // Create map layers items in the left pane.
   mapLayerGroup = core->createMapLayerGroup("Test group");
@@ -98,24 +144,33 @@ void TestPlugin::showHelp() {
     "Testplugin is just a test plugin to see whether our api is working");
 }
 
-bool TestPlugin::fileOpen(QString filename, QList<int> roles) {
-  foreach(int role, roles) {
-    qDebug() << "Testplugin opens file " << filename << ", role " << role;
+bool TestPlugin::fileOpen(const QString &filename, int roleId) {
+  switch (roleId) {
+    case 1:
+    case 2:
+    case 3:
+      qDebug() << "Testplugin opens file " << filename << ", role " << roleId;
+      break;
+
+    default:
+      qDebug() << "Testplugin: Unknown file role.";
+      return false;
   }
 
   return true;
 }
 
-QStringList TestPlugin::fileIdentification(QString filename) {
-  QStringList ret;
-  if (filename.endsWith("txt")) {
-    ret.append("Txt file, role 1");
-    ret.append("Txt file, role 2");
-    ret.append("Txt file, role 3");
-  } else {
-    ret.append("other file, the only role");
+void TestPlugin::fileIdentification(QStringList *roles,
+    QString *importDirectory, const QString &filename) {
+  if (roles != NULL) {
+    if (filename.endsWith("txt")) {
+      roles->append("Txt file, role 1");
+      roles->append("Txt file, role 2");
+      roles->append("Txt file, role 3");
+    } else {
+      roles->append("other file, the only role");
+    }
   }
-  return ret;
 }
 
 void TestPlugin::mapLayerDisplayed(osg::Node* layer) {

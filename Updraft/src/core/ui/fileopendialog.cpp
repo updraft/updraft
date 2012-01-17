@@ -10,15 +10,10 @@ namespace Core {
 ///   add preview in current versions of Qt.There are some checks to avoid
 ///   completescrew-ups though.
 /// \param caption Title of the dialog window.
-/// \param category Limit usable file types only to category.
-///   If category contains more than one category flags any of the flags is
-///   sufficient. CATEGORY_ALL will use all file types regardless of
-///   category flags.
-FileOpenDialog::FileOpenDialog(QWidget* parent, QString caption,
-  FileCategory category)
-  : QFileDialog(parent, caption), categ(category) {
+FileOpenDialog::FileOpenDialog(QWidget* parent, QString caption)
+  : QFileDialog(parent, caption) {
   setFileMode(QFileDialog::ExistingFile);
-  setNameFilters(getFilters(category));
+  setNameFilters(getFilters());
 
   QSplitter* splitter = findChild<QSplitter*>("splitter");
 
@@ -41,30 +36,52 @@ FileOpenDialog::FileOpenDialog(QWidget* parent, QString caption,
 
 /// Returns a list of file name filters suitable
 /// for QFileDialog::setNameFilters().
-/// \param category Limit usable file types only to category.
-///   If category contains more than one category flags any of the flags is
-///   sufficient. CATEGORY_ALL will use all file types regardless of
-///   category flags.
-QStringList FileOpenDialog::getFilters(FileCategory category) const {
-  QStringList ret;
-  QStringList allFilters;
+QStringList FileOpenDialog::getFilters() const {
+  typedef QMap<QString, QString> TMap;
+  TMap mapFilters;
 
-  foreach(FileTypeManager::FileType type,
-    updraft->fileTypeManager->registered) {
-    if (!(category & type.category)) {
+  // Create map of extensions (without duplicities).
+  foreach(FileRegistration fileReg, updraft->fileTypeManager->registered) {
+    mapFilters.insert(fileReg.extension, "");
+  }
+
+  // Assign descriptions to extensions.
+  foreach(FileRegistration fileReg, updraft->fileTypeManager->registered) {
+    if (fileReg.typeDescription.length() == 0) {
       continue;
     }
 
-    QString filter = "*" + type.extension;
+    TMap::iterator itFilter = mapFilters.find(fileReg.extension);
+    if (itFilter == mapFilters.end()) {
+      continue;
+    }
 
-    allFilters.append(filter);
-    ret.append(type.description + " (" + filter + ")");
+    // Concatenate descriptions with same extensions.
+    if (itFilter->length() == 0) {
+      itFilter.value() = fileReg.typeDescription;
+    } else {
+      itFilter->append(" | " + fileReg.typeDescription);
+    }
   }
 
-  allFilters.removeDuplicates();
-  QString filter = allFilters.join(" ");
-  ret.prepend(tr("All supported types") + " (" + filter + ")");
+  QString allExtensions;
+  QStringList ret;
 
+  // Insert filters to output list, create "all filter"
+  for (TMap::iterator itFilter = mapFilters.begin();
+    itFilter != mapFilters.end(); ++itFilter) {
+    QString ext("*" + itFilter.key());
+
+    if (allExtensions.length() == 0) {
+      allExtensions = ext;
+    } else {
+      allExtensions.append(" " + ext);
+    }
+
+    ret.append((*itFilter) + " (" + ext + ")");
+  }
+
+  ret.prepend(tr("All supported types") + " (" + allExtensions + ")");
   return ret;
 }
 
@@ -79,14 +96,14 @@ void FileOpenDialog::openIt() {
     if (havePreview) {
       updraft->fileTypeManager->openFileInternal(file, &model);
     } else {
-      updraft->fileTypeManager->openFile(file, categ, true);
+      updraft->fileTypeManager->openFile(file, true);
     }
   }
 }
 
 /// A file was selectecte in the dialog.
 void FileOpenDialog::changed(const QString path) {
-  updraft->fileTypeManager->getOpenOptions(path, categ, &model);
+  updraft->fileTypeManager->getOpenOptions(path, &model);
 }
 
 }  // End namespace Core

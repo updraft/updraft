@@ -22,9 +22,10 @@ class Q_DECL_EXPORT TurnPoints : public QObject, public PluginBase {
 
   void deinitialize();
 
-  bool fileOpen(QString filename, QList<int> roles);
+  bool fileOpen(const QString &filename, int roleId);
 
-  QStringList fileIdentification(QString filename);
+  void fileIdentification(QStringList *roles,
+    QString *importDirectory, const QString &filename);
 
  private:
   Cup::CupLoader cupLoader;

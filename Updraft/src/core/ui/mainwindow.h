@@ -43,7 +43,6 @@ class MainWindow : public QMainWindow {
   void tabSwitch(int index);
 
   void openFile();
-  void importFile();
 
  protected:
   // TODO(cestmir): Just a temporary method to test context menu

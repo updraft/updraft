@@ -20,15 +20,14 @@ class CoreImplementation : public CoreInterface {
   MenuInterface* createMenu(QString title);
   MenuInterface* getSystemMenu(SystemMenu menu);
 
-  virtual MapLayerGroup* createMapLayerGroup(const QString &title);
+  MapLayerGroup* createMapLayerGroup(const QString &title);
 
   TabInterface* createTab(QWidget* content, QString title);
   void removeTab(TabInterface* tab);
 
-  /// This plugin knows how to open the file!
-  /// \return Identifier of the newly registered filetype
-  void registerFiletype(QString extension, QString description,
-    FileCategory category);
+  void registerFiletype(const FileRegistration &registration);
+
+  QString getDataDirectory();
 
  private:
   PluginBase* plugin;

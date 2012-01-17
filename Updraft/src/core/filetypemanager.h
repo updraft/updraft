@@ -17,33 +17,24 @@ namespace Core {
 /// Dispatches file opens to plugins.
 class FileTypeManager {
  public:
-  void registerFiletype(const QString extension, const QString description,
-    FileCategory category, PluginBase* plugin);
+  void registerFiletype(const FileRegistration &registration);
 
-  bool openFile(const QString path, FileCategory category,
-    bool showDialog = true) const;
+  bool openFile(const QString &path, bool showDialog = true) const;
 
-  void openFileDialog(FileCategory category, QString caption) const;
+  void openFileDialog(const QString &caption) const;
 
  private:
   class FileOpenOption;
 
-  struct FileType {
-    QString extension;
-    QString description;
-    FileCategory category;
-    PluginBase *plugin;
-  };
+  void getOpenOptions(QString path, QStandardItemModel* out) const;
 
-  void getOpenOptions(QString path, FileCategory category,
-    QStandardItemModel* out) const;
+  bool importFile(QString *newPath,
+    const QString &importDirectory, const QString &srcPath) const;
 
-  bool openFileInternal(const QString path,
+  bool openFileInternal(const QString &path,
     QStandardItemModel const* model) const;
-  bool openFileOnePlugin(PluginBase* plugin,
-    const QString path, QList<int> roles) const;
 
-  QList<FileType> registered;
+  QList<FileRegistration> registered;
 
   friend class FileOpenDialog;
 };
