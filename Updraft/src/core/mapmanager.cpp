@@ -1,5 +1,7 @@
 #include "mapmanager.h"
 #include <osgDB/ReadFile>
+#include <osgEarthUtil/ElevationManager>
+#include <QDebug>
 #include <string>
 
 namespace Updraft {
@@ -30,6 +32,12 @@ MapManager::MapManager(QString earthFile) {
 
   osgEarth::ElevationLayerVector outElevationLayers;
   map->getElevationLayers(outElevationLayers);
+  osgEarth::Util::ElevationManager* elevationManager = new
+    osgEarth::Util::ElevationManager(map);
+  double height;
+  double resolution;
+  elevationManager->getElevation(27.996, 86.927, 0, NULL, height, resolution);
+  qDebug() << height;
   for (uint i = 0; i < outElevationLayers.size(); i++) {
     elevationLayers.append(outElevationLayers[i]);
   }
