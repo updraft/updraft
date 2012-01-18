@@ -5,10 +5,13 @@ FUNCTION (STYLE_CHECK tgt)
     SET(NONFATAL --nonfatal)
   endif(SLOPPY_BUILD)
 
+  # customize used filters
+  SET(ADD_FILTER --filter=-build/include_what_you_use)
+
   ADD_CUSTOM_COMMAND(
     TARGET ${tgt}
     PRE_BUILD
-    COMMAND python ${STYLE_CHECK_CPPLINT_PATH} ${NONFATAL} ${ARGN}
+    COMMAND python ${STYLE_CHECK_CPPLINT_PATH} ${ADD_FILTER} ${NONFATAL} ${ARGN}
   )
 ENDFUNCTION(STYLE_CHECK)
 

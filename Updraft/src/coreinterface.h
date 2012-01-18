@@ -5,17 +5,12 @@
 
 #include "menuinterface.h"
 #include "tabinterface.h"
+#include "fileregistration.h"
 
 class QWidget;
 class QMainWindow;
 
 namespace Updraft {
-
-enum FileCategory {
-  CATEGORY_ANY = 0xff,
-  CATEGORY_PERSISTENT = 1,
-  CATEGORY_TEMPORARY = 2
-};
 
 class MapLayerGroup;
 
@@ -53,8 +48,11 @@ class CoreInterface {
 
   /// This plugin knows how to open the file!
   /// \return Identifier of the newly registered filetype
-  virtual void registerFiletype(QString extension, QString description,
-    FileCategory category) = 0;
+  virtual void registerFiletype(const FileRegistration &registration) = 0;
+
+  /// Gets path of the application data directory.
+  /// \return Full path to the application directory
+  virtual QString getDataDirectory() = 0;
 };
 
 }  // End namespace Updraft

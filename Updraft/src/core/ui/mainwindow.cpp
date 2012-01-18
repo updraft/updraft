@@ -118,22 +118,11 @@ void MainWindow::standardMenuItems() {
   QAction* openAction = new QAction(tr("&Open File..."), this);
   menuFile->insertAction(0, openAction);
   connect(openAction, SIGNAL(triggered()), this, SLOT(openFile()));
-
-  QAction* importAction = new QAction(tr("Import..."), this);
-  menuFile->insertAction(1, importAction);
-  connect(importAction, SIGNAL(triggered()), this, SLOT(importFile()));
 }
 
 /// Handle File->Open... menu action.
 void MainWindow::openFile() {
-  updraft->fileTypeManager->openFileDialog(CATEGORY_TEMPORARY,
-    tr("Open File..."));
-}
-
-/// Handle File->Import... menu action.
-void MainWindow::importFile() {
-  updraft->fileTypeManager->openFileDialog(CATEGORY_PERSISTENT,
-    tr("Import..."));
+  updraft->fileTypeManager->openFileDialog(tr("Open File..."));
 }
 
 void MainWindow::setMapWidget(QWidget *widget) {

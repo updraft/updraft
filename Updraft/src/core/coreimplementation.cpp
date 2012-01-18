@@ -37,12 +37,15 @@ void CoreImplementation::removeTab(TabInterface* tab) {
   tab->close();
 }
 
-/// This plugin knows how to open the file!
-/// \return Identifier of the newly registered filetype
-void CoreImplementation::registerFiletype(QString extension,
-  QString description, FileCategory category) {
+void CoreImplementation::registerFiletype(
+  const FileRegistration &registration) {
   FileTypeManager *manager = updraft->fileTypeManager;
-  manager->registerFiletype(extension, description, category, plugin);
+  manager->registerFiletype(registration);
+}
+
+QString CoreImplementation::getDataDirectory() {
+  // TODO(Tom): Load data directory from settings.
+  return updraft->getDataDirectory();
 }
 
 }  // End namespace Core

@@ -34,8 +34,9 @@ ADD_DEFINITIONS(-DQT_DLL)
 ADD_LIBRARY(
 	${PLUGIN_NAME}
 	SHARED
-	${PLUGIN_SOURCES} 
-	${PLUGIN_HEADERS_MOC} 
+	${PLUGIN_SOURCES}
+	${PLUGIN_HEADERS}
+	${PLUGIN_HEADERS_MOC}
 )
 
 # Handling of output filenames and directories on Windows

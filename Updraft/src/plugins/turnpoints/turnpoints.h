@@ -1,13 +1,15 @@
-#ifndef UPDRAFT_SRC_PLUGINS_IGCVIEWER_IGCVIEWER_H_
-#define UPDRAFT_SRC_PLUGINS_IGCVIEWER_IGCVIEWER_H_
+#ifndef UPDRAFT_SRC_PLUGINS_TURNPOINTS_TURNPOINTS_H_
+#define UPDRAFT_SRC_PLUGINS_TURNPOINTS_TURNPOINTS_H_
 
 #include <QtGui>
 #include "../../pluginbase.h"
 
+#include "../../libraries/cup/cup.h"
+
 namespace Updraft {
 namespace Core {
 
-class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
+class Q_DECL_EXPORT TurnPoints : public QObject, public PluginBase {
   Q_OBJECT
   Q_INTERFACES(Updraft::PluginBase)
 
@@ -20,13 +22,16 @@ class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
 
   void deinitialize();
 
+  bool fileOpen(const QString &filename, int roleId);
+
   void fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename);
+
  private:
+  Cup::CupLoader cupLoader;
 };
 
 }  // End namespace Core
 }  // End namespace Updraft
 
-#endif  // UPDRAFT_SRC_PLUGINS_IGCVIEWER_IGCVIEWER_H_
-
+#endif  // UPDRAFT_SRC_PLUGINS_TURNPOINTS_TURNPOINTS_H_
