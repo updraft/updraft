@@ -5,19 +5,23 @@
 
 namespace Cup {
 
-const QString& CupFile::getFileName() const {
+QString CupFile::getFileName() const {
   return fileName;
+}
+
+QList<TPEntry> CupFile::getTPEntries() const {
+  return turnPoints;
 }
 
 void CupFile::setFileName(const QString &name) {
   fileName = name;
 }
 
-void CupFile::addTP(const TurnPoint &tp) {
+void CupFile::addTPEntry(const TPEntry &tp) {
   turnPoints.append(tp);
 }
 
-void CupFile::addTask(const Task &task) {
+void CupFile::addTaskEntry(const TaskEntry &task) {
   tasks.append(task);
 }
 
@@ -89,7 +93,7 @@ void CupLoader::parseLine(const QString &strLine) {
 }
 
 void CupLoader::parseTP(const QString &strLine) {
-  TurnPoint tp;
+  TPEntry tp;
 
   tp.name = strLine.section(QChar(','), 0, 0);
   tp.code = strLine.section(QChar(','), 1, 1);
@@ -103,7 +107,7 @@ void CupLoader::parseTP(const QString &strLine) {
   tp.frequency = strLine.section(QChar(','), 9, 9);
   tp.description = strLine.section(QChar(','), 10, 10);
 
-  cupFile->addTP(tp);
+  cupFile->addTPEntry(tp);
 }
 
 void CupLoader::parseTask(const QString &strLine) {
