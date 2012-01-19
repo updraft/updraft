@@ -196,11 +196,11 @@ void IgcFile::processRecordB() {
   ret->type = Event::FIX;
 
   ret->timestamp = parseTimestamp(buffer.mid(1, 6));
-  ret->lat = parseLatLon(buffer.mid(7, 8));
-  ret->lon = parseLatLon(buffer.mid(15, 9));
+  ret->gpsLoc.lat = parseLatLon(buffer.mid(7, 8));
+  ret->gpsLoc.lon = parseLatLon(buffer.mid(15, 9));
   ret->valid = (buffer[24] == 'A');
   ret->pressureAlt = buffer.mid(25, 5).toInt();
-  ret->gpsAlt = buffer.mid(30, 5).toInt();
+  ret->gpsLoc.alt = buffer.mid(30, 5).toInt();
 
   eventList.append(ret);
 }
