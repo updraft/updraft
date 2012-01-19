@@ -9,10 +9,10 @@
 #include <QTextCodec>
 #include <QTime>
 
-#ifdef UPDRAFT_LIB_INTERNAL
-  #define LIBIGC_EXPORT Q_DECL_EXPORT
+#ifdef UPDRAFT_IGC_INTERNAL
+  #define IGC_EXPORT Q_DECL_EXPORT
 #else
-  #define LIBIGC_EXPORT Q_DECL_IMPORT
+  #define IGC_EXPORT Q_DECL_IMPORT
 #endif
 
 namespace Updraft {
@@ -45,7 +45,7 @@ struct Fix : public Event {
 struct PilotEvent : public Event {};
 
 /// A class that loads an IGC file.
-class LIBIGC_EXPORT IgcFile {
+class IGC_EXPORT IgcFile {
  public:
   typedef QList<Event const*> EventList;
   typedef QListIterator<Event const*> EventListIterator;

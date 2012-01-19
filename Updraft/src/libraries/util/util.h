@@ -3,7 +3,7 @@
 
 #include <QtGlobal>
 
-#ifdef UPDRAFT_LIB_INTERNAL
+#ifdef UPDRAFT_UTIL_INTERNAL
   #define UTIL_EXPORT Q_DECL_EXPORT
 #else
   #define UTIL_EXPORT Q_DECL_IMPORT
