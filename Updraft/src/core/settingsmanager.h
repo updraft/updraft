@@ -18,7 +18,8 @@ Q_OBJECT
   SettingInterface* addSetting(
     const QString& settingId,
     const QString& description,
-    QVariant initValue);
+    QVariant defaultValue,
+    bool hiden = false);
 
   QModelIndex addGroup(
     const QString& groupId,
@@ -29,8 +30,14 @@ Q_OBJECT
   void execDialog();
 
  private:
+  /// Returns an index for the given settings group.
   QModelIndex getGroup(const QString& groupId);
   QModelIndex getSetting(const QString& settingId, QModelIndex groupIndex);
+
+  QModelIndex addGroupInternal(
+    const QString& groupId,
+    const QString& description,
+    QIcon icon);
 
   QAction* settingsAction;
 

@@ -50,6 +50,7 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
   SettingInterface* testSetting;
   SettingInterface* testSetting2;
   SettingInterface* testSetting3;
+  SettingInterface* hiddenSetting;
 };
 }
 

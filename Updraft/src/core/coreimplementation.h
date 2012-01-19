@@ -38,7 +38,8 @@ class CoreImplementation : public CoreInterface {
   SettingInterface* addSetting(
     const QString& settingId,
     const QString& description,
-    QVariant initValue);
+    QVariant initValue,
+    bool hidden);
 
  private:
   PluginBase* plugin;

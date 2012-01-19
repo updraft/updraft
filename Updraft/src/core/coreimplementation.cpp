@@ -54,8 +54,10 @@ void CoreImplementation::addSettingsGroup(
 SettingInterface* CoreImplementation::addSetting(
     const QString& settingId,
     const QString& description,
-    QVariant initVal) {
-  return updraft->settingsManager->addSetting(settingId, description, initVal);
+    QVariant initVal,
+    bool hidden) {
+  return updraft->settingsManager->
+    addSetting(settingId, description, initVal, hidden);
 }
 
 }  // End namespace Core

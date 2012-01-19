@@ -82,12 +82,15 @@ class CoreInterface {
   ///        the settings dialog.
   /// \param initValue This is the initial value for the setting if it is newly
   ///        created.
+  /// \param hidden Whether the setting should be hidden or displayed in the
+  ///        settings dialog.
   /// \return Interface for setting and reading the setting value. In case of
   ///         failure, NULL is returned.
   virtual SettingInterface* addSetting(
     const QString& settingId,
     const QString& description,
-    QVariant initValue) = 0;
+    QVariant initValue,
+    bool hidden = false) = 0;
 };
 
 }  // End namespace Updraft

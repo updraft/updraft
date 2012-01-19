@@ -74,6 +74,8 @@ void TestPlugin::initialize() {
     "Number of silver squirters", 333);
   testSetting3 = core->addSetting("testplugin:testsetting3",
     "Name of the application", "Updraft");
+  hiddenSetting = core->addSetting("testplugin:testsetting", "Not visible",
+    "Blablablabla", true);
 
   connect(testSetting, SIGNAL(valueChanged()), this, SLOT(showPi()));
 

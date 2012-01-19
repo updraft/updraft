@@ -6,6 +6,8 @@
 namespace Updraft {
 namespace Core {
 
+// TODO(cestmir): This needs heavy documenting
+
 class SettingsBottomView: public QAbstractItemView {
   Q_OBJECT
 
