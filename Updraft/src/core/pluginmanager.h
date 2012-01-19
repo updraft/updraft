@@ -28,7 +28,7 @@ class PluginManager {
     // CoreInterface* coreinterface; XXX: I don't thik this is needed. Cestmir
   };
 
-  PluginBase* finishLoading(QPluginLoader* loader, QObject* obj);
+  PluginBase* finishLoading(QObject* obj);
 
   LoadedPlugin* findByPointer(PluginBase *pointer);
 

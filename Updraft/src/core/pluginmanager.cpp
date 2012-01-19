@@ -43,6 +43,8 @@ PluginManager::PluginManager() {
 PluginManager::~PluginManager() {
   foreach(LoadedPlugin* p, plugins.values()) {
     p->plugin->deinitialize();
+    delete p->plugin;
+    delete p;
   }
 }
 
@@ -50,11 +52,12 @@ PluginManager::~PluginManager() {
 /// loaded plugins.
 PluginBase* PluginManager::load(QString fileName) {
   qDebug("Loading plugin %s", fileName.toAscii().data());
-  QPluginLoader* loader = new QPluginLoader(fileName);
-  QObject *pluginInstance = loader->instance();
+  QPluginLoader loader(fileName);
+  QObject *pluginInstance = loader.instance();
   if (pluginInstance == NULL)
-    qDebug("Loading error report: %s ", loader->errorString().toAscii().data());
-  return finishLoading(loader, pluginInstance);
+    qDebug("Loading error report: %s ", loader.errorString().toAscii().data());
+
+  return finishLoading(pluginInstance);
 }
 
 PluginBase* PluginManager::getPlugin(QString name) {
@@ -78,11 +81,9 @@ QVector<PluginBase*> PluginManager::getAllPlugins() {
 /// place it in the list of loaded plugins.
 /// Logs a debug message about the reason of failure.
 /// \return Pointer to loaded plugin or NULL.
-/// \param loader Plugin loader that was used for getting the plugin
-///   or NULL for static plugins.
 /// \param obj Loaded plugin before casting to PluginBase.
 ///   Can be NULL if loading failed (this will be logged).
-PluginBase* PluginManager::finishLoading(QPluginLoader* loader, QObject* obj) {
+PluginBase* PluginManager::finishLoading(QObject* obj) {
   if (!obj) {
     qDebug("Loading plugin failed.");
     return NULL;

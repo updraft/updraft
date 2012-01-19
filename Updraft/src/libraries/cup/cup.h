@@ -19,7 +19,7 @@ class CupLoader;
 /// This type exactly copies the data from cup file.
 // TODO(Tom): Resolve the types for items (e.g. coordinates)
 // TODO(Tom): Format values (e.g. remove double quotes)
-struct CUP_EXPORT TurnPoint {
+struct CUP_EXPORT TPEntry {
   QString name;
   QString code;
   QString country;
@@ -35,7 +35,7 @@ struct CUP_EXPORT TurnPoint {
 
 /// Structure defining 'cup style' task
 // TODO(Tom): Think wheter to load the tasks from cup.
-struct CUP_EXPORT Task {
+struct CUP_EXPORT TaskEntry {
 };
 
 /// Stores and encapsulates data of the SeeYou cup file.
@@ -45,15 +45,18 @@ class CUP_EXPORT CupFile {
  public:
   // TODO(Tom): Define interface
 
-  /// Returns file name with full path.
-  const QString& getFileName() const;
+  /// \return A file name with full path.
+  QString getFileName() const;
+
+  /// \return A list of all turn-points.
+  QList<TPEntry> getTPEntries() const;
 
  private:
   QString fileName;
 
   // TODO(Tom): Consider the best container type (e.g. map)
-  QList<TurnPoint> turnPoints;
-  QList<Task> tasks;
+  QList<TPEntry> turnPoints;
+  QList<TaskEntry> tasks;
 
   /// The new instance can be created only by CupLoader.
   CupFile() {}
@@ -66,12 +69,12 @@ class CUP_EXPORT CupFile {
   /// Adds turn-point.
   /// Used by CupLoader during building process.
   /// \param tp a reference to the struct containing tp data
-  void addTP(const TurnPoint &tp);
+  void addTPEntry(const TPEntry &tp);
 
   /// Adds task
   /// Used by CupLoader during building process.
   /// \param task a reference to the struct containing task data
-  void addTask(const Task &task);
+  void addTaskEntry(const TaskEntry &task);
 
   friend class CupLoader;
 };
