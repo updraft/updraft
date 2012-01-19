@@ -1,5 +1,6 @@
-#include "maplayergroup.h"
 #include <osg/Group>
+#include "maplayergroup.h"
+#include "../maplayer.h"
 
 namespace Updraft {
 
@@ -29,8 +30,12 @@ MapLayerGroup::~MapLayerGroup() {
   // TODO(Maria): should we delete the scene subtree? how?
 }
 
+MapLayerInterface* MapLayerGroup::createMapLayer() {
+  return new Core::MapLayer();
+}
+
 void MapLayerGroup::insertMapLayer(int pos,
-                                    osg::Node* layer,
+                                    MapLayerInterface* layer,
                                     const QString &title) {
   QTreeWidgetItem *newItem = new QTreeWidgetItem();
   newItem->setText(0, title);
@@ -40,10 +45,24 @@ void MapLayerGroup::insertMapLayer(int pos,
   mapLayers.insert(layer, newItem);
 
   // insert the node into the scene
-  nodeGroup->addChild(layer);
+  switch (layer->getType()) {
+    case MapLayerType::OSG_NODE_LAYER: {
+      nodeGroup->addChild(layer->getLayer().osgNode);
+      break;
+    }
+    case MapLayerType::IMAGE_LAYER: {
+      // nodeGroup->addChild(layer->getLayer()->im);
+    }
+    case MapLayerType::ELEVATION_LAYER: {
+      // nodeGroup->addChild(layer->getLayer()->osgNode);
+    }
+    case MapLayerType::MODEL_LAYER: {
+      // nodeGroup->addChild(layer->getLayer()->osgNode);
+    }
+  }
 }
 
-void MapLayerGroup::removeMapLayer(osg::Node* layer) {
+void MapLayerGroup::removeMapLayer(MapLayerInterface* layer) {
   TMapLayers::iterator it = mapLayers.find(layer);
   if (it != mapLayers.end()) {
     delete it.value();
@@ -57,14 +76,14 @@ osgEarth::MapNode* MapLayerGroup::getMapNode() {
 
 
 void MapLayerGroup::itemChanged(QTreeWidgetItem *item, int column) {
-  // Finds osg::Node for map layer and emmits the display/hide signal.
+  // Finds MapLayer object for map layer and emits the display/hide signal.
   for (TMapLayers::iterator it = mapLayers.begin();
       it != mapLayers.end(); ++it) {
     if (it.value() == item) {
       if (item->checkState(column) == Qt::Checked) {
-        emit mapLayerDisplayed(it.key());
+        emit it.key()->emitDisplayed(true);
       } else if (item->checkState(column) == Qt::Unchecked) {
-        emit mapLayerHidden(it.key());
+        emit it.key()->emitDisplayed(false);
       }
 
       break;

@@ -1,5 +1,8 @@
 #include "mapmanipulator.h"
 
+namespace Updraft {
+namespace Core {
+
 MapManipulator::MapManipulator() {
   // switch the scroll wheel
   getSettings()->bindScroll(osgEarth::Util::EarthManipulator::ACTION_ZOOM_IN,
@@ -38,3 +41,6 @@ void MapManipulator::handleMovementAction(const ActionType& type, double dx,
       break;
   }
 }
+
+}  // End namespace Core
+}  // End namespace Updraft

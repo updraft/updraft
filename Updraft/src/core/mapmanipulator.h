@@ -3,6 +3,9 @@
 
 #include <osgEarthUtil/EarthManipulator>
 
+namespace Updraft {
+namespace Core {
+
 class MapManipulator: public osgEarth::Util::EarthManipulator {
  public:
   MapManipulator();
@@ -10,5 +13,8 @@ class MapManipulator: public osgEarth::Util::EarthManipulator {
   void handleMovementAction(const ActionType& type, double dx,
     double dy, osg::View* view);
 };
+
+}  // End namespace Core
+}  // End namespace Updraft
 
 #endif  // UPDRAFT_SRC_CORE_MAPMANIPULATOR_H_

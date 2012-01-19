@@ -10,6 +10,7 @@
 
 #include "../../coreinterface.h"
 #include "../../core/ui/maplayergroup.h"
+#include "../../maplayerinterface.h"
 
 namespace Updraft {
 
@@ -159,7 +160,15 @@ void TestPlugin::initialize() {
     osg::Node* randomLines = objectPlacer->placeNode(geode,
       50.087811, 14.42046, 1000);
 
-    mapLayerGroup->insertMapLayer(0, randomLines, "Relative Lines");
+
+    Updraft::Layer l;
+    l.osgNode = randomLines;
+    Updraft::MapLayerInterface* layer1 = mapLayerGroup->createMapLayer();
+    layer1->connectSignalDisplayed(this, "
+    layer1->setType(Updraft::MapLayerType::OSG_NODE_LAYER);
+    layer1->setLayer(l);
+
+    mapLayerGroup->insertMapLayer(0, layer1, "Relative Lines");
 
     // draw route from Brno to Plzen:
     osg::Geode* BrnoPlzen = new osg::Geode();
@@ -201,7 +210,13 @@ void TestPlugin::initialize() {
     geom2->setColorArray(colors2);
     geom2->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-    mapLayerGroup->insertMapLayer(1, BrnoPlzen, "Brno to Plzen");
+    /*
+    Layer l2;
+    l2.osgNode = BrnoPlzen;
+    MapLayer* layer2 = new MapLayer(MapLayerType::OSG_NODE_LAYER, l2);
+
+    mapLayerGroup->insertMapLayer(1, layer2, "Brno to Plzen");
+    */
   }
 
   qDebug("testplugin loaded");
@@ -264,9 +279,8 @@ void TestPlugin::fileIdentification(QStringList *roles,
   }
 }
 
-void TestPlugin::mapLayerDisplayed(osg::Node* layer) {
-  layer->setNodeMask(0xffffffff);
-  qDebug("testplugin: Map layer displayed.");
+void TestPlugin::mapLayerDisplayed(bool value) {
+  //
 }
 
 void TestPlugin::mapLayerHidden(osg::Node* layer) {

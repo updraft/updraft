@@ -40,7 +40,7 @@
 <context>
     <name>Updraft::Core::FileOpenDialog</name>
     <message>
-        <location filename="../ui/fileopendialog.cpp" line="66"/>
+        <location filename="../ui/fileopendialog.cpp" line="84"/>
         <source>All supported types</source>
         <translation type="unfinished"></translation>
     </message>
@@ -53,13 +53,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.cpp" line="122"/>
-        <location filename="../ui/mainwindow.cpp" line="136"/>
-        <source>Import...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwindow.cpp" line="130"/>
+        <location filename="../ui/mainwindow.cpp" line="125"/>
         <source>Open File...</source>
         <translation type="unfinished"></translation>
     </message>

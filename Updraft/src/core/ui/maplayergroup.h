@@ -2,6 +2,7 @@
 #define UPDRAFT_SRC_CORE_UI_MAPLAYERGROUP_H_
 
 #include <QtGui>
+#include "../../maplayerinterface.h"
 
 namespace osg {
   class Node;
@@ -33,6 +34,8 @@ class MapLayerGroup : public QObject {
   /// Removes coresponding tree widget from GUI.
   virtual ~MapLayerGroup();
 
+  virtual MapLayerInterface* createMapLayer();
+
   /// Inserts map layer into this group.
   /// insertMapLayer adds new QTreeWidgetItem and connects
   /// it's signal itemchanged to slot MapLayerGroup::itemChanged.
@@ -40,11 +43,12 @@ class MapLayerGroup : public QObject {
   /// \param pos desired position of layer in the tree view
   /// \param layer pointer to osg Node representing geometry of this layer
   /// \param title name of the layer; caption of the tree item
-  virtual void insertMapLayer(int pos, osg::Node* layer, const QString &title);
+  virtual void insertMapLayer(int pos, MapLayerInterface* layer,
+    const QString &title);
 
   /// Removes the map layer from scene and from the tree view.
   /// \param layer pointer to node which will be removed
-  virtual void removeMapLayer(osg::Node* layer);
+  virtual void removeMapLayer(MapLayerInterface* layer);
 
   /// Returns the map node.
   virtual osgEarth::MapNode* getMapNode();
@@ -66,7 +70,7 @@ class MapLayerGroup : public QObject {
 
  private:
   QTreeWidgetItem *treeItem;
-  typedef QMap<osg::Node*, QTreeWidgetItem*> TMapLayers;
+  typedef QMap<MapLayerInterface*, QTreeWidgetItem*> TMapLayers;
   TMapLayers mapLayers;
 
   /// Pointer to the subtree of the scene associated with this layer.
