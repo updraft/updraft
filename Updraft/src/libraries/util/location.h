@@ -1,7 +1,7 @@
 #ifndef UPDRAFT_SRC_LIBRARIES_UTIL_LOCATION_H_
 #define UPDRAFT_SRC_LIBRARIES_UTIL_LOCATION_H_
 
-#include <QtGlobal>
+#include "util.h"
 
 namespace Updraft {
 namespace Util {
@@ -9,7 +9,7 @@ namespace Util {
 /// Class that represents position on (or above) earth.
 /// Latitude, longitude and altitude are specified relative to
 /// WGS84 reference ellipsoid (the same that osgEarth uses by default).
-class Location {
+class UTIL_EXPORT Location {
  public:
   qreal lat;
   qreal lon;
