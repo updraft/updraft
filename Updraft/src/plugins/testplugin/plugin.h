@@ -2,8 +2,10 @@
 #define UPDRAFT_SRC_PLUGINS_TESTPLUGIN_PLUGIN_H_
 
 #include <QtGui>
+#include <QMap>
 
 #include "../../pluginbase.h"
+#include "../../maplayerinterface.h"
 
 namespace osg {
   class Node;
@@ -33,8 +35,7 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
 
  public slots:
   void showHelp();
-  void mapLayerDisplayed(osg::Node* layer);
-  void mapLayerHidden(osg::Node* layer);
+  void mapLayerDisplayed(int id, bool value);
 
  private:
   void createTab(QString title);
@@ -46,6 +47,7 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
   MenuInterface* myMenu;
 
   MapLayerGroup *mapLayerGroup;
+  QMap<int, Updraft::MapLayerInterface*> mapLayers;
 };
 }
 

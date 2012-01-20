@@ -11,8 +11,12 @@ class MapLayer : public QObject, public MapLayerInterface {
   Q_OBJECT
 
  public:
-  MapLayer(MapLayerType type, Layer layer);
-  MapLayer() {}
+  MapLayer(int i, MapLayerType type, Layer layer);
+  explicit MapLayer(int i);
+  MapLayer(int i, osg::Node* node);
+  MapLayer(int i, osgEarth::ImageLayer* imageLayer);
+  MapLayer(int i, osgEarth::ElevationLayer* elevationLayer);
+  MapLayer(int i, osgEarth::ModelLayer* modelLayer);
   ~MapLayer();
 
   void connectSignalDisplayed(const QObject* receiver,
@@ -25,7 +29,7 @@ class MapLayer : public QObject, public MapLayerInterface {
   void setType(MapLayerType type);
 
  signals:
-  void displayed(bool value);
+  void displayed(int id, bool value);
 
  private:
   MapLayerType layerType;

@@ -62,14 +62,13 @@ osgEarth::MapNode* MapManager::createMap(QString earthFile) {
     // map = NULL;
   }
   osg::Node* loadedMap = osgDB::readNodeFile(earthFile.toStdString());
-  // this->mapNode = osgEarth::MapNode::findMapNode(loadedMap);
-  osgEarth::MapNode* mapNode2 = osgEarth::MapNode::findMapNode(loadedMap);
-  // this->map = mapNode->getMap();
+  this->mapNode = osgEarth::MapNode::findMapNode(loadedMap);
+  this->map = mapNode->getMap();
 
     // set image layers
   // TODO(Maria): parse image layers from the map build from the earth file.
 
-  return mapNode2;
+  return mapNode;
 }
 }
 }

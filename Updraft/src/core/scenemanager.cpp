@@ -43,9 +43,6 @@ SceneManager::SceneManager(QString baseEarthFile,
   mapNode = mapManager->getMapNode();
   sceneRoot->addChild(mapNode);
 
-  // EXPERIMENT:
-  // sceneRoot->addChild(mapManager->createMap("data/initial2.earth"));
-  // END EXPERIMENT;
   viewer->setSceneData(sceneRoot);
 
   // set manipulator

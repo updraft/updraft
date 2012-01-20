@@ -45,11 +45,17 @@ class MapLayerInterface {
   /// Emits the displayed(bool) signal.
   virtual void emitDisplayed(bool value) = 0;
 
+  /// Sets visibility to the layer.
+  virtual void setVisible(bool value) = 0;
+
   virtual Layer getLayer() = 0;
   virtual void setLayer(Layer l) = 0;
 
   virtual MapLayerType getType() = 0;
   virtual void setType(MapLayerType type) = 0;
+
+  /// ID: must be unique.
+  int id;
 };
 
 }  // End namespace Updraft

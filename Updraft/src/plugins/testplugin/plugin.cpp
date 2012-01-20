@@ -110,10 +110,6 @@ void TestPlugin::initialize() {
   mapLayerGroup = core->createMapLayerGroup("Test group");
   if (mapLayerGroup != NULL) {
     // Connect display/hide signals with slots.
-    connect(mapLayerGroup, SIGNAL(mapLayerDisplayed(osg::Node*)),
-            this, SLOT(mapLayerDisplayed(osg::Node*)));
-    connect(mapLayerGroup, SIGNAL(mapLayerHidden(osg::Node*)),
-            this, SLOT(mapLayerHidden(osg::Node*)));
 
     // create map placer: to draw in the map
     osgEarth::MapNode* mapNode = mapLayerGroup->getMapNode();
@@ -160,15 +156,12 @@ void TestPlugin::initialize() {
     osg::Node* randomLines = objectPlacer->placeNode(geode,
       50.087811, 14.42046, 1000);
 
+    Updraft::MapLayerInterface* layer1 =
+      mapLayerGroup->insertMapLayer(randomLines, "Relative Lines", 0);
+    mapLayers.insert(layer1->id, layer1);
+    layer1->connectSignalDisplayed(this, SLOT(mapLayerDisplayed(int, bool)));
 
-    Updraft::Layer l;
-    l.osgNode = randomLines;
-    Updraft::MapLayerInterface* layer1 = mapLayerGroup->createMapLayer();
-    layer1->connectSignalDisplayed(this, "
-    layer1->setType(Updraft::MapLayerType::OSG_NODE_LAYER);
-    layer1->setLayer(l);
-
-    mapLayerGroup->insertMapLayer(0, layer1, "Relative Lines");
+    // mapLayerGroup->insertMapLayer(0, layer1, "Relative Lines");
 
     // draw route from Brno to Plzen:
     osg::Geode* BrnoPlzen = new osg::Geode();
@@ -279,13 +272,8 @@ void TestPlugin::fileIdentification(QStringList *roles,
   }
 }
 
-void TestPlugin::mapLayerDisplayed(bool value) {
-  //
-}
-
-void TestPlugin::mapLayerHidden(osg::Node* layer) {
-  layer->setNodeMask(0x0);
-  qDebug("testplugin: Map layer hidden.");
+void TestPlugin::mapLayerDisplayed(int id, bool value) {
+  mapLayers[id]->setVisible(value);
 }
 
 Q_EXPORT_PLUGIN2(testplugin, TestPlugin)

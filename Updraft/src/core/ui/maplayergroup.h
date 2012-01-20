@@ -27,14 +27,40 @@ class MapLayerGroup : public QObject {
   /// For creating new instances use CoreInterface.
   /// \param widget pointer to the tree widget
   /// \param nodeGroup pointer to scene subtree of this layer group
-  MapLayerGroup(QTreeWidget *widget, const QString &title,
+  MapLayerGroup(QTreeWidget *widget, const QString &grouptitle,
     osg::Group* nodeGroup, osgEarth::MapNode* map);
 
   /// Destroys MapLayerGroup
   /// Removes coresponding tree widget from GUI.
   virtual ~MapLayerGroup();
 
-  virtual MapLayerInterface* createMapLayer();
+  /// Creates and inserts a new instance of Map Layer with generated ID
+  virtual MapLayerInterface* createEmptyMapLayer();
+
+  /// Creates and inserts a new instance of Map Layer with generated ID,
+  /// and filled values.
+  virtual MapLayerInterface* insertMapLayer
+    (MapLayerType type, Layer layer, const QString& title, int pos = -1);
+
+  /// Creates and inserts a new instance of Map Layer with generated ID,
+  /// and filled values.
+  virtual MapLayerInterface* insertMapLayer
+    (osg::Node* layer, const QString& title, int pos = -1);
+
+  /// Creates and inserts a new instance of Map Layer with generated ID,
+  /// and filled values.
+  virtual MapLayerInterface* insertMapLayer
+    (osgEarth::ImageLayer* layer, const QString& title, int pos = -1);
+
+  /// Creates and inserts a new instance of Map Layer with generated ID,
+  /// and filled values.
+  virtual MapLayerInterface* insertMapLayer
+    (osgEarth::ElevationLayer* layer, const QString& title, int pos = -1);
+
+  /// Creates and inserts a new instance of Map Layer with generated ID,
+  /// and filled values.
+  virtual MapLayerInterface* insertMapLayer
+    (osgEarth::ModelLayer* layer, const QString& title, int pos = -1);
 
   /// Inserts map layer into this group.
   /// insertMapLayer adds new QTreeWidgetItem and connects
@@ -43,8 +69,8 @@ class MapLayerGroup : public QObject {
   /// \param pos desired position of layer in the tree view
   /// \param layer pointer to osg Node representing geometry of this layer
   /// \param title name of the layer; caption of the tree item
-  virtual void insertMapLayer(int pos, MapLayerInterface* layer,
-    const QString &title);
+  virtual MapLayerInterface* insertMapLayer(MapLayerInterface* layer,
+    const QString &title, int pos = -1);
 
   /// Removes the map layer from scene and from the tree view.
   /// \param layer pointer to node which will be removed
@@ -69,6 +95,9 @@ class MapLayerGroup : public QObject {
   virtual void itemChanged(QTreeWidgetItem *item, int column);
 
  private:
+  /// widget to draw the list of the map layers
+  QTreeWidget* listWidget;
+  /// top level item
   QTreeWidgetItem *treeItem;
   typedef QMap<MapLayerInterface*, QTreeWidgetItem*> TMapLayers;
   TMapLayers mapLayers;
@@ -76,6 +105,12 @@ class MapLayerGroup : public QObject {
   /// Pointer to the subtree of the scene associated with this layer.
   osg::Group* nodeGroup;
   osgEarth::MapNode* mapNode;
+
+  /// Creates the TreeWidgetItem once the first map layer is added.
+  void displayTree();
+  void hideTree();
+
+  int generateID();
 };
 
 }  // End namespace Updraft
