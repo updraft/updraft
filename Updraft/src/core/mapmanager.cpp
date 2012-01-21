@@ -1,5 +1,8 @@
 #include "mapmanager.h"
 #include <osgDB/ReadFile>
+#include <osgEarthUtil/ElevationManager>
+#include <QDebug>
+#include <string>
 
 namespace Updraft {
 namespace Core {
@@ -19,9 +22,31 @@ MapManager::MapManager(QString earthFile) {
     this->mapNode = new osgEarth::MapNode(this->map);
   }
 
-    // set image layers
-  // TODO(Maria): parse image layers from the map built
-  // from earth file and set them in the structure.
+  // parse layers from the map built from earth file
+  // and set them in the structure.
+  osgEarth::ImageLayerVector outImageLayers;
+  map->getImageLayers(outImageLayers);
+  for (uint i = 0; i < outImageLayers.size(); i++) {
+    imageLayers.append(outImageLayers[i]);
+  }
+
+  osgEarth::ElevationLayerVector outElevationLayers;
+  map->getElevationLayers(outElevationLayers);
+  osgEarth::Util::ElevationManager* elevationManager = new
+    osgEarth::Util::ElevationManager(map);
+  double height;
+  double resolution;
+  elevationManager->getElevation(27.996, 86.927, 0, NULL, height, resolution);
+  qDebug() << height;
+  for (uint i = 0; i < outElevationLayers.size(); i++) {
+    elevationLayers.append(outElevationLayers[i]);
+  }
+
+  osgEarth::ModelLayerVector outModelLayers;
+  map->getModelLayers(outModelLayers);
+  for (uint i = 0; i < outModelLayers.size(); i++) {
+    modelLayers.append(outModelLayers[i]);
+  }
 }
 
 osgEarth::MapNode* MapManager::getMapNode() {
@@ -33,8 +58,8 @@ osgEarth::MapNode* MapManager::createMap(QString earthFile) {
   if (mapNode != NULL) {
     // TODO(Maria): is this correct way of deleting the whole map?
     // delete (mapNode);
-    mapNode = NULL;
-    map = NULL;
+    // mapNode = NULL;
+    // map = NULL;
   }
   osg::Node* loadedMap = osgDB::readNodeFile(earthFile.toStdString());
   this->mapNode = osgEarth::MapNode::findMapNode(loadedMap);

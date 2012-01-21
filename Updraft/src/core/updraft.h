@@ -22,6 +22,9 @@ class Updraft : public QApplication {
 
   int exec();
 
+  // TODO(Tom): Load data directory from settings.
+  QString getDataDirectory();
+
   MainWindow* mainWindow;
   FileTypeManager* fileTypeManager;
   PluginManager* pluginManager;

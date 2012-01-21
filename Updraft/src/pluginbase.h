@@ -43,16 +43,10 @@ class PluginBase {
 
   /// Callback to open a file.
   /// \return Was opening successful?
-  /// \param roles List of role indices (roles are
-  ///   returned by fileIdentification().)
-  virtual bool fileOpen(QString filename, QList<int> roles) { return false; }
-
-  /// Asking a plugin to identify data in a file.
-  /// \return List of role descriptions.
-  /// \see fileOpen()
-  virtual QStringList fileIdentification(QString filename) {
-    return QStringList();
-  }
+  /// \param filename full path to a file
+  /// \param roleId identification of role being opened
+  virtual bool fileOpen(const QString &filename, int roleId) {
+    return false; }
 
   void setCoreInterface(CoreInterface *coreInterface) {
     core = coreInterface;

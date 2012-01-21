@@ -24,7 +24,9 @@ MenuInterface* CoreImplementation::getSystemMenu(SystemMenu menu) {
 }
 
 MapLayerGroup* CoreImplementation::createMapLayerGroup(const QString &title) {
-  return updraft->mainWindow->createMapLayerGroup(title);
+  osg::Group* group = updraft->sceneManager->newGroup();
+  osgEarth::MapNode* map = updraft->sceneManager->getMapNode();
+  return updraft->mainWindow->createMapLayerGroup(title, group, map);
 }
 
 TabInterface* CoreImplementation::createTab(QWidget* content, QString title) {
@@ -35,12 +37,15 @@ void CoreImplementation::removeTab(TabInterface* tab) {
   tab->close();
 }
 
-/// This plugin knows how to open the file!
-/// \return Identifier of the newly registered filetype
-void CoreImplementation::registerFiletype(QString extension,
-  QString description, FileCategory category) {
+void CoreImplementation::registerFiletype(
+  const FileRegistration &registration) {
   FileTypeManager *manager = updraft->fileTypeManager;
-  manager->registerFiletype(extension, description, category, plugin);
+  manager->registerFiletype(registration);
+}
+
+QString CoreImplementation::getDataDirectory() {
+  // TODO(Tom): Load data directory from settings.
+  return updraft->getDataDirectory();
 }
 
 }  // End namespace Core

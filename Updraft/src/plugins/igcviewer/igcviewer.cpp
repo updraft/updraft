@@ -16,18 +16,26 @@ unsigned IgcViewer::getPriority() {
 void IgcViewer::initialize() {
   qDebug("igcviewer loaded");
 
-  core->registerFiletype(".igc", "IGC flight recording", CATEGORY_TEMPORARY);
+  FileRegistration registration;
+  registration.category = CATEGORY_TEMPORARY;
+  registration.extension = ".igc";
+  registration.typeDescription = "IGC flight recording";
+  registration.roleDescription = "Open flight record";
+  registration.roleId = 1;
+  registration.plugin = this;
+
+  core->registerFiletype(registration);
 }
 
 void IgcViewer::deinitialize() {
   qDebug("igcviewer unloaded");
 }
 
-QStringList IgcViewer::fileIdentification(QString filename) {
+void IgcViewer::fileIdentification(QStringList *roles,
+    QString *importDirectory, const QString &filename) {
   Igc::IgcFile igc;
   if (!igc.load(filename)) {
     qDebug() << "We couldn't load the igc file.";
-    return QStringList();
   }
 
   QString ident = igc.gliderId().simplified();
@@ -44,7 +52,8 @@ QStringList IgcViewer::fileIdentification(QString filename) {
 
   ident.prepend(igc.date().toString());
 
-  return QStringList(ident);
+  if (roles != NULL)
+    roles->append(ident);
 }
 
 Q_EXPORT_PLUGIN2(igcviewer, IgcViewer)

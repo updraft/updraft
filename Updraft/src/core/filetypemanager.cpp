@@ -15,7 +15,7 @@ namespace Core {
 /// Represents a single option to open a file.
 class FileTypeManager::FileOpenOption : public QStandardItem {
  public:
-  FileOpenOption(PluginBase *plugin_, int role_, QString text);
+  explicit FileOpenOption(const FileRegistration &r);
 
   /// QStandardItem requires this.
   int type() const {
@@ -27,50 +27,31 @@ class FileTypeManager::FileOpenOption : public QStandardItem {
     return checkState() == Qt::Checked;
   }
 
-  PluginBase* plugin;
-  int role;
+  FileRegistration registration;
 };
 
-FileTypeManager::FileOpenOption::FileOpenOption(
-  PluginBase *plugin_, int role_, QString text)
-  : QStandardItem(text), plugin(plugin_), role(role_) {
+FileTypeManager::FileOpenOption::FileOpenOption(const FileRegistration &r)
+  : QStandardItem(r.roleDescription), registration(r) {
   setCheckable(true);
   setCheckState(Qt::Checked);
 }
 
-/// Register a file extension that can be opened by a plugin.
-/// \param extension File name extension with a dot (i.e. ".txt").
-///   This value must match the end of file name.
-/// \param description Human readable description for the file type.
-///   Used in file open dialog.
-/// \param category Binary or of category flags that this file type belongs to.
-/// \param plugin Plugin that will be notified when opening this type.
-void FileTypeManager::registerFiletype(QString extension, QString description,
-  FileCategory category, PluginBase* plugin) {
-  FileType type;
-  type.extension = extension;
-  type.description = description;
-  type.category = category;
-  type.plugin = plugin;
-
-  registered.append(type);
+/// Register a file that can be opened by a plugin.
+/// One file can be opened in many ways. Each registration describes one way.
+void FileTypeManager::registerFiletype(const FileRegistration &registration) {
+  registered.append(registration);
 }
 
 /// Open a file at given path.
 /// \param path Path to the file to open.
-/// \param category Limit usable file types only to category.
-///   If category contains more than one category flags any of the flags is
-///   sufficient. CATEGORY_ALL will use all file types regardless of
-///   category flags.
 /// \param showDialog If this is false, then all found options for opeing the
 ///   file are used and no gui elements are displayed.
 /// \return true if opening was successful.
-bool FileTypeManager::openFile(QString path, FileCategory category,
-  bool showDialog) const {
+bool FileTypeManager::openFile(const QString &path, bool showDialog) const {
   QStandardItemModel model;
 
   qDebug() << "Opening file " << path << ".";
-  getOpenOptions(path, category, &model);
+  getOpenOptions(path, &model);
 
   if (!model.rowCount()) {
     qDebug() << "No plugin can open this file.";
@@ -92,104 +73,125 @@ bool FileTypeManager::openFile(QString path, FileCategory category,
 /// Open a file at given path once its open options
 /// have been found and selected.
 /// \param path Path to the file to open.
-/// \param category Limit usable file types only to category.
-///   If category contains more than one category flags any of the flags is
-///   sufficient. CATEGORY_ALL will use all file types regardless of
-///   category flags.
 /// \param [out] model Model that contains the options for opening the file.
 ///   Only items that are checked are
 /// \param model Model with FileOpenOption instances. This is a little fragile
 ///   -- if the model contains something else than FileOpenOption bad things
 ///   will happen.
 /// \return true if opening was successful.
-bool FileTypeManager::openFileInternal(QString path,
+bool FileTypeManager::openFileInternal(const QString &path,
   QStandardItemModel const* model) const {
   bool success = true;
 
-  QList<int> roles;
-  PluginBase* prevPlugin = NULL;
-
   for (int i = 0; i < model->rowCount(); ++i) {
-    QStandardItem *item = model->item(i);
+    FileOpenOption* option = static_cast<FileOpenOption*>(model->item(i));
 
-    FileOpenOption* option = static_cast<FileOpenOption*>(item);
+    if (option->selected()) {
+      const FileRegistration &registration = option->registration;
 
-    if (!option->selected()) {
-      continue;
+      // Path is changed for imported files.
+      QString changedPath(path);
+
+      // Import persistent file.
+      if (registration.category == CATEGORY_PERSISTENT) {
+        if (!importFile(&changedPath, registration.importDirectory, path)) {
+          success = false;
+        }
+      }
+
+      if (!registration.plugin->fileOpen(changedPath, registration.roleId)) {
+        qDebug() << "Plugin "
+          << registration.plugin->getName() << " failed to open file.";
+        success = false;
+      }
     }
-
-    if (prevPlugin && prevPlugin != option->plugin) {
-      success = success && openFileOnePlugin(prevPlugin, path, roles);
-      roles.clear();
-    }
-    prevPlugin = option->plugin;
-    roles.append(option->role);
   }
-
-  if (!prevPlugin) {
-    return true;  // Opening the file with no roles is always successful.
-  }
-
-  success = success && openFileOnePlugin(prevPlugin, path, roles);
 
   return success;
 }
 
-/// Let a plugin open a file with a given set of roles.
-bool FileTypeManager::openFileOnePlugin(PluginBase* plugin,
-  const QString path, QList<int> roles) const {
-  bool ret = plugin->fileOpen(path, roles);
-  if (!ret) {
-    qDebug() << "Plugin " << plugin->getName() << " failed to open file.";
+/// Copy a file to import directory
+/// \param [out] newPath contains destination path, if the function
+///   is successful This parameter is optional.
+/// \param importDirectory a target subdirectory of application data dir.
+///   If importDirectory is empty, file will be copied
+///   to application data directory.
+/// \param srcPath a path to file which is to be imported.
+/// \return True on success, otherwise returns false.
+bool FileTypeManager::importFile(QString *newPath,
+  const QString &importDirectory, const QString &srcPath) const {
+  QString dstPath = updraft->getDataDirectory();
+
+  if (importDirectory.length() != 0) {
+    dstPath += "/" + importDirectory;
   }
-  return ret;
+
+  // Create whole branch of directories specified by path.
+  QDir().mkpath(dstPath);
+
+  if (!QDir(dstPath).exists()) {
+    qDebug() << "Import failed. Unable to create directory " << dstPath;
+    return false;
+  }
+
+  QFileInfo srcInfo(srcPath);
+
+  if (!srcInfo.isFile()) {
+    qDebug() << "Import failed. " << srcPath << "is not a file.";
+    return false;
+  }
+
+  dstPath += "/" + srcInfo.fileName();
+
+  QFileInfo dstInfo(dstPath);
+
+  // Rename file when exists by appending index.
+  // TODO(Tom): Query for replace/rename/cancel
+  int i = 1;
+  while (dstInfo.isFile()) {
+    dstInfo = QFileInfo(dstInfo.absolutePath() + "/" + srcInfo.baseName()
+      + "_" + QString("%1").arg(i, 2, 10, QChar('0'))
+      + "." + srcInfo.completeSuffix());
+    ++i;
+  }
+
+  if (!QFile::copy(srcPath, dstInfo.filePath())) {
+    qDebug() << "Import failed. Unable to copy file from "
+      << srcPath << " to " << dstInfo.filePath();
+    return false;
+  }
+
+  qDebug() << "File imported to " << dstInfo.filePath();
+
+  if (newPath != NULL)
+    *newPath = dstInfo.filePath();
+  return true;
 }
 
 /// Fill the output model with possible ways of opening this file.
 /// \param path File to open.
-/// \param category Limit usable file types only to category.
-///   If category contains more than one category flags any of the flags is
-///   sufficient. CATEGORY_ALL will use all file types regardless of
-///   category flags.
 /// \param [out] model Model that will contain the options.
 ///   The model is cleared before, and each item is initially selected.
-void FileTypeManager::getOpenOptions(QString path, FileCategory category,
+void FileTypeManager::getOpenOptions(QString path,
   QStandardItemModel* model) const {
-  int identificationsTried = 0;
   model->clear();
 
-  foreach(FileType type, registered) {
-    if (!(category & type.category)) {
-      continue;
-    }
-
-    if (!path.endsWith(type.extension)) {
-      continue;
-    }
-
-    ++identificationsTried;
-    QList<QString> roles = type.plugin->fileIdentification(path);
-
-    for (int i = 0; i < roles.count(); ++i) {
-      model->appendRow(new FileOpenOption(type.plugin, i, roles[i]));
+  foreach(FileRegistration registration, registered) {
+    if (path.endsWith(registration.extension, Qt::CaseInsensitive)) {
+      model->appendRow(new FileOpenOption(registration));
     }
   }
 }
 
 /// Display a file open dialog, and open the selected files.
-/// \param category Limit usable file types only to category.
-///   If category contains more than one category flags any of the flags is
-///   sufficient. CATEGORY_ALL will use all file types regardless of
-///   category flags.
 /// \param caption Title of the file open dialog.
 /// \note This method uses dark magic and eats babies.
 /// Also it depends on the implementation of QFileDialog, which may later
 /// change, because ther is no clean way to do the required functionality
 /// in current versions of Qt. We're doing some checks to avoid total
 /// screw-ups though.
-void FileTypeManager::openFileDialog(FileCategory category,
-QString caption) const {
-  FileOpenDialog dialog(updraft->mainWindow, caption, category);
+void FileTypeManager::openFileDialog(const QString &caption) const {
+  FileOpenDialog dialog(updraft->mainWindow, caption);
   dialog.openIt();
 }
 

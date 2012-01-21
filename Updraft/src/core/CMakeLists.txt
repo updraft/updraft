@@ -3,7 +3,9 @@ cmake_minimum_required(VERSION 2.8)
 PROJECT(updraft)
 
 FIND_PACKAGE(Qt4 REQUIRED)
-FIND_PACKAGE(OpenSceneGraph REQUIRED osgUtil osgDB osgGA osgViewer osgQt)
+FIND_PACKAGE(OpenSceneGraph REQUIRED 
+osgUtil osgDB osgGA osgViewer osgQt )
+#osgUtild osgDBd osgGAd osgViewerd osgQtd)
 FIND_PACKAGE(OsgEarth REQUIRED)
 
 SET(QT_USE_QTOPENGL TRUE)
@@ -34,8 +36,10 @@ ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 ADD_EXECUTABLE(
 	updraft
-	${CORE_SOURCES} 
-	${CORE_HEADERS_MOC} 
+	${CORE_SOURCES}
+	${CORE_HEADERS}
+	${PLUGINAPI_HEADERS}
+	${CORE_HEADERS_MOC}
 	${CORE_FORMS_HEADERS}
 	${CORE_RESOURCES_RCC}
 	${TRANSLATIONS}

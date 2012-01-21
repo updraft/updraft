@@ -2,8 +2,10 @@
 #define UPDRAFT_SRC_PLUGINS_TESTPLUGIN_PLUGIN_H_
 
 #include <QtGui>
+#include <QMap>
 
 #include "../../pluginbase.h"
+#include "../../maplayerinterface.h"
 
 namespace osg {
   class Node;
@@ -27,13 +29,13 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
 
   void deinitialize();
 
-  bool fileOpen(QString filename, QList<int> roles);
-  QStringList fileIdentification(QString filename);
+  bool fileOpen(const QString &filename, int roleId);
+  void fileIdentification(QStringList *roles,
+    QString *importDirectory, const QString &filename);
 
  public slots:
   void showHelp();
-  void mapLayerDisplayed(osg::Node* layer);
-  void mapLayerHidden(osg::Node* layer);
+  void mapLayerDisplayed(int id, bool value);
 
  private:
   void createTab(QString title);
@@ -45,6 +47,7 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
   MenuInterface* myMenu;
 
   MapLayerGroup *mapLayerGroup;
+  QMap<int, Updraft::MapLayerInterface*> mapLayers;
 };
 }
 

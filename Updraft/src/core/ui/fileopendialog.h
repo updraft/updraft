@@ -16,7 +16,7 @@ namespace Core {
 class FileOpenDialog : public QFileDialog {
   Q_OBJECT
  public:
-  FileOpenDialog(QWidget* parent, QString caption, FileCategory category);
+  FileOpenDialog(QWidget* parent, QString caption);
 
   void openIt();
 
@@ -24,10 +24,9 @@ class FileOpenDialog : public QFileDialog {
   void changed(const QString path);
 
  private:
-  QStringList getFilters(FileCategory category) const;
+  QStringList getFilters() const;
 
   bool havePreview;
-  FileCategory categ;
   QStandardItemModel model;
 };
 

@@ -103,8 +103,9 @@ Menu* MainWindow::createMenu(QString title) {
   return newMenu;
 }
 
-MapLayerGroup* MainWindow::createMapLayerGroup(const QString &title) {
-  return new MapLayerGroup(ui->treeWidget_2, title);
+MapLayerGroup* MainWindow::createMapLayerGroup(const QString &title,
+  osg::Group* nodeGroup, osgEarth::MapNode* map) {
+  return new MapLayerGroup(ui->treeWidget_2, title, nodeGroup, map);
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
@@ -117,22 +118,11 @@ void MainWindow::standardMenuItems() {
   QAction* openAction = new QAction(tr("&Open File..."), this);
   menuFile->insertAction(0, openAction);
   connect(openAction, SIGNAL(triggered()), this, SLOT(openFile()));
-
-  QAction* importAction = new QAction(tr("Import..."), this);
-  menuFile->insertAction(1, importAction);
-  connect(importAction, SIGNAL(triggered()), this, SLOT(importFile()));
 }
 
 /// Handle File->Open... menu action.
 void MainWindow::openFile() {
-  updraft->fileTypeManager->openFileDialog(CATEGORY_TEMPORARY,
-    tr("Open File..."));
-}
-
-/// Handle File->Import... menu action.
-void MainWindow::importFile() {
-  updraft->fileTypeManager->openFileDialog(CATEGORY_PERSISTENT,
-    tr("Import..."));
+  updraft->fileTypeManager->openFileDialog(tr("Open File..."));
 }
 
 void MainWindow::setMapWidget(QWidget *widget) {
