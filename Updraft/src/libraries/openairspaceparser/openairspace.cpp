@@ -2,9 +2,7 @@
 
 namespace Updraft {
 
-  /// UserAirpace parsing
-  OpenAirspace::OpenAirspace(QString fileName) {
-    /// Open the file and parse the content.
+  void OpenAirspace::ParseFile(const QString& fileName) {
     QFile file(fileName);
 
     if (!file.open(QFile::ReadOnly))

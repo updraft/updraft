@@ -1,7 +1,6 @@
 #ifndef UPDRAFT_SRC_LIBRARIES_OPENAIRSPACEPARSER_OPENAIRSPACE_H_
 #define UPDRAFT_SRC_LIBRARIES_OPENAIRSPACEPARSER_OPENAIRSPACE_H_
 
-#include "openairspace_global.h"
 #include "airspace.h"
 
 /*!
@@ -74,10 +73,13 @@ namespace Updraft {
 
   class OPENAIRSPACE_EXPORT OpenAirspace {
  public :
+
     /// OpenAirspace class constructor code.
     /// This takes the filename in Userirspace free format and parses
     /// the data contained into private variables
-    explicit OpenAirspace(QString fileName);
+    explicit OpenAirspace(const QString& fileName) {
+      ParseFile(fileName);
+    }
 
     /// Returns the name of the AirSpace
     inline const QString& GetName(int i) {
@@ -126,9 +128,13 @@ namespace Updraft {
 
 
     /// OpenAirspace destructor code here.
-    ~OpenAirspace();
+    // ~OpenAirspace();
 
   private :
+
+    /// Parse the Open Airspace file
+    void ParseFile(const QString& fileName);
+
     /// OpenAirspace contains several airspaces.
     QList<Airspace> allAirspaces;
   };  // OpenAirspace
