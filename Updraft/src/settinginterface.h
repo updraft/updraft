@@ -3,19 +3,18 @@
 
 #include <QVariant>
 
+class QObject;
+
 namespace Updraft {
 
-class SettingInterface: public QObject {
- Q_OBJECT
-
+class SettingInterface {
  public:
   virtual ~SettingInterface() {}
 
   virtual QVariant get() = 0;
   virtual void set(const QVariant& value) = 0;
 
- signals:
-  void valueChanged();
+  virtual void callOnValueChanged(QObject* slotOwner, const char* slot) = 0;
 };
 
 }  // End namespace Updraft

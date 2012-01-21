@@ -8,7 +8,7 @@
 namespace Updraft {
 namespace Core {
 
-class BasicSetting: public SettingInterface {
+class BasicSetting: public QObject, public SettingInterface {
  Q_OBJECT
 
  public:
@@ -16,6 +16,8 @@ class BasicSetting: public SettingInterface {
 
   QVariant get();
   void set(const QVariant& newValue);
+
+  void callOnValueChanged(QObject* slotOwner, const char* slot);
 
   friend class SettingsManager;
   friend class SettingsDelegate;

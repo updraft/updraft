@@ -24,6 +24,10 @@ void BasicSetting::set(const QVariant& newValue) {
   }
 }
 
+void BasicSetting::callOnValueChanged(QObject* slotOwner, const char* slot) {
+  QObject::connect(this, SIGNAL(valueChanged()), slotOwner, slot);
+}
+
 BasicSetting::BasicSetting(QStandardItem* settingItem, SettingsManager* mgr) {
   item = settingItem;
   settingsManager = mgr;

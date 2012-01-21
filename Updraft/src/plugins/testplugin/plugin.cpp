@@ -77,7 +77,7 @@ void TestPlugin::initialize() {
   hiddenSetting = core->addSetting("testplugin:testsetting", "Not visible",
     "Blablablabla", true);
 
-  connect(testSetting, SIGNAL(valueChanged()), this, SLOT(showPi()));
+  testSetting->callOnValueChanged(this, SLOT(showPi()));
 
   qDebug("testplugin loaded");
 }
