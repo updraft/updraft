@@ -19,6 +19,8 @@ class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
   void initialize();
 
   void deinitialize();
+
+  QStringList fileIdentification(QString filename);
  private:
 };
 
