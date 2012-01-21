@@ -110,13 +110,13 @@ SettingInterface* SettingsManager::addSetting(
   return setting;
 }
 
-QModelIndex SettingsManager::addGroup(
+void SettingsManager::addGroup(
   const QString& groupId,
   const QString& description,
   QIcon icon) {
-  return addGroupInternal(groupId + "_visible", description, icon);
+  addGroupInternal(groupId + "_visible", description, icon);
+  addGroupInternal(groupId + "_hidden", description + " (hidden)", icon);
 }
-
 
 void SettingsManager::execDialog() {
   if (dialog->exec() == QDialog::Accepted) {

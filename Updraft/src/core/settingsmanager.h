@@ -25,7 +25,7 @@ Q_OBJECT
     QVariant defaultValue,
     bool hiden = false);
 
-  QModelIndex addGroup(
+  void addGroup(
     const QString& groupId,
     const QString& description,
     QIcon icon);

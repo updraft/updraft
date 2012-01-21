@@ -21,7 +21,7 @@ SettingsDialog::SettingsDialog(QWidget* parent, SettingsManager* manager)
     ui->bottomView, SLOT(setTopIndex(const QModelIndex&)));
   connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)),
     this, SLOT(buttonBoxClicked(QAbstractButton*)));
-  connect(ui->showHidden, SIGNAL(clicked()),
+  connect(ui->showHidden, SIGNAL(stateChanged(int)),
     ui->topView, SLOT(toggleShowHidden()));
 }
 

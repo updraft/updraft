@@ -68,7 +68,7 @@ void TestPlugin::initialize() {
   }
 
   // Settings
-  core->addSettingsGroup("testplugin", "Test Plugin");
+  core->addSettingsGroup("testplugin", "Test Plugin Settings");
   testSetting = core->addSetting("testplugin:testsetting", "Value of PI", 3.14);
   testSetting2 = core->addSetting("testplugin:testsetting2",
     "Number of silver squirters", 333);

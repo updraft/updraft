@@ -72,8 +72,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>642</width>
-          <height>424</height>
+          <width>636</width>
+          <height>411</height>
          </rect>
         </property>
         <property name="sizePolicy">
@@ -98,13 +98,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QPushButton" name="showHidden">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
+      <widget class="QCheckBox" name="showHidden">
        <property name="text">
         <string>Show hidden settings</string>
        </property>
