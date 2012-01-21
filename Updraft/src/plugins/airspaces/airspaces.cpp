@@ -1,7 +1,18 @@
 #include "airspaces.h"
+#include "../../libraries/openairspace/openairspace.h"
+#include "../../libraries/cup/cup.h"
+
 
 namespace Updraft {
 namespace Core {
+
+Airspaces::Airspaces() {
+  qDebug("Loading deafault for testing");
+  // Cup::CupFile *cupFile;
+  TTT();
+  OpenAirspace::Parser p;
+  p.Test();
+}
 
 QString Airspaces::getName() {
   return QString("airspaces");
@@ -12,7 +23,7 @@ unsigned Airspaces::getPriority() {
 }
 
 void Airspaces::initialize() {
-  qDebug("airspaces loaded");
+  qDebug("airspaces laoded");
 }
 
 void Airspaces::deinitialize() {

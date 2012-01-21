@@ -12,6 +12,8 @@ class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
   Q_INTERFACES(Updraft::PluginBase)
 
  public:
+  Airspaces();
+
   QString getName();
 
   unsigned getPriority();
