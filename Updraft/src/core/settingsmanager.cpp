@@ -19,6 +19,10 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
   // Set the dialog's model
   dialog->setModel(model);
 
+  // Let the manager know whenever the model changes
+  connect(model, SIGNAL(itemChanged(QStandardItem*)),
+    this, SLOT(itemValueChanged(QStandardItem*)));
+
   // Create an action that shows the dialog and add it to the menu
   MainWindow* win = updraft->mainWindow;
   Menu* toolsMenu = win->getSystemMenu(MENU_TOOLS);
@@ -26,7 +30,7 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
   settingsAction = new QAction(QIcon(":/core/icons/configure.png"),
     tr("Settings..."), this);
   settingsAction->setIconVisibleInMenu(true);
-  QObject::connect(settingsAction, SIGNAL(triggered()),
+  connect(settingsAction, SIGNAL(triggered()),
     this, SLOT(execDialog()));
   toolsMenu->insertAction(100, settingsAction);
 }
@@ -101,7 +105,9 @@ SettingInterface* SettingsManager::addSetting(
     valueItem = model->itemFromIndex(valueIndex);
   }
 
-  return new BasicSetting(valueItem);
+  BasicSetting* setting = new BasicSetting(valueItem, this);
+  registerSetting(valueItem, setting);
+  return setting;
 }
 
 QModelIndex SettingsManager::addGroup(
@@ -132,6 +138,15 @@ void SettingsManager::resetToDefaults() {
   }
   
   dialog->resetEditors();
+}
+
+void SettingsManager::itemValueChanged(QStandardItem* item) {
+  QHash<QStandardItem*, BasicSetting*>::const_iterator it =
+    settings.find(item);
+  while (it != settings.end()) {
+    it.value()->emitValueChanged();
+    ++it;
+  }
 }
 
 QModelIndex SettingsManager::getGroup(const QString& groupId) {
@@ -203,6 +218,18 @@ QModelIndex SettingsManager::addGroupInternal(
   dialog->recalculateTopViewWidth();
 
   return groupIndex;
+}
+
+void SettingsManager::registerSetting(
+  QStandardItem* item,
+  BasicSetting* setting) {
+  settings.insert(item, setting);
+}
+
+void SettingsManager::unregisterSetting(
+  QStandardItem* item,
+  BasicSetting* setting) {
+  settings.remove(item, setting);
 }
 
 }  // End namespace Core

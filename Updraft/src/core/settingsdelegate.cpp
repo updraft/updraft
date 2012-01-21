@@ -14,15 +14,6 @@ void SettingsDelegate::setModelData(
   if (!variantsEqual(model->data(index, Qt::EditRole),
     editor->property(propertyName))) {
     QStyledItemDelegate::setModelData(editor, model, index);
-
-    // If the data was changed, let all the settings know about this
-    for (int inst = 0; inst < model->rowCount(index); ++inst) {
-      QModelIndex instanceIndex = model->index(inst, 0, index);
-      QVariant instance = model->data(instanceIndex, Qt::EditRole);
-      BasicSetting* instancePtr =
-        reinterpret_cast<BasicSetting*>(instance.value<void*>());
-      instancePtr->emitValueChanged();
-    }
   }
 }
 

@@ -19,22 +19,25 @@ class BasicSetting: public SettingInterface {
 
   friend class SettingsManager;
   friend class SettingsDelegate;
+
+ signals:
+  void valueChanged();
+
  private:
-  // Only SettingsManager can construct this class
-  BasicSetting(QStandardItem* settingItem);
-
-  //! Invalidates the item pointer.
-  //! This is called to prevent a double-free
-  void invalidate() { itemValid = false; }
-
   void emitValueChanged() {
     emit valueChanged();
   }
 
+  // Only SettingsManager can construct this class
+  BasicSetting(QStandardItem* settingItem, SettingsManager* mgr);
+
+  //! Invalidates the item pointer.
+  void invalidate() { item = NULL; }
+
+  //! Pointer to the value item
   QStandardItem* item;
 
-  //! Says whether item points to a valid item model
-  bool itemValid;
+  SettingsManager* settingsManager;
 };
 
 }  // End namespace Core

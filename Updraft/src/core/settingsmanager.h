@@ -3,10 +3,14 @@
 
 #include <QtGui>
 #include "ui/settingsdialog.h"
-#include "../settinginterface.h"
 
 namespace Updraft {
+
+class SettingInterface;
+
 namespace Core {
+
+class BasicSetting;
 
 class SettingsManager: public QObject {
 Q_OBJECT
@@ -26,9 +30,14 @@ Q_OBJECT
     const QString& description,
     QIcon icon);
 
+  friend class BasicSetting;
+
  public slots:
   void execDialog();
   void resetToDefaults();
+
+ private slots:
+  void itemValueChanged(QStandardItem* item);
 
  private:
   /// Returns an index for the given settings group.
@@ -40,6 +49,9 @@ Q_OBJECT
     const QString& description,
     QIcon icon);
 
+  void registerSetting(QStandardItem* item, BasicSetting* setting);
+  void unregisterSetting(QStandardItem* item, BasicSetting* setting);
+
   QAction* settingsAction;
 
   SettingsDialog* dialog;
@@ -49,6 +61,8 @@ Q_OBJECT
   QStandardItemModel* model;
 
   QRegExp idRegExp;
+
+  QMultiHash<QStandardItem*, BasicSetting*> settings;
 };
 
 }  // End namespace Core
