@@ -28,6 +28,7 @@ Q_OBJECT
 
  public slots:
   void execDialog();
+  void resetToDefaults();
 
  private:
   /// Returns an index for the given settings group.

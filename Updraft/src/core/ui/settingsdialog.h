@@ -10,12 +10,13 @@ namespace Updraft {
 namespace Core {
 
 class SettingsDelegate;
+class SettingsManager;
 
 class SettingsDialog: public QDialog {
   Q_OBJECT
 
  public:
-  SettingsDialog(QWidget* parent = 0);
+  SettingsDialog(QWidget* parent, SettingsManager* manager);
   ~SettingsDialog();
 
   void setModel(QStandardItemModel* model);
@@ -35,6 +36,7 @@ class SettingsDialog: public QDialog {
   Ui::SettingsDialog* ui;
 
   SettingsDelegate* settingsDelegate;
+  SettingsManager* settingsManager;
 };
 
 }  // End namespace Core

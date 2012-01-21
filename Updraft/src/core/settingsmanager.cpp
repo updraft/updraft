@@ -10,7 +10,7 @@
 namespace Updraft {
 namespace Core {
 
-SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL)) {
+SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
   // Initialize id regexp for identifier pattern matching
   idRegExp = QRegExp("[a-zA-Z0-9_]+");
 
@@ -86,12 +86,15 @@ SettingInterface* SettingsManager::addSetting(
     QStandardItem* descItem = new QStandardItem(description);
     valueItem = new QStandardItem();
     valueItem->setData(defaultValue, Qt::EditRole);
+    QStandardItem* defaultItem = new QStandardItem();
+    defaultItem->setData(defaultValue, Qt::EditRole);
 
     QStandardItem* groupItem = model->itemFromIndex(groupIndex);
     int groupRows = groupItem->rowCount();
     groupItem->setChild(groupRows, 0, idItem);
     groupItem->setChild(groupRows, 1, descItem);
     groupItem->setChild(groupRows, 2, valueItem);
+    groupItem->setChild(groupRows, 3, defaultItem);
   } else {
     QModelIndex valueIndex =
       model->sibling(settingIndex.row(), 2, settingIndex);
@@ -115,6 +118,20 @@ void SettingsManager::execDialog() {
   } else {
     dialog->resetEditors();
   }
+}
+
+void SettingsManager::resetToDefaults() {
+  for (int i = 0; i < model->rowCount(); i++) {
+    QModelIndex groupIndex = model->index(i, 1);
+    for (int j = 0; j < model->rowCount(groupIndex); ++j) {
+      QModelIndex itemDefaultIndex = model->index(j, 3, groupIndex);
+      QVariant defaultData = model->data(itemDefaultIndex, Qt::EditRole);
+      QModelIndex itemValueIndex = model->index(j, 2, groupIndex);
+      model->setData(itemValueIndex, defaultData, Qt::EditRole);
+    }
+  }
+  
+  dialog->resetEditors();
 }
 
 QModelIndex SettingsManager::getGroup(const QString& groupId) {

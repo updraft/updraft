@@ -1,14 +1,16 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
 #include "settingsdelegate.h"
+#include "../settingsmanager.h"
 
 namespace Updraft {
 namespace Core {
 
-SettingsDialog::SettingsDialog(QWidget* parent)
+SettingsDialog::SettingsDialog(QWidget* parent, SettingsManager* manager)
 : QDialog(parent),
   ui(new Ui::SettingsDialog),
-  settingsDelegate(new SettingsDelegate) {
+  settingsDelegate(new SettingsDelegate),
+  settingsManager(manager) {
   ui->setupUi(this);
 
   ui->bottomView->setItemDelegate(settingsDelegate);
@@ -51,12 +53,22 @@ void SettingsDialog::resetEditors() {
 }
 
 void SettingsDialog::buttonBoxClicked(QAbstractButton* button) {
-  switch (ui->buttonBox->buttonRole(button)) {
-    case QDialogButtonBox::ResetRole:
+  switch (ui->buttonBox->standardButton(button)) {
+    case QDialogButtonBox::Reset:
       resetEditors();
     break;
-    case QDialogButtonBox::ApplyRole:
+    case QDialogButtonBox::Apply:
       commitEditorData();
+    break;
+    case QDialogButtonBox::RestoreDefaults:
+      if (QMessageBox::warning(
+        this,
+        tr("Reset to defaults?"),
+        tr("All settings values will be erased and set to defaults."
+          " Are you sure you want to continue?"),
+        QMessageBox::Ok|QMessageBox::Cancel) == QMessageBox::Ok) {
+        settingsManager->resetToDefaults();
+      }
     break;
     default:
     break;
