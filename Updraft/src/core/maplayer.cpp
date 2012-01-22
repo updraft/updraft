@@ -19,25 +19,25 @@ MapLayer::MapLayer(int i) {
 
 MapLayer::MapLayer(int i, osg::Node* node) {
   id = i;
-  layerType = MapLayerType::OSG_NODE_LAYER;
+  layerType = OSG_NODE_LAYER;
   layer.osgNode = node;
 }
 
 MapLayer::MapLayer(int i, osgEarth::ImageLayer* imageLayer) {
   id = i;
-  layerType = MapLayerType::IMAGE_LAYER;
+  layerType = IMAGE_LAYER;
   layer.imageLayer = imageLayer;
 }
 
 MapLayer::MapLayer(int i, osgEarth::ElevationLayer* elevationLayer) {
   id = i;
-  layerType = MapLayerType::ELEVATION_LAYER;
+  layerType = ELEVATION_LAYER;
   layer.elevationLayer = elevationLayer;
 }
 
 MapLayer::MapLayer(int i, osgEarth::ModelLayer* modelLayer) {
   id = i;
-  layerType = MapLayerType::MODEL_LAYER;
+  layerType = MODEL_LAYER;
   layer.modelLayer = modelLayer;
 }
 
@@ -71,7 +71,7 @@ void MapLayer::setLayer(Layer l) {
 
 void MapLayer::setVisible(bool value) {
   switch (layerType) {
-    case MapLayerType::OSG_NODE_LAYER: {
+    case OSG_NODE_LAYER: {
       if (value == true) {
         layer.osgNode->setNodeMask(0xffffffff);
       } else {
@@ -79,15 +79,15 @@ void MapLayer::setVisible(bool value) {
       }
       break;
     }
-    case MapLayerType::IMAGE_LAYER: {
+    case IMAGE_LAYER: {
       layer.imageLayer->setEnabled(value);
       break;
     }
-    case MapLayerType::ELEVATION_LAYER: {
+    case ELEVATION_LAYER: {
       layer.elevationLayer->setEnabled(value);
       break;
     }
-    case MapLayerType::MODEL_LAYER: {
+    case MODEL_LAYER: {
       layer.modelLayer->setEnabled(value);
       break;
     }

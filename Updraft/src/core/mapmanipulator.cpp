@@ -39,6 +39,8 @@ void MapManipulator::handleMovementAction(const ActionType& type, double dx,
     case ACTION_EARTH_DRAG:
       drag(dx, dy, view);
       break;
+    default:
+      (void)0;  // silence the warning
   }
 }
 

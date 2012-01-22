@@ -99,17 +99,17 @@ MapLayerInterface* MapLayerGroup::insertMapLayer
 
   // insert the node into the scene
   switch (layer->getType()) {
-    case MapLayerType::OSG_NODE_LAYER: {
+    case OSG_NODE_LAYER: {
       nodeGroup->addChild(layer->getLayer().osgNode);
       break;
     }
-    case MapLayerType::IMAGE_LAYER: {
+    case IMAGE_LAYER: {
       // nodeGroup->addChild(layer->getLayer()->im);
     }
-    case MapLayerType::ELEVATION_LAYER: {
+    case ELEVATION_LAYER: {
       // nodeGroup->addChild(layer->getLayer()->osgNode);
     }
-    case MapLayerType::MODEL_LAYER: {
+    case MODEL_LAYER: {
       // nodeGroup->addChild(layer->getLayer()->osgNode);
     }
   }

@@ -4,7 +4,7 @@
 namespace Updraft {
 
 TPLayer::TPLayer(int layerId_, bool displayed_, const TPFile *file_)
-  : layerId(layerId_), displayed(displayed_), file(file_) {
+  : layerId(layerId_), file(file_), displayed(displayed_) {
 }
 
 TPLayer::~TPLayer() {
