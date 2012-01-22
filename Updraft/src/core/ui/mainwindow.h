@@ -2,6 +2,8 @@
 #define UPDRAFT_SRC_CORE_UI_MAINWINDOW_H_
 
 #include <QtGui>
+#include <osg/Group>
+#include <osgEarth/MapNode>
 
 #include "../../coreinterface.h"
 #include "menu.h"
@@ -33,7 +35,8 @@ class MainWindow : public QMainWindow {
 
   /// This method creates new map layer group.
   /// It is wrapped by CoreInterface::createMapLayerGroup.
-  MapLayerGroup* createMapLayerGroup(const QString &title);
+  MapLayerGroup* createMapLayerGroup(const QString &title,
+    osg::Group* nodeGroup, osgEarth::MapNode* map);
 
  private slots:
   /// Called when tab in the bottom pane is closed using the little cross

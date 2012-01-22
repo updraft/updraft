@@ -22,7 +22,10 @@ class SceneManager: public QObject {
 
   QWidget* getWidget();
   osg::Group* getRoot();
+  osgEarth::MapNode* getMapNode();
   MapManager* getMapManager();
+  osg::Group* newGroup();
+  bool removeGroup(osg::Group* group);
 
  public slots:
   void redrawScene();
@@ -30,6 +33,9 @@ class SceneManager: public QObject {
  private:
   osgViewer::Viewer* viewer;
   osg::Group* sceneRoot;
+  osg::ClearNode* background;
+  osgEarth::MapNode* mapNode;
+
   MapManager* mapManager;
   osg::Camera* camera;
   osgQt::GraphicsWindowQt* graphicsWindow;
@@ -41,7 +47,6 @@ class SceneManager: public QObject {
   osgQt::GraphicsWindowQt* createGraphicsWindow
     (osg::GraphicsContext::Traits* traits);
   osg::Camera* createCamera(osg::GraphicsContext::Traits* traits);
-  osg::Group* createInitialScene(osgEarth::MapNode* mapNode);
 };
 
 }  // end namespace Core

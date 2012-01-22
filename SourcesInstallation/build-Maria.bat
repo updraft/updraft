@@ -7,8 +7,8 @@
 :: Change the following declarations to right values before run!!!!
 
 set cmake_path=cmake
-set osg_dir=C:/OSG/UpdraftMapLibraries/Win32Release/osg
-set osgearth_dir=C:/OSG/UpdraftMapLibraries/Win32Release/osgEarth
+set osg_dir=C:/OSG/UpdraftMapLibraries/Win32Debug/osg
+set osgearth_dir=C:/OSG/UpdraftMapLibraries/Win32Debug/osgEarth
 
 :: End of variables declaration -----------------------------------
 

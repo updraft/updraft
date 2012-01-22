@@ -24,7 +24,9 @@ MenuInterface* CoreImplementation::getSystemMenu(SystemMenu menu) {
 }
 
 MapLayerGroup* CoreImplementation::createMapLayerGroup(const QString &title) {
-  return updraft->mainWindow->createMapLayerGroup(title);
+  osg::Group* group = updraft->sceneManager->newGroup();
+  osgEarth::MapNode* map = updraft->sceneManager->getMapNode();
+  return updraft->mainWindow->createMapLayerGroup(title, group, map);
 }
 
 TabInterface* CoreImplementation::createTab(QWidget* content, QString title) {
