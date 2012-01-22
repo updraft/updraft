@@ -9,6 +9,8 @@
 #include <QTextCodec>
 #include <QTime>
 
+#include "../util/util.h"
+
 #ifdef UPDRAFT_IGC_INTERNAL
   #define IGC_EXPORT Q_DECL_EXPORT
 #else
@@ -34,11 +36,9 @@ struct Event {
 
 /// GPS fix event.
 struct Fix : public Event {
-  qreal lat;
-  qreal lon;
+  Util::Location gpsLoc;
   bool valid;
   qreal pressureAlt;
-  qreal gpsAlt;
 };
 
 /// Pilot event.
