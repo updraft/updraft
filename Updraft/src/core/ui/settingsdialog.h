@@ -31,6 +31,7 @@ class SettingsDialog: public QDialog {
 
  protected slots:
   void buttonBoxClicked(QAbstractButton* button);
+  void hideCheckboxToggled();
 
  protected:
   Ui::SettingsDialog* ui;

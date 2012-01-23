@@ -12,11 +12,21 @@ SettingsTopView::SettingsTopView(QWidget* parent): QListView(parent) {
   setSelectionMode(QAbstractItemView::SingleSelection);
 }
 
-void SettingsTopView::toggleShowHidden() {
+bool SettingsTopView::setShowHidden(bool show) {
   // If the currently selected group should be hidden, try to change it
-  if (showHidden && groupIsHidden(currentIndex().row())) {}
+  if (showHidden && !show && groupIsHidden(currentIndex().row())) {
+    // Find the first row that doesn't have to be hidden and try to select it
+    int row;
+    for (row = 0; row < model()->rowCount(); ++row) {
+      if (!groupIsHidden(row)) break;
+    }
+    setCurrentIndex(model()->index(row, 0));
 
-  showHidden = !showHidden;
+    // If the change didn't succeed (i.e. user selected "Cancel"), fail too
+    if (groupIsHidden(currentIndex().row())) return true;
+  }
+
+  showHidden = show;
 
   if (showHidden) {
     for (int row = 0; row < model()->rowCount(); ++row) {
@@ -29,6 +39,8 @@ void SettingsTopView::toggleShowHidden() {
       }
     }
   }
+
+  return showHidden;
 }
 
 void SettingsTopView::dataChanged(

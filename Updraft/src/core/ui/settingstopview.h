@@ -16,7 +16,7 @@ Q_OBJECT
   void setBottom(SettingsBottomView* b) { bottom = b; }
 
  public slots:
-  void toggleShowHidden();
+  bool setShowHidden(bool show);
 
  protected slots:
   void dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);

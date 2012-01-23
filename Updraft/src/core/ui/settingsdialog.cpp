@@ -21,7 +21,7 @@ SettingsDialog::SettingsDialog(QWidget* parent, SettingsManager* manager)
   connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)),
     this, SLOT(buttonBoxClicked(QAbstractButton*)));
   connect(ui->showHidden, SIGNAL(stateChanged(int)),
-    ui->topView, SLOT(toggleShowHidden()));
+    this, SLOT(hideCheckboxToggled()));
 }
 
 SettingsDialog::~SettingsDialog() {
@@ -72,6 +72,12 @@ void SettingsDialog::buttonBoxClicked(QAbstractButton* button) {
     default:
     break;
   }
+}
+
+void SettingsDialog::hideCheckboxToggled() {
+  bool state = ui->showHidden->checkState();
+  bool showHidden = ui->topView->setShowHidden(state);
+  ui->showHidden->setCheckState(showHidden ? Qt::Checked : Qt::Unchecked);
 }
 
 }  // End namespace Core
