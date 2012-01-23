@@ -23,6 +23,7 @@ Updraft::~Updraft() {
 //  delete sceneManager;
   delete pluginManager;
   delete fileTypeManager;
+  delete settingsManager;
   delete mainWindow;
 }
 

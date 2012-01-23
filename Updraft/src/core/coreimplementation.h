@@ -33,7 +33,7 @@ class CoreImplementation : public CoreInterface {
   void addSettingsGroup(
     const QString& groupId,
     const QString& description,
-    QIcon icon);
+    const QString& icon);
 
   SettingInterface* addSetting(
     const QString& settingId,

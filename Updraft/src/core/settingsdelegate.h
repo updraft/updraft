@@ -13,7 +13,6 @@ class SettingsDelegate: public QStyledItemDelegate {
   void setEditorData(QWidget* editor, const QModelIndex& index) const;
 
  private:
-  bool variantsEqual(const QVariant& var1, const QVariant& var2) const;
 };
 
 }  // End namespace Core

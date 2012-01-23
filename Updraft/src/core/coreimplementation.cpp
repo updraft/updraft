@@ -47,7 +47,7 @@ void CoreImplementation::registerFiletype(QString extension,
 void CoreImplementation::addSettingsGroup(
     const QString& groupId,
     const QString& description,
-    QIcon icon) {
+    const QString& icon) {
   updraft->settingsManager->addGroup(groupId, description, icon);
 }
 

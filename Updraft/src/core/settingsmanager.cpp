@@ -6,6 +6,7 @@
 #include "../menuinterface.h"
 #include "basicsetting.h"
 #include "ui_settingsdialog.h"
+#include "settingsmodel.h"
 
 namespace Updraft {
 namespace Core {
@@ -14,14 +15,15 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
   // Initialize id regexp for identifier pattern matching
   idRegExp = QRegExp("[a-zA-Z0-9_]+");
 
-  model = new QStandardItemModel(this);
+  model = new SettingsModel();
+  model->loadSettings("settings.xml");
 
   // Set the dialog's model
   dialog->setModel(model);
 
   // Let the manager know whenever the model changes
-  connect(model, SIGNAL(itemChanged(QStandardItem*)),
-    this, SLOT(itemValueChanged(QStandardItem*)));
+  connect(model, SIGNAL(itemChanged(SettingsItem*)),
+    this, SLOT(itemValueChanged(SettingsItem*)));
 
   // Create an action that shows the dialog and add it to the menu
   MainWindow* win = updraft->mainWindow;
@@ -36,6 +38,9 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
 }
 
 SettingsManager::~SettingsManager() {
+  model->saveSettings("settings.xml");
+  delete model;
+
   // TODO(cestmir): We probably need to destroy this, since it has no parent
   delete dialog;
 }
@@ -78,42 +83,35 @@ SettingInterface* SettingsManager::addSetting(
     groupIndex = addGroupInternal(
       groupIdPart,
       identifiers[0],
-      QIcon(":/core/icons/configure.png"));
+      ":/core/icons/configure.png");
   }
 
   // Try to find the setting
   QModelIndex settingIndex = getSetting(settingIdPart, groupIndex);
 
-  QStandardItem* valueItem;
   if (!settingIndex.isValid()) {
-    QStandardItem* idItem = new QStandardItem(settingIdPart);
-    QStandardItem* descItem = new QStandardItem(description);
-    valueItem = new QStandardItem();
-    valueItem->setData(defaultValue, Qt::EditRole);
-    QStandardItem* defaultItem = new QStandardItem();
-    defaultItem->setData(defaultValue, Qt::EditRole);
+    // Insert the new settings item
+    int groupRows = model->rowCount(groupIndex);
+    model->insertRow(groupRows, groupIndex);
+    settingIndex = model->index(groupRows, 0, groupIndex);
 
-    QStandardItem* groupItem = model->itemFromIndex(groupIndex);
-    int groupRows = groupItem->rowCount();
-    groupItem->setChild(groupRows, 0, idItem);
-    groupItem->setChild(groupRows, 1, descItem);
-    groupItem->setChild(groupRows, 2, valueItem);
-    groupItem->setChild(groupRows, 3, defaultItem);
-  } else {
-    QModelIndex valueIndex =
-      model->sibling(settingIndex.row(), 2, settingIndex);
-    valueItem = model->itemFromIndex(valueIndex);
+    // Set the data
+    model->setData(settingIndex, settingIdPart, Qt::UserRole);
+    model->setData(settingIndex, description, Qt::DisplayRole);
+    model->setData(settingIndex, defaultValue, Qt::EditRole);
+    model->setData(settingIndex, defaultValue, Qt::UserRole+1);
   }
 
-  BasicSetting* setting = new BasicSetting(valueItem, this);
-  registerSetting(valueItem, setting);
+  SettingsItem* settingItem = model->itemFromIndex(settingIndex);
+  BasicSetting* setting = new BasicSetting(settingItem, this);
+  registerSetting(settingItem, setting);
   return setting;
 }
 
 void SettingsManager::addGroup(
   const QString& groupId,
   const QString& description,
-  QIcon icon) {
+  const QString& icon) {
   addGroupInternal(groupId + "_visible", description, icon);
   addGroupInternal(groupId + "_hidden", description + " (hidden)", icon);
 }
@@ -128,20 +126,23 @@ void SettingsManager::execDialog() {
 
 void SettingsManager::resetToDefaults() {
   for (int i = 0; i < model->rowCount(); i++) {
-    QModelIndex groupIndex = model->index(i, 1);
+    QModelIndex groupIndex = model->index(i, 0);
     for (int j = 0; j < model->rowCount(groupIndex); ++j) {
-      QModelIndex itemDefaultIndex = model->index(j, 3, groupIndex);
-      QVariant defaultData = model->data(itemDefaultIndex, Qt::EditRole);
-      QModelIndex itemValueIndex = model->index(j, 2, groupIndex);
-      model->setData(itemValueIndex, defaultData, Qt::EditRole);
+      QModelIndex itemIndex = model->index(j, 0, groupIndex);
+      QVariant defaultData = model->data(itemIndex, Qt::UserRole+1);
+      QVariant currentData = model->data(itemIndex, Qt::EditRole);
+      // Only set the default data if it differs from the current data
+      if (!variantsEqual(defaultData, currentData)) {
+        model->setData(itemIndex, defaultData, Qt::EditRole);
+      }
     }
   }
-  
+
   dialog->resetEditors();
 }
 
-void SettingsManager::itemValueChanged(QStandardItem* item) {
-  QHash<QStandardItem*, BasicSetting*>::const_iterator it =
+void SettingsManager::itemValueChanged(SettingsItem* item) {
+  QHash<SettingsItem*, BasicSetting*>::const_iterator it =
     settings.find(item);
   while (it != settings.end()) {
     it.value()->emitValueChanged();
@@ -154,10 +155,11 @@ QModelIndex SettingsManager::getGroup(const QString& groupId) {
 
   int i;
   for (i = 0; i < model->rowCount(); i++) {
-    groupIndex = model->index(i, 1);
-    QVariant modelGroupId = groupIndex.data();
-    if (modelGroupId.toString() == groupId)
+    groupIndex = model->index(i, 0);
+    QVariant modelGroupId = model->data(groupIndex, Qt::UserRole);
+    if (modelGroupId.toString() == groupId) {
       break;
+    }
   }
   if (i == model->rowCount()) {
     groupIndex = QModelIndex();
@@ -174,7 +176,7 @@ QModelIndex SettingsManager::getSetting(
   int i;
   for (i = 0; i < model->rowCount(groupIndex); i++) {
     settingIndex = model->index(i, 0, groupIndex);
-    QVariant modelSettingId = settingIndex.data();
+    QVariant modelSettingId = model->data(settingIndex, Qt::UserRole);
     if (modelSettingId.toString() == settingId)
       break;
   }
@@ -188,7 +190,7 @@ QModelIndex SettingsManager::getSetting(
 QModelIndex SettingsManager::addGroupInternal(
   const QString& groupId,
   const QString& description,
-  QIcon icon) {
+  const QString& icon) {
   if (!model) {
     qDebug() << "Model was not created before creating a settings group!";
     return QModelIndex();
@@ -199,20 +201,17 @@ QModelIndex SettingsManager::addGroupInternal(
 
   // Get the items from the group row and change them.
   // If the group was not found, create it.
-  QStandardItem* idItem;
-  QStandardItem* descItem;
   if (!groupIndex.isValid()) {
-    idItem = new QStandardItem(groupId);
-    descItem = new QStandardItem(icon, description);
-
     int rows = model->rowCount();
-    model->setItem(rows, 1, idItem);
-    model->setItem(rows, 0, descItem);
-    groupIndex = model->indexFromItem(idItem);
+    model->insertRow(rows);
+
+    groupIndex = model->index(rows, 0);
+    model->setData(groupIndex, description, Qt::DisplayRole);
+    model->setData(groupIndex, groupId, Qt::UserRole);
+    model->setData(groupIndex, icon, Qt::DecorationRole);
   } else {
-    QModelIndex descIndex = model->sibling(groupIndex.row(), 0, groupIndex);
-    model->setData(descIndex, description, Qt::DisplayRole);
-    model->setData(descIndex, icon, Qt::DecorationRole);
+    model->setData(groupIndex, description, Qt::DisplayRole);
+    model->setData(groupIndex, icon, Qt::DecorationRole);
   }
 
   dialog->recalculateTopViewWidth();
@@ -221,13 +220,13 @@ QModelIndex SettingsManager::addGroupInternal(
 }
 
 void SettingsManager::registerSetting(
-  QStandardItem* item,
+  SettingsItem* item,
   BasicSetting* setting) {
   settings.insert(item, setting);
 }
 
 void SettingsManager::unregisterSetting(
-  QStandardItem* item,
+  SettingsItem* item,
   BasicSetting* setting) {
   settings.remove(item, setting);
 }

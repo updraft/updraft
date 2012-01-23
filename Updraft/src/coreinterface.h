@@ -68,7 +68,7 @@ class CoreInterface {
   virtual void addSettingsGroup(
     const QString& groupId,
     const QString& description,
-    QIcon icon = QIcon(":/core/icons/configure.png")) = 0;
+    const QString& icon = ":/core/icons/configure.png") = 0;
 
   /// Adds a setting into the settings dialog.
   /// If the setting already exists, its value is not set to the provided value

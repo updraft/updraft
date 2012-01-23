@@ -52,13 +52,12 @@ void SettingsBottomView::commit() {
   for (int p = 0; p < pages; ++p) {
     QWidget* page = stack->widget(p);
     QGridLayout* layout = qobject_cast<QGridLayout*>(page->layout());
-    QModelIndex pageIndex = model()->index(p, 1);
+    QModelIndex pageIndex = model()->index(p, 0);
 
     for (int i = 0; i < layout->rowCount(); ++i) {
       QLayoutItem* item = layout->itemAtPosition(i, 1);
       QWidget* editor = item->widget();
-      QModelIndex dataIndex = model()->index(i, 2, pageIndex);
-
+      QModelIndex dataIndex = model()->index(i, 0, pageIndex);
       itemDelegate()->setModelData(editor, model(), dataIndex);
     }
   }
@@ -70,13 +69,12 @@ void SettingsBottomView::reset() {
   for (int p = 0; p < pages; ++p) {
     QWidget* page = stack->widget(p);
     QGridLayout* layout = qobject_cast<QGridLayout*>(page->layout());
-    QModelIndex pageIndex = model()->index(p, 1);
+    QModelIndex pageIndex = model()->index(p, 0);
 
     for (int i = 0; i < layout->rowCount(); ++i) {
       QLayoutItem* item = layout->itemAtPosition(i, 1);
       QWidget* editor = item->widget();
-      QModelIndex dataIndex = model()->index(i, 2, pageIndex);
-
+      QModelIndex dataIndex = model()->index(i, 0, pageIndex);
       itemDelegate()->setEditorData(editor, dataIndex);
     }
   }
@@ -96,13 +94,11 @@ void SettingsBottomView::createEditors() {
   for (int page = 0; page < model()->rowCount(); ++page) {
     layout = new QGridLayout();
 
-    index = model()->index(page, 1);
+    index = model()->index(page, 0);
     for (int row = 0; row < model()->rowCount(index); ++row) {
-      QModelIndex child     = model()->index(row, 2, index);
-      QModelIndex childDesc = model()->index(row, 1, index);
-      QModelIndex childName = model()->index(row, 0, index);
+      QModelIndex child = model()->index(row, 0, index);
 
-      QVariant descData = model()->data(childDesc);
+      QVariant descData = model()->data(child, Qt::DisplayRole);
       QLabel* label = new QLabel(descData.toString(), NULL);
       layout->addWidget(label, row, 0);
 
@@ -171,7 +167,7 @@ void SettingsBottomView::dataChanged(
 
   // Don't allow modifying more than one data element
   if (topLeft != bottomRight) {
-    qDebug() << "Warning: the settings model does not allow batch modification";
+    qDebug() << "Warning: the settings view does not allow batch modification";
     return;
   }
 
@@ -181,28 +177,29 @@ void SettingsBottomView::dataChanged(
   QGridLayout* layout = qobject_cast<QGridLayout*>(page->layout());
   QWidget* widget;
   QLayoutItem* item;
-  switch (topLeft.column()) {
-    case 1:  // Setting description
-      item = layout->itemAtPosition(topLeft.row(), 0);
-      if (!item) {
-        widget = new QLabel(topLeft.data().toString(), NULL);
-        layout->addWidget(widget, topLeft.row(), 0);
-      } else {
-        widget = item->widget();
-        qobject_cast<QLabel*>(widget)->setText(topLeft.data().toString());
-      }
-    break;
-    case 2:  // Setting value
-      item = layout->itemAtPosition(topLeft.row(), 1);
-      if (item) {
-        widget = item->widget();
-        delete widget;
-      }
-      widget = createEditorForIndex(topLeft);
-      layout->addWidget(widget, topLeft.row(), 1);
-      widget->show();
-    break;
+
+  // Setting description
+  item = layout->itemAtPosition(topLeft.row(), 0);
+  if (!item) {
+    widget = new QLabel(topLeft.data(Qt::DisplayRole).toString(), NULL);
+    layout->addWidget(widget, topLeft.row(), 0);
+  } else {
+    widget = item->widget();
+    qobject_cast<QLabel*>(widget)->setText(
+      topLeft.data(Qt::DisplayRole).toString());
   }
+
+  // Setting value
+  item = layout->itemAtPosition(topLeft.row(), 1);
+  if (!item) {
+    widget = createEditorForIndex(topLeft);
+    layout->addWidget(widget, topLeft.row(), 1);
+    widget->show();
+  } else {
+    widget = item->widget();
+  }
+  QAbstractItemDelegate* delegate = itemDelegate(topLeft);
+  delegate->setEditorData(widget, topLeft);
 }
 
 void SettingsBottomView::rowsInserted(

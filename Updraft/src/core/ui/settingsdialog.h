@@ -19,7 +19,7 @@ class SettingsDialog: public QDialog {
   SettingsDialog(QWidget* parent, SettingsManager* manager);
   ~SettingsDialog();
 
-  void setModel(QStandardItemModel* model);
+  void setModel(QAbstractItemModel* model);
 
   void recalculateTopViewWidth();
 

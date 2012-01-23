@@ -3,6 +3,7 @@
 
 #include <QtGui>
 #include "settingsmanager.h"
+#include "settingsmodel.h"
 #include "../settinginterface.h"
 
 namespace Updraft {
@@ -31,13 +32,13 @@ class BasicSetting: public QObject, public SettingInterface {
   }
 
   // Only SettingsManager can construct this class
-  BasicSetting(QStandardItem* settingItem, SettingsManager* mgr);
+  BasicSetting(SettingsItem* settingItem, SettingsManager* mgr);
 
   //! Invalidates the item pointer.
   void invalidate() { item = NULL; }
 
   //! Pointer to the value item
-  QStandardItem* item;
+  SettingsItem* item;
 
   SettingsManager* settingsManager;
 };

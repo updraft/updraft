@@ -1,4 +1,5 @@
 #include "settingsdelegate.h"
+#include "settingsmanager.h"
 #include "basicsetting.h"
 
 namespace Updraft {
@@ -28,16 +29,6 @@ void SettingsDelegate::setEditorData(
     editor->property(propertyName))) {
     QStyledItemDelegate::setEditorData(editor, index);
   }
-}
-
-bool SettingsDelegate::variantsEqual(
-  const QVariant& var1,
-  const QVariant& var2) const {
-  if (var1.type() == QVariant::Double && var2.type() == QVariant::Double) {
-    return qFuzzyCompare(var1.toDouble(), var2.toDouble());
-  }
-
-  return var1 == var2;
 }
 
 }  // End namespace Core

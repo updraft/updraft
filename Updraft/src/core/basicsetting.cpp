@@ -12,7 +12,9 @@ BasicSetting::~BasicSetting() {
 
 QVariant BasicSetting::get() {
   if (item) {
-    return item->data(Qt::EditRole);
+    SettingsModel* model = item->getModel();
+    QModelIndex index = model->indexFromItem(item);
+    return model->data(index, Qt::EditRole);
   } else {
     return QVariant();
   }
@@ -20,7 +22,9 @@ QVariant BasicSetting::get() {
 
 void BasicSetting::set(const QVariant& newValue) {
   if (item) {
-    item->setData(newValue);
+    SettingsModel* model = item->getModel();
+    QModelIndex index = model->indexFromItem(item);
+    model->setData(index, newValue, Qt::EditRole);
   }
 }
 
@@ -28,7 +32,7 @@ void BasicSetting::callOnValueChanged(QObject* slotOwner, const char* slot) {
   QObject::connect(this, SIGNAL(valueChanged()), slotOwner, slot);
 }
 
-BasicSetting::BasicSetting(QStandardItem* settingItem, SettingsManager* mgr) {
+BasicSetting::BasicSetting(SettingsItem* settingItem, SettingsManager* mgr) {
   item = settingItem;
   settingsManager = mgr;
 }

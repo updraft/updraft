@@ -30,7 +30,7 @@ SettingsDialog::~SettingsDialog() {
   delete ui;
 }
 
-void SettingsDialog::setModel(QStandardItemModel* model) {
+void SettingsDialog::setModel(QAbstractItemModel* model) {
   ui->topView->setModel(model);
   ui->topView->resize(sizeHint());
   ui->bottomView->setModel(model);

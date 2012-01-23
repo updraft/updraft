@@ -3,6 +3,7 @@
 
 #include <QtGui>
 #include "ui/settingsdialog.h"
+#include "variantfunctions.h"
 
 namespace Updraft {
 
@@ -11,6 +12,8 @@ class SettingInterface;
 namespace Core {
 
 class BasicSetting;
+class SettingsModel;
+class SettingsItem;
 
 class SettingsManager: public QObject {
 Q_OBJECT
@@ -28,7 +31,7 @@ Q_OBJECT
   void addGroup(
     const QString& groupId,
     const QString& description,
-    QIcon icon);
+    const QString& icon);
 
   friend class BasicSetting;
 
@@ -37,7 +40,7 @@ Q_OBJECT
   void resetToDefaults();
 
  private slots:
-  void itemValueChanged(QStandardItem* item);
+  void itemValueChanged(SettingsItem* item);
 
  private:
   /// Returns an index for the given settings group.
@@ -47,10 +50,10 @@ Q_OBJECT
   QModelIndex addGroupInternal(
     const QString& groupId,
     const QString& description,
-    QIcon icon);
+    const QString& icon);
 
-  void registerSetting(QStandardItem* item, BasicSetting* setting);
-  void unregisterSetting(QStandardItem* item, BasicSetting* setting);
+  void registerSetting(SettingsItem* item, BasicSetting* setting);
+  void unregisterSetting(SettingsItem* item, BasicSetting* setting);
 
   QAction* settingsAction;
 
@@ -58,11 +61,11 @@ Q_OBJECT
 
   // TODO(cestmir): This needs to be converted to our own editable model
   // So far, this is here only to test the specialized settings view
-  QStandardItemModel* model;
+  SettingsModel* model;
 
   QRegExp idRegExp;
 
-  QMultiHash<QStandardItem*, BasicSetting*> settings;
+  QMultiHash<SettingsItem*, BasicSetting*> settings;
 };
 
 }  // End namespace Core
