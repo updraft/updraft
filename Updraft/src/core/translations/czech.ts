@@ -46,6 +46,14 @@
     </message>
 </context>
 <context>
+    <name>SettingsDialog</name>
+    <message>
+        <location filename="../ui/settingsdialog.ui" line="14"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Updraft::Core::MainWindow</name>
     <message>
         <location filename="../ui/mainwindow.cpp" line="118"/>
@@ -55,6 +63,22 @@
     <message>
         <location filename="../ui/mainwindow.cpp" line="125"/>
         <source>Open File...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Updraft::Core::SettingsDialog</name>
+    <message>
+        <location filename="../ui/settingsdialog.cpp" line="10"/>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Updraft::Core::SettingsManager</name>
+    <message>
+        <location filename="../settingsmanager.cpp" line="20"/>
+        <source>Settings...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

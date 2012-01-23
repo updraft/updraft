@@ -220,6 +220,18 @@ void TestPlugin::initialize() {
     treeItems.append(checkbox);
   }
 
+  // Settings
+  core->addSettingsGroup("testplugin", "Test Plugin Settings");
+  testSetting = core->addSetting("testplugin:testsetting", "Value of PI", 3.14);
+  testSetting2 = core->addSetting("testplugin:testsetting2",
+    "Number of silver squirters", 333);
+  testSetting3 = core->addSetting("testplugin:testsetting3",
+    "Name of the application", "Updraft");
+  hiddenSetting = core->addSetting("testplugin:testsetting", "Not visible",
+    "Blablablabla", true);
+
+  testSetting->callOnValueChanged(this, SLOT(showPi()));
+
   qDebug("testplugin loaded");
 }
 
@@ -229,18 +241,23 @@ void TestPlugin::createTab(QString title) {
 
   QPushButton* btn1 = new QPushButton("Show help", container);
   QPushButton* btn2 = new QPushButton("Close this tab", container);
+  QPushButton* btn3 = new QPushButton("Value of PI", container);
 
   layout->addWidget(btn1);
   layout->addWidget(btn2);
+  layout->addWidget(btn3);
 
   TabInterface* tab = core->createTab(container, title);
 
   connect(btn1, SIGNAL(clicked()), this, SLOT(showHelp()));
   // connect(btn2, SIGNAL(clicked()), tab, SLOT(showHelp()));
   tab->connectSlotClose(btn2, SIGNAL(clicked()));
+  connect(btn3, SIGNAL(clicked()), this, SLOT(showPi()));
 }
 
 void TestPlugin::deinitialize() {
+  delete testSetting;
+
   qDebug("testplugin unloaded");
 }
 
@@ -265,6 +282,15 @@ bool TestPlugin::fileOpen(const QString &filename, int roleId) {
   }
 
   return true;
+}
+
+void TestPlugin::showPi() {
+  QMainWindow* win = core->getMainWindow();
+
+  QString message = "The value of PI is %1";
+  message = message.arg(testSetting->get().toFloat());
+
+  QMessageBox::information(win, "Value of PI", message);
 }
 
 void TestPlugin::fileIdentification(QStringList *roles,
