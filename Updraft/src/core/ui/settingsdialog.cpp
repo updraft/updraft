@@ -14,11 +14,10 @@ SettingsDialog::SettingsDialog(QWidget* parent, SettingsManager* manager)
   ui->setupUi(this);
 
   ui->bottomView->setItemDelegate(settingsDelegate);
+  ui->topView->setBottom(ui->bottomView);
 
   setWindowTitle(tr("Settings"));
 
-  connect(ui->topView, SIGNAL(clicked(const QModelIndex&)),
-    ui->bottomView, SLOT(setTopIndex(const QModelIndex&)));
   connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)),
     this, SLOT(buttonBoxClicked(QAbstractButton*)));
   connect(ui->showHidden, SIGNAL(stateChanged(int)),

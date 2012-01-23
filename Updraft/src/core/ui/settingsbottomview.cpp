@@ -1,4 +1,5 @@
 #include "settingsbottomview.h"
+#include "variantfunctions.h"
 
 namespace Updraft {
 namespace Core {
@@ -30,6 +31,26 @@ void SettingsBottomView::scrollTo(const QModelIndex& index, ScrollHint hint) {
 
 QRect SettingsBottomView::visualRect(const QModelIndex& index) const {
   return rect();
+}
+
+bool SettingsBottomView::editorValuesChanged() {
+  QWidget* page = stack->currentWidget();
+  QGridLayout* layout = qobject_cast<QGridLayout*>(page->layout());
+  QModelIndex pageIndex = model()->index(stack->currentIndex(), 0);
+
+  for (int i = 0; i < layout->rowCount(); ++i) {
+    QLayoutItem* item = layout->itemAtPosition(i, 1);
+    QWidget* editor = item->widget();
+    QByteArray propertyName = editor->metaObject()->userProperty().name();
+    QVariant editorData = editor->property(propertyName);
+
+    QModelIndex dataIndex = model()->index(i, 0, pageIndex);
+    QVariant modelData = model()->data(dataIndex, Qt::EditRole);
+
+    if (!variantsEqual(editorData, modelData)) return true;
+  }
+
+  return false;
 }
 
 void SettingsBottomView::setModel(QAbstractItemModel* model) {

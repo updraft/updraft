@@ -19,10 +19,14 @@ class SettingsBottomView: public QAbstractItemView {
   void scrollTo(const QModelIndex& index, ScrollHint hint = EnsureVisible);
   QRect visualRect(const QModelIndex& index) const;
 
+  /// Tells whether there are any changes on the current page.
+  bool editorValuesChanged();
+
   void setModel(QAbstractItemModel* model);
 
- public slots:
   void setTopIndex(const QModelIndex& index);
+
+ public slots:
   void commit();
   void reset();
 
