@@ -9,9 +9,6 @@ namespace Core {
 class MapManipulator: public osgEarth::Util::EarthManipulator {
  public:
   MapManipulator();
- protected:
-  void handleMovementAction(const ActionType& type, double dx,
-    double dy, osg::View* view);
 };
 
 }  // End namespace Core

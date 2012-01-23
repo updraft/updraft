@@ -23,7 +23,8 @@ enum MapLayerType {
   MODEL_LAYER
 };
 
-/// Map layer
+/// A structure for storing a pointer to particular map layer.
+/// As it is a union, there is always exactly one value valid.
 union Layer {
   osg::Node* osgNode;
   osgEarth::ImageLayer* imageLayer;
@@ -31,15 +32,22 @@ union Layer {
   osgEarth::ModelLayer* modelLayer;
 };
 
-/// An interface to one map layer that is used by plugins.
+/// An interface to a map layer that is used by plugins.
+/// More about map layers \see class MapLayer.
 class MapLayerInterface {
  public:
   virtual ~MapLayerInterface() {}
 
-  /// Connects to a signal displayed(bool) -- map layer is
-  /// selected / diselected in the left panel.
+  /// Connects to a signal displayed(MapLayerInterface*, bool):
+  /// map layer is selected / diselected in the left panel.
   /// \see QObject::connect()
   virtual void connectSignalDisplayed(const QObject* receiver,
+    const char *method) = 0;
+
+  /// Connects to a slot setVisibility(bool) -- map layer sets
+  /// the visibility to the layer in the scene graph.
+  /// \see QObject::connect()
+  virtual void connectSlotSetVisibility(const QObject* sender,
     const char *method) = 0;
 
   /// Emits the displayed(bool) signal.
@@ -53,9 +61,6 @@ class MapLayerInterface {
 
   virtual MapLayerType getType() = 0;
   virtual void setType(MapLayerType type) = 0;
-
-  /// ID: must be unique.
-  int id;
 };
 
 }  // End namespace Updraft

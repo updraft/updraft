@@ -11,21 +11,30 @@
 namespace Updraft {
 namespace Core {
 
+/// Map manager is a class providing functions
+/// to manipulate with the map.
 class MapManager {
  public:
   MapManager();
+
+  /// Creates a new MapManager with map created from the earth file.
   explicit MapManager(QString earthFile);
   ~MapManager();
 
   osgEarth::MapNode* getMapNode();
-  osgEarth::MapNode* createMap(QString earthFile);
+
+  /// Gets a list of ImageLayers in the map.
+  QVector<osgEarth::ImageLayer*> getImageLayers();
+
+  /// Gets a list of ElevationLayers in the map.
+  QVector<osgEarth::ElevationLayer*> getElevationLayers();
+
+  /// Gets a list of ModelLayers in the map.
+  QVector<osgEarth::ModelLayer*> getModelLayers();
 
  private:
   osgEarth::MapNode* mapNode;
   osgEarth::Map* map;
-  QVector<osgEarth::ImageLayer*> imageLayers;
-  QVector<osgEarth::ElevationLayer*> elevationLayers;
-  QVector<osgEarth::ModelLayer*> modelLayers;
 };
 
 }  // namespace Core

@@ -6,13 +6,12 @@
 #include "menuinterface.h"
 #include "tabinterface.h"
 #include "fileregistration.h"
+#include "maplayergroupinterface.h"
 
 class QWidget;
 class QMainWindow;
 
 namespace Updraft {
-
-class MapLayerGroup;
 
 /// Exposes core functionalities to plugins.
 /// A call to methods of this interface automagically contains
@@ -35,7 +34,7 @@ class CoreInterface {
   /// To remove MapLayerGroup use C++ delete.
   /// \param title label for the item in the tree view
   /// \return Pointer to the new MapLayerGroup
-  virtual MapLayerGroup* createMapLayerGroup(const QString &title) = 0;
+  virtual MapLayerGroupInterface* createMapLayerGroup(const QString &title) = 0;
 
   /// Open a Tab with any widget.
   /// Takes ownership of content.

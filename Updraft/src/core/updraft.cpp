@@ -10,6 +10,10 @@ Updraft::Updraft(int argc, char** argv)
 
   installTranslator(&trans);
 
+  // Register classes that are being sent as a parameter in
+  // signals & slots.
+  // qRegisterMetaType<MapLayerInterface*>("DrawInfo");
+
   mainWindow = new MainWindow(NULL);
   fileTypeManager = new FileTypeManager();
   sceneManager = new SceneManager(

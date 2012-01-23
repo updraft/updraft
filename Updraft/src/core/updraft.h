@@ -7,6 +7,7 @@
 #include "filetypemanager.h"
 #include "pluginmanager.h"
 #include "scenemanager.h"
+#include "../maplayerinterface.h"
 
 /// Pointer to the instance of Updraft object.
 #define updraft (static_cast<Updraft*>(Updraft::instance()))

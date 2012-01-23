@@ -9,7 +9,7 @@
 #include <osg/Geometry>
 
 #include "../../coreinterface.h"
-#include "../../core/ui/maplayergroup.h"
+#include "../../maplayergroupinterface.h"
 #include "../../maplayerinterface.h"
 
 namespace Updraft {
@@ -109,30 +109,32 @@ void TestPlugin::initialize() {
   // Create map layers items in the left pane.
   mapLayerGroup = core->createMapLayerGroup("Test group");
   if (mapLayerGroup != NULL) {
-    // Connect display/hide signals with slots.
-
     // create map placer: to draw in the map
-    osgEarth::MapNode* mapNode = mapLayerGroup->getMapNode();
     osgEarth::Util::ObjectPlacer* objectPlacer =
-      new osgEarth::Util::ObjectPlacer(mapNode, 0, false);
+      mapLayerGroup->getObjectPlacer();
 
+    // LAYER #1
     // draw some lines in Czech Republic
-    osg::Geode* geode = new osg::Geode();
+    osg::Geode* geode = new osg::Geode();  // the root of the subscene
     osg::Geometry* geom = new osg::Geometry();
     geode->addDrawable(geom);
     geom->setUseDisplayList(false);
+    // we will be drawing lines
     osg::DrawArrays* drawArrayLines = new
       osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP);
     geom->addPrimitiveSet(drawArrayLines);
+    // create vertex array for the lines
     osg::Vec3Array* vertexData = new osg::Vec3Array();
     geom->setVertexArray(vertexData);
 
+    // add vertices into the vertex array
     vertexData->push_back(osg::Vec3(0, 0, 0));
     vertexData->push_back(osg::Vec3(0, 0, 2000));
     vertexData->push_back(osg::Vec3(100000, 0, 4000));
     vertexData->push_back(osg::Vec3(100000, -100000, 4000));
     vertexData->push_back(osg::Vec3(0, 0, 0));
 
+    // set color array: one color for each vertex
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f));  // index 0 red
     colors->push_back(osg::Vec4(0.0f, 1.0f, 0.0f, 1.0f));  // index 1 green
@@ -141,28 +143,32 @@ void TestPlugin::initialize() {
     colors->push_back(osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f));  // index 4 red
 
     geom->setColorArray(colors);
+    // set the colors to be one color per one vertex
     geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
+    // set where to start the line strip and how long it will be
     drawArrayLines->setFirst(0);
     drawArrayLines->setCount(vertexData->size());
 
-    // change the thickness of the line
+    // create the thickness of the line object
     osg::LineWidth* linewidth = new osg::LineWidth();
     linewidth->setWidth(2000.0f);
 
+    // set the thickness to the scene root
     geode->getOrCreateStateSet()->setAttributeAndModes(linewidth,
       osg::StateAttribute::ON);
 
+    // move the center of the node to Prague
     osg::Node* randomLines = objectPlacer->placeNode(geode,
       50.087811, 14.42046, 1000);
 
     Updraft::MapLayerInterface* layer1 =
       mapLayerGroup->insertMapLayer(randomLines, "Relative Lines", 0);
-    mapLayers.insert(layer1->id, layer1);
-    layer1->connectSignalDisplayed(this, SLOT(mapLayerDisplayed(int, bool)));
+    layer1->connectSignalDisplayed
+      (this, SLOT(mapLayerDisplayed(MapLayerInterface*, bool)));
+    mapLayers.append(layer1);
 
-    // mapLayerGroup->insertMapLayer(0, layer1, "Relative Lines");
-
+    // LAYER #2
     // draw route from Brno to Plzen:
     osg::Geode* BrnoPlzen = new osg::Geode();
     osg::Geometry* geom2 = new osg::Geometry();
@@ -174,13 +180,13 @@ void TestPlugin::initialize() {
     osg::Vec3Array* vertexData2 = new osg::Vec3Array();
     geom2->setVertexArray(vertexData2);
 
-    // placer
     osg::Matrixd brnoTransformation;
     osg::Matrixd plzenTransformation;
 
     objectPlacer->createPlacerMatrix(49.11, 16.37, 6000, brnoTransformation);
     objectPlacer->createPlacerMatrix(49.44, 13.22, 600, plzenTransformation);
 
+    // place the points according to matrices
     osg::Vec3 brno = osg::Vec3(0, 0, 0) * brnoTransformation;
     osg::Vec3 plzen = osg::Vec3(0, 0, 0) * plzenTransformation;
 
@@ -203,13 +209,15 @@ void TestPlugin::initialize() {
     geom2->setColorArray(colors2);
     geom2->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-    /*
-    Layer l2;
-    l2.osgNode = BrnoPlzen;
-    MapLayer* layer2 = new MapLayer(MapLayerType::OSG_NODE_LAYER, l2);
+    MapLayerInterface* layer2 =
+      mapLayerGroup->insertMapLayer(BrnoPlzen, "Brno to Plzen");
+    layer2->connectSignalDisplayed
+      (this, SLOT(mapLayerDisplayed(MapLayerInterface*, bool)));
+    mapLayers.append(layer2);
 
-    mapLayerGroup->insertMapLayer(1, layer2, "Brno to Plzen");
-    */
+    // ADD JUST CHECKBOX
+    QTreeWidgetItem* checkbox = mapLayerGroup->createTreeItem("Do nothing");
+    treeItems.append(checkbox);
   }
 
   qDebug("testplugin loaded");
@@ -272,8 +280,12 @@ void TestPlugin::fileIdentification(QStringList *roles,
   }
 }
 
-void TestPlugin::mapLayerDisplayed(int id, bool value) {
-  mapLayers[id]->setVisible(value);
+void TestPlugin::mapLayerDisplayed(MapLayerInterface* sender, bool value) {
+  sender->setVisible(value);
+  // When the first maplayer is not checked, remove the empty checkbox.
+  if ((value == false) && (!treeItems.empty()) && (sender == mapLayers[0])) {
+    mapLayerGroup->removeTreeItem(treeItems[0]);
+  }
 }
 
 Q_EXPORT_PLUGIN2(testplugin, TestPlugin)
