@@ -1,6 +1,4 @@
-QT4_WRAP_CPP(HEADERS_MOC testlocation.h)
-ADD_UNIT_TEST(test_location testlocation.cpp ${HEADERS_MOC})
+cmake_minimum_required(VERSION 2.8)
 
-STYLE_CHECK(testlocation.h testlocation.cpp)
-
+TEST_BUILD(test_location)
 TARGET_LINK_LIBRARIES(test_location util)

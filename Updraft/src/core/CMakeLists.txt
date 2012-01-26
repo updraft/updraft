@@ -2,13 +2,14 @@ cmake_minimum_required(VERSION 2.8)
 
 PROJECT(updraft)
 
-FIND_PACKAGE(Qt4 REQUIRED QtCore QtGui QtXml QtOpengl)
+FIND_PACKAGE(Qt4 REQUIRED)
 FIND_PACKAGE(OpenSceneGraph REQUIRED 
 osgUtil osgDB osgGA osgViewer osgQt )
 #osgUtild osgDBd osgGAd osgViewerd osgQtd)
 FIND_PACKAGE(OsgEarth REQUIRED)
 
 SET(QT_USE_QTOPENGL TRUE)
+SET(QT_USE_QTXML TRUE)
 
 MESSAGE("-- Configuring core...")
 
