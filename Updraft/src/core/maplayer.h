@@ -41,6 +41,7 @@ class MapLayer : public QObject, public MapLayerInterface {
     const char *method);
   void connectSlotSetVisibility(const QObject* sender,
     const char *method);
+  void connectDisplayedToVisibility();
   void emitDisplayed(bool value);
 
   void setVisible(bool value);
@@ -54,7 +55,7 @@ class MapLayer : public QObject, public MapLayerInterface {
   void setVisibility(bool value);
 
  signals:
-  void displayed(MapLayerInterface* sender, bool value);
+  void displayed(bool value, MapLayerInterface* sender);
 
  private:
   /// Determines which value of the union layer is valid.

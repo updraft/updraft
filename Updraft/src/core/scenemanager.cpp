@@ -18,6 +18,8 @@ namespace Core {
 
 SceneManager::SceneManager(QString baseEarthFile,
     osgViewer::ViewerBase::ThreadingModel threadingModel) {
+  osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
+
   viewer = new osgViewer::Viewer();
   viewer->setThreadingModel(threadingModel);
 
@@ -28,6 +30,8 @@ SceneManager::SceneManager(QString baseEarthFile,
   // create camera
   camera = createCamera(traits);
   camera->setGraphicsContext(graphicsWindow);
+  camera->setClearMask
+    (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   viewer->setCamera(camera);
 
   // create map manager
@@ -39,6 +43,9 @@ SceneManager::SceneManager(QString baseEarthFile,
   background = new osg::ClearNode();
   background->setClearColor(osg::Vec4(0.8f, 0.8f, 0.8f, 1.0f));
   sceneRoot->addChild(background);
+    // add basic group for nodes
+  simpleGroup = new osg::Group();
+  sceneRoot->addChild(simpleGroup);
     // add basic map
   mapNode = mapManager->getMapNode();
   sceneRoot->addChild(mapNode);
@@ -92,6 +99,14 @@ bool SceneManager::removeGroup(osg::Group* group) {
 
 osgEarth::MapNode* SceneManager::getMapNode() {
   return mapNode;
+}
+
+osg::Group* SceneManager::getSimpleGroup() {
+  return simpleGroup;
+}
+
+MapManager* SceneManager::getMapManager() {
+  return mapManager;
 }
 
 osg::GraphicsContext::Traits* SceneManager::createGraphicsTraits

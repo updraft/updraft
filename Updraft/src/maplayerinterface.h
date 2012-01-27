@@ -50,6 +50,12 @@ class MapLayerInterface {
   virtual void connectSlotSetVisibility(const QObject* sender,
     const char *method) = 0;
 
+  /// Automatically connects the signal whether the map is
+  /// selected / deselected in the menu to the
+  /// setVisibility slot, so that the map enables / disabled it's
+  /// visibility.
+  virtual void connectDisplayedToVisibility() = 0;
+
   /// Emits the displayed(bool) signal.
   virtual void emitDisplayed(bool value) = 0;
 

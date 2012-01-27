@@ -29,6 +29,8 @@ class CoreImplementation : public CoreInterface {
 
   QString getDataDirectory();
 
+  osg::Group* getSimpleGroup();
+
  private:
   PluginBase* plugin;
 };

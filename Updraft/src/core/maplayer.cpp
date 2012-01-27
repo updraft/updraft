@@ -40,7 +40,7 @@ MapLayer::~MapLayer() {
 
 void MapLayer::connectSignalDisplayed(const QObject *receiver,
   const char *method) {
-  connect(this, SIGNAL(displayed(MapLayerInterface*, bool)), receiver, method);
+  connect(this, SIGNAL(displayed(bool, MapLayerInterface*)), receiver, method);
 }
 
 void MapLayer::connectSlotSetVisibility(const QObject *sender,
@@ -48,8 +48,13 @@ void MapLayer::connectSlotSetVisibility(const QObject *sender,
   connect(sender, method, this, SLOT(setVisibility(bool)));
 }
 
+void MapLayer::connectDisplayedToVisibility() {
+  connect(this, SIGNAL(displayed(bool, MapLayerInterface*)),
+    this, SLOT(setVisibility(bool)));
+}
+
 void MapLayer::emitDisplayed(bool value) {
-  emit displayed(this, value);
+  emit displayed(value, this);
 }
 
 void MapLayer::setVisibility(bool value) {

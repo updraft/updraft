@@ -105,6 +105,7 @@ void TestPlugin::initialize() {
   regHtml.plugin = this;
 
   core->registerFiletype(regHtml);
+  osg::Group* simpleGroup = core->getSimpleGroup();
 
   // Create map layers items in the left pane.
   mapLayerGroup = core->createMapLayerGroup("Test group");
@@ -165,7 +166,7 @@ void TestPlugin::initialize() {
     Updraft::MapLayerInterface* layer1 =
       mapLayerGroup->insertMapLayer(randomLines, "Relative Lines", 0);
     layer1->connectSignalDisplayed
-      (this, SLOT(mapLayerDisplayed(MapLayerInterface*, bool)));
+      (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
     mapLayers.append(layer1);
 
     // LAYER #2
@@ -211,8 +212,9 @@ void TestPlugin::initialize() {
 
     MapLayerInterface* layer2 =
       mapLayerGroup->insertMapLayer(BrnoPlzen, "Brno to Plzen");
-    layer2->connectSignalDisplayed
-      (this, SLOT(mapLayerDisplayed(MapLayerInterface*, bool)));
+
+    // simpleGroup->addChild(BrnoPlzen);
+    layer2->connectDisplayedToVisibility();
     mapLayers.append(layer2);
 
     // ADD JUST CHECKBOX
@@ -280,12 +282,14 @@ void TestPlugin::fileIdentification(QStringList *roles,
   }
 }
 
-void TestPlugin::mapLayerDisplayed(MapLayerInterface* sender, bool value) {
+void TestPlugin::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
   sender->setVisible(value);
   // When the first maplayer is not checked, remove the empty checkbox.
+  /*
   if ((value == false) && (!treeItems.empty()) && (sender == mapLayers[0])) {
     mapLayerGroup->removeTreeItem(treeItems[0]);
   }
+  */
 }
 
 Q_EXPORT_PLUGIN2(testplugin, TestPlugin)

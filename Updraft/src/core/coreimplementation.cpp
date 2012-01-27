@@ -49,6 +49,10 @@ QString CoreImplementation::getDataDirectory() {
   return updraft->getDataDirectory();
 }
 
+osg::Group* CoreImplementation::getSimpleGroup() {
+  return updraft->sceneManager->getSimpleGroup();
+}
+
 }  // End namespace Core
 }  // End namespace Updraft
 

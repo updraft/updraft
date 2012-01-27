@@ -36,7 +36,7 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
 
  public slots:
   void showHelp();
-  void mapLayerDisplayed(MapLayerInterface* sender, bool value);
+  void mapLayerDisplayed(bool value, MapLayerInterface* sender);
 
  private:
   void createTab(QString title);

@@ -11,6 +11,10 @@
 class QWidget;
 class QMainWindow;
 
+namespace osg {
+  class Group;
+}
+
 namespace Updraft {
 
 /// Exposes core functionalities to plugins.
@@ -52,6 +56,9 @@ class CoreInterface {
   /// Gets path of the application data directory.
   /// \return Full path to the application directory
   virtual QString getDataDirectory() = 0;
+
+  /// Returns the pointer to the camera of the scene.
+  virtual osg::Group* getSimpleGroup() = 0;
 };
 
 }  // End namespace Updraft
