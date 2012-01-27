@@ -13,6 +13,10 @@
 class QWidget;
 class QMainWindow;
 
+namespace osg {
+  class Group;
+}
+
 namespace Updraft {
 
 /// Exposes core functionalities to plugins.
@@ -88,6 +92,9 @@ class CoreInterface {
     const QString& description,
     QVariant initValue,
     bool hidden = false) = 0;
+
+  /// Returns the pointer to the basic node group for drawing.
+  virtual osg::Group* getSimpleGroup() = 0;
 };
 
 }  // End namespace Updraft

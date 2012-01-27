@@ -42,6 +42,9 @@ class SceneManager: public QObject {
   /// Removes the group from the root.
   bool removeGroup(osg::Group* group);
 
+  /// Returns pointer to the group node for random drawing.
+  osg::Group* getSimpleGroup();
+
  public slots:
   void redrawScene();
 
@@ -52,6 +55,7 @@ class SceneManager: public QObject {
   /// Node with the background.
   osg::ClearNode* background;
   osgEarth::MapNode* mapNode;
+  osg::Group* simpleGroup;
 
   MapManager* mapManager;
   osg::Camera* camera;

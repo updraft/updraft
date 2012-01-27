@@ -40,6 +40,8 @@ class CoreImplementation : public CoreInterface {
     QVariant initValue,
     bool hidden);
 
+  osg::Group* getSimpleGroup();
+
  private:
   PluginBase* plugin;
 };

@@ -65,6 +65,10 @@ SettingInterface* CoreImplementation::addSetting(
     addSetting(settingId, description, initVal, hidden);
 }
 
+osg::Group* CoreImplementation::getSimpleGroup() {
+  return updraft->sceneManager->getSimpleGroup();
+}
+
 }  // End namespace Core
 }  // End namespace Updraft
 

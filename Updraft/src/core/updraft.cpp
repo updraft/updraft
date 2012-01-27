@@ -1,4 +1,5 @@
 #include "updraft.h"
+#include "ui/maplayergroup.h"
 
 namespace Updraft {
 namespace Core {
@@ -9,10 +10,6 @@ Updraft::Updraft(int argc, char** argv)
   trans.load("translations/czech");
 
   installTranslator(&trans);
-
-  // Register classes that are being sent as a parameter in
-  // signals & slots.
-  // qRegisterMetaType<MapLayerInterface*>("DrawInfo");
 
   mainWindow = new MainWindow(NULL);
   settingsManager = new SettingsManager();
