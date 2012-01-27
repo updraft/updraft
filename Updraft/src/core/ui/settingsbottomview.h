@@ -12,7 +12,7 @@ class SettingsBottomView: public QAbstractItemView {
   Q_OBJECT
 
  public:
-  SettingsBottomView(QWidget* parent);
+  explicit SettingsBottomView(QWidget* parent);
   ~SettingsBottomView();
 
   QModelIndex indexAt(const QPoint& point) const;
@@ -37,8 +37,10 @@ class SettingsBottomView: public QAbstractItemView {
   void paintEvent(QPaintEvent * event);
   int horizontalOffset() const;
   bool isIndexHidden(const QModelIndex & index) const;
-  QModelIndex moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers);
-  void setSelection(const QRect & rect, QItemSelectionModel::SelectionFlags flags);
+  QModelIndex moveCursor(CursorAction cursorAction,
+    Qt::KeyboardModifiers modifiers);
+  void setSelection(const QRect & rect,
+    QItemSelectionModel::SelectionFlags flags);
   int verticalOffset() const;
   QRegion visualRegionForSelection(const QItemSelection & selection) const;
 

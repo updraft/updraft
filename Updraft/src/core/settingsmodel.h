@@ -37,7 +37,7 @@ class SettingsItem {
 };
 
 class SettingsModel: public QAbstractItemModel {
- Q_OBJECT
+  Q_OBJECT
 
  public:
   SettingsModel();
@@ -54,13 +54,15 @@ class SettingsModel: public QAbstractItemModel {
 
   int columnCount(const QModelIndex&) const { return 1; }
   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
-  QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const;
+  QModelIndex index(int row, int column,
+    const QModelIndex& parent = QModelIndex()) const;
   QModelIndex indexFromItem(SettingsItem* item) const;
   bool insertRow(int row, const QModelIndex& parent = QModelIndex());
   SettingsItem* itemFromIndex(const QModelIndex& index) const;
   QModelIndex parent(const QModelIndex&) const;
   int rowCount(const QModelIndex& parent = QModelIndex()) const;
-  bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::DisplayRole);
+  bool setData(const QModelIndex& index, const QVariant& value,
+    int role = Qt::DisplayRole);
   QModelIndex sibling(int row, int column, const QModelIndex& index) const;
 
  signals:
