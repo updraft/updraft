@@ -20,7 +20,7 @@ class CoreImplementation : public CoreInterface {
   MenuInterface* createMenu(QString title);
   MenuInterface* getSystemMenu(SystemMenu menu);
 
-  MapLayerGroup* createMapLayerGroup(const QString &title);
+  MapLayerGroupInterface* createMapLayerGroup(const QString &title);
 
   TabInterface* createTab(QWidget* content, QString title);
   void removeTab(TabInterface* tab);
@@ -28,6 +28,8 @@ class CoreImplementation : public CoreInterface {
   void registerFiletype(const FileRegistration &registration);
 
   QString getDataDirectory();
+
+  osg::Group* getSimpleGroup();
 
  private:
   PluginBase* plugin;

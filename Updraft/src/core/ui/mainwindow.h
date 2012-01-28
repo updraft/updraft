@@ -35,7 +35,7 @@ class MainWindow : public QMainWindow {
 
   /// This method creates new map layer group.
   /// It is wrapped by CoreInterface::createMapLayerGroup.
-  MapLayerGroup* createMapLayerGroup(const QString &title,
+  MapLayerGroupInterface* createMapLayerGroup(const QString &title,
     osg::Group* nodeGroup, osgEarth::MapNode* map);
 
  private slots:

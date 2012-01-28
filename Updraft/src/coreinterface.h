@@ -6,13 +6,16 @@
 #include "menuinterface.h"
 #include "tabinterface.h"
 #include "fileregistration.h"
+#include "maplayergroupinterface.h"
 
 class QWidget;
 class QMainWindow;
 
-namespace Updraft {
+namespace osg {
+  class Group;
+}
 
-class MapLayerGroup;
+namespace Updraft {
 
 /// Exposes core functionalities to plugins.
 /// A call to methods of this interface automagically contains
@@ -35,7 +38,7 @@ class CoreInterface {
   /// To remove MapLayerGroup use C++ delete.
   /// \param title label for the item in the tree view
   /// \return Pointer to the new MapLayerGroup
-  virtual MapLayerGroup* createMapLayerGroup(const QString &title) = 0;
+  virtual MapLayerGroupInterface* createMapLayerGroup(const QString &title) = 0;
 
   /// Open a Tab with any widget.
   /// Takes ownership of content.
@@ -53,6 +56,9 @@ class CoreInterface {
   /// Gets path of the application data directory.
   /// \return Full path to the application directory
   virtual QString getDataDirectory() = 0;
+
+  /// Returns the pointer to the camera of the scene.
+  virtual osg::Group* getSimpleGroup() = 0;
 };
 
 }  // End namespace Updraft

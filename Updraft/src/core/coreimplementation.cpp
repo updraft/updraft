@@ -23,7 +23,8 @@ MenuInterface* CoreImplementation::getSystemMenu(SystemMenu menu) {
   return win->getSystemMenu(menu);
 }
 
-MapLayerGroup* CoreImplementation::createMapLayerGroup(const QString &title) {
+MapLayerGroupInterface* CoreImplementation::createMapLayerGroup
+  (const QString &title) {
   osg::Group* group = updraft->sceneManager->newGroup();
   osgEarth::MapNode* map = updraft->sceneManager->getMapNode();
   return updraft->mainWindow->createMapLayerGroup(title, group, map);
@@ -46,6 +47,10 @@ void CoreImplementation::registerFiletype(
 QString CoreImplementation::getDataDirectory() {
   // TODO(Tom): Load data directory from settings.
   return updraft->getDataDirectory();
+}
+
+osg::Group* CoreImplementation::getSimpleGroup() {
+  return updraft->sceneManager->getSimpleGroup();
 }
 
 }  // End namespace Core

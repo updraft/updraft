@@ -3,6 +3,7 @@
 
 #include <QtGui>
 #include <QMap>
+#include <QTreeWidgetItem>
 
 #include "../../pluginbase.h"
 #include "../../maplayerinterface.h"
@@ -35,7 +36,7 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
 
  public slots:
   void showHelp();
-  void mapLayerDisplayed(int id, bool value);
+  void mapLayerDisplayed(bool value, MapLayerInterface* sender);
 
  private:
   void createTab(QString title);
@@ -46,8 +47,9 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
 
   MenuInterface* myMenu;
 
-  MapLayerGroup *mapLayerGroup;
-  QMap<int, Updraft::MapLayerInterface*> mapLayers;
+  MapLayerGroupInterface *mapLayerGroup;
+  QVector<MapLayerInterface*> mapLayers;
+  QVector<QTreeWidgetItem*> treeItems;
 };
 }
 

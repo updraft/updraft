@@ -9,6 +9,7 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
     <cache type="filesystem" >
        <path>cache</path>
     </cache>
+
     <options>
         <lighting>false</lighting>
     </options>

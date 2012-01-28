@@ -103,7 +103,7 @@ Menu* MainWindow::createMenu(QString title) {
   return newMenu;
 }
 
-MapLayerGroup* MainWindow::createMapLayerGroup(const QString &title,
+MapLayerGroupInterface* MainWindow::createMapLayerGroup(const QString &title,
   osg::Group* nodeGroup, osgEarth::MapNode* map) {
   return new MapLayerGroup(ui->treeWidget_2, title, nodeGroup, map);
 }

@@ -77,11 +77,11 @@ void TestIgc::testBRecords() {
     Fix const* fix = static_cast<Fix const*>(ev);
 
     QCOMPARE(fix->timestamp, time);
-    QCOMPARE(fix->lat, lat);
-    QCOMPARE(fix->lon, lon);
+    QCOMPARE(fix->gpsLoc.lat, lat);
+    QCOMPARE(fix->gpsLoc.lon, lon);
     QCOMPARE(fix->valid, valid);
     QCOMPARE(fix->pressureAlt, pressureAlt);
-    QCOMPARE(fix->gpsAlt, gpsAlt);
+    QCOMPARE(fix->gpsLoc.alt, gpsAlt);
 
     value *= -2;
   }

@@ -45,7 +45,7 @@ class Q_DECL_EXPORT TurnPoints : public QObject, public PluginBase {
   TTPLayerMap layers;
 
   /// Turn-points map layer group
-  MapLayerGroup *mapLayerGroup;
+  MapLayerGroupInterface *mapLayerGroup;
 
   /// Registration for loading turn-points from cup file.
   FileRegistration cupTPsReg;

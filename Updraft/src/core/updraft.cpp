@@ -1,4 +1,5 @@
 #include "updraft.h"
+#include "ui/maplayergroup.h"
 
 namespace Updraft {
 namespace Core {
