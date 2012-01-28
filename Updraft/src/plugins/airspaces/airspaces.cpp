@@ -1,6 +1,5 @@
 #include "airspaces.h"
 #include "../../libraries/openairspace/openairspace.h"
-#include "../../libraries/cup/cup.h"
 
 
 namespace Updraft {
@@ -8,10 +7,17 @@ namespace Core {
 
 Airspaces::Airspaces() {
   qDebug("Loading deafault for testing");
-  // Cup::CupFile *cupFile;
-  TTT();
-  OpenAirspace::Parser p;
-  p.Test();
+  OpenAirspace::Parser P("c:/Updraft/CZ2011.txt");
+  size_t as = P.size();
+  QString aaa = P.GetName(as-1);
+
+  OAirspaceFileReg.category = CATEGORY_PERSISTENT;
+  OAirspaceFileReg.extension = ".txt";
+  OAirspaceFileReg.typeDescription = tr("Open Airspace file");
+  OAirspaceFileReg.roleDescription = tr("Import Airspace");
+  OAirspaceFileReg.importDirectory = "airspaces";
+  OAirspaceFileReg.roleId = 0;
+  OAirspaceFileReg.plugin = this;
 }
 
 QString Airspaces::getName() {

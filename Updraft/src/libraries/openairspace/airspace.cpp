@@ -12,6 +12,7 @@ namespace OpenAirspace {
     this->validAL = false;
     this->validAH = false;
     this->validTO = false;
+    this->validTC = false;
     // this->validX  = false;
     this->CW      = true;
     this->Wi      = -1;
@@ -73,22 +74,29 @@ namespace OpenAirspace {
       } else if (text == "SP") {
         int i = parse.indexOf(',');
         SP.style = parse.left(i).toInt();
+        parse = parse.right(parse.size() - i -1);
         i = parse.indexOf(',');
         SP.width = parse.left(i).toInt();
+        parse = parse.right(parse.size() - i -1);
         i = parse.indexOf(',');
         SP.R = parse.left(i).toInt();
+        parse = parse.right(parse.size() - i -1);
         i = parse.indexOf(',');
         SP.G = parse.left(i).toInt();
+        parse = parse.right(parse.size() - i -1);
         i = parse.indexOf(',');
         SP.B = parse.left(i).toInt();
         SP.valid = true;
       } else if (text == "SB") {
         int i = parse.indexOf(',');
         SB.R = parse.left(i).toInt();
+        parse = parse.right(parse.size() - i -1);
         i = parse.indexOf(',');
         SB.G = parse.left(i).toInt();
+        parse = parse.right(parse.size() - i -1);
         i = parse.indexOf(',');
         SB.B = parse.left(i).toInt();
+        parse = parse.right(parse.size() - i -1);
         SB.valid = true;
       } else if (text == "V") {
         QChar ch = parse.at(0);
