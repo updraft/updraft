@@ -24,7 +24,7 @@ namespace OpenAirspace {
     if (ts.atEnd())
       qDebug("Not supported OpenAirspace format.");
     else
-      qDebug("Parsing OpenAirspace file.");
+      qDebug("Parsing OpenAirspace file %s", fileName.toAscii().data());
 
     while (!ts.atEnd()) {
       if (!ts.atEnd())

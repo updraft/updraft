@@ -46,7 +46,7 @@ UserAirspace parser library.
 *    SP style, width, red, green, blue    ; Selects Pen to be used in drawing
 *    SB red, green, blue                         ; Selects Brush to be used in drawing
 *
-* 
+*
 *    Record types common to both TERRAIN and AIRSPACE
 *    =================================================
 *
@@ -87,6 +87,7 @@ namespace OpenAirspace {
     enum ACType { R, Q, P, A, B, C, D, GP, CTR, W };
 
     /// Coordinates structure - e.g. 39:29.9 N -119:46.1 E.
+    /// \TODO: use Utils when available
     struct Coordinate {
       bool valid;  // validity flag
       struct ECor {
@@ -147,7 +148,7 @@ namespace OpenAirspace {
     inline const QString& GetName() { return this->AN; }
 
     /// Returns the class of the AirSpace
-    inline const int GetClass() { return this->AC; }
+    inline const QString& GetClass() { return this->AC; }
 
     /// Returns the floor of the AirSpace
     inline const QString& GetFloor() { return this->AL; }
@@ -187,7 +188,7 @@ namespace OpenAirspace {
     Coordinate ParseCoord(const QString& parse);
 
     /// Airspace class type.
-    ACType AC;
+    QString AC;
 
     /// Airspace Name.
     /// Contains the name of the aispace.

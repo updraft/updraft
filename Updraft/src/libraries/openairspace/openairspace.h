@@ -19,7 +19,7 @@ namespace OpenAirspace {
       return this->allAirspaces.size(); }
 
     /// Returns the class of the AirSpace
-    inline const int GetClass(int i) {
+    inline const QString& GetClass(int i) {
       return this->allAirspaces[i].GetClass();}
 
     /// Returns the floor of the AirSpace

@@ -29,6 +29,8 @@ namespace OpenAirspace {
     if (text != "AC") return;
 
     (*ts) >> text;
+    this->AC = text;
+    /* NA because more classes than defined available e.g. "E" - not in specs
     if (text      == "R") this->AC = R;
     else if (text == "Q") this->AC = Q;
     else if (text == "P") this->AC = P;
@@ -40,22 +42,27 @@ namespace OpenAirspace {
     else if (text == "CTR") this->AC = CTR;
     else if (text == "W") this->AC = W;
     else
-      return;
+      return;*/
 
     while (!(*ts).atEnd()) {
       (*ts) >> text;
 
-      if (text == "AC") return;
+      if (text == "AC")
+        return;
+      if (text.size() == 0 || text.at(0) == '*')
+        continue;
 
       QString parse;
       ts->skipWhiteSpace();
       parse = ts->readLine();
 
-      if (text == "*")
-        continue;
+      int comment = parse.indexOf('*');
+      if (comment > -1)
+        parse = parse.left(comment);
 
-      else if (text == "AN") {
+      if (text == "AN") {
         this->AN = parse;
+        qDebug("%s", AN.toAscii().data());
         validAN = true;
       } else if (text == "AL") {
         this->AL = parse;  // !!! can be text e.g. Ask on 122.8 !!!
@@ -144,11 +151,8 @@ namespace OpenAirspace {
         /*if (validX)*/ arc.Centre = X;
         arc.CW = this->CW;
 
-        // parse row
         int i = parse.indexOf(',');
         arc.Start = ParseCoord(parse.left(i));
-
-        parse = parse.right(parse.size() - i -1);
 
         parse = parse.right(parse.size() - i -1);
         arc.End = arc.Start = ParseCoord(parse);
@@ -172,20 +176,37 @@ namespace OpenAirspace {
 
   Airspace::Coordinate Airspace::ParseCoord(const QString& text) {
     Coordinate cor;
-    QString parse = text;
     int i = 0, j = 0;
     while (text.at(i) != 'N' && text.at(i) != 'S' && i < text.size()) ++i;
     while (text.at(j) != 'E' && text.at(j) != 'W' && j < text.size()) ++j;
-    if (i == text.size() || j == text.size())
-      qFatal("Error parsing coordinates in UserAirspace file");
-    parse = text.left(i);
-    cor.N.min = parse.section(':', 0, 0).toInt();
-    cor.N.sec = parse.section(':', 1, 1).toFloat();
-    if (text.at(i) == 'S') cor.N.min *= -1;
-    parse = text.mid(i+1, j - i - 1);
-    cor.E.min = parse.section(':', 0, 0).toInt();
-    cor.E.sec = parse.section(':', 1, 1).toFloat();
-    if (text.at(j) == 'W') cor.E.min *= -1;
+    if (i == text.size() || j == text.size()) {
+      qWarning("Error parsing coordinates in Airspace file: N/S/E/W nt found.");
+      return Coordinate();
+    }
+    QString parse = text.left(i);
+    int parts = parse.count(':');
+    if (parts == 1) {
+      cor.N.min = parse.section(':', 0, 0).toInt();
+      cor.N.sec = parse.section(':', 1, 1).toFloat();
+      if (text.at(i) == 'S') cor.N.min *= -1;
+      parse = text.mid(i+1, j - i - 1);
+      cor.E.min = parse.section(':', 0, 0).toInt();
+      cor.E.sec = parse.section(':', 1, 1).toFloat();
+      if (text.at(j) == 'W') cor.E.min *= -1;
+    } else if (parts == 2) {
+      cor.N.min = parse.section(':', 0, 0).toInt();
+      cor.N.sec = parse.section(':', 1, 1).toFloat()
+        + parse.section(':', 2, 2).toFloat() / 60;
+      if (text.at(i) == 'S') cor.N.min *= -1;
+      parse = text.mid(i+1, j - i - 1);
+      cor.E.min = parse.section(':', 0, 0).toInt();
+      cor.E.sec = parse.section(':', 1, 1).toFloat()
+        + parse.section(':', 2, 2).toFloat() / 60;
+      if (text.at(j) == 'W') cor.E.min *= -1;
+    } else {
+      qWarning("Error parsing coordinates in Airspace file: ':' not found.");
+      return Coordinate();
+    }
     cor.valid = true;
     return cor;
   }
