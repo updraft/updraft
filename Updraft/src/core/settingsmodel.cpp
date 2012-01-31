@@ -8,6 +8,7 @@ namespace Core {
 
 SettingsItem::SettingsItem(QDomNode node, SettingsModel* model)
   :domNode(node),
+  parent(NULL),
   myModel(model) {}
 
 SettingsItem::~SettingsItem() {
@@ -32,7 +33,7 @@ void SettingsItem::insertChild(SettingsItem* item, int index) {
 }
 
 SettingsItem* SettingsItem::getChild(int index) {
-  return children[index];
+  return children.value(index, NULL);
 }
 
 int SettingsItem::childIndex(SettingsItem* item) {
@@ -158,6 +159,9 @@ QModelIndex SettingsModel::index(
 
   // Find the corresponding row and column for the found settings item
   SettingsItem* childItem = parentItem->getChild(row);
+  if (childItem == NULL)
+    return QModelIndex();
+
   return createIndex(row, 0, childItem);
 }
 
