@@ -2,7 +2,7 @@
 
 #include "updraft.h"
 #include "ui/mainwindow.h"
-#include "menu.h"
+#include "ui/menu.h"
 #include "../menuinterface.h"
 #include "basicsetting.h"
 #include "ui_settingsdialog.h"
