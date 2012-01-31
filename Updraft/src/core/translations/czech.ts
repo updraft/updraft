@@ -38,18 +38,23 @@
     </message>
 </context>
 <context>
-    <name>Updraft::Core::FileOpenDialog</name>
-    <message>
-        <location filename="../ui/fileopendialog.cpp" line="84"/>
-        <source>All supported types</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>SettingsDialog</name>
     <message>
         <location filename="../ui/settingsdialog.ui" line="14"/>
         <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/settingsdialog.ui" line="103"/>
+        <source>Show hidden settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Updraft::Core::FileOpenDialog</name>
+    <message>
+        <location filename="../ui/fileopendialog.cpp" line="84"/>
+        <source>All supported types</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -69,15 +74,25 @@
 <context>
     <name>Updraft::Core::SettingsDialog</name>
     <message>
-        <location filename="../ui/settingsdialog.cpp" line="10"/>
+        <location filename="../ui/settingsdialog.cpp" line="19"/>
         <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/settingsdialog.cpp" line="65"/>
+        <source>Reset to defaults?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/settingsdialog.cpp" line="66"/>
+        <source>All settings values will be erased and set to defaults. Are you sure you want to continue?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Updraft::Core::SettingsManager</name>
     <message>
-        <location filename="../settingsmanager.cpp" line="20"/>
+        <location filename="../settingsmanager.cpp" line="33"/>
         <source>Settings...</source>
         <translation type="unfinished"></translation>
     </message>
