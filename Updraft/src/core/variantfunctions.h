@@ -17,11 +17,11 @@ inline bool variantsEqual(const QVariant& var1, const QVariant& var2) {
 /// This function is defined so that we can control conversion to
 /// a string for any type that a variant can hold.
 inline QString variantToString(const QVariant& var) {
-  switch (var.type()) {
-    default:
+  // switch (var.type()) {
+    // default:
       return var.toString();
-    break;
-  }
+    // break;
+  // }
 }
 
 }  // End namespace Core
