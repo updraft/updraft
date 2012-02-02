@@ -49,6 +49,22 @@ QString CoreImplementation::getDataDirectory() {
   return updraft->getDataDirectory();
 }
 
+void CoreImplementation::addSettingsGroup(
+    const QString& groupId,
+    const QString& description,
+    const QString& icon) {
+  updraft->settingsManager->addGroup(groupId, description, icon);
+}
+
+SettingInterface* CoreImplementation::addSetting(
+    const QString& settingId,
+    const QString& description,
+    QVariant initVal,
+    bool hidden) {
+  return updraft->settingsManager->
+    addSetting(settingId, description, initVal, hidden);
+}
+
 osg::Group* CoreImplementation::getSimpleGroup() {
   return updraft->sceneManager->getSimpleGroup();
 }

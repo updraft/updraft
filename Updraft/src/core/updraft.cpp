@@ -12,6 +12,7 @@ Updraft::Updraft(int argc, char** argv)
   installTranslator(&trans);
 
   mainWindow = new MainWindow(NULL);
+  settingsManager = new SettingsManager();
   fileTypeManager = new FileTypeManager();
   sceneManager = new SceneManager(
     QCoreApplication::applicationDirPath() + "/data/initial.earth");
@@ -24,6 +25,7 @@ Updraft::~Updraft() {
   delete sceneManager;
   delete pluginManager;
   delete fileTypeManager;
+  delete settingsManager;
   delete mainWindow;
 }
 

@@ -36,6 +36,7 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
 
  public slots:
   void showHelp();
+  void showPi();
   void mapLayerDisplayed(bool value, MapLayerInterface* sender);
 
  private:
@@ -50,6 +51,11 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
   MapLayerGroupInterface *mapLayerGroup;
   QVector<MapLayerInterface*> mapLayers;
   QVector<QTreeWidgetItem*> treeItems;
+
+  SettingInterface* testSetting;
+  SettingInterface* testSetting2;
+  SettingInterface* testSetting3;
+  SettingInterface* hiddenSetting;
 };
 }
 

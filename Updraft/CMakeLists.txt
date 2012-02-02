@@ -3,10 +3,12 @@ cmake_minimum_required(VERSION 2.8)
 SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 INCLUDE(StyleCheck)
 INCLUDE(UnitTest)
+INCLUDE(FilterQObject)
 
 SET(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 
 SET(SLOPPY_BUILD OFF CACHE BOOL "Don't require style checks to pass.")
+SET(QUICK_BUILD OFF CACHE BOOL "Don't perform style checks at all.")
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	INCLUDE(CheckCXXCompilerFlag)

@@ -29,6 +29,17 @@ class CoreImplementation : public CoreInterface {
 
   QString getDataDirectory();
 
+  void addSettingsGroup(
+    const QString& groupId,
+    const QString& description,
+    const QString& icon);
+
+  SettingInterface* addSetting(
+    const QString& settingId,
+    const QString& description,
+    QVariant initValue,
+    bool hidden);
+
   osg::Group* getSimpleGroup();
 
  private:
