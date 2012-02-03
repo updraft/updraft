@@ -90,12 +90,8 @@ namespace OpenAirspace {
     /// \TODO: use Utils when available
     struct Coordinate {
       bool valid;  // validity flag
-      struct ECor {
-        int min;
-        float sec;
-      };
-      ECor N;
-      ECor E;
+      qreal N;
+      qreal E;
     };
 
     /// Arc structures

@@ -185,27 +185,38 @@ namespace OpenAirspace {
     }
     QString parse = text.left(i);
     int parts = parse.count(':');
-    if (parts == 1) {
-      cor.N.min = parse.section(':', 0, 0).toInt();
-      cor.N.sec = parse.section(':', 1, 1).toFloat();
-      if (text.at(i) == 'S') cor.N.min *= -1;
-      parse = text.mid(i+1, j - i - 1);
-      cor.E.min = parse.section(':', 0, 0).toInt();
-      cor.E.sec = parse.section(':', 1, 1).toFloat();
-      if (text.at(j) == 'W') cor.E.min *= -1;
-    } else if (parts == 2) {
-      cor.N.min = parse.section(':', 0, 0).toInt();
-      cor.N.sec = parse.section(':', 1, 1).toFloat()
-        + parse.section(':', 2, 2).toFloat() / 60;
-      if (text.at(i) == 'S') cor.N.min *= -1;
-      parse = text.mid(i+1, j - i - 1);
-      cor.E.min = parse.section(':', 0, 0).toInt();
-      cor.E.sec = parse.section(':', 1, 1).toFloat()
-        + parse.section(':', 2, 2).toFloat() / 60;
-      if (text.at(j) == 'W') cor.E.min *= -1;
-    } else {
-      qWarning("Error parsing coordinates in Airspace file: ':' not found.");
-      return Coordinate();
+    switch (parts) {
+      case 0 :
+        cor.N = parse.toDouble();
+        if (text.at(i) == 'S') cor.N *= -1;
+        parse = text.mid(i+1, j - i - 1);
+        cor.E = parse.toDouble();
+        if (text.at(j) == 'W') cor.E *= -1;
+        break;
+      case 1 :
+        cor.N = parse.section(':', 0, 0).toDouble()
+          + parse.section(':', 1, 1).toDouble() / 60;
+        if (text.at(i) == 'S') cor.N *= -1;
+        parse = text.mid(i+1, j - i - 1);
+        cor.E = parse.section(':', 0, 0).toDouble()
+          + parse.section(':', 1, 1).toDouble() / 60;
+        if (text.at(j) == 'W') cor.E *= -1;
+        break;
+      case 2 :
+        cor.N = parse.section(':', 0, 0).toDouble()
+          + (parse.section(':', 1, 1).toDouble()
+          + parse.section(':', 2, 2).toDouble() / 60) / 60;
+        if (text.at(i) == 'S') cor.N *= -1;
+        parse = text.mid(i+1, j - i - 1);
+        cor.E = parse.section(':', 0, 0).toDouble()
+          + (parse.section(':', 1, 1).toDouble()
+          + parse.section(':', 2, 2).toDouble() / 60) / 60;
+        if (text.at(j) == 'W') cor.E *= -1;
+        break;
+      default :
+        qWarning("Error parsing coordinates in Airspace file: ':' not found.");
+        cor.valid = false;
+        return Coordinate();
     }
     cor.valid = true;
     return cor;

@@ -24,6 +24,9 @@ class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
  private:
   /// Registration for loading Airspaces from OpenAirspace file.
   FileRegistration OAirspaceFileReg;
+
+  /// Map Layer Group Interface.
+  MapLayerGroupInterface *mapLayerGroup;
 };
 
 }  // End namespace Core

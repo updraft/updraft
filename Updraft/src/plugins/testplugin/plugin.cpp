@@ -153,7 +153,7 @@ void TestPlugin::initialize() {
 
     // create the thickness of the line object
     osg::LineWidth* linewidth = new osg::LineWidth();
-    linewidth->setWidth(2000.0f);
+    linewidth->setWidth(2.0f);
 
     // set the thickness to the scene root
     geode->getOrCreateStateSet()->setAttributeAndModes(linewidth,
