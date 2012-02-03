@@ -31,7 +31,7 @@ void IgcViewer::deinitialize() {
   qDebug("igcviewer unloaded");
 }
 
-void IgcViewer::fileIdentification(QStringList *roles,
+/*void IgcViewer::fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename) {
   Igc::IgcFile igc;
   if (!igc.load(filename)) {
@@ -54,7 +54,7 @@ void IgcViewer::fileIdentification(QStringList *roles,
 
   if (roles != NULL)
     roles->append(ident);
-}
+}*/
 
 Q_EXPORT_PLUGIN2(igcviewer, IgcViewer)
 
