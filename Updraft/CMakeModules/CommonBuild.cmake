@@ -110,6 +110,65 @@ MACRO(LIBRARY_BUILD name)
 
 ENDMACRO(LIBRARY_BUILD)
 
+MACRO(PLUGIN_BUILD name)
+  PROJECT(${name})
+
+  FIND_PACKAGE(Qt4 REQUIRED)
+  INCLUDE(${QT_USE_FILE})
+
+  GATHER_SOURCES(${name} SKIP_DIRECTORY tests)
+
+  #SET(LANG
+  #  translations/czech.ts
+  #)
+  #QT4_CREATE_TRANSLATION(TRANSLATIONS ${library_sources} ${CORE_HEADERS} ${CORE_FORMS} ${LANG})
+
+  INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+
+  if(NOT WIN32)	# If it was set on win32 it also added no_debug to debug conf.
+    ADD_DEFINITIONS(-DQT_NO_DEBUG)
+  ENDIF()
+  ADD_DEFINITIONS(-DQT_SHARED)
+  ADD_DEFINITIONS(-DQT_DLL)
+
+  ADD_LIBRARY(${name} SHARED ${${name}_all_sources})
+
+  # Handling of output filenames and directories on Windows
+  IF(WIN32)
+    # Sets properties for generic no-config case
+    SET_TARGET_PROPERTIES(
+      ${name}
+      PROPERTIES
+      RUNTIME_OUTPUT_DIRECTORY ${WIN_UPDRAFT_BIN_DIR}
+      DEBUG_POSTFIX d
+    )
+
+    # Sets output path for each config.
+    foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
+      string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
+      SET_TARGET_PROPERTIES(
+        ${name}
+        PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${WIN_UPDRAFT_BIN_DIR}
+      )
+    endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
+  ENDIF(WIN32)
+
+  STYLE_CHECK(${name} ${${name}_sources} ${${name}_headers})
+
+  TARGET_LINK_LIBRARIES(${name} ${QT_LIBRARIES})
+  INSTALL(
+    TARGETS ${name}
+    DESTINATION ${CMAKE_BINARY_DIR}/plugins/${name}
+    OPTIONAL
+  )
+
+  IF(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+    ADD_SUBDIRECTORY(tests)
+  ENDIF()
+
+ENDMACRO(PLUGIN_BUILD)
+
 MACRO(TEST_BUILD name)
   PROJECT(${name})
 
