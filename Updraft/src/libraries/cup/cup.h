@@ -4,6 +4,7 @@
 #include <QtCore/QtGlobal>
 #include <QString>
 #include <QList>
+#include "../util/util.h"
 
 #ifdef CUP_LIB
 # define CUP_EXPORT Q_DECL_EXPORT
@@ -11,21 +12,19 @@
 # define CUP_EXPORT Q_DECL_IMPORT
 #endif
 
+namespace Updraft {
 namespace Cup {
 
 class CupLoader;
 
 /// Structure defining 'cup style' turn-point
 /// This type exactly copies the data from cup file.
-// TODO(Tom): Resolve the types for items (e.g. coordinates)
 // TODO(Tom): Format values (e.g. remove double quotes)
 struct CUP_EXPORT TPEntry {
   QString name;
   QString code;
   QString country;
-  QString latitude;
-  QString longitude;
-  QString elevation;
+  Util::Location location;
   QString style;
   QString rwyDirection;
   QString rwLength;
@@ -108,6 +107,21 @@ class CUP_EXPORT CupLoader {
   /// \param strLine a string storing one line of the file
   void parseLine(const QString &strLine);
 
+  /// Parses latitude entry.
+  /// \param tp destination instance of TPEntry
+  /// \param latitude a string storing latitude in cup format
+  void parseLatitude(TPEntry &tp, const QString &latitude);
+
+  /// Parses longitude entry.
+  /// \param tp destination instance of TPEntry
+  /// \param longitude a string storing longitude in cup format
+  void parseLongitude(TPEntry &tp, const QString &longitude);
+
+  /// Parses elevation entry. Supports both feets and meters.
+  /// \param tp destination instance of TPEntry
+  /// \param elevation a string storing elevation in cup format
+  void parseElevation(TPEntry &tp, const QString &elevation);
+
   /// Parses line containing turn-point definition.
   /// \param strLine a string storing one line of the file
   void parseTP(const QString &strLine);
@@ -118,5 +132,6 @@ class CUP_EXPORT CupLoader {
 };
 
 }  // End namespace Cup
+}  // End namespace Updraft
 
 #endif  // UPDRAFT_SRC_LIBRARIES_CUP_CUP_H_
