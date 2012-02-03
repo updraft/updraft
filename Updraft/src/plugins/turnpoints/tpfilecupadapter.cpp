@@ -47,6 +47,7 @@ void TPFileCupAdapter::convertCupTPEntry(TurnPoint *tp,
   const Cup::TPEntry &tpEntry) {
   tp->code = tpEntry.code;
   tp->name = tpEntry.name;
+  tp->location = tpEntry.location;
 }
 
 }  // End namespace Updraft

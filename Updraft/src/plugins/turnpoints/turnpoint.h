@@ -1,6 +1,8 @@
 #ifndef UPDRAFT_SRC_PLUGINS_TURNPOINTS_TURNPOINT_H_
 #define UPDRAFT_SRC_PLUGINS_TURNPOINTS_TURNPOINT_H_
 
+#include "../../libraries/util/util.h"
+
 namespace Updraft {
 
 struct TurnPoint {
@@ -9,6 +11,9 @@ struct TurnPoint {
 
   /// Readable name of the turn-point
   QString name;
+
+  /// Geographic position of turn-point
+  Util::Location location;
 };
 
 }  // End namespace Updraft

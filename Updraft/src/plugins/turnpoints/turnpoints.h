@@ -9,7 +9,7 @@
 
 namespace Updraft {
 
-typedef QMap<int, TPLayer*> TTPLayerMap;
+typedef QMap<MapLayerInterface*, TPLayer*> TTPLayerMap;
 
 class Q_DECL_EXPORT TurnPoints : public QObject, public PluginBase {
   Q_OBJECT
@@ -32,6 +32,9 @@ class Q_DECL_EXPORT TurnPoints : public QObject, public PluginBase {
 
   void fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename);
+
+ public slots:
+  void mapLayerDisplayed(bool value, MapLayerInterface* sender);
 
  private:
   enum FileRoles {
