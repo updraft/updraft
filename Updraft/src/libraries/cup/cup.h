@@ -5,7 +5,7 @@
 #include <QString>
 #include <QList>
 
-#ifdef CUP_LIB
+#ifdef UPDRAFT_CUP_INTERNAL
 # define CUP_EXPORT Q_DECL_EXPORT
 #else
 # define CUP_EXPORT Q_DECL_IMPORT
