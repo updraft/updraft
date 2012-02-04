@@ -84,7 +84,14 @@ namespace OpenAirspace {
     *     GP glider prohibited 
     *     CTR CTR
     *     W Wave Window */
-    enum ACType { R, Q, P, A, B, C, D, GP, CTR, W };
+    enum ACType { R, Q, P, A, B, C, D, E, GP, CTR, W };
+
+    /// Geometry types
+    /// DA: Draw Arc type I
+    /// DB: Draw arc type II
+    /// DC: Draw circle
+    /// DP: Draw polygon
+    enum GType { DAtype, DBtype, DCtype, DPtype };
 
     /// Coordinates structure - e.g. 39:29.9 N -119:46.1 E.
     /// \TODO: use Utils when available
@@ -93,6 +100,12 @@ namespace OpenAirspace {
       qreal lat;
       qreal lon;
     };
+
+    /// Polygon point structure
+    struct Poly {
+      const GType type = DPtype;
+      Coordinate coor;
+    }
 
     /// Arc structures
     struct ArcI {
@@ -123,7 +136,6 @@ namespace OpenAirspace {
 
     /// Pen style structure
     struct SP_str {
-      bool valid;
       int style;
       int width;
       int R, G, B;
@@ -131,7 +143,6 @@ namespace OpenAirspace {
 
     /// Brush colour selector
     struct SB_str {
-      bool valid;
       int R, G, B;
     };
 
@@ -187,60 +198,59 @@ namespace OpenAirspace {
       return SB; }
 
     /// UserAirspace destructor code here.
-    // Airspace::~Airspace();
+    Airspace::~Airspace();
 
     /// Coordinates of the center used by more airspaces.
     static Coordinate X;
+    static bool validX;
 
   private :
     /// Parse the coordinates from string
     Coordinate ParseCoord(const QString& parse);
 
     /// Airspace class type.
-    QString AC;
+    ACType AC;
 
     /// Airspace Name.
     /// Contains the name of the aispace.
     /// Required.
-    QString AN;
+    QString* AN;
     bool validAN;
 
     /// Airspace Floor.
     /// Altitude floor of the airspace in ft.
     /// Use -10000 for SFC.
-    QString AL;
+    QString* AL;
     bool validAL;
 
     /// Airspace Ceiling
     /// Altitude ciling of the airspace in ft.
     /// AH < AL
-    QString AH;
+    QString* AH;
     bool validAH;
 
     /// Airspace name label coordinates.
     /// List of coordinates, where to place the airspace name label on the map.
     /// Optional.
-    QList<Coordinate> AT;
+    QList<Coordinate*>* AT;
 
     /// Terrain related variables \{
     /// Terrain open polygon name
-    QString TO;
+    QString* TO;
     bool validTO;
 
     /// Terrain closed polygon
-    QString TC;
+    QString* TC;
     bool validTC;
 
     /// Pen & Brush var
-    SP_str SP;
-    SB_str SB;
+    SP_str* SP;
+    bool validSP;
+    SB_str* SB;
+    bool validSB;
 
     /// \}
     /// Record type - terrain & airspace \{
-    /// Centre of the polygon/circle.
-    // static Coordinate X;
-    bool validX;
-
     /// Arc direction.
     bool CW;
 
@@ -253,13 +263,13 @@ namespace OpenAirspace {
     bool validZ;
 
     /// Add polygon points
-    QList<Coordinate> DP;
+    QList<Coordinate*>* DP;
 
     /// Arc \{
 
     /// Arcs in airspace
-    QList<ArcI> DA;
-    QList<ArcII> DB;
+    QList<ArcI*>* DA;
+    QList<ArcII*>* DB;
     bool validDA;
     bool validDB;
     /// \}
@@ -267,12 +277,15 @@ namespace OpenAirspace {
     /// Circles in the airspace. \{
 
     /// Cisrcles in airspace
-    QList<Circle> DC;
+    QList<Circle*>* DC;
     /// \}
 
     /// Airway
-    QList<Coordinate> DY;
+    QList<Coordinate*>* DY;
     /// \}
+
+    /// Array of geometry
+    QList<pair<void*>* geometry;
   };  // Airspace
 }  // OpenAirspace
 

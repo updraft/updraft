@@ -61,22 +61,40 @@ namespace OpenAirspace {
         parse = parse.left(comment);
 
       if (text == "AN") {
-        this->AN = parse;
+        if (validAN)
+          *this->AN = parse;
+        else
+          this->AN = new QString(parse);
         qDebug("%s", AN.toAscii().data());
         validAN = true;
       } else if (text == "AL") {
-        this->AL = parse;  // !!! can be text e.g. Ask on 122.8 !!!
+        if (validAL)
+          *this->validAL = parse;
+        else
+          this->AL = new QString(parse);  // !!! can be text e.g. Ask on 122.8 !!!
         validAL = true;
       } else if (text == "AH") {
-        this->AH = parse;  // !!! can be text e.g. Ask on 122.8 !!!
+        if (validAH)
+          *this->AH = parse;
+        else
+          this->AH = new QString(parse);  // !!! can be text e.g. Ask on 122.8 !!!
         validAH = true;
       } else if (text == "AT") {
-        this->AT.push_back(ParseCoord(parse));
+        if (!validAT)
+          this->AT = new QList;
+        this->AT->push_back(ParseCoord(parse));
+        validAT = true;
       } else if (text == "TO") {
-        this->TO = parse;
+        if (validTO)
+          *this->TO = parse;
+        else
+          this->TO = new QString(parse);
         validTO = true;
       } else if (text == "TC") {
-        this->TC = parse;
+        if (validTC)
+          *this->TC = parse;
+        else
+          this->TC = new QString(parse);
         validTC = true;
       } else if (text == "SP") {
         int i = parse.indexOf(',');
@@ -176,8 +194,8 @@ namespace OpenAirspace {
     }
   }
 
-  Airspace::Coordinate Airspace::ParseCoord(const QString& text) {
-    Coordinate cor;
+  Airspace::Coordinate* Airspace::ParseCoord(const QString& text) {
+    Coordinate* cor = new Coordinate;
     int i = 0, j = 0;
     while (text.at(i) != 'N' && text.at(i) != 'S' && i < text.size()) ++i;
     while (text.at(j) != 'E' && text.at(j) != 'W' && j < text.size()) ++j;
@@ -189,38 +207,82 @@ namespace OpenAirspace {
     int parts = parse.count(':');
     switch (parts) {
       case 0 :
-        cor.lat = parse.toDouble();
+        cor->lat = parse.toDouble();
         if (text.at(i) == 'S') cor.lat *= -1;
         parse = text.mid(i+1, j - i - 1);
-        cor.lon = parse.toDouble();
+        cor->lon = parse.toDouble();
         if (text.at(j) == 'W') cor.lon *= -1;
         break;
       case 1 :
-        cor.lat = parse.section(':', 0, 0).toDouble()
+        cor->lat = parse.section(':', 0, 0).toDouble()
           + parse.section(':', 1, 1).toDouble() / 60;
         if (text.at(i) == 'S') cor.lat *= -1;
         parse = text.mid(i+1, j - i - 1);
-        cor.lon = parse.section(':', 0, 0).toDouble()
+        cor->lon = parse.section(':', 0, 0).toDouble()
           + parse.section(':', 1, 1).toDouble() / 60;
         if (text.at(j) == 'W') cor.lon *= -1;
         break;
       case 2 :
-        cor.lat = parse.section(':', 0, 0).toDouble()
+        cor->lat = parse.section(':', 0, 0).toDouble()
           + (parse.section(':', 1, 1).toDouble()
           + parse.section(':', 2, 2).toDouble() / 60) / 60;
         if (text.at(i) == 'S') cor.lat *= -1;
         parse = text.mid(i+1, j - i - 1);
-        cor.lon = parse.section(':', 0, 0).toDouble()
+        cor->lon = parse.section(':', 0, 0).toDouble()
           + (parse.section(':', 1, 1).toDouble()
           + parse.section(':', 2, 2).toDouble() / 60) / 60;
-        if (text.at(j) == 'W') cor.lon *= -1;
+        if (text.at(j) == 'W') cor->lon *= -1;
         break;
       default :
         qWarning("Error parsing coordinates in Airspace file: ':' not found.");
-        cor.valid = false;
-        return Coordinate();
+        cor->valid = false;
+        return cor;
     }
-    cor.valid = true;
+    cor->valid = true;
     return cor;
+  }
+
+  Airspace::~Airspace() {
+    if (validAN) {
+      delete AN;
+      AN = null;
+    }
+    if (validAL) {
+      delete AL;
+      AL = null;
+    }
+    if (validAH) {
+      delete AH;
+      AH = null;
+    }
+    for (size_t i = 0; i < AT->size(); ++i) {
+      delete AT->at(i);
+      AT->at(i) = null;
+    }
+    if (AT->size() != 0)
+      delete AT;
+    if (validTO) {
+      delete TO;
+      TO = null;
+    }
+    if (validTC) {
+      delete TC;
+      TC = null;
+    }
+    if (validSP) {
+      delete SP;
+      SP = null;
+    }
+    if (validSB) {
+      delete SB;
+      SB = null;
+    }
+    for (size_t i = 0; i < geometry-size(); ++i)
+    {
+      delete geometry->at(i);
+      geometry->at(i) = null;
+    }
+    if (geometry->size() != 0)
+      delete geometry;
   }
 }  // OpenAirspace
