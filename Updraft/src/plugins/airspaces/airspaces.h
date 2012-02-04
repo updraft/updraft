@@ -3,9 +3,10 @@
 
 #include <QtGui>
 #include "../../pluginbase.h"
+#include "oaengine.h"
 
 namespace Updraft {
-namespace Core {
+namespace Airspaces {
 
 class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
   Q_OBJECT
@@ -21,15 +22,24 @@ class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
   void initialize();
 
   void deinitialize();
+
+  bool LoadFile(const QString&, int);
+
+ public slots:
+  void mapLayerDisplayed(bool value, MapLayerInterface* sender);
+
  private:
+  enum FileRole {
+    IMPORT_OPENAIRSPACE_FILE = 0
+  };
   /// Registration for loading Airspaces from OpenAirspace file.
   FileRegistration OAirspaceFileReg;
 
-  /// Map Layer Group Interface.
-  MapLayerGroupInterface *mapLayerGroup;
+  QVector<MapLayerInterface*> mapLayers;
+  oaEngine* engine;
 };
 
-}  // End namespace Core
+}  // End namespace Airspaces
 }  // End namespace Updraft
 
 #endif  // UPDRAFT_SRC_PLUGINS_AIRSPACES_AIRSPACES_H_

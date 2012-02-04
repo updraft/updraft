@@ -90,8 +90,8 @@ namespace OpenAirspace {
     /// \TODO: use Utils when available
     struct Coordinate {
       bool valid;  // validity flag
-      qreal N;
-      qreal E;
+      qreal lat;
+      qreal lon;
     };
 
     /// Arc structures
@@ -172,6 +172,19 @@ namespace OpenAirspace {
     inline const QList<OpenAirspace::Airspace::Coordinate>& GetAirWay() {
       return this->DY; }
 
+    /// Returns the Polygon
+    inline const QList<OpenAirspace::Airspace::Coordinate>& GetPolygon() {
+      return this->DP; }
+
+    /// Returns the Polygon point
+    inline const OpenAirspace::Airspace::Coordinate& GetPolygon(int i) {
+      return this->DP.at(i); }
+
+    /// Get Pen & Brush
+    inline const SP_str& GetPen() {
+      return SP; }
+    inline const SB_str& GetBrush() {
+      return SB; }
 
     /// UserAirspace destructor code here.
     // Airspace::~Airspace();

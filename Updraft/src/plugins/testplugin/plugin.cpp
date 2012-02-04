@@ -184,8 +184,8 @@ void TestPlugin::initialize() {
     osg::Matrixd brnoTransformation;
     osg::Matrixd plzenTransformation;
 
-    objectPlacer->createPlacerMatrix(49.11, 16.37, 6000, brnoTransformation);
-    objectPlacer->createPlacerMatrix(49.44, 13.22, 600, plzenTransformation);
+    objectPlacer->createPlacerMatrix(49, 16, 6000, brnoTransformation);
+    objectPlacer->createPlacerMatrix(50, 13, 6000, plzenTransformation);
 
     // place the points according to matrices
     osg::Vec3 brno = osg::Vec3(0, 0, 0) * brnoTransformation;
@@ -199,7 +199,7 @@ void TestPlugin::initialize() {
 
     // change the thickness of the line
     osg::LineWidth* linewidth2 = new osg::LineWidth();
-    linewidth2->setWidth(20000.0f);
+    linewidth2->setWidth(2.0f);
     BrnoPlzen->getOrCreateStateSet()->setAttributeAndModes(linewidth2,
       osg::StateAttribute::ON);
 

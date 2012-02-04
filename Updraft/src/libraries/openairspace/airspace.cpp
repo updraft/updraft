@@ -93,7 +93,8 @@ namespace OpenAirspace {
         parse = parse.right(parse.size() - i -1);
         i = parse.indexOf(',');
         SP.B = parse.left(i).toInt();
-        SP.valid = true;
+        SP.valid = (SP.B < 0 || SP.G < 0 || SP.R < 0) ?
+          false : true;
       } else if (text == "SB") {
         int i = parse.indexOf(',');
         SB.R = parse.left(i).toInt();
@@ -104,7 +105,8 @@ namespace OpenAirspace {
         i = parse.indexOf(',');
         SB.B = parse.left(i).toInt();
         parse = parse.right(parse.size() - i -1);
-        SB.valid = true;
+        SB.valid = (SB.B < 0 || SB.G < 0 || SB.R < 0) ?
+          false : true;
       } else if (text == "V") {
         QChar ch = parse.at(0);
         parse = parse.right(parse.size() - parse.indexOf('=') -1);
@@ -187,31 +189,31 @@ namespace OpenAirspace {
     int parts = parse.count(':');
     switch (parts) {
       case 0 :
-        cor.N = parse.toDouble();
-        if (text.at(i) == 'S') cor.N *= -1;
+        cor.lat = parse.toDouble();
+        if (text.at(i) == 'S') cor.lat *= -1;
         parse = text.mid(i+1, j - i - 1);
-        cor.E = parse.toDouble();
-        if (text.at(j) == 'W') cor.E *= -1;
+        cor.lon = parse.toDouble();
+        if (text.at(j) == 'W') cor.lon *= -1;
         break;
       case 1 :
-        cor.N = parse.section(':', 0, 0).toDouble()
+        cor.lat = parse.section(':', 0, 0).toDouble()
           + parse.section(':', 1, 1).toDouble() / 60;
-        if (text.at(i) == 'S') cor.N *= -1;
+        if (text.at(i) == 'S') cor.lat *= -1;
         parse = text.mid(i+1, j - i - 1);
-        cor.E = parse.section(':', 0, 0).toDouble()
+        cor.lon = parse.section(':', 0, 0).toDouble()
           + parse.section(':', 1, 1).toDouble() / 60;
-        if (text.at(j) == 'W') cor.E *= -1;
+        if (text.at(j) == 'W') cor.lon *= -1;
         break;
       case 2 :
-        cor.N = parse.section(':', 0, 0).toDouble()
+        cor.lat = parse.section(':', 0, 0).toDouble()
           + (parse.section(':', 1, 1).toDouble()
           + parse.section(':', 2, 2).toDouble() / 60) / 60;
-        if (text.at(i) == 'S') cor.N *= -1;
+        if (text.at(i) == 'S') cor.lat *= -1;
         parse = text.mid(i+1, j - i - 1);
-        cor.E = parse.section(':', 0, 0).toDouble()
+        cor.lon = parse.section(':', 0, 0).toDouble()
           + (parse.section(':', 1, 1).toDouble()
           + parse.section(':', 2, 2).toDouble() / 60) / 60;
-        if (text.at(j) == 'W') cor.E *= -1;
+        if (text.at(j) == 'W') cor.lon *= -1;
         break;
       default :
         qWarning("Error parsing coordinates in Airspace file: ':' not found.");
