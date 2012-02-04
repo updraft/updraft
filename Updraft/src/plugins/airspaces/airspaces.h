@@ -23,7 +23,9 @@ class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
 
   void deinitialize();
 
-  bool LoadFile(const QString&, int);
+  bool fileOpen(const QString&, int);
+
+  void loadImportedFiles();
 
  public slots:
   void mapLayerDisplayed(bool value, MapLayerInterface* sender);

@@ -1,16 +1,8 @@
 #include "oaengine.h"
 
-
-#include <osgDB/ReadFile>
-#include <osg/LineWidth>
-#include <osgEarthUtil/ObjectPlacer>
-#include <osg/PositionAttitudeTransform>
-#include <osg/Geometry>
-
-#include "../../libraries/openairspace/openairspace.h"
-
 namespace Updraft {
 namespace Airspaces {
+
 MapLayerInterface* oaEngine::Draw(const QString& fileName)
 {
   OpenAirspace::Parser AirspaceSet(fileName);
@@ -30,7 +22,7 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName)
       geom->setUseDisplayList(false);
       // we will be drawing lines
       osg::DrawArrays* drawArrayLines = new
-        osg::DrawArrays(osg::PrimitiveSet::POLYGON);
+        osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP);
       geom->addPrimitiveSet(drawArrayLines);
       // create vertex array for the lines
       osg::Vec3Array* vertexData = new osg::Vec3Array();
@@ -75,10 +67,35 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName)
         osg::StateAttribute::ON);
     }
 
-    return mapLayerGroup->insertMapLayer(OAGeode, fileName);
+    QString displayName = fileName;
+    int cuntSlashes = displayName.count('/');
+    displayName = displayName.section('/',cuntSlashes, cuntSlashes);
+    return mapLayerGroup->insertMapLayer(OAGeode, displayName);
   }
-
 }
+
+double oaEngine::DistToAngle(double dInNauticalMiles) {
+  double dInMeters = 1852*dInNauticalMiles;
+  double angleRad = asin(dInMeters/EARTH_RADIUS_IN_METERS);
+  double angleDeg = angleRad/M_PI * 180;
+  return angleDeg;
+}
+
+double oaEngine::ArcInRadians(const Position& from, const Position& to) {
+  double latitudeArc  = (from.lat - to.lat) * DEG_TO_RAD;
+  double longitudeArc = (from.lon - to.lon) * DEG_TO_RAD;
+  double latitudeH = sin(latitudeArc * 0.5);
+  latitudeH *= latitudeH;
+  double lontitudeH = sin(longitudeArc * 0.5);
+  lontitudeH *= lontitudeH;
+  double tmp = cos(from.lat*DEG_TO_RAD) * cos(to.lat*DEG_TO_RAD);
+  return 2.0 * asin(sqrt(latitudeH + tmp*lontitudeH));
+}
+
+double oaEngine::DistanceInMeters(const Position& from, const Position& to) {
+    return EARTH_RADIUS_IN_METERS*ArcInRadians(from, to);
+}
+
 }  // Airspaces
 }  // Updraft
 
