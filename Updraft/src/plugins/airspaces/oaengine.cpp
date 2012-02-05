@@ -22,7 +22,7 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName)
       geom->setUseDisplayList(false);
       // we will be drawing lines
       osg::DrawArrays* drawArrayLines = new
-        osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP);
+        osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP);
       geom->addPrimitiveSet(drawArrayLines);
       // create vertex array for the lines
       osg::Vec3Array* vertexData = new osg::Vec3Array();
@@ -31,24 +31,52 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName)
 
       // set colour
       OpenAirspace::Airspace A = AirspaceSet.at(i);
-      if (A.GetBrush().valid) {
-        float r = A.GetBrush().R/255.0f;
-        float g = A.GetBrush().G/255.0f;
-        float b = A.GetBrush().B/255.0f;
-        col.set(r, g, b, col.w());
+      if (A.GetBrush()) {
+        float r = A.GetBrush()->R/255.0f;
+        float g = A.GetBrush()->G/255.0f;
+        float b = A.GetBrush()->B/255.0f;
+        if ( r >= 0 && g >= 0 && b >= 0) 
+          col.set(r, g, b, col.w());
       }
-      if (A.GetPen().valid) {
-        float r = A.GetPen().R/255.0f;
-        float g = A.GetPen().G/255.0f;
-        float b = A.GetPen().B/255.0f;
-        col.set(r, g, b, col.w());
-        width = A.GetPen().width;
+      if (A.GetPen()) {
+        float r = A.GetPen()->R/255.0f;
+        float g = A.GetPen()->G/255.0f;
+        float b = A.GetPen()->B/255.0f;
+        if ( r >= 0 && g >= 0 && b >= 0)
+          col.set(r, g, b, col.w());
+        width = A.GetPen()->width;
       }
-      // draw polygons
+      // draw airspace geometry
       osg::Matrixd coorTransformation;
       osg::Vec3 coord;
-      for (int j = 0; j < A.GetPolygon().size(); ++j) {
-        if (!A.GetPolygon(j).valid) qDebug("Polygon coords expected!");
+
+      for (int j = 0; j < A.GetGeometry().size(); ++j) {
+        // if (!A.GetPolygon(j).valid) qDebug("Polygon coords expected!");
+        OpenAirspace::Airspace::GType gtype = static_cast
+          <OpenAirspace::Airspace::Poly*>(A.GetGeometry().at(i))->type;
+
+        switch (gtype) {
+          // Draw polygon point
+          case OpenAirspace::Airspace::GType::DPtype:
+            OpenAirspace::Airspace::Poly* p =
+              static_cast<OpenAirspace::Airspace::Poly*>(A.GetGeometry().at(i));
+            objectPlacer->createPlacerMatrix(p->coor->lat,
+              p->coor->lon, 2000, coorTransformation);
+            coord = osg::Vec3(0, 0, 0) * coorTransformation;
+            vertexData->push_back(coord);
+            colors->push_back(col);
+            break;
+          // Draw a Circle
+          case OpenAirspace::Airspace::GType::DCtype:
+            OpenAirspace::Airspace::Circle* c =
+              static_cast<OpenAirspace::Airspace::Circle*>(A.GetGeometry().at(i));
+            int r = c->
+            for (int angle = 0; angle <= 360; ++angle) {
+            }
+            break;
+        }
+
+
         objectPlacer->createPlacerMatrix(A.GetPolygon(j).lat,
           A.GetPolygon(j).lon, 2000, coorTransformation);
         coord = osg::Vec3(0, 0, 0) * coorTransformation;
@@ -72,6 +100,7 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName)
     displayName = displayName.section('/',cuntSlashes, cuntSlashes);
     return mapLayerGroup->insertMapLayer(OAGeode, displayName);
   }
+  return NULL;
 }
 
 double oaEngine::DistToAngle(double dInNauticalMiles) {

@@ -26,16 +26,23 @@ namespace OpenAirspace {
     else
       qDebug("Parsing OpenAirspace file %s", fileName.toAscii().data());
 
+    this->allAirspaces = new QList<Airspace*>();
     while (!ts.atEnd()) {
       if (!ts.atEnd())
         ts.seek(ts.pos() -3);
-      Airspace nextairspace(&ts);
-      this->allAirspaces.push_back(nextairspace);
+      Airspace* nextairspace = new Airspace(&ts);
+      this->allAirspaces->push_back(nextairspace);
     }
 
     file.close();
   }
   Parser::~Parser(void) {
     qDebug("Parser dtor");
+    for (int i = 0; i < allAirspaces->size(); ++i) {
+      Airspace* a = allAirspaces->at(i);
+      delete a;
+    }
+    delete allAirspaces;
+    allAirspaces = NULL;
   }
 }  // OpenAirspace

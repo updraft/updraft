@@ -6,6 +6,7 @@
 #include <QtCore/qfile.h>
 #include <QtCore/qtextstream.h>
 #include <QtCore/qlist.h>
+#include <QPair>
 
 
 #ifdef OPENAIRSPACE_LIB

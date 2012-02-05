@@ -12,58 +12,58 @@ namespace OpenAirspace {
 
     /// Returns Airspace
     inline const Airspace& at(const int i) {
-      return this->allAirspaces[i];}
+      return *this->allAirspaces->at(i);}
 
     /// Returns the name of the AirSpace
     inline const QString& GetName(int i) {
-      return this->allAirspaces[i].GetName();}
+      return this->allAirspaces->at(i)->GetName();}
 
     /// Returns the used airspaces count
     inline size_t size() {
-      return this->allAirspaces.size(); }
+      return this->allAirspaces->size(); }
 
     /// Returns the class of the AirSpace
-    inline const QString& GetClass(int i) {
-      return this->allAirspaces[i].GetClass();}
+    inline const OpenAirspace::Airspace::ACType& GetClass(int i) {
+      return this->allAirspaces->at(i)->GetClass();}
 
     /// Returns the floor of the AirSpace
     inline const QString& GetFloor(int i) {
-      return this->allAirspaces[i].GetFloor(); }
+      return this->allAirspaces->at(i)->GetFloor(); }
 
     /// Returns the ceiling of the AirSpace
     inline const QString& GetCeiling(int i) {
-      return this->allAirspaces[i].GetCeiling(); }
+      return this->allAirspaces->at(i)->GetCeiling(); }
 
     /// Returns the tag coordinates of the AirSpace
     inline const
-      QList<OpenAirspace::Airspace::Coordinate>& GetTagCoor(int i) {
-      return this->allAirspaces[i].GetTagCoor(); }
+      QList<OpenAirspace::Airspace::Coordinate*>& GetTagCoor(int i) {
+      return this->allAirspaces->at(i)->GetTagCoor(); }
 
     /// Returns the arcs type I
     inline const
-      QList<OpenAirspace::Airspace::ArcI>& GetArcI(int i) {
-      return this->allAirspaces[i].GetArcI(); }
+      QList<OpenAirspace::Airspace::ArcI*>& GetArcI(int i) {
+      return this->allAirspaces->at(i)->GetArcI(); }
 
     /// Returns the arcs type I
     inline const
-      QList<OpenAirspace::Airspace::ArcII>& GetArcII(int i) {
-      return this->allAirspaces[i].GetArcII(); }
+      QList<OpenAirspace::Airspace::ArcII*>& GetArcII(int i) {
+      return this->allAirspaces->at(i)->GetArcII(); }
 
     /// Returns the circles
     inline const
-      QList<OpenAirspace::Airspace::Circle>& GetCircle(int i) {
-      return this->allAirspaces[i].GetCircle(); }
+      QList<OpenAirspace::Airspace::Circle*>& GetCircle(int i) {
+      return this->allAirspaces->at(i)->GetCircle(); }
 
     /// Returns the AirWay
     inline const
-      QList<OpenAirspace::Airspace::Coordinate>& GetAirWay(int i) {
-      return this->allAirspaces[i].GetAirWay(); }
+      QList<OpenAirspace::Airspace::Coordinate*>& GetAirWay(int i) {
+      return this->allAirspaces->at(i)->GetAirWay(); }
 
     ~Parser(void);
 
  private:
     /// OpenAirspace contains several airspaces.
-    QList<Airspace> allAirspaces;
+    QList<Airspace*>* allAirspaces;
   };  // Parser
 }  // OpenAirspace
 #endif  // UPDRAFT_SRC_LIBRARIES_OPENAIRSPACE_OPENAIRSPACE_H_
