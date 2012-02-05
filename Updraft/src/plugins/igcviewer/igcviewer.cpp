@@ -1,9 +1,9 @@
 #include "igcviewer.h"
 
-#include "../../libraries/igc/igc.h"
+#include "openedfile.h"
 
 namespace Updraft {
-namespace Core {
+namespace IgcViewer {
 
 QString IgcViewer::getName() {
   return QString("igcviewer");
@@ -19,16 +19,38 @@ void IgcViewer::initialize() {
   FileRegistration registration;
   registration.category = CATEGORY_TEMPORARY;
   registration.extension = ".igc";
-  registration.typeDescription = "IGC flight recording";
-  registration.roleDescription = "Open flight record";
+  registration.typeDescription = tr("IGC flight recording");
+  registration.roleDescription = tr("Open flight record");
   registration.roleId = 1;
   registration.plugin = this;
 
   core->registerFiletype(registration);
+
+  mapLayerGroup = core->createMapLayerGroup(tr("IGC files"));
 }
 
 void IgcViewer::deinitialize() {
   qDebug("igcviewer unloaded");
+
+  QList<OpenedFile*> copy = opened;
+  opened.clear();
+
+  foreach(OpenedFile* f, opened) {
+    delete f;
+  }
+}
+
+bool IgcViewer::fileOpen(const QString &filename, int roleId) {
+  OpenedFile* f = new OpenedFile();
+
+  if (!f->init(this, filename)) {
+    delete f;
+    return false;
+  }
+
+  opened.append(f);
+
+  return true;
 }
 
 /*void IgcViewer::fileIdentification(QStringList *roles,
