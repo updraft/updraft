@@ -40,6 +40,7 @@ bool SettingsBottomView::editorValuesChanged() {
 
   for (int i = 0; i < layout->rowCount(); ++i) {
     QLayoutItem* item = layout->itemAtPosition(i, 1);
+    if (!item) continue;  // Prevent segfault for empty layout
     QWidget* editor = item->widget();
     QByteArray propertyName = editor->metaObject()->userProperty().name();
     QVariant editorData = editor->property(propertyName);
@@ -77,6 +78,7 @@ void SettingsBottomView::commit() {
 
     for (int i = 0; i < layout->rowCount(); ++i) {
       QLayoutItem* item = layout->itemAtPosition(i, 1);
+      if (!item) continue;  // Prevent segfault for empty layout
       QWidget* editor = item->widget();
       QModelIndex dataIndex = model()->index(i, 0, pageIndex);
       itemDelegate()->setModelData(editor, model(), dataIndex);
@@ -94,6 +96,7 @@ void SettingsBottomView::reset() {
 
     for (int i = 0; i < layout->rowCount(); ++i) {
       QLayoutItem* item = layout->itemAtPosition(i, 1);
+      if (!item) continue;  // Prevent segfault for empty layout
       QWidget* editor = item->widget();
       QModelIndex dataIndex = model()->index(i, 0, pageIndex);
       itemDelegate()->setEditorData(editor, dataIndex);
