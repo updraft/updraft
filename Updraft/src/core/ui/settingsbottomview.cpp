@@ -183,16 +183,16 @@ void SettingsBottomView::commitData(QWidget* editor) {
 void SettingsBottomView::dataChanged(
   const QModelIndex& topLeft,
   const QModelIndex& bottomRight) {
+  QModelIndex parent = topLeft.parent();
+
   // If modifying data for a group, don't do anything
-  if (!insertionIndex.isValid()) return;
+  if (!parent.isValid()) return;
 
   // Don't allow modifying more than one data element
   if (topLeft != bottomRight) {
     qDebug() << "Warning: the settings view does not allow batch modification";
     return;
   }
-
-  QModelIndex parent = topLeft.parent();
 
   QWidget* page = stack->widget(parent.row());
   QGridLayout* layout = qobject_cast<QGridLayout*>(page->layout());
