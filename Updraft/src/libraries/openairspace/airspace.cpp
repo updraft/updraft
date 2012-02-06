@@ -115,7 +115,7 @@ namespace OpenAirspace {
         this->SP->B = parse.left(i).toInt();
         this->validSP = true;
       } else if (text == "SB") {
-        if (this->validSB)
+        if (!this->validSB)
           this->SB = new SB_str();
         int i = parse.indexOf(',');
         this->SB->R = parse.left(i).toInt();
@@ -207,7 +207,7 @@ namespace OpenAirspace {
         cir->type = DCtype;
         cir->Zoom = this->Z;
         cir->Centre = new Coordinate(X);
-        cir->R = parse.toInt();
+        cir->R = parse.toFloat();
         cir->valid = true;
         // this->DC.push_back(cir);
         // this->geometry->push_back(QPair<GType, void*>(DCtype, cir));
@@ -217,6 +217,12 @@ namespace OpenAirspace {
       }
     }
   }
+
+  /*Airspace::Airspace(const Airspace& par)
+  {
+    this->AN = par.AN;
+    return *this;
+  }*/
 
   Airspace::Coordinate* Airspace::ParseCoord(const QString& text) {
     Coordinate* cor = new Coordinate;

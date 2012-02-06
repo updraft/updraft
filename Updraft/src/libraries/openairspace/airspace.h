@@ -141,7 +141,7 @@ namespace OpenAirspace {
     struct Circle {
       GType type;
       bool valid;
-      unsigned int R;  // radius in nm
+      float R;  // radius in nm
       Coordinate* Centre;  // Centre of the circle in N E
       float Zoom;  // zoom /TODO: float vs int
     };
@@ -162,6 +162,9 @@ namespace OpenAirspace {
     /// This takes the filename in Userirspace free format and parses
     /// the data contained into private variables
     explicit Airspace(QTextStream* ts);
+
+    /// copy ctor
+    // Airspace(const Airspace&);
 
     /// Returns the name of the AirSpace
     inline const QString& GetName() { return *this->AN; }
@@ -207,7 +210,8 @@ namespace OpenAirspace {
     // inline const QPair<OpenAirspace::Airspace::ACType, void*>&
       // GetGeometry(int i) { return this->geometry->at(i); }
 
-    // inline const void* GetGeometry(int i) { return this->geometry->at(i); }
+    inline int GetGeometrySize() {
+      return (validG) ? this->geometry->size() : 0; }
     inline const QList<void*>& GetGeometry() { return *this->geometry; }
 
     /// Get Pen & Brush

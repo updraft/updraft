@@ -11,8 +11,8 @@ namespace OpenAirspace {
     explicit Parser(const QString&);
 
     /// Returns Airspace
-    inline const Airspace& at(const int i) {
-      return *this->allAirspaces->at(i);}
+    inline Airspace* at(const int i) {
+      return this->allAirspaces->at(i);}
 
     /// Returns the name of the AirSpace
     inline const QString& GetName(int i) {
