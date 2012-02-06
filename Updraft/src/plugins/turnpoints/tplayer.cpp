@@ -83,7 +83,7 @@ osg::AutoTransform* TPLayer::createAutoTransform(const osg::Matrix& matrix,
   // Size of the object when the zoom is less than during autoScale
   //  remains size*maxScale.
   at->setMinimumScale(10.0);
-  at->setMaximumScale(150.0);
+  at->setMaximumScale(100.0);
 
   at->setRotation(matrix.getRotate());
   at->setPosition(matrix.getTrans());
