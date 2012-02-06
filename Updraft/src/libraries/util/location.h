@@ -1,7 +1,7 @@
 #ifndef UPDRAFT_SRC_LIBRARIES_UTIL_LOCATION_H_
 #define UPDRAFT_SRC_LIBRARIES_UTIL_LOCATION_H_
 
-#include <math.h>
+#include <qmath.h>
 
 #include "util.h"
 
