@@ -113,6 +113,8 @@ void OpenedFile::createTrack() {
   geode->getOrCreateStateSet()->setAttributeAndModes(linewidth,
   osg::StateAttribute::ON);
 
+  geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
   track = viewer->mapLayerGroup->insertMapLayer(geode, fileInfo.fileName());
 }
 
