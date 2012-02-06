@@ -105,13 +105,13 @@ void OpenedFile::createTrack() {
   drawArrayLines->setFirst(0);
   drawArrayLines->setCount(vertices->size());
 
-  osg::LineWidth* linewidth = new osg::LineWidth();
-  linewidth->setWidth(400);
+  osg::StateSet* stateSet = geode->getOrCreateStateSet();
+  stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+  stateSet->setMode(GL_LINE_SMOOTH, osg::StateAttribute::ON);
+  stateSet->setAttributeAndModes(new osg::LineWidth(5));
+  // stateSet->setAttributeAndModes(
+  //   new osg::LineWidth(viewer->lineWidthSetting->get().toFloat()));
 
-  geode->getOrCreateStateSet()->setAttributeAndModes(linewidth,
-  osg::StateAttribute::ON);
-
-  geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
   track = viewer->mapLayerGroup->insertMapLayer(geode, fileInfo.fileName());
   track->connectDisplayedToVisibility();
