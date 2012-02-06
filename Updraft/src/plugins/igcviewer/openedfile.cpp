@@ -116,7 +116,7 @@ void OpenedFile::createTrack() {
   osg::StateSet* stateSet = geode->getOrCreateStateSet();
   stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
   stateSet->setMode(GL_LINE_SMOOTH, osg::StateAttribute::ON);
-  stateSet->setAttributeAndModes(new osg::LineWidth(5));
+  stateSet->setAttributeAndModes(new osg::LineWidth(3));
   // stateSet->setAttributeAndModes(
   //   new osg::LineWidth(viewer->lineWidthSetting->get().toFloat()));
 
