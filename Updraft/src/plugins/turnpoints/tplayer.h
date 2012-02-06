@@ -4,8 +4,10 @@
 #include "tpfile.h"
 
 namespace osg {
-  class Billboard;
   class Geometry;
+  class Geode;
+  class AutoTransform;
+  class Group;
 }
 
 namespace osgEarth {
@@ -36,18 +38,35 @@ class TPLayer {
 
  private:
   /// Creates osg::Geometry for turn-point billboard.
-  /// \param scale relative size of the billboard
-  /// \return A new instance of osf::Drawable
+  /// \param scale relative size of the node.
+  /// \return A new instance of osg::Geometry
   osg::Geometry* createGeometry(qreal scale);
 
+  /// Creates osg::Geometry for turn-point billboard.
+  /// \param scale relative size of the node.
+  /// \return A new instance of osg::Geode
+  osg::Geode* createGeode(qreal scale);
+
+  /// Creates osg::AutoTransform for turn-point billboard.
+  /// This function is called for each TP.
+  /// \param matrix transformation of a TP
+  /// \param geode node used for object visualization
+  /// \return A new instance of osg::AutoTransform
+  osg::AutoTransform* createAutoTransform(
+    const osg::Matrix& matrix,
+    osg::Geode* geode);
+
   /// osg Node representing this turn-points layer
-  osg::Billboard* billboard;
+  osg::Group* group;
 
   /// osgEarth placer for placing objects to specific geo.coordinates
   osgEarth::Util::ObjectPlacer* objectPlacer;
 
   const TPFile *file;
   bool displayed;
+
+  // Path to application data directory.
+  QString dataDir;
 };
 
 }  // End namespace Updraft

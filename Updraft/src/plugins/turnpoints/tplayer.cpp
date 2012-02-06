@@ -1,6 +1,7 @@
 #include <QtGui>
 #include <osg/Geometry>
 #include <osg/Billboard>
+#include <osg/Autotransform>
 #include <osg/Texture2D>
 #include <osg/BlendFunc>
 #include <osgDB/ReadFile>
@@ -13,10 +14,10 @@ osg::Geometry* TPLayer::createGeometry(qreal scale) {
   osg::Geometry* geometry = new osg::Geometry();
 
   osg::Vec3Array* vertices = new osg::Vec3Array(4);
-  (*vertices)[0] = osg::Vec3(-scale, 0.0, -scale);
-  (*vertices)[1] = osg::Vec3( scale, 0.0, -scale);
-  (*vertices)[2] = osg::Vec3( scale, 0.0, scale);
-  (*vertices)[3] = osg::Vec3(-scale, 0.0, scale);
+  (*vertices)[0] = osg::Vec3(-scale, -scale, 0.0);
+  (*vertices)[1] = osg::Vec3( scale, -scale, 0.0);
+  (*vertices)[2] = osg::Vec3( scale, scale, 0.0);
+  (*vertices)[3] = osg::Vec3(-scale, scale, 0.0);
   geometry->setVertexArray(vertices);
 
   osg::Vec4Array* colors = new osg::Vec4Array(1);
@@ -25,7 +26,7 @@ osg::Geometry* TPLayer::createGeometry(qreal scale) {
   geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
   osg::Vec3Array* normals = new osg::Vec3Array(1);
-  (*normals)[0] = osg::Vec3(0.0f, -1.0f, 0.0f);
+  (*normals)[0] = osg::Vec3(0.0f, 0.0f, 1.0f);
   geometry->setNormalArray(normals);
   geometry->setNormalBinding(osg::Geometry::BIND_OVERALL);
 
@@ -36,22 +37,14 @@ osg::Geometry* TPLayer::createGeometry(qreal scale) {
   (*texCoords)[3] = osg::Vec2(0.0, 1.0);
   geometry->setTexCoordArray(0, texCoords);
 
-  geometry->addPrimitiveSet(
-    new osg::DrawArrays(osg::PrimitiveSet::QUADS, 0, 4));
+  geometry->addPrimitiveSet(new osg::DrawArrays(
+    osg::PrimitiveSet::QUADS, 0, 4));
   return geometry;
 }
 
-TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
-  const TPFile *file_, const QString &dataDir)
-  : billboard(new osg::Billboard()), objectPlacer(objectPlacer_),
-  file(file_), displayed(displayed_) {
-  if (billboard == NULL || objectPlacer == NULL || file == NULL) {
-    return;
-  }
-
-  // Set mode of the billboard to always look towards camera.
-  billboard->setMode(osg::Billboard::POINT_ROT_EYE);
-  osg::StateSet* stateSet = billboard->getOrCreateStateSet();
+osg::Geode* TPLayer::createGeode(qreal scale) {
+  osg::Geode* geode = new osg::Geode();
+  osg::StateSet* stateSet = geode->getOrCreateStateSet();
 
   // Create texture
   QString texPath = dataDir + "/turnpoint.tga";
@@ -66,11 +59,48 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
   stateSet->setTextureAttributeAndModes(0, texture);
 
   // Turn on blending.
-  stateSet->setAttributeAndModes(new osg::BlendFunc(),
-    osg::StateAttribute::ON);
+  stateSet->setAttributeAndModes(new osg::BlendFunc());
+  stateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
-  // Create geometry for turn-point billboards.
-  osg::Geometry* geometry = createGeometry(2000.0);
+  // Create and add object geometry.
+  geode->addDrawable(createGeometry(scale));
+  return geode;
+}
+
+osg::AutoTransform* TPLayer::createAutoTransform(const osg::Matrix& matrix,
+  osg::Geode* geode) {
+  osg::AutoTransform* at = new osg::AutoTransform();
+  at->addChild(geode);
+
+  at->setAutoRotateMode(osg::AutoTransform::NO_ROTATION);
+  at->setAutoScaleToScreen(true);
+
+  // Autoscaling stop during zooming in when the object is minScale * usualScale
+  // or during zooming out when the object is maxScale * usualScale.
+  // usualScale is the scale of normal zooming.
+  // Size of the object when the zoom is larger than during autoScale
+  //  remains size*minScale.
+  // Size of the object when the zoom is less than during autoScale
+  //  remains size*maxScale.
+  at->setMinimumScale(10.0);
+  at->setMaximumScale(150.0);
+
+  at->setRotation(matrix.getRotate());
+  at->setPosition(matrix.getTrans());
+  return at;
+}
+
+TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
+  const TPFile *file_, const QString &dataDir_)
+  : group(new osg::Group()), objectPlacer(objectPlacer_),
+  file(file_), displayed(displayed_), dataDir(dataDir_) {
+  if (group == NULL || objectPlacer == NULL || file == NULL) {
+    return;
+  }
+
+  // Create node for one turn-point.
+  // It will be shared among Autotransform nodes.
+  osg::Geode *geode = createGeode(25.0);
 
   TTPList points = file->getTurnPoints();
 
@@ -78,13 +108,20 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     itPoint != points.end(); ++itPoint) {
     osg::Matrixd matrix;
 
-    // Turn-point object is placed 2000 meters above it's position (terrain).
+    // Add little random displacement to altitude.
+    // Reason: If two overlapping objects are in the same height,
+    // the result of blending is ugly.
+    double d = 0.0001 * (qrand() % 10000);
+
+    // Create matrix from TP's position.
+    // Turn-point is placed 100 meters above it's position (terrain).
     if (!objectPlacer->createPlacerMatrix(itPoint->location.lat,
-      itPoint->location.lon, itPoint->location.alt + 2000.0, matrix)) {
+      itPoint->location.lon, itPoint->location.alt + 100.0 + d, matrix)) {
       continue;
     }
 
-    billboard->addDrawable(geometry, osg::Vec3() * matrix);
+    // Add new Autotransform node.
+    group->addChild(createAutoTransform(matrix, geode));
   }
 }
 
@@ -93,7 +130,7 @@ TPLayer::~TPLayer() {
 }
 
 osg::Node* TPLayer::getNode() const {
-  return billboard;
+  return group;
 }
 
 bool TPLayer::isDisplayed() {
