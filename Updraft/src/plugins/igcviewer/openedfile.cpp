@@ -116,6 +116,7 @@ void OpenedFile::createTrack() {
   geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
   track = viewer->mapLayerGroup->insertMapLayer(geode, fileInfo.fileName());
+  track->connectDisplayedToVisibility();
 }
 
 }  // End namespace IgcViewer
