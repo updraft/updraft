@@ -38,7 +38,7 @@ void TestIgc::testBRecords() {
 
   IgcFile::EventListIterator iterator(igc.events());
 
-  for(int i = 0; i < count; ++i) {
+  for (int i = 0; i < count; ++i) {
     QVERIFY(iterator.hasNext());
 
     QTime time = time0.addSecs(abs(value));
@@ -46,7 +46,7 @@ void TestIgc::testBRecords() {
     double lon = value / 60000.0;
 
     bool valid = value > 0;
-    
+
     double latDeg, latMin, latMinDec;
     latMin = modf(fabs(lat), &latDeg) * 60;
     latMinDec = modf(latMin, &latMin) * 1000;
@@ -69,9 +69,9 @@ void TestIgc::testBRecords() {
       (valid ? 'A' : 'V'),
       static_cast<int>(pressureAlt),
       static_cast<int>(gpsAlt));
-    
+
     Event const* ev = iterator.next();
-  
+
     QCOMPARE(ev->type, Event::FIX);
 
     Fix const* fix = static_cast<Fix const*>(ev);

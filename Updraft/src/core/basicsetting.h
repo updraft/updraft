@@ -10,7 +10,7 @@ namespace Updraft {
 namespace Core {
 
 class BasicSetting: public QObject, public SettingInterface {
- Q_OBJECT
+  Q_OBJECT
 
  public:
   ~BasicSetting();
@@ -34,10 +34,10 @@ class BasicSetting: public QObject, public SettingInterface {
   // Only SettingsManager can construct this class
   BasicSetting(SettingsItem* settingItem, SettingsManager* mgr);
 
-  //! Invalidates the item pointer.
+  /// Invalidates the item pointer.
   void invalidate() { item = NULL; }
 
-  //! Pointer to the value item
+  /// Pointer to the value item
   SettingsItem* item;
 
   SettingsManager* settingsManager;
