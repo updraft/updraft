@@ -14,8 +14,6 @@ unsigned IgcViewer::getPriority() {
 }
 
 void IgcViewer::initialize() {
-  qDebug("igcviewer loaded");
-
   FileRegistration registration;
   registration.category = CATEGORY_TEMPORARY;
   registration.extension = ".igc";
@@ -27,11 +25,15 @@ void IgcViewer::initialize() {
   core->registerFiletype(registration);
 
   mapLayerGroup = core->createMapLayerGroup(tr("IGC files"));
+
+  core->addSettingsGroup("igcviewer", tr("IGC Visualization"));
+  lineWidthSetting = core->addSetting("igcviewer:linewidth",
+    tr("Line width"), 3.0f);
+
+  lineWidthSetting->callOnValueChanged(this, SLOT(redrawAll()));
 }
 
 void IgcViewer::deinitialize() {
-  qDebug("igcviewer unloaded");
-
   QList<OpenedFile*> copy = opened;
   opened.clear();
 
@@ -51,6 +53,12 @@ bool IgcViewer::fileOpen(const QString &filename, int roleId) {
   opened.append(f);
 
   return true;
+}
+
+void IgcViewer::redrawAll() {
+  foreach(OpenedFile* f, opened) {
+    f->redraw();
+  }
 }
 
 /*void IgcViewer::fileIdentification(QStringList *roles,
