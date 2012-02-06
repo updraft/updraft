@@ -1,7 +1,7 @@
 #include <QtGui>
 #include <osg/Geometry>
 #include <osg/Billboard>
-#include <osg/Autotransform>
+#include <osg/AutoTransform>
 #include <osg/Texture2D>
 #include <osg/BlendFunc>
 #include <osgDB/ReadFile>
