@@ -20,7 +20,7 @@ FUNCTION(GATHER_SOURCES prefix)
     FILE(GLOB_RECURSE skipped_sources ${skipped_dir_abs}/*.cpp)
     LIST(REMOVE_ITEM sources "${skipped_sources}")
 
-    FILE(GLOB_RECURSE skipped_headers ${skipped_dir_abs}/tests/*.h)
+    FILE(GLOB_RECURSE skipped_headers ${skipped_dir_abs}/*.h)
     LIST(REMOVE_ITEM headers "${skipped_headers}")
 
     FILE(GLOB_RECURSE skipped_forms ${skipped_dir_abs}/*.ui)
