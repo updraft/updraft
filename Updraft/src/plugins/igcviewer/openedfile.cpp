@@ -75,6 +75,10 @@ void OpenedFile::createTrack() {
     }
     Igc::Fix const* fix = static_cast<Igc::Fix const*>(ev);
 
+    if (!fix->valid) {
+      continue;
+    }
+
     if (minAltitude > fix->gpsLoc.alt) {
       minAltitude = fix->gpsLoc.alt;
     }
@@ -89,6 +93,10 @@ void OpenedFile::createTrack() {
       continue;
     }
     Igc::Fix const* fix = static_cast<Igc::Fix const*>(ev);
+
+    if (!fix->valid) {
+      continue;
+    }
 
     double x, y, z;
 
