@@ -108,7 +108,7 @@ void OpenedFile::createTrack() {
   drawArrayLines->setCount(vertices->size());
 
   osg::LineWidth* linewidth = new osg::LineWidth();
-  linewidth->setWidth(2000.0f);
+  linewidth->setWidth(400);
 
   geode->getOrCreateStateSet()->setAttributeAndModes(linewidth,
   osg::StateAttribute::ON);
