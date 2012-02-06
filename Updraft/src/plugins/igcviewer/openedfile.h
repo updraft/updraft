@@ -16,14 +16,18 @@ class OpenedFile: public QObject {
   Q_OBJECT
 
  public:
+  /// Don't use delete on this class.
+  /// Use close() instead.
   ~OpenedFile();
 
   bool init(IgcViewer* viewer, const QString& filename);
+  void redraw();
 
- private slots:
+ public slots:
   /// Slot that gets called when the tab associated with this file gets closed.
   /// Deletes the opened file.
-  void tabClosed();
+  /// This slot is the only way to destroy this class.
+  void close();
 
  private:
   /// Create a tab with the flight recording's graph and controls.

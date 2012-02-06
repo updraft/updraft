@@ -35,8 +35,8 @@ void IgcViewer::deinitialize() {
   QList<OpenedFile*> copy = opened;
   opened.clear();
 
-  foreach(OpenedFile* f, opened) {
-    delete f;
+  foreach(OpenedFile* f, copy) {
+    f->close();
   }
 }
 

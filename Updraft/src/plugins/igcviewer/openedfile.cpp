@@ -14,9 +14,7 @@ OpenedFile::~OpenedFile() {
   if (tab) {
     delete tab;
   }
-
   viewer->mapLayerGroup->removeMapLayer(track);
-
   viewer->opened.removeAll(this);
 }
 
@@ -36,7 +34,7 @@ bool OpenedFile::init(IgcViewer* viewer, const QString& filename) {
   return true;
 }
 
-void OpenedFile::tabClosed() {
+void OpenedFile::close() {
   tab = NULL;  // tab is already deleted
   delete this;
 }
@@ -46,7 +44,7 @@ void OpenedFile::createTab() {
 
   tab = viewer->core->createTab(b, fileInfo.fileName());
 
-  tab->connectSignalClosed(this, SLOT(tabClosed()));
+  tab->connectSignalClosed(this, SLOT(close()));
 }
 
 void OpenedFile::createTrack() {
