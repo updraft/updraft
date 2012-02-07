@@ -111,6 +111,14 @@ MACRO(LIBRARY_BUILD name)
 ENDMACRO(LIBRARY_BUILD)
 
 MACRO(PLUGIN_BUILD name)
+  STRING(TOUPPER ${name} name_uc)
+  SET(BUILD_${name_uc} ON CACHE
+    BOOL "Build the plugin ${name}?")
+
+  IF(NOT ${BUILD_${name_uc}})
+    RETURN()
+  ENDIF()
+
   PROJECT(${name})
 
   FIND_PACKAGE(Qt4 REQUIRED)
