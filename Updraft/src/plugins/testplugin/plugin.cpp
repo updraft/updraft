@@ -153,7 +153,7 @@ void TestPlugin::initialize() {
 
     // create the thickness of the line object
     osg::LineWidth* linewidth = new osg::LineWidth();
-    linewidth->setWidth(2000.0f);
+    linewidth->setWidth(3.0f);
 
     // set the thickness to the scene root
     geode->getOrCreateStateSet()->setAttributeAndModes(linewidth,
@@ -199,7 +199,7 @@ void TestPlugin::initialize() {
 
     // change the thickness of the line
     osg::LineWidth* linewidth2 = new osg::LineWidth();
-    linewidth2->setWidth(20000.0f);
+    linewidth2->setWidth(3.0f);
     BrnoPlzen->getOrCreateStateSet()->setAttributeAndModes(linewidth2,
       osg::StateAttribute::ON);
 
@@ -214,12 +214,15 @@ void TestPlugin::initialize() {
       mapLayerGroup->insertMapLayer(BrnoPlzen, "Brno to Plzen");
 
     // simpleGroup->addChild(BrnoPlzen);
-    layer2->connectDisplayedToVisibility();
+    layer2->connectSignalDisplayed
+      (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
     mapLayers.append(layer2);
 
     // ADD JUST CHECKBOX
+	/*
     QTreeWidgetItem* checkbox = mapLayerGroup->createTreeItem("Do nothing");
     treeItems.append(checkbox);
+	*/
   }
 
   // Settings
@@ -311,11 +314,9 @@ void TestPlugin::fileIdentification(QStringList *roles,
 void TestPlugin::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
   sender->setVisible(value);
   // When the first maplayer is not checked, remove the empty checkbox.
-  /*
-  if ((value == false) && (!treeItems.empty()) && (sender == mapLayers[0])) {
-    mapLayerGroup->removeTreeItem(treeItems[0]);
+  if (value == false) {
+    mapLayerGroup->removeMapLayer(sender);
   }
-  */
 }
 
 Q_EXPORT_PLUGIN2(testplugin, TestPlugin)
