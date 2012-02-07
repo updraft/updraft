@@ -120,7 +120,6 @@ void OpenedFile::createTrack() {
   // stateSet->setAttributeAndModes(
   //   new osg::LineWidth(viewer->lineWidthSetting->get().toFloat()));
 
-
   track = viewer->mapLayerGroup->insertMapLayer(geode, fileInfo.fileName());
   track->connectDisplayedToVisibility();
 }

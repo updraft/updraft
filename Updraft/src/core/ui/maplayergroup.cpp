@@ -91,6 +91,46 @@ MapLayerInterface* MapLayerGroup::insertMapLayer
   return layer;
 }
 
+MapLayerInterface* MapLayerGroup::insertExistingMapLayer
+  (osg::Node* mapLayer, const QString& title, int pos) {
+  MapLayerInterface* layer = new MapLayer(mapLayer);
+  return insertExistingMapLayer(layer, title, pos);
+}
+
+MapLayerInterface* MapLayerGroup::insertExistingMapLayer
+  (osgEarth::ImageLayer* mapLayer, const QString& title, int pos) {
+  MapLayerInterface* layer = new MapLayer(mapLayer);
+  return insertExistingMapLayer(layer, title, pos);
+}
+
+MapLayerInterface* MapLayerGroup::insertExistingMapLayer
+  (osgEarth::ElevationLayer* mapLayer, const QString& title, int pos) {
+  MapLayerInterface* layer = new MapLayer(mapLayer);
+  return insertExistingMapLayer(layer, title, pos);
+}
+
+MapLayerInterface* MapLayerGroup::insertExistingMapLayer
+  (osgEarth::ModelLayer* mapLayer, const QString& title, int pos) {
+  MapLayerInterface* layer = new MapLayer(mapLayer);
+  return insertExistingMapLayer(layer, title, pos);
+}
+
+MapLayerInterface* MapLayerGroup::insertExistingMapLayer
+  (MapLayerInterface* layer, const QString &title, int pos) {
+  QTreeWidgetItem *newItem = new QTreeWidgetItem();
+  newItem->setText(0, title);
+  newItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+  newItem->setCheckState(0, Qt::Checked);
+
+  // add the item into the menu list and maplist
+  addIntoList(newItem, pos);
+  mapLayers.insert(layer, newItem);
+
+  // don't insert the node into the scene!
+
+  return layer;
+}
+
 void MapLayerGroup::addIntoScene(MapLayerInterface* layer) {
   switch (layer->getType()) {
     case OSG_NODE_LAYER:

@@ -5,7 +5,7 @@ Please note that use of ESRI's free maps is subject to certain restrictions:
 http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
 -->
 
-<map name="initial_map" type="geocentric">
+<map name="Initial map" type="geocentric">
     <cache type="filesystem" >
        <path>cache</path>
     </cache>
@@ -14,16 +14,16 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
         <lighting>false</lighting>
     </options>
   
-    <image name="offline" driver="gdal">
+    <image name="Offline map" driver="gdal">
         <url>world.tif</url>
     </image>
         
-    <image name="online_maps" driver="arcgis">
+    <image name="Online maps" driver="arcgis">
         <!--<cache_policy usage="cache_only"/>-->
         <url>http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_Imagery_World_2D/MapServer</url>
     </image>
     
-	  <elevation name="elevation_layer" driver="tms">
+	  <elevation name="Elevation layer" driver="tms">
         <url>http://readymap.org/readymap/tiles/1.0.0/9/</url>    
     </elevation>
 </map>

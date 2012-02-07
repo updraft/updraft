@@ -54,27 +54,42 @@ QVector<osgEarth::ModelLayer*> MapManager::getModelLayers() {
 }
 
 QVector<MapLayerInterface*> MapManager::getMapLayers() {
-  QVector<MapLayerInterface*> mapLayers;
+  return mapLayers;
+}
+
+void MapManager::fillMapLayerGroup(MapLayerGroupInterface* group) {
+  mapLayerGroup = group;
 
   osgEarth::ImageLayerVector outImageLayers;
   map->getImageLayers(outImageLayers);
   for (uint i = 0; i < outImageLayers.size(); i++) {
-    mapLayers.append(new MapLayer(outImageLayers[i]));
+    QString name = QString::fromStdString(outImageLayers[i]->getName());
+    MapLayerInterface* layer =
+      mapLayerGroup->insertExistingMapLayer(outImageLayers[i], name);
+    layer->connectDisplayedToVisibility();
+    mapLayers.append(layer);
   }
 
   osgEarth::ElevationLayerVector outElevationLayers;
   map->getElevationLayers(outElevationLayers);
   for (uint i = 0; i < outElevationLayers.size(); i++) {
-    mapLayers.append(new MapLayer(outElevationLayers[i]));
+    QString name = QString::fromStdString(outElevationLayers[i]->getName());
+    MapLayerInterface* layer =
+      mapLayerGroup->insertExistingMapLayer
+      (outElevationLayers[i], name);
+    layer->connectDisplayedToVisibility();
+    mapLayers.append(layer);
   }
 
   osgEarth::ModelLayerVector outModelLayers;
   map->getModelLayers(outModelLayers);
   for (uint i = 0; i < outModelLayers.size(); i++) {
-    mapLayers.append(new MapLayer(outModelLayers[i]));
+    QString name = QString::fromStdString(outModelLayers[i]->getName());
+    MapLayerInterface* layer =
+      mapLayerGroup->insertExistingMapLayer(outModelLayers[i], name);
+    layer->connectDisplayedToVisibility();
+    mapLayers.append(layer);
   }
-
-  return mapLayers;
 }
 
 osgEarth::MapNode* MapManager::getMapNode() {

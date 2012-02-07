@@ -16,6 +16,15 @@ Updraft::Updraft(int argc, char** argv)
   fileTypeManager = new FileTypeManager();
   sceneManager = new SceneManager(
     QCoreApplication::applicationDirPath() + "/data/initial.earth");
+
+  // Create the map layer group for initial map.
+  osgEarth::MapNode* map = sceneManager->getMapNode();
+  osg::Group* group = updraft->sceneManager->newGroup();
+  QString title = QString::fromStdString(map->getMap()->getName());
+  MapLayerGroupInterface* mapLayerGroup =
+    mainWindow->createMapLayerGroup(title, group, map);
+  sceneManager->getMapManager()->fillMapLayerGroup(mapLayerGroup);
+
   pluginManager = new PluginManager();
 
   mainWindow->setMapWidget(sceneManager->getWidget());

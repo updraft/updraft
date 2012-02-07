@@ -8,7 +8,7 @@
 #include <QString>
 #include <QVector>
 
-#include "maplayer.h"
+#include "ui/maplayergroup.h"
 
 namespace Updraft {
 namespace Core {
@@ -28,9 +28,13 @@ class MapManager {
   /// Gets all the map layers from the map.
   QVector<MapLayerInterface*> getMapLayers();
 
+  void fillMapLayerGroup(MapLayerGroupInterface* group);
+
  private:
   osgEarth::MapNode* mapNode;
   osgEarth::Map* map;
+  QVector<MapLayerInterface*> mapLayers;
+  MapLayerGroupInterface* mapLayerGroup;
 
   /// Gets a list of ImageLayers in the map.
   QVector<osgEarth::ImageLayer*> getImageLayers();
