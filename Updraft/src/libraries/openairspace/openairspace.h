@@ -36,9 +36,9 @@ namespace OpenAirspace {
 
     /// Returns the tag coordinates of the AirSpace
     inline const
-      QList<Airspace::Coordinate*>& GetTagCoor(int i) {
+      QList<OpenAirspace::Position*>& GetTagCoor(int i) {
       return this->allAirspaces->at(i)->GetTagCoor(); }
-
+/* NA
     /// Returns the arcs type I
     inline const
       QList<Airspace::ArcI*>& GetArcI(int i) {
@@ -56,8 +56,9 @@ namespace OpenAirspace {
 
     /// Returns the AirWay
     inline const
-      QList<Airspace::Coordinate*>& GetAirWay(int i) {
+      QList<OpenAirspace::Position*>& GetAirWay(int i) {
       return this->allAirspaces->at(i)->GetAirWay(); }
+*/
 
     ~Parser(void);
 
