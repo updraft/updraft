@@ -23,7 +23,7 @@ namespace OpenAirspace {
       return this->allAirspaces->size(); }
 
     /// Returns the class of the AirSpace
-    inline const OpenAirspace::Airspace::ACType& GetClass(int i) {
+    inline const Airspace::ACType& GetClass(int i) {
       return this->allAirspaces->at(i)->GetClass();}
 
     /// Returns the floor of the AirSpace
@@ -36,27 +36,27 @@ namespace OpenAirspace {
 
     /// Returns the tag coordinates of the AirSpace
     inline const
-      QList<OpenAirspace::Airspace::Coordinate*>& GetTagCoor(int i) {
+      QList<Airspace::Coordinate*>& GetTagCoor(int i) {
       return this->allAirspaces->at(i)->GetTagCoor(); }
 
     /// Returns the arcs type I
     inline const
-      QList<OpenAirspace::Airspace::ArcI*>& GetArcI(int i) {
+      QList<Airspace::ArcI*>& GetArcI(int i) {
       return this->allAirspaces->at(i)->GetArcI(); }
 
     /// Returns the arcs type I
     inline const
-      QList<OpenAirspace::Airspace::ArcII*>& GetArcII(int i) {
+      QList<Airspace::ArcII*>& GetArcII(int i) {
       return this->allAirspaces->at(i)->GetArcII(); }
 
     /// Returns the circles
     inline const
-      QList<OpenAirspace::Airspace::Circle*>& GetCircle(int i) {
+      QList<Airspace::Circle*>& GetCircle(int i) {
       return this->allAirspaces->at(i)->GetCircle(); }
 
     /// Returns the AirWay
     inline const
-      QList<OpenAirspace::Airspace::Coordinate*>& GetAirWay(int i) {
+      QList<Airspace::Coordinate*>& GetAirWay(int i) {
       return this->allAirspaces->at(i)->GetAirWay(); }
 
     ~Parser(void);
