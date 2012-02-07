@@ -53,6 +53,30 @@ QVector<osgEarth::ModelLayer*> MapManager::getModelLayers() {
   return modelLayers;
 }
 
+QVector<MapLayerInterface*> MapManager::getMapLayers() {
+  QVector<MapLayerInterface*> mapLayers;
+
+  osgEarth::ImageLayerVector outImageLayers;
+  map->getImageLayers(outImageLayers);
+  for (uint i = 0; i < outImageLayers.size(); i++) {
+    mapLayers.append(new MapLayer(outImageLayers[i]));
+  }
+
+  osgEarth::ElevationLayerVector outElevationLayers;
+  map->getElevationLayers(outElevationLayers);
+  for (uint i = 0; i < outElevationLayers.size(); i++) {
+    mapLayers.append(new MapLayer(outElevationLayers[i]));
+  }
+
+  osgEarth::ModelLayerVector outModelLayers;
+  map->getModelLayers(outModelLayers);
+  for (uint i = 0; i < outModelLayers.size(); i++) {
+    mapLayers.append(new MapLayer(outModelLayers[i]));
+  }
+
+  return mapLayers;
+}
+
 osgEarth::MapNode* MapManager::getMapNode() {
   return mapNode;
 }

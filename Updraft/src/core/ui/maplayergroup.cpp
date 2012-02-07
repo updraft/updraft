@@ -51,12 +51,6 @@ MapLayerInterface* MapLayerGroup::createEmptyMapLayer() {
 }
 
 MapLayerInterface* MapLayerGroup::insertMapLayer
-  (MapLayerType type, Layer mapLayer, const QString &title, int pos) {
-  MapLayerInterface* layer = new MapLayer(type, mapLayer);
-  return insertMapLayer(layer, title, pos);
-}
-
-MapLayerInterface* MapLayerGroup::insertMapLayer
   (osg::Node* mapLayer, const QString& title, int pos) {
   MapLayerInterface* layer = new MapLayer(mapLayer);
   return insertMapLayer(layer, title, pos);
