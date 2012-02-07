@@ -62,7 +62,7 @@ class oaEngine {
   void InsertArcII(const Position& centre, const Position& start,
     const Position& end, bool cw, QList<Position>* vertexList, int&);
 
-  /// compute the circular coord angle given centre and point on circ. 0 ontop
+  /// compute the circular coord angle given centre and point on circ 0 ontop
   double AngleRad(const Position& centre, const Position& point);
 
   /// Compute the point for given angle, centre and radius
