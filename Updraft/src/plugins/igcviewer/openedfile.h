@@ -1,8 +1,6 @@
 #ifndef UPDRAFT_SRC_PLUGINS_IGCVIEWER_OPENEDFILE_H_
 #define UPDRAFT_SRC_PLUGINS_IGCVIEWER_OPENEDFILE_H_
 
-#include <osg/Geode>
-
 #include <QObject>
 #include <QFileInfo>
 
@@ -43,8 +41,6 @@ class OpenedFile: public QObject {
   TabInterface *tab;
   MapLayerInterface* track;
   IgcViewer *viewer;
-
-  osg::Geode* geode;
 
   Igc::IgcFile igc;
 };
