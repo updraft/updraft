@@ -50,25 +50,24 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
       osg::Vec3 coord;
       double r;
       Position arcPoint;
-      Position point;
+      // Position point;
 
       if (A->GetGeometrySize() > 0) {
         for (int j = 0; j < A->GetGeometrySize(); ++j) {
           // if (!A->GetPolygon(j).valid) qDebug("Polygon coords expected!");
-          OpenAirspace::Airspace::GType gtype = static_cast
-            <OpenAirspace::Airspace::Poly*>(A->GetGeometry().at(j))->type;
+          OpenAirspace::Geometry::GType gtype =
+            A->GetGeometry().at(j)->GetGType();
 
-          OpenAirspace::Airspace::Poly* p;
-          OpenAirspace::Airspace::ArcI* aa;
-          OpenAirspace::Airspace::ArcII* ab;
-          OpenAirspace::Airspace::Circle* c;
+          OpenAirspace::Polygon* p;
+          OpenAirspace::ArcI* aa;
+          OpenAirspace::ArcII* ab;
+          OpenAirspace::Circle* c;
           switch (gtype) {
             // Draw polygon point
-            case OpenAirspace::Airspace::DPtype:
-              p = static_cast<OpenAirspace::Airspace::Poly*>
-                (A->GetGeometry().at(j));
-              objectPlacer->createPlacerMatrix(p->coor->lat,
-                p->coor->lon, 2000, coorTransformation);
+            case OpenAirspace::Geometry::DPtype:
+              p = (OpenAirspace::Polygon*)A->GetGeometry().at(j);
+              objectPlacer->createPlacerMatrix(p->Centre().lat,
+                p->Centre().lon, 2000, coorTransformation);
               coord = osg::Vec3(0, 0, 0) * coorTransformation;
               vertexData->push_back(coord);
               colors->push_back(col);
@@ -82,18 +81,17 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
               break;*/
             // DA radius, angleStart, angleEnd
             // add an arc, angles in degrees, radius in nm
-            case OpenAirspace::Airspace::DAtype:
-              aa = static_cast<OpenAirspace::Airspace::ArcI*>
-                (A->GetGeometry().at(j));
-              for (unsigned int angle = aa->Start; angle <= aa->End; ++angle) {
-              }
+            case OpenAirspace::Geometry::DAtype:
+              aa = (OpenAirspace::ArcI*)A->GetGeometry().at(j);
+              // for (unsigned int angle = aa->Start;
+              // angle <= aa->End; ++angle) {
+              // }
               break;
-            case OpenAirspace::Airspace::DCtype:
-              c = static_cast<OpenAirspace::Airspace::Circle*>
-                (A->GetGeometry().at(j));
+            case OpenAirspace::Geometry::DCtype:
+              c = (OpenAirspace::Circle*)A->GetGeometry().at(j);
               for (double k = 0; k < 2*M_PI; k += 0.05) {
-                r = DistToAngle(c->R);
-                arcPoint = ComputeArcPoint(*c->Centre, r, k);
+                r = DistToAngle(c->GetR());
+                arcPoint = ComputeArcPoint(c->Centre(), r, k);
                 objectPlacer->createPlacerMatrix(arcPoint.lat,
                   arcPoint.lon, 2000, coorTransformation);
                 coord = osg::Vec3(0, 0, 0) * coorTransformation;
@@ -103,15 +101,14 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
               break;
             // DB coordinate1, coordinate2 : add an arc,
             // from coordinate1 to coordinate2
-            case OpenAirspace::Airspace::DBtype:
-              ab = static_cast<OpenAirspace::Airspace::ArcII*>
-                (A->GetGeometry().at(j));
+            case OpenAirspace::Geometry::DBtype:
+              ab = (OpenAirspace::ArcII*)A->GetGeometry().at(j);
               QList<Position>* arc = new QList<Position>();
-              arc->push_back(*ab->Start);
+              arc->push_back(ab->Start());
               int depth = 0;
-              InsertArcII(*ab->Centre, *ab->Start,
-                *ab->End, ab->CW, arc, depth);
-              arc->push_back(*ab->End);
+              InsertArcII(ab->Centre(), ab->Start(),
+                ab->End(), ab->CW(), arc, depth);
+              arc->push_back(ab->End());
               for (int k = 0; k < arc->size(); ++k) {
                 objectPlacer->createPlacerMatrix(arc->at(k).lat, arc->at(k).lon,
                   2000, coorTransformation);

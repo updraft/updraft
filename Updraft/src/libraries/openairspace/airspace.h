@@ -4,6 +4,7 @@
 #define UPDRAFT_SRC_LIBRARIES_OPENAIRSPACE_AIRSPACE_H_
 
 #include "openairspace_global.h"
+#include "geometry.h"
 
 /*!
 UserAirspace parser library.
@@ -72,15 +73,7 @@ UserAirspace parser library.
 namespace OpenAirspace {
 
 
-  /// Coordinates structure - e.g. 39:29.9 N -119:46.1 E.
-  /// \TODO: use Utils when available
-  struct OPENAIRSPACE_EXPORT Coordinate {
-    bool valid;  // validity flag
-    qreal lat;
-    qreal lon;
-  };
-
-  class OPENAIRSPACE_EXPORT Airspace {
+class OPENAIRSPACE_EXPORT Airspace {
  public :
     /// Airspace class type enum.
     /*!   R restricted
@@ -95,13 +88,8 @@ namespace OpenAirspace {
     *     W Wave Window */
     enum ACType { R, Q, P, A, B, C, D, E, GP, CTR, W };
 
-    /// Geometry types
-    /// DA: Draw Arc type I
-    /// DB: Draw arc type II
-    /// DC: Draw circle
-    /// DP: Draw polygon
-    enum GType { DAtype, DBtype, DCtype, DPtype };
 
+/* unused
     /// Coordinates structure - e.g. 39:29.9 N -119:46.1 E.
     /// \TODO: use Utils when available
     struct Coordinate {
@@ -145,7 +133,7 @@ namespace OpenAirspace {
       Coordinate* Centre;  // Centre of the circle in N E
       float Zoom;  // zoom /TODO: float vs int
     };
-
+*/
     /// Pen style structure
     struct SP_str {
       int style;
@@ -179,11 +167,11 @@ namespace OpenAirspace {
     inline const QString& GetCeiling() { return *this->AH; }
 
     /// Returns the tag coordinates of the AirSpace
-    inline const QList<OpenAirspace::Airspace::Coordinate*>& GetTagCoor() {
+    inline const QList<Position*>& GetTagCoor() {
       return *this->AT; }
 
     /// Returns the arcs type I
-    inline const QList<OpenAirspace::Airspace::ArcI*>& GetArcI() {
+/*    inline const QList<OpenAirspace::Airspace::ArcI*>& GetArcI() {
       return *this->DA; }
 
     /// Returns the arcs type I
@@ -205,14 +193,15 @@ namespace OpenAirspace {
     /// Returns the Polygon point
     inline const OpenAirspace::Airspace::Coordinate& GetPolygon(int i) {
       return *this->DP->at(i); }
-
+*/
     /// Returns the geometry element
     // inline const QPair<OpenAirspace::Airspace::ACType, void*>&
       // GetGeometry(int i) { return this->geometry->at(i); }
 
     inline int GetGeometrySize() {
       return (validG) ? this->geometry->size() : 0; }
-    inline const QList<void*>& GetGeometry() { return *this->geometry; }
+    inline const QList<OpenAirspace::Geometry*>& GetGeometry() {
+      return *this->geometry; }
 
     /// Get Pen & Brush
     inline const SP_str* GetPen() {
@@ -230,12 +219,12 @@ namespace OpenAirspace {
     ~Airspace();
 
     /// Coordinates of the center used by more airspaces.
-    static Coordinate X;
+    static Position X;
     static bool validX;
 
   private :
     /// Parse the coordinates from string
-    Coordinate* ParseCoord(const QString& parse);
+    Position ParseCoord(const QString& parse);
 
     /// Airspace class type.
     ACType AC;
@@ -261,7 +250,7 @@ namespace OpenAirspace {
     /// Airspace name label coordinates.
     /// List of coordinates, where to place the airspace name label on the map.
     /// Optional.
-    QList<Coordinate*>* AT;
+    QList<Position*>* AT;
     bool validAT;
 
     /// Terrain related variables \{
@@ -293,7 +282,7 @@ namespace OpenAirspace {
     bool validZ;
 
     /// Add polygon points
-    QList<Coordinate*>* DP;
+    QList<Position*>* DP;
     bool validDP;
 
     /// Arc \{
@@ -312,36 +301,15 @@ namespace OpenAirspace {
     /// \}
 
     /// Airway
-    QList<Coordinate*>* DY;
+    QList<Position*>* DY;
     bool validDY;
     /// \}
 
     /// Array of geometry
     // QList< QPair<GType, void*> >* geometry;
-    QList<void*>* geometry;
+    QList<Geometry*>* geometry;
     bool validG;
   };  // Airspace
-
-/*
-  class OPENAIRSPACE_EXPORT Geometry {
-  public :
-    virtual Coordinate* coordinate;
-    virtual ~Geomeetry() {}
-  }
-
-  class OPENAIRSPACE_EXPORT Poly : Geometry {
-  }
-
-  class OPENAIRSPACE_EXPORT ArcI : Geometry {
-  }
-
-  class OPENAIRSPACE_EXPORT ArcII : Geometry {
-  }
-
-  class OPENAIRSPACE_EXPORT Circle : Geometry {
-  }
-
-*/
 }  // OpenAirspace
 
 
