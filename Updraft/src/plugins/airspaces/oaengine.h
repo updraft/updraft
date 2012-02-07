@@ -18,7 +18,7 @@
 
 namespace Updraft {
 namespace Airspaces {
-  
+
 typedef OpenAirspace::Airspace::Coordinate Position;
 
 /// PI/180 constant
@@ -33,9 +33,9 @@ static const double EARTH_RADIUS_IN_METERS = 6372797.560856;
 
 class oaEngine {
  public:
-   explicit oaEngine(MapLayerGroupInterface* LG) {mapLayerGroup = LG;}
-   MapLayerInterface* Draw(const QString&);
-  //bool Draw(const QString&);
+  explicit oaEngine(MapLayerGroupInterface* LG) {mapLayerGroup = LG;}
+  MapLayerInterface* Draw(const QString&);
+  // bool Draw(const QString&);
 
  private:
   /// Map Layer Interface.
@@ -46,7 +46,7 @@ class oaEngine {
   bool Polygon();
 
   /// compute the WGS angle given the distance in nm
-  double DistToAngle(double);
+  double DistToAngle(double dist);
 
   /// Compute the arc between two WGS coords
   double ArcInRadians(const Position& from, const Position& to);
@@ -55,22 +55,23 @@ class oaEngine {
   double DistanceInMeters(const Position& from, const Position& to);
 
   /// Insert Arc into the OGL vertex array
-  // void InsertArcII(const Position& centre, const Position& start, const Position& end,
-  //   const osg::Vec4& col, osg::Vec4Array* vertexArray, osg::Vec4Array* colourArray);
-  void InsertArcII(const Position& centre, const Position& start, const Position& end,
-    bool cw, QList<Position>* vertexList, int&);
+  // void InsertArcII(const Position& centre,
+  //   const Position& start, const Position& end,
+  //   const osg::Vec4& col, osg::Vec4Array*
+  //     vertexArray, osg::Vec4Array* colourArray);
+  void InsertArcII(const Position& centre, const Position& start,
+    const Position& end, bool cw, QList<Position>* vertexList, int&);
 
   /// compute the circular coord angle given centre and point on circ. 0 ontop
   double AngleRad(const Position& centre, const Position& point);
 
   /// Compute the point for given angle, centre and radius
   Position ComputeArcPoint(const Position& centre, double r, double partAngle);
-  //double Dot(const osg::Vec2d&, const osg::Vec2d&); 
+  // double Dot(const osg::Vec2d&, const osg::Vec2d&);
 
   /// Split the arc
   // Split()
 };  // oaEngine
-
 }  // Airspaces
 }  // Updraft
 

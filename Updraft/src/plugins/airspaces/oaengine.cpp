@@ -3,8 +3,7 @@
 namespace Updraft {
 namespace Airspaces {
 
-MapLayerInterface* oaEngine::Draw(const QString& fileName)
-{
+MapLayerInterface* oaEngine::Draw(const QString& fileName) {
   OpenAirspace::Parser AirspaceSet(fileName);
 
   if (mapLayerGroup != NULL) {
@@ -35,7 +34,7 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName)
         float r = A->GetBrush()->R/255.0f;
         float g = A->GetBrush()->G/255.0f;
         float b = A->GetBrush()->B/255.0f;
-        if ( r >= 0 && g >= 0 && b >= 0) 
+        if ( r >= 0 && g >= 0 && b >= 0)
           col.set(r, g, b, col.w());
       }
       if (A->GetPen()) {
@@ -66,7 +65,8 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName)
           switch (gtype) {
             // Draw polygon point
             case OpenAirspace::Airspace::DPtype:
-              p = static_cast<OpenAirspace::Airspace::Poly*>(A->GetGeometry().at(j));
+              p = static_cast<OpenAirspace::Airspace::Poly*>
+                (A->GetGeometry().at(j));
               objectPlacer->createPlacerMatrix(p->coor->lat,
                 p->coor->lon, 2000, coorTransformation);
               coord = osg::Vec3(0, 0, 0) * coorTransformation;
@@ -83,12 +83,14 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName)
             // DA radius, angleStart, angleEnd
             // add an arc, angles in degrees, radius in nm
             case OpenAirspace::Airspace::DAtype:
-              aa = static_cast<OpenAirspace::Airspace::ArcI*>(A->GetGeometry().at(j));
+              aa = static_cast<OpenAirspace::Airspace::ArcI*>
+                (A->GetGeometry().at(j));
               for (unsigned int angle = aa->Start; angle <= aa->End; ++angle) {
               }
               break;
             case OpenAirspace::Airspace::DCtype:
-              c = static_cast<OpenAirspace::Airspace::Circle*>(A->GetGeometry().at(j));
+              c = static_cast<OpenAirspace::Airspace::Circle*>
+                (A->GetGeometry().at(j));
               for (double k = 0; k < 2*M_PI; k += 0.05) {
                 r = DistToAngle(c->R);
                 arcPoint = ComputeArcPoint(*c->Centre, r, k);
@@ -99,13 +101,16 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName)
                 colors->push_back(col);
               }
               break;
-            // DB coordinate1, coordinate2 : add an arc, from coordinate1 to coordinate2
+            // DB coordinate1, coordinate2 : add an arc,
+            // from coordinate1 to coordinate2
             case OpenAirspace::Airspace::DBtype:
-              ab = static_cast<OpenAirspace::Airspace::ArcII*>(A->GetGeometry().at(j));
+              ab = static_cast<OpenAirspace::Airspace::ArcII*>
+                (A->GetGeometry().at(j));
               QList<Position>* arc = new QList<Position>();
               arc->push_back(*ab->Start);
               int depth = 0;
-              InsertArcII(*ab->Centre, *ab->Start, *ab->End, ab->CW, arc, depth);
+              InsertArcII(*ab->Centre, *ab->Start,
+                *ab->End, ab->CW, arc, depth);
               arc->push_back(*ab->End);
               for (int k = 0; k < arc->size(); ++k) {
                 objectPlacer->createPlacerMatrix(arc->at(k).lat, arc->at(k).lon,
@@ -139,7 +144,7 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName)
 
     QString displayName = fileName;
     int cuntSlashes = displayName.count('/');
-    displayName = displayName.section('/',cuntSlashes, cuntSlashes);
+    displayName = displayName.section('/', cuntSlashes, cuntSlashes);
     return mapLayerGroup->insertMapLayer(OAGeode, displayName);
   }
   return NULL;
@@ -167,8 +172,8 @@ double oaEngine::DistanceInMeters(const Position& from, const Position& to) {
   return EARTH_RADIUS_IN_METERS*ArcInRadians(from, to);
 }
 
-void oaEngine::InsertArcII(const Position& centre, const Position& start, const Position& end,
-  bool cw, QList<Position>* vertexList, int& depth) {
+void oaEngine::InsertArcII(const Position& centre, const Position& start,
+  const Position& end, bool cw, QList<Position>* vertexList, int& depth) {
   /*if (start.lon == end.lon && start.lat == end.lat) return;
   // insert start
   // vertexList->push_back(start);
@@ -227,7 +232,7 @@ void oaEngine::InsertArcII(const Position& centre, const Position& start, const 
   // divide the arc to n sectors according the angle
   int n = 20;
   double part = arcAngleRad /n;
-  for(int i = 1; i < n; ++i) {
+  for (int i = 1; i < n; ++i) {
     // insert the middle arc vertex
     double partAngle = (cw) ? a1 + i*part : a1 - i*part;
     Position arcPoint = ComputeArcPoint(centre, r, partAngle);
@@ -243,7 +248,7 @@ double oaEngine::AngleRad(const Position& centre, const Position& point) {
   double a;
   if (lat != 0) {
     a = atan(lon/lat);
-    if (lat < 0) a += M_PI; 
+    if (lat < 0) a += M_PI;
   } else {
     // a = acot(lat/lon);
     a = (lon > 0) ? M_PI/2 : 3 * M_PI/2;
@@ -253,7 +258,8 @@ double oaEngine::AngleRad(const Position& centre, const Position& point) {
   return a;
 }
 
-Position oaEngine::ComputeArcPoint(const Position& centre, double r, double partAngle) {
+Position oaEngine::ComputeArcPoint(const Position& centre, double r,
+  double partAngle) {
   double lon = sin(partAngle) * r;
   double lat = cos(partAngle) * r;
   Position result;
@@ -261,7 +267,5 @@ Position oaEngine::ComputeArcPoint(const Position& centre, double r, double part
   result.lon = centre.lon + lon * 1/cos(result.lat*DEG_TO_RAD);
   return result;
 }
-
 }  // Airspaces
 }  // Updraft
-
