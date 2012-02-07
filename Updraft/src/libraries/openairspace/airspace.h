@@ -227,7 +227,7 @@ namespace OpenAirspace {
         return NULL; }
 
     /// UserAirspace destructor code here.
-    Airspace::~Airspace();
+    ~Airspace();
 
     /// Coordinates of the center used by more airspaces.
     static Coordinate X;

@@ -137,8 +137,11 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
         // change the thickness of the line
         osg::LineWidth* linewidth = new osg::LineWidth();
         linewidth->setWidth(width);
-        OAGeode->getOrCreateStateSet()->setAttributeAndModes(linewidth,
+        osg::StateSet* stateSet = OAGeode->getOrCreateStateSet();
+        stateSet->setAttributeAndModes(linewidth,
           osg::StateAttribute::ON);
+        stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+        stateSet->setMode(GL_LINE_SMOOTH, osg::StateAttribute::ON);
       }
     }
 
@@ -230,9 +233,9 @@ void oaEngine::InsertArcII(const Position& centre, const Position& start,
   double arcAngleRad = (cw) ? a2 - a1 : a1 - a2;
   if (arcAngleRad < 0) arcAngleRad += M_PI*2;
   // divide the arc to n sectors according the angle
-  int n = 20;
+  int n = 10;
   double part = arcAngleRad /n;
-  for (int i = 1; i < n; ++i) {
+  for (int i = 1; i < n-1; ++i) {
     // insert the middle arc vertex
     double partAngle = (cw) ? a1 + i*part : a1 - i*part;
     Position arcPoint = ComputeArcPoint(centre, r, partAngle);
@@ -244,7 +247,7 @@ void oaEngine::InsertArcII(const Position& centre, const Position& start,
 
 double oaEngine::AngleRad(const Position& centre, const Position& point) {
   double lat = point.lat - centre.lat;
-  double lon = point.lon - centre.lon;
+  double lon = (point.lon - centre.lon)*cos(point.lat);
   double a;
   if (lat != 0) {
     a = atan(lon/lat);
