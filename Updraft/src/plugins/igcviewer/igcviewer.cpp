@@ -1,9 +1,9 @@
 #include "igcviewer.h"
 
-#include "../../libraries/igc/igc.h"
+#include "openedfile.h"
 
 namespace Updraft {
-namespace Core {
+namespace IgcViewer {
 
 QString IgcViewer::getName() {
   return QString("igcviewer");
@@ -14,24 +14,54 @@ unsigned IgcViewer::getPriority() {
 }
 
 void IgcViewer::initialize() {
-  qDebug("igcviewer loaded");
-
   FileRegistration registration;
   registration.category = CATEGORY_TEMPORARY;
   registration.extension = ".igc";
-  registration.typeDescription = "IGC flight recording";
-  registration.roleDescription = "Open flight record";
+  registration.typeDescription = tr("IGC flight recording");
+  registration.roleDescription = tr("Open flight record");
   registration.roleId = 1;
   registration.plugin = this;
 
   core->registerFiletype(registration);
+
+  mapLayerGroup = core->createMapLayerGroup(tr("IGC files"));
+
+  core->addSettingsGroup("igcviewer", tr("IGC Visualization"));
+  lineWidthSetting = core->addSetting("igcviewer:linewidth",
+    tr("Line width"), 3.0f);
+
+  lineWidthSetting->callOnValueChanged(this, SLOT(redrawAll()));
 }
 
 void IgcViewer::deinitialize() {
-  qDebug("igcviewer unloaded");
+  QList<OpenedFile*> copy = opened;
+  opened.clear();
+
+  foreach(OpenedFile* f, copy) {
+    f->close();
+  }
 }
 
-void IgcViewer::fileIdentification(QStringList *roles,
+bool IgcViewer::fileOpen(const QString &filename, int roleId) {
+  OpenedFile* f = new OpenedFile();
+
+  if (!f->init(this, filename)) {
+    delete f;
+    return false;
+  }
+
+  opened.append(f);
+
+  return true;
+}
+
+void IgcViewer::redrawAll() {
+  foreach(OpenedFile* f, opened) {
+    f->redraw();
+  }
+}
+
+/*void IgcViewer::fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename) {
   Igc::IgcFile igc;
   if (!igc.load(filename)) {
@@ -54,7 +84,7 @@ void IgcViewer::fileIdentification(QStringList *roles,
 
   if (roles != NULL)
     roles->append(ident);
-}
+}*/
 
 Q_EXPORT_PLUGIN2(igcviewer, IgcViewer)
 

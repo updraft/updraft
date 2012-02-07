@@ -4,6 +4,8 @@
 #include <QString>
 #include <QIcon>
 
+#include <osg/CoordinateSystemNode>
+
 #include "menuinterface.h"
 #include "tabinterface.h"
 #include "fileregistration.h"
@@ -35,6 +37,9 @@ class CoreInterface {
   /// Returns pointer to the instance of a system menu
   /// \param menu which system menu instance to return
   virtual MenuInterface* getSystemMenu(SystemMenu menu) = 0;
+
+  /// Returns the current openscenegraph ellipsoid model used for the planet.
+  virtual const osg::EllipsoidModel* getEllipsoidModel() = 0;
 
   /// Creates map layer group and adds it to the tree view in the left pane.
   /// To remove MapLayerGroup use C++ delete.

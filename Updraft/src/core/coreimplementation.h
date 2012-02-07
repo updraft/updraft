@@ -20,6 +20,8 @@ class CoreImplementation : public CoreInterface {
   MenuInterface* createMenu(QString title);
   MenuInterface* getSystemMenu(SystemMenu menu);
 
+  const osg::EllipsoidModel* getEllipsoidModel();
+
   MapLayerGroupInterface* createMapLayerGroup(const QString &title);
 
   TabInterface* createTab(QWidget* content, QString title);

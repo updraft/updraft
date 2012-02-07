@@ -12,6 +12,7 @@ Tab::Tab(QWidget* content, QString title, QTabWidget* parent)
   : widget(content), tabWidget(parent) {
   QHBoxLayout* layout = new QHBoxLayout(this);
   layout->addWidget(widget);
+  widget->setParent(this);
 
   tabWidget->addTab(this, title);
 }

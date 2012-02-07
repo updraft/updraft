@@ -1,11 +1,13 @@
 #ifndef UPDRAFT_SRC_PLUGINS_IGCVIEWER_IGCVIEWER_H_
 #define UPDRAFT_SRC_PLUGINS_IGCVIEWER_IGCVIEWER_H_
 
-#include <QtGui>
+#include <QtCore>
 #include "../../pluginbase.h"
 
 namespace Updraft {
-namespace Core {
+namespace IgcViewer {
+
+class OpenedFile;
 
 class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
   Q_OBJECT
@@ -20,12 +22,23 @@ class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
 
   void deinitialize();
 
+  bool fileOpen(const QString &filename, int roleId);
   void fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename);
+
+ public slots:
+  void redrawAll();
+
  private:
+  QList<OpenedFile*> opened;
+  MapLayerGroupInterface* mapLayerGroup;
+
+  SettingInterface* lineWidthSetting;
+
+  friend class OpenedFile;
 };
 
-}  // End namespace Core
+}  // End namespace IgcViewer
 }  // End namespace Updraft
 
 #endif  // UPDRAFT_SRC_PLUGINS_IGCVIEWER_IGCVIEWER_H_

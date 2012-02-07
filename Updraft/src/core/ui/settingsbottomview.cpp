@@ -40,6 +40,7 @@ bool SettingsBottomView::editorValuesChanged() {
 
   for (int i = 0; i < layout->rowCount(); ++i) {
     QLayoutItem* item = layout->itemAtPosition(i, 1);
+    if (!item) continue;  // Prevent segfault for empty layout
     QWidget* editor = item->widget();
     QByteArray propertyName = editor->metaObject()->userProperty().name();
     QVariant editorData = editor->property(propertyName);
@@ -77,6 +78,7 @@ void SettingsBottomView::commit() {
 
     for (int i = 0; i < layout->rowCount(); ++i) {
       QLayoutItem* item = layout->itemAtPosition(i, 1);
+      if (!item) continue;  // Prevent segfault for empty layout
       QWidget* editor = item->widget();
       QModelIndex dataIndex = model()->index(i, 0, pageIndex);
       itemDelegate()->setModelData(editor, model(), dataIndex);
@@ -94,6 +96,7 @@ void SettingsBottomView::reset() {
 
     for (int i = 0; i < layout->rowCount(); ++i) {
       QLayoutItem* item = layout->itemAtPosition(i, 1);
+      if (!item) continue;  // Prevent segfault for empty layout
       QWidget* editor = item->widget();
       QModelIndex dataIndex = model()->index(i, 0, pageIndex);
       itemDelegate()->setEditorData(editor, dataIndex);
@@ -183,16 +186,16 @@ void SettingsBottomView::commitData(QWidget* editor) {
 void SettingsBottomView::dataChanged(
   const QModelIndex& topLeft,
   const QModelIndex& bottomRight) {
+  QModelIndex parent = topLeft.parent();
+
   // If modifying data for a group, don't do anything
-  if (!insertionIndex.isValid()) return;
+  if (!parent.isValid()) return;
 
   // Don't allow modifying more than one data element
   if (topLeft != bottomRight) {
     qDebug() << "Warning: the settings view does not allow batch modification";
     return;
   }
-
-  QModelIndex parent = topLeft.parent();
 
   QWidget* page = stack->widget(parent.row());
   QGridLayout* layout = qobject_cast<QGridLayout*>(page->layout());

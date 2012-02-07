@@ -26,12 +26,14 @@ MapLayerGroup::~MapLayerGroup() {
     // TODO(Maria): Do we also want to delete the map layer object?
     // Delete the checkbox
     treeItem->removeChild(it.value());
-    delete it.value();
+    // delete it.value();
   }
   mapLayers.clear();
 
-  QTreeWidget *widget = treeItem->treeWidget();
-  widget->takeTopLevelItem(widget->indexOfTopLevelItem(treeItem));
+  int index = listWidget->indexOfTopLevelItem(treeItem);
+  if (index != -1) {  // otherwise the item has been hidden already
+    listWidget->takeTopLevelItem(index);
+  }
   delete treeItem;
 }
 
@@ -40,7 +42,8 @@ void MapLayerGroup::displayTree() {
 }
 
 void MapLayerGroup::hideTree() {
-  listWidget->removeItemWidget(treeItem, 0);
+  listWidget->takeTopLevelItem
+    (listWidget->indexOfTopLevelItem(treeItem));
 }
 
 MapLayerInterface* MapLayerGroup::createEmptyMapLayer() {
@@ -138,7 +141,7 @@ void MapLayerGroup::removeMapLayer(MapLayerInterface* layer) {
     // Or should the plugin destroy it by itself?
     // Delete the checkbox from the list.
     treeItem->removeChild(it.value());
-    delete it.value();
+    // delete it.value();
     mapLayers.erase(it);
   }
   if (mapLayers.empty()) {

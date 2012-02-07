@@ -23,6 +23,11 @@ MenuInterface* CoreImplementation::getSystemMenu(SystemMenu menu) {
   return win->getSystemMenu(menu);
 }
 
+const osg::EllipsoidModel* CoreImplementation::getEllipsoidModel() {
+  return updraft->sceneManager->getMapNode()->getMap()->getProfile()->
+    getSRS()->getEllipsoid();
+}
+
 MapLayerGroupInterface* CoreImplementation::createMapLayerGroup
   (const QString &title) {
   osg::Group* group = updraft->sceneManager->newGroup();

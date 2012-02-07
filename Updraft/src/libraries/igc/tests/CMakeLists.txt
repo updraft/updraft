@@ -1,6 +1,5 @@
-QT4_WRAP_CPP(HEADERS_MOC testigc.h)
-ADD_UNIT_TEST(test_igc testigc.cpp ${HEADERS_MOC})
+cmake_minimum_required(VERSION 2.8)
 
-STYLE_CHECK(testigc.h testigc.cpp)
-
+TEST_BUILD(test_igc)
 TARGET_LINK_LIBRARIES(test_igc igc)
+

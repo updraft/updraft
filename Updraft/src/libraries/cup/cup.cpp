@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QFile>
 
+namespace Updraft {
 namespace Cup {
 
 QString CupFile::getFileName() const {
@@ -75,7 +76,7 @@ void CupLoader::parseLine(const QString &strLine) {
       break;
 
     case LOADING_TPS:
-      if (strLine.startsWith("-----Related Tasks-----")) {
+      if (strLine.startsWith("-----Related Tasks-----", Qt::CaseInsensitive)) {
         state = LOADING_TASKS;
         break;
       }
@@ -92,15 +93,40 @@ void CupLoader::parseLine(const QString &strLine) {
   }
 }
 
+void CupLoader::parseLatitude(TPEntry &tp, const QString &latitude) {
+  int degs = latitude.mid(0, 2).toInt();
+  int mins = latitude.mid(2, 2).toInt();
+  int rest = latitude.mid(5, 3).toInt();
+  char sign = latitude.mid(8, 1).compare("S") == 0 ? 'S' : 'N';
+  tp.location.latFromDMS(degs, mins, 60.0*((qreal)rest)/1000.0, sign);
+}
+
+void CupLoader::parseLongitude(TPEntry &tp, const QString &longitude) {
+  int degs = longitude.mid(0, 3).toInt();
+  int mins = longitude.mid(3, 2).toInt();
+  int rest = longitude.mid(6, 3).toInt();
+  char sign = longitude.mid(9, 1).compare("W") == 0 ? 'W' : 'E';
+  tp.location.lonFromDMS(degs, mins, 60.0*((qreal)rest)/1000.0, sign);
+}
+
+void CupLoader::parseElevation(TPEntry &tp, const QString &elevation) {
+  if (elevation.endsWith("m", Qt::CaseInsensitive)) {
+    tp.location.alt = elevation.left(elevation.length()-1).toDouble();
+  } else if (elevation.endsWith("ft", Qt::CaseInsensitive)) {
+    tp.location.alt = Util::Units::feetToMeters(
+      elevation.left(elevation.length()-2).toDouble());
+  }
+}
+
 void CupLoader::parseTP(const QString &strLine) {
   TPEntry tp;
 
   tp.name = strLine.section(QChar(','), 0, 0);
   tp.code = strLine.section(QChar(','), 1, 1);
   tp.country = strLine.section(QChar(','), 2, 2);
-  tp.latitude = strLine.section(QChar(','), 3, 3);
-  tp.longitude = strLine.section(QChar(','), 4, 4);
-  tp.elevation = strLine.section(QChar(','), 5, 5);
+  parseLatitude(tp, strLine.section(QChar(','), 3, 3));
+  parseLongitude(tp, strLine.section(QChar(','), 4, 4));
+  parseElevation(tp, strLine.section(QChar(','), 5, 5));
   tp.style = strLine.section(QChar(','), 6, 6);
   tp.rwyDirection = strLine.section(QChar(','), 7, 7);
   tp.rwLength = strLine.section(QChar(','), 8, 8);
@@ -115,3 +141,4 @@ void CupLoader::parseTask(const QString &strLine) {
 }
 
 }  // End namespace Cup
+}  // End namespace Updraft

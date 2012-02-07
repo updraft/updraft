@@ -3,14 +3,31 @@
 
 #include "tpfile.h"
 
+namespace osg {
+  class Geometry;
+  class Geode;
+  class AutoTransform;
+  class Group;
+}
+
+namespace osgEarth {
+namespace Util {
+  class ObjectPlacer;
+}
+}
+
 namespace Updraft {
 
 /// Class storing a turn-points layer.
 class TPLayer {
  public:
-  TPLayer(int layerId_, bool displayed_, const TPFile *file_);
+  TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
+    const TPFile *file_, const QString &dataDir);
 
   virtual ~TPLayer();
+
+  /// \return osgNode associated with the layer.
+  osg::Node* getNode() const;
 
   /// \return Display state
   bool isDisplayed();
@@ -20,9 +37,36 @@ class TPLayer {
   void display(bool displayed_);
 
  private:
-  const int layerId;
+  /// Creates osg::Geometry for turn-point billboard.
+  /// \param scale relative size of the node.
+  /// \return A new instance of osg::Geometry
+  osg::Geometry* createGeometry(qreal scale);
+
+  /// Creates osg::Geometry for turn-point billboard.
+  /// \param scale relative size of the node.
+  /// \return A new instance of osg::Geode
+  osg::Geode* createGeode(qreal scale);
+
+  /// Creates osg::AutoTransform for turn-point billboard.
+  /// This function is called for each TP.
+  /// \param matrix transformation of a TP
+  /// \param geode node used for object visualization
+  /// \return A new instance of osg::AutoTransform
+  osg::AutoTransform* createAutoTransform(
+    const osg::Matrix& matrix,
+    osg::Geode* geode);
+
+  /// osg Node representing this turn-points layer
+  osg::Group* group;
+
+  /// osgEarth placer for placing objects to specific geo.coordinates
+  osgEarth::Util::ObjectPlacer* objectPlacer;
+
   const TPFile *file;
   bool displayed;
+
+  // Path to application data directory.
+  QString dataDir;
 };
 
 }  // End namespace Updraft

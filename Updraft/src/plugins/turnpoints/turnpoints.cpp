@@ -29,7 +29,7 @@ unsigned TurnPoints::getPriority() {
 void TurnPoints::initialize() {
   qDebug("turnpoints loaded");
 
-  mapLayerGroup = core->createMapLayerGroup(tr("Turnpoints"));
+  mapLayerGroup = core->createMapLayerGroup(tr("Turn-points"));
 
   core->registerFiletype(cupTPsReg);
 
@@ -64,6 +64,23 @@ void TurnPoints::fileIdentification(QStringList *roles,
     roles->append(tr("Turn-points file"));
 }
 
+void TurnPoints::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
+  if (sender == NULL) {
+    return;
+  }
+
+  // Find the sender in opened layers.
+  TTPLayerMap::const_iterator itLayer = layers.find(sender);
+  if (itLayer == layers.end()) {
+    return;
+  }
+
+  // First try to display/enable layer in Turnpoints plugin.
+  // Then if it is displayed, show it also in the map.
+  itLayer.value()->display(value);
+  sender->setVisible(itLayer.value()->isDisplayed());
+}
+
 void TurnPoints::loadImportedFiles() {
   QDir dir(core->getDataDirectory() + "/" + cupTPsReg.importDirectory);
 
@@ -90,13 +107,24 @@ void TurnPoints::unloadFiles() {
 }
 
 void TurnPoints::addLayer(TPFile *file) {
-  // Create new layer item
-  TPLayer *layer = new TPLayer(nextLayerId, true, file);
-  layers.insert(nextLayerId, layer);
+  if (mapLayerGroup == NULL || file == NULL) {
+    return;
+  }
 
-  // TODO(Tom): Add item to the left pane
+  // Create new layer item, build scene.
+  TPLayer *turnPointsLayer = new TPLayer(true,
+    mapLayerGroup->getObjectPlacer(), file,
+    core->getDataDirectory());
 
-  ++nextLayerId;
+  // Create new mapLayer in mapLayerGroup, assign osgNode and file name.
+  Updraft::MapLayerInterface* mapLayer =
+    mapLayerGroup->insertMapLayer(turnPointsLayer->getNode(),
+      file->getFileName(), -1);
+
+  layers.insert(mapLayer, turnPointsLayer);
+
+  mapLayer->connectSignalDisplayed(this,
+    SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
 }
 
 Q_EXPORT_PLUGIN2(turnpoints, TurnPoints)
