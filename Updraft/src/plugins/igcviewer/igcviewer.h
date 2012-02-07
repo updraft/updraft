@@ -26,14 +26,9 @@ class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
   void fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename);
 
- public slots:
-  void redrawAll();
-
  private:
   QList<OpenedFile*> opened;
   MapLayerGroupInterface* mapLayerGroup;
-
-  SettingInterface* lineWidthSetting;
 
   friend class OpenedFile;
 };

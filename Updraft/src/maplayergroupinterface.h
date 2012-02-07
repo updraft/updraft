@@ -42,35 +42,11 @@ class MapLayerGroupInterface {
   /// \param layer pointer to osg Node representing geometry of this layer
   /// \param title name of the layer; caption of the tree item
   virtual MapLayerInterface* insertMapLayer
-    (MapLayerInterface* layer, const QString &title, int pos = -1) = 0;
-
-  /// Creates a new instance of Map Layer with generated ID
-  /// and calls insertMapLayer
-  /// (MapLayerInterface* layer, const QString &title, int pos = -1)
-  virtual MapLayerInterface* insertMapLayer
-    (MapLayerType type, Layer layer, const QString& title, int pos = -1) = 0;
-
-  /// Creates a new instance of Map Layer with generated ID
-  /// and calls insertMapLayer
-  /// (MapLayerInterface* layer, const QString &title, int pos = -1)
-  virtual MapLayerInterface* insertMapLayer
     (osg::Node* layer, const QString& title, int pos = -1) = 0;
-
-  /// Creates a new instance of Map Layer with generated ID
-  /// and calls insertMapLayer
-  /// (MapLayerInterface* layer, const QString &title, int pos = -1)
   virtual MapLayerInterface* insertMapLayer
     (osgEarth::ImageLayer* layer, const QString& title, int pos = -1) = 0;
-
-  /// Creates a new instance of Map Layer with generated ID
-  /// and calls insertMapLayer
-  /// (MapLayerInterface* layer, const QString &title, int pos = -1)
   virtual MapLayerInterface* insertMapLayer
     (osgEarth::ElevationLayer* layer, const QString& title, int pos = -1) = 0;
-
-  /// Creates a new instance of Map Layer with generated ID
-  /// and calls insertMapLayer
-  /// (MapLayerInterface* layer, const QString &title, int pos = -1)
   virtual MapLayerInterface* insertMapLayer
     (osgEarth::ModelLayer* layer, const QString& title, int pos = -1) = 0;
 

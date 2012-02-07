@@ -30,13 +30,8 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   // Implementation of the virtual functions.
   MapLayerInterface* createEmptyMapLayer();
 
-  /// Inserts the map layer.
-  /// This function is called by all the other inserting functions,
-  /// that are just interface.
-  MapLayerInterface* insertMapLayer
-    (MapLayerInterface* layer, const QString& title, int pos = -1);
-  MapLayerInterface* insertMapLayer
-    (MapLayerType type, Layer layer, const QString& title, int pos = -1);
+  /// Multiple overloaded functions that instert maplayer
+  /// depending on the type of the layer.
   MapLayerInterface* insertMapLayer
     (osg::Node* layer, const QString& title, int pos = -1);
   MapLayerInterface* insertMapLayer
@@ -75,6 +70,12 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   /// Creates the TreeWidgetItem once the first map layer is added.
   void displayTree();
   void hideTree();
+
+  /// Inserts the map layer.
+  /// This function is called by all the other public inserting functions,
+  /// that are just interface.
+  MapLayerInterface* insertMapLayer
+    (MapLayerInterface* layer, const QString& title, int pos = -1);
 
   /// A procedure for adding the map layer into the scene tree.
   void addIntoScene(MapLayerInterface* layer);
