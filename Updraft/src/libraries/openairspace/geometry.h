@@ -47,11 +47,15 @@ class OPENAIRSPACE_EXPORT ArcI : public Geometry {
   ArcI(const Position& C_, const double& R_, const bool CW_,
     const double& S_, const double& E_, const double& Z_);
   inline const Position& Centre() { return *this->centre; }
+  inline const double& Start() { return this->start; }
+  inline const double& End() { return this->end; }
+  inline const bool CW() { return this->cw; }
+  inline const double R() { return this->r; }
   inline const GType GetGType() { return DAtype; }
   ~ArcI();
  private:
   Position* centre;
-  double R;  // radius in nm
+  double r;  // radius in nm
   bool cw;  // arc direction
   double start;  // start angle in deg
   double end;  // end angle in deg
@@ -84,12 +88,12 @@ class OPENAIRSPACE_EXPORT Circle : public Geometry {
   Circle();
   Circle(const Position& c_, const double R_, const double& z_);
   inline const Position& Centre() { return *this->centre; }
-  inline const double& GetR() { return this->R; }
+  inline const double& R() { return this->r; }
   inline const GType GetGType() { return DCtype; }
   ~Circle();
  private:
   Position* centre;
-  double R;  // radius
+  double r;  // radius
   double zoom;
   bool valid;
 };

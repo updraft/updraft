@@ -83,14 +83,20 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
             // add an arc, angles in degrees, radius in nm
             case OpenAirspace::Geometry::DAtype:
               aa = (OpenAirspace::ArcI*)A->GetGeometry().at(j);
-              // for (unsigned int angle = aa->Start;
-              // angle <= aa->End; ++angle) {
-              // }
+              for (double angle = aa->Start()*DEG_TO_RAD;
+                angle <= aa->End()*DEG_TO_RAD; angle+=ARC_GRANULARITY) {
+                arcPoint = ComputeArcPoint(aa->Centre(), aa->R(), angle);
+                objectPlacer->createPlacerMatrix(arcPoint.lat,
+                  arcPoint.lon, 2000, coorTransformation);
+                coord = osg::Vec3(0, 0, 0) * coorTransformation;
+                vertexData->push_back(coord);
+                colors->push_back(col);
+              }
               break;
             case OpenAirspace::Geometry::DCtype:
               c = (OpenAirspace::Circle*)A->GetGeometry().at(j);
-              for (double k = 0; k < 2*M_PI; k += 0.05) {
-                r = DistToAngle(c->GetR());
+              for (double k = 0; k < 2*M_PI; k += ARC_GRANULARITY) {
+                r = DistToAngle(c->R());
                 arcPoint = ComputeArcPoint(c->Centre(), r, k);
                 objectPlacer->createPlacerMatrix(arcPoint.lat,
                   arcPoint.lon, 2000, coorTransformation);
@@ -220,23 +226,48 @@ void oaEngine::InsertArcII(const Position& centre, const Position& start,
     InsertArcII(centre, result, end, cw, vertexList, depth);
   }*/
   // radius
-  double dLat = start.lat - centre.lat;
-  double dLon = (start.lon - centre.lon);
-  double r = sqrt(dLat*dLat + dLon*dLon);
-  r = DistToAngle(DistanceInMeters(start, centre)/NM_TO_M);
+  // double dLat = start.lat - centre.lat;
+  // double dLon = (start.lon - centre.lon);
+  // double r = sqrt(dLat*dLat + dLon*dLon);
+  double r = DistToAngle(DistanceInMeters(start, centre)/NM_TO_M);
   // compute the angle of the arc
   double a1 = AngleRad(centre, start);
   double a2 = AngleRad(centre, end);
-  double arcAngleRad = (cw) ? a2 - a1 : a1 - a2;
-  if (arcAngleRad < 0) arcAngleRad += M_PI*2;
+  Position test = ComputeArcPoint(centre, 1, -3);
+  double test2 = AngleRad(centre, test);
+  // double arcAngleRad = (cw) ? a2 - a1 : a1 - a2;
+  // if (arcAngleRad < 0) arcAngleRad += M_2PI;
   // divide the arc to n sectors according the angle
-  int n = 10;
-  double part = arcAngleRad /n;
-  for (int i = 1; i < n-1; ++i) {
+  // int n = 2;
+  // double part = arcAngleRad /n;
+  /* for (int i = 1; i < n; ++i) {
     // insert the middle arc vertex
     double partAngle = (cw) ? a1 + i*part : a1 - i*part;
     Position arcPoint = ComputeArcPoint(centre, r, partAngle);
     vertexList->push_back(arcPoint);
+  }*/
+  /* for (double angle = ARC_GRANULARITY; angle < arcAngleRad;
+    angle += ARC_GRANULARITY) {
+    double partAngle = (cw) ? a1 + angle : a1 - angle;
+    Position arcPoint = ComputeArcPoint(centre, r, partAngle);
+    vertexList->push_back(arcPoint);
+  }*/
+  if (cw) {
+    if (a2 < a1) a2 += M_2PI;
+    for (double angle = a1; angle < a2;
+      angle += ARC_GRANULARITY) {
+      // if (angle > M_PI) angle -= M_2PI;
+      Position arcPoint = ComputeArcPoint(centre, r, angle);
+      vertexList->push_back(arcPoint);
+    }
+  } else {
+    if (a1 < a2) a1 += M_2PI;
+    for (double angle = a1; angle > a2;
+      angle -= ARC_GRANULARITY) {
+      // if (angle < M_PI) angle += M_2PI;
+      Position arcPoint = ComputeArcPoint(centre, r, angle);
+      vertexList->push_back(arcPoint);
+    }
   }
   // insert end
   // vertexList->push_back(end);
@@ -244,17 +275,31 @@ void oaEngine::InsertArcII(const Position& centre, const Position& start,
 
 double oaEngine::AngleRad(const Position& centre, const Position& point) {
   double lat = point.lat - centre.lat;
-  double lon = (point.lon - centre.lon)*cos(point.lat);
+  double lon = (point.lon - centre.lon)*cos(point.lat*DEG_TO_RAD);
   double a;
-  if (lat != 0) {
+  a = atan2(lon, lat);
+  /* rubbish
+  if (abs(lat) > abs(lon)) {
+    a = atan(lon/lat);
+    if (lat < 0) a += M_PI;
+  } else {
+    a = atan(-lat/lon);
+    if (lon < 0) a += M_PI;
+    a = a - M_PI/2;
+  }*/
+
+  /*if (lat != 0) {
     a = atan(lon/lat);
     if (lat < 0) a += M_PI;
   } else {
     // a = acot(lat/lon);
     a = (lon > 0) ? M_PI/2 : 3 * M_PI/2;
-  }
-  if (a < 0) a += 2*M_PI;
-  if (a > 2*M_PI) a -= 2*M_PI;
+  }*/
+  // if (a < 0) a += 2*M_PI;
+  // if (a > 2*M_PI) a -= 2*M_PI;
+  // a = a - sin %(2*M_PI);
+  // if (abs(a) > M_2PI || a < 0)
+    // a = a - floor(a/M_2PI)*M_2PI;
   return a;
 }
 
@@ -264,7 +309,7 @@ Position oaEngine::ComputeArcPoint(const Position& centre, double r,
   double lat = cos(partAngle) * r;
   Position result;
   result.lat = centre.lat + lat;
-  result.lon = centre.lon + lon * 1/cos(result.lat*DEG_TO_RAD);
+  result.lon = centre.lon + lon / cos(result.lat*DEG_TO_RAD);
   return result;
 }
 }  // Airspaces

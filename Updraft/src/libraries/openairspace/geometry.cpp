@@ -22,7 +22,7 @@ ArcI::ArcI() {
 ArcI::ArcI(const Position& C_, const double& R_, const bool CW_,
   const double& S_, const double& E_, const double& z_) {
   this->centre = new Position(C_);
-  this->R = R_;
+  this->r = R_;
   this->cw = CW_;
   this->start = S_;
   this->end = E_;
@@ -61,7 +61,7 @@ Circle::Circle() {
 Circle::Circle(const OpenAirspace::Position &c_,
   const double R_, const double &z_) {
   this->centre = new Position(c_);
-  this->R = R_;
+  this->r = R_;
   this->zoom = z_;
   this->valid = true;
 }

@@ -27,9 +27,16 @@ static const double RAD_TO_DEG = 1/DEG_TO_RAD;
 
 /// Nautical miles to meter const
 static const int NM_TO_M = 1852;
+static const double M_TO_NM = 1/1852;
 
 /// Earth's quatratic mean radius for WGS-84
 static const double EARTH_RADIUS_IN_METERS = 6372797.560856;
+
+/// airspace arcs granularity
+static const double ARC_GRANULARITY = 0.05;
+
+/// 2pi
+static const double M_2PI = 2*M_PI;
 
 class oaEngine {
  public:
