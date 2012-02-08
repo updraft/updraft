@@ -11,6 +11,11 @@ Updraft::Updraft(int argc, char** argv)
 
   installTranslator(&trans);
 
+  QPixmap splashImage(
+    QCoreApplication::applicationDirPath() + "/data/splash.png");
+  splash.setPixmap(splashImage);
+  splash.show();
+
   mainWindow = new MainWindow(NULL);
   settingsManager = new SettingsManager();
   fileTypeManager = new FileTypeManager();
@@ -37,7 +42,12 @@ QString Updraft::getDataDirectory() {
 /// Shows main window, and enters event loop.
 int Updraft::exec() {
   mainWindow->show();
+  hideSplash();
   return QApplication::exec();
+}
+
+void Updraft::hideSplash() {
+  splash.finish(mainWindow);
 }
 
 }  // End namespace Core
