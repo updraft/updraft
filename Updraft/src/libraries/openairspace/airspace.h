@@ -155,16 +155,18 @@ class OPENAIRSPACE_EXPORT Airspace {
     // Airspace(const Airspace&);
 
     /// Returns the name of the AirSpace
-    inline const QString& GetName() { return *this->AN; }
+    inline const QString* const GetName() const { return this->AN; }
 
     /// Returns the class of the AirSpace
-    inline const OpenAirspace::Airspace::ACType& GetClass() { return this->AC; }
+    inline const OpenAirspace::Airspace::ACType& GetClass() {
+      return this->AC;
+    }
 
     /// Returns the floor of the AirSpace
-    inline const QString& GetFloor() { return *this->AL; }
+    inline const QString* const GetFloor() const { return this->AL; }
 
     /// Returns the ceiling of the AirSpace
-    inline const QString& GetCeiling() { return *this->AH; }
+    inline const QString* const GetCeiling() const { return this->AH; }
 
     /// Returns the tag coordinates of the AirSpace
     inline const QList<Position*>& GetTagCoor() {
@@ -233,19 +235,20 @@ class OPENAIRSPACE_EXPORT Airspace {
     /// Contains the name of the aispace.
     /// Required.
     QString* AN;
-    bool validAN;
+    // bool validAN;
 
     /// Airspace Floor.
     /// Altitude floor of the airspace in ft.
     /// Use -10000 for SFC.
     QString* AL;
-    bool validAL;
+    // bool validAL;
 
     /// Airspace Ceiling
     /// Altitude ciling of the airspace in ft.
     /// AH < AL
     QString* AH;
-    bool validAH;
+    // bool validAH;
+    // int AHft;
 
     /// Airspace name label coordinates.
     /// List of coordinates, where to place the airspace name label on the map.

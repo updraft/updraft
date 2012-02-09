@@ -15,7 +15,7 @@ namespace OpenAirspace {
       return this->allAirspaces->at(i);}
 
     /// Returns the name of the AirSpace
-    inline const QString& GetName(int i) {
+    inline const QString* const GetName(int i) const {
       return this->allAirspaces->at(i)->GetName();}
 
     /// Returns the used airspaces count
@@ -27,11 +27,11 @@ namespace OpenAirspace {
       return this->allAirspaces->at(i)->GetClass();}
 
     /// Returns the floor of the AirSpace
-    inline const QString& GetFloor(int i) {
+    inline const QString* const GetFloor(int i) const {
       return this->allAirspaces->at(i)->GetFloor(); }
 
     /// Returns the ceiling of the AirSpace
-    inline const QString& GetCeiling(int i) {
+    inline const QString* const GetCeiling(int i) const {
       return this->allAirspaces->at(i)->GetCeiling(); }
 
     /// Returns the tag coordinates of the AirSpace

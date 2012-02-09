@@ -29,6 +29,9 @@ static const double RAD_TO_DEG = 1/DEG_TO_RAD;
 static const int NM_TO_M = 1852;
 static const double M_TO_NM = 1/1852;
 
+/// Foot to meters const
+static const double FT_TO_M = 0.3048;
+
 /// Earth's quatratic mean radius for WGS-84
 static const double EARTH_RADIUS_IN_METERS = 6372797.560856;
 
@@ -50,7 +53,13 @@ class oaEngine {
   QVector<QTreeWidgetItem*> treeItems;
 
   /// Draw polygon
-  bool Polygon();
+  osg::Geometry* DrawPolygon(QList<Position>* pointsWGS,
+    osg::Vec4& col, osg::PrimitiveSet::Mode primitive, int height);
+
+  /// Draw polygon sides
+  osg::Geometry* DrawPolygonSides(const QList<Position>* pointsWGS,
+    osg::Vec4& col, osg::PrimitiveSet::Mode primitive, int floor,
+    int ceiling);
 
   /// compute the WGS angle given the distance in nm
   double DistToAngle(double dist);
@@ -62,12 +71,19 @@ class oaEngine {
   double DistanceInMeters(const Position& from, const Position& to);
 
   /// Insert Arc into the OGL vertex array
-  // void InsertArcII(const Position& centre,
-  //   const Position& start, const Position& end,
-  //   const osg::Vec4& col, osg::Vec4Array*
-  //     vertexArray, osg::Vec4Array* colourArray);
-  void InsertArcII(const Position& centre, const Position& start,
-    const Position& end, bool cw, QList<Position>* vertexList, int&);
+  void InsertArcI(const OpenAirspace::ArcI& aa,
+    QList<Position>* vertexList);
+  void InsertArcII(const OpenAirspace::ArcII& aa,
+    QList<Position>* vertexList);
+  // void InsertArcII(const Position& centre, const Position& start,
+  //   const Position& end, bool cw, QList<Position>* vertexList);
+  void InsertCircle(const OpenAirspace::Circle& cc,
+    QList<Position>* vertexList);
+
+  /// Insert middle of the arc - angles from/to in rads, r in degs, pos WGS
+  void InsertMidArc(const Position& centre, double from,
+    double to, const bool cw, const double& r,
+    QList<Position>* vertexList);
 
   /// compute the circular coord angle given centre and point on circ 0 ontop
   double AngleRad(const Position& centre, const Position& point);
@@ -76,6 +92,8 @@ class oaEngine {
   Position ComputeArcPoint(const Position& centre, double r, double partAngle);
   // double Dot(const osg::Vec2d&, const osg::Vec2d&);
 
+  /// compute height
+  int ParseHeight(const QString& parsedString, int gnd);
   /// Split the arc
   // Split()
 };  // oaEngine

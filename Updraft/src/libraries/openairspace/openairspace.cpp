@@ -7,7 +7,7 @@
 
 namespace OpenAirspace {
   Parser::Parser(const QString& fileName) {
-    qDebug("Parser ctor");
+    // qDebug("Parser ctor");
     QFile file(fileName);
 
     if (!file.open(QFile::ReadOnly)) {
@@ -24,7 +24,7 @@ namespace OpenAirspace {
     if (ts.atEnd())
       qDebug("Not supported OpenAirspace format.");
     else
-      qDebug("Parsing OpenAirspace file %s", fileName.toAscii().data());
+      // qDebug("Parsing OpenAirspace file %s", fileName.toAscii().data());
 
     this->allAirspaces = new QList<Airspace*>();
     while (!ts.atEnd()) {
@@ -37,7 +37,7 @@ namespace OpenAirspace {
     file.close();
   }
   Parser::~Parser(void) {
-    qDebug("Parser dtor");
+    // qDebug("Parser dtor");
     for (int i = 0; i < allAirspaces->size(); ++i) {
       Airspace* a = allAirspaces->at(i);
       delete a;

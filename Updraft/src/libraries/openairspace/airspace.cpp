@@ -33,9 +33,12 @@ namespace OpenAirspace {
     */
 
 
-    this->validAN = false;
-    this->validAL = false;
-    this->validAH = false;
+    this->AL = NULL;
+    this->AH = NULL;
+    this->AN = NULL;
+    // this->validAN = false;
+    // this->validAL = false;
+    // this->validAH = false;
     this->validAT = false;
     this->validTO = false;
     this->validTC = false;
@@ -87,24 +90,25 @@ namespace OpenAirspace {
         parse = parse.left(comment);
 
       if (text == "AN") {
-        if (this->validAN)
+        if (this->AN)
           *this->AN = parse;
         else
           this->AN = new QString(parse);
-        qDebug("%s", AN->toAscii().data());
-        this->validAN = true;
+        // qDebug("%s", AN->toAscii().data());
+        // this->validAN = true;
       } else if (text == "AL") {
-        if (this->validAL)
+        if (this->AL)
           *this->AL = parse;
         else
           this->AL = new QString(parse);  // can be text e.g. Ask on 122.8
-        this->validAL = true;
+        // this->validAL = true;
       } else if (text == "AH") {
-        if (this->validAH)
+        if (this->AH)
           *this->AH = parse;
         else
-          this->AH = new QString(parse);  // can be text e.g. Ask on 122.8
-        this->validAH = true;
+          // can be text e.g. Ask on 122.8
+          this->AH = new QString(parse);
+        // this->validAH = true;
       } else if (text == "AT") {
         if (!this->validAT)
           this->AT = new QList<Position*>();
@@ -304,15 +308,15 @@ namespace OpenAirspace {
   }
 
   Airspace::~Airspace() {
-    if (validAN) {
+    if (this->AN) {
       delete AN;
       AN = NULL;
     }
-    if (validAL) {
+    if (this->AL) {
       delete AL;
       AL = NULL;
     }
-    if (validAH) {
+    if (this->AL) {
       delete AH;
       AH = NULL;
     }
