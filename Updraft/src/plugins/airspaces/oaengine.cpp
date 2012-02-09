@@ -33,7 +33,7 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
 
       // Get the floor and ceiling of the airspace in ft msl
       // set the height of the ground in ff msl
-      int gnd = 0;  // TODO(Monkey): get the groud level!
+      int gnd = 260;  // TODO(Monkey): get the groud level!
       int roof = 80000;
       // set the heights of the airspace in ft msl
       double ceiling = (A->GetCeiling()) ?
@@ -92,16 +92,22 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
 
         // Draw contours
         // osg::Vec4 fullCol(col.x(), col.y(), col.z(), 0.5f);
-        osg::Vec4 fullCol(0.0f, 0.0f, 0.0f, 0.5f);
+        osg::Vec4 fullCol(0.0f, 0.0f, 0.0f, 1.0f);
         // draw top polygon
         geom = DrawPolygon(pointsWGS, fullCol,
           osg::PrimitiveSet::LINE_STRIP, ceiling);
         OAGeode->addDrawable(geom);
         // draw bottom poly
-        geom = DrawPolygon(pointsWGS, fullCol,
-          osg::PrimitiveSet::LINE_STRIP, floor);
-        OAGeode->addDrawable(geom);
-      }
+        if (floor > gnd) {
+          geom = DrawPolygon(pointsWGS, fullCol,
+            osg::PrimitiveSet::LINE_STRIP, floor);
+          OAGeode->addDrawable(geom);
+        }
+        /* Side contours
+        geom = DrawPolygonSides(pointsWGS, fullCol,
+          osg::PrimitiveSet::LINES, floor, ceiling);
+        OAGeode->addDrawable(geom);*/
+    }
     }
     // change the thickness of the line
     osg::LineWidth* linewidth = new osg::LineWidth();
@@ -113,7 +119,13 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
     stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     stateSet->setMode(GL_LINE_SMOOTH, osg::StateAttribute::ON);
     // set transparency
+    // stateSet->setMode(GL_ALPHA_TEST, osg::StateAttribute::ON);
     stateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
+
+    // stateSet->setMode(GL_POLYGON_OFFSET_FILL, osg::StateAttribute::ON);
+    // stateSet->setMode(GL_POLYGON_OFFSET_LINE, osg::StateAttribute::ON);
+    // stateSet->setMode(GL_POLYGON_SMOOTH, osg::StateAttribute::ON);
+
 
     QString displayName = fileName.left(fileName.indexOf('.'));
     int cuntSlashes = displayName.count('/');
