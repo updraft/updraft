@@ -54,6 +54,10 @@ class MainWindow : public QMainWindow {
  private:
   void standardMenuItems();
 
+  /// Adjusts the visibility of the bottom pane.
+  /// Shows it when there are any tabs to display, otherwise hides it.
+  void tabsVisibility();
+
   Ui::MainWindow *ui;
 
   Menu* menuFile;
