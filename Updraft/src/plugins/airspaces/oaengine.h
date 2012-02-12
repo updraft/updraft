@@ -53,13 +53,21 @@ class oaEngine {
   QVector<QTreeWidgetItem*> treeItems;
 
   /// Draw polygon
-  osg::Geometry* DrawPolygon(QList<Position>* pointsWGS,
-    osg::Vec4& col, osg::PrimitiveSet::Mode primitive, int height);
+  osg::Geometry* DrawPolygon(
+    QList<Position>* pointsWGS,  // list of WGS polygon points
+    const QList<double>* pointsGnd,  // list of the groud levels
+    osg::Vec4& col,   // colour of the vertices
+    osg::PrimitiveSet::Mode primitive,  // drawing mode
+    int height, bool agl);   // height
 
   /// Draw polygon sides
-  osg::Geometry* DrawPolygonSides(const QList<Position>* pointsWGS,
-    osg::Vec4& col, osg::PrimitiveSet::Mode primitive, int floor,
-    int ceiling);
+  osg::Geometry* DrawPolygonSides(
+    const QList<Position>* pointsWGS,
+    const QList<double>* pointsGnd,
+    osg::Vec4& col,
+    osg::PrimitiveSet::Mode primitive,
+    const int floor, const int ceiling,
+    const bool floorAgl, const bool ceilingAgl);
 
   /// compute the WGS angle given the distance in nm
   double DistToAngle(double dist);
@@ -93,7 +101,7 @@ class oaEngine {
   // double Dot(const osg::Vec2d&, const osg::Vec2d&);
 
   /// compute height
-  int ParseHeight(const QString& parsedString, int gnd);
+  int ParseHeight(const QString& parsedString, bool& agl);
   /// Split the arc
   // Split()
 };  // oaEngine

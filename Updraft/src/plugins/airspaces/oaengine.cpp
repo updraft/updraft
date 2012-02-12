@@ -1,4 +1,5 @@
 #include "oaengine.h"
+#include <osgEarthUtil/ElevationManager>
 
 namespace Updraft {
 namespace Airspaces {
@@ -32,15 +33,27 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
       }
 
       // Get the floor and ceiling of the airspace in ft msl
-      // set the height of the ground in ff msl
-      int gnd = 260;  // TODO(Monkey): get the groud level!
+      // set the height of the ground in ft msl
+      // osgEarth::MapNode* map = mapLayerGroup->getMapNode();
+      // osgEarth::Util::ElevationManager* elevationMan =
+        // new osgEarth::Util::ElevationManager(map);
+      // elevationMan->getElevation(0,0
+      int gnd = 0;
       int roof = 80000;
+      bool floorAgl = false;
+      bool ceilingAgl = false;
       // set the heights of the airspace in ft msl
       double ceiling = (A->GetCeiling()) ?
-        ParseHeight(*A->GetCeiling(), gnd) : roof;
+        ParseHeight(*A->GetCeiling(), ceilingAgl) : roof;
       if (ceiling == gnd) ceiling = roof;
       double floor = (A->GetFloor()) ?
-        ParseHeight(*A->GetFloor(), gnd) : gnd;
+        ParseHeight(*A->GetFloor(), floorAgl) : gnd;
+      if (floor == gnd) floorAgl = true;
+
+      // To destroy artefacts of two planes in one space
+      double rnd = 0.00001 * (qrand() % 100000);
+      floor += rnd;
+      ceiling += rnd;
 
       // array of coords to draw
       QList<Position>* pointsWGS = new QList<Position>();
@@ -71,43 +84,78 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
           }
         }
 
+        // Compute the ground level
+        // TODO(Monkey): Not working without internet access
+        QList<double>* pointsGnd = NULL;
+        if (floorAgl || ceilingAgl) {
+          pointsGnd = new QList<double>();
+          osgEarth::Map* map = mapLayerGroup->getMapNode()->getMap();
+          osgEarth::Util::ElevationManager* elevationMan =
+            new osgEarth::Util::ElevationManager(map);
+          double res = 0;
+          double addGnd;
+
+          for (int k = 0; k < pointsWGS->size(); ++k) {
+            elevationMan->getElevation(
+              pointsWGS->at(k).lon,
+              pointsWGS->at(k).lat,
+              0, 0, addGnd, res);
+            pointsGnd->push_back(addGnd);
+          }
+        }
+
         // OGL draw the geom
         osg::Geometry* geom;
-
+/* // volume representation not used
         // Draw volume
         // draw top polygon
-        geom = DrawPolygon(pointsWGS, col,
-          osg::PrimitiveSet::POLYGON, ceiling);
+        geom = DrawPolygon(
+          pointsWGS,
+          pointsGnd,
+          col,
+          osg::PrimitiveSet::POLYGON,
+          ceiling);
         OAGeode->addDrawable(geom);
         // draw bottom poly
         if (floor > gnd) {
-          geom = DrawPolygon(pointsWGS, col,
-            osg::PrimitiveSet::POLYGON, floor);
+          geom = DrawPolygon(pointsWGS, pointsGnd, col,
+            osg::PrimitiveSet::POLYGON, floor, floorAgl);
           OAGeode->addDrawable(geom);
-        }
+        }*/
         // draw the sides
-        geom = DrawPolygonSides(pointsWGS, col,
-          osg::PrimitiveSet::TRIANGLE_STRIP, ceiling, floor);
+        geom = DrawPolygonSides(pointsWGS, pointsGnd, col,
+          osg::PrimitiveSet::TRIANGLE_STRIP, floor, ceiling,
+          floorAgl, ceilingAgl);
         OAGeode->addDrawable(geom);
 
+        // TODO(Monkey): query the height only once!
         // Draw contours
-        // osg::Vec4 fullCol(col.x(), col.y(), col.z(), 0.5f);
-        osg::Vec4 fullCol(0.0f, 0.0f, 0.0f, 1.0f);
+        osg::Vec4 fullCol(col.x(), col.y(), col.z(), 0.5f);
+        // osg::Vec4 fullCol(0.0f, 0.0f, 0.0f, 1.0f);
         // draw top polygon
-        geom = DrawPolygon(pointsWGS, fullCol,
-          osg::PrimitiveSet::LINE_STRIP, ceiling);
+        geom = DrawPolygon(pointsWGS, pointsGnd, fullCol,
+          osg::PrimitiveSet::LINE_STRIP, ceiling, ceilingAgl);
         OAGeode->addDrawable(geom);
         // draw bottom poly
         if (floor > gnd) {
-          geom = DrawPolygon(pointsWGS, fullCol,
-            osg::PrimitiveSet::LINE_STRIP, floor);
+          geom = DrawPolygon(pointsWGS, pointsGnd, fullCol,
+            osg::PrimitiveSet::LINE_STRIP, floor, floorAgl);
           OAGeode->addDrawable(geom);
         }
-        /* Side contours
-        geom = DrawPolygonSides(pointsWGS, fullCol,
-          osg::PrimitiveSet::LINES, floor, ceiling);
+        // Side contours
+        /* geom = DrawPolygonSides(pointsWGS, pointsGnd, fullCol,
+          osg::PrimitiveSet::LINES, floor, ceiling,
+          floorAgl, ceilingAgl);
         OAGeode->addDrawable(geom);*/
-    }
+
+        delete pointsWGS;
+        pointsWGS = NULL;
+
+        if (pointsGnd) {
+          delete pointsGnd;
+          pointsGnd = NULL;
+        }
+      }
     }
     // change the thickness of the line
     osg::LineWidth* linewidth = new osg::LineWidth();
@@ -119,7 +167,7 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
     stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     stateSet->setMode(GL_LINE_SMOOTH, osg::StateAttribute::ON);
     // set transparency
-    // stateSet->setMode(GL_ALPHA_TEST, osg::StateAttribute::ON);
+    stateSet->setMode(GL_ALPHA_TEST, osg::StateAttribute::ON);
     stateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
 
     // stateSet->setMode(GL_POLYGON_OFFSET_FILL, osg::StateAttribute::ON);
@@ -130,13 +178,19 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
     QString displayName = fileName.left(fileName.indexOf('.'));
     int cuntSlashes = displayName.count('/');
     displayName = displayName.section('/', cuntSlashes, cuntSlashes);
+
     return mapLayerGroup->insertMapLayer(OAGeode, displayName);
   }
   return NULL;
 }
 
-osg::Geometry* oaEngine::DrawPolygon(QList<Position>* pointsWGS,
-  osg::Vec4& col, osg::PrimitiveSet::Mode primitiveMode, int height) {
+osg::Geometry* oaEngine::DrawPolygon(
+  QList<Position>* pointsWGS,
+  const QList<double>* pointsGnd,
+  osg::Vec4& col,
+  osg::PrimitiveSet::Mode primitiveMode,
+  int height,
+  bool agl) {
   // Draw the closed polygon. In case of filled polygon,
   // ensure of its convexity (it's TRIANGLE_FAN)
 
@@ -158,27 +212,19 @@ osg::Geometry* oaEngine::DrawPolygon(QList<Position>* pointsWGS,
   // transformation matrix & coords
   osg::Matrixd coorTransformation;
   osg::Vec3 coord;
-
-  // TODO(Monkey) : ensure convexity !!!
-  /* if (primitiveMode == osg::PrimitiveSet::POLYGON) {
-    double latSum = 0;
-    double lonSum = 0;
-    // compute the mean for starters
-    for (int i = 0; i < pointsWGS->size(); ++i) {
-      latSum += pointsWGS->at(i).lat;
-      lonSum += pointsWGS->at(i).lon;
-    }
-    // insert centre of gravity (best I have so far)
-    objectPlacer->createPlacerMatrix(latSum/pointsWGS->size(),
-      lonSum/pointsWGS->size(), height*FT_TO_M, coorTransformation);
-    coord = osg::Vec3(0, 0, 0) * coorTransformation;
-    vertexData->push_back(coord);
-  }*/
+  double addGnd = 0;
 
   // Fill the OGL vertexArray
   for (int k = 0; k < pointsWGS->size(); ++k) {
-    objectPlacer->createPlacerMatrix(pointsWGS->at(k).lat,
-      pointsWGS->at(k).lon, height*FT_TO_M, coorTransformation);
+    if (agl && pointsGnd
+      && pointsGnd->size() == pointsWGS->size()) {
+      addGnd = pointsGnd->at(k);
+    }
+    objectPlacer->createPlacerMatrix(
+      pointsWGS->at(k).lat,
+      pointsWGS->at(k).lon,
+      (height*FT_TO_M) + addGnd,
+      coorTransformation);
     coord = osg::Vec3(0, 0, 0) * coorTransformation;
 
     vertexData->push_back(coord);
@@ -193,8 +239,11 @@ osg::Geometry* oaEngine::DrawPolygon(QList<Position>* pointsWGS,
 }
 
 osg::Geometry* oaEngine::DrawPolygonSides(const QList<Position>* pointsWGS,
-  osg::Vec4& col, osg::PrimitiveSet::Mode primitiveMode, int floor,
-  int ceiling) {
+  const QList<double>* pointsGnd,
+  osg::Vec4& col,
+  osg::PrimitiveSet::Mode primitiveMode,
+  const int floor, const int ceiling,
+  const bool floorAgl, const bool ceilingAgl) {
   // create map placer: to draw in the map
   osgEarth::Util::ObjectPlacer* objectPlacer =
     mapLayerGroup->getObjectPlacer();
@@ -214,19 +263,35 @@ osg::Geometry* oaEngine::DrawPolygonSides(const QList<Position>* pointsWGS,
   osg::Matrixd coorTransformation;
   osg::Vec3 coord;
 
+  double addFloorGnd = 0;
+  double addCeilingGnd = 0;
+
   // Fill the OGL vertexArray
   for (int k = 0; k < pointsWGS->size(); ++k) {
+    if (ceilingAgl && pointsGnd
+      && pointsGnd->size() == pointsWGS->size()) {
+      addCeilingGnd = pointsGnd->at(k);
+    }
     objectPlacer->createPlacerMatrix(pointsWGS->at(k).lat,
-      pointsWGS->at(k).lon, ceiling*FT_TO_M, coorTransformation);
+      pointsWGS->at(k).lon, ceiling*FT_TO_M + addCeilingGnd,
+      coorTransformation);
     coord = osg::Vec3(0, 0, 0) * coorTransformation;
 
     vertexData->push_back(coord);
 
+    if (floorAgl && pointsGnd
+      && pointsGnd->size() == pointsWGS->size()) {
+      addFloorGnd = pointsGnd->at(k);
+    }
     objectPlacer->createPlacerMatrix(pointsWGS->at(k).lat,
-      pointsWGS->at(k).lon, floor*FT_TO_M, coorTransformation);
+      pointsWGS->at(k).lon, floor*FT_TO_M + addFloorGnd,
+      coorTransformation);
     coord = osg::Vec3(0, 0, 0) * coorTransformation;
 
     vertexData->push_back(coord);
+
+    if (primitiveMode == osg::PrimitiveSet::LINES)
+      colors->push_back(col);
   }
   colors->push_back(col);
 
@@ -346,10 +411,12 @@ Position oaEngine::ComputeArcPoint(const Position& centre, double r,
   return result;
 }
 
-int oaEngine::ParseHeight(const QString& parsedString, int gnd) {
+int oaEngine::ParseHeight(const QString& parsedString,
+  bool& agl) {
   // parse the string to number in ft
   // if none of cond hit, return 0
-  int absoluteHeightInFt = gnd;
+  int absoluteHeightInFt = 0;
+  agl = false;
   if (parsedString.contains("FL", Qt::CaseInsensitive)) {
     // Compute the flight level = QNH1013.25 hPa MSL
     int s = parsedString.indexOf(QRegExp("[0-9]"));
@@ -363,7 +430,8 @@ int oaEngine::ParseHeight(const QString& parsedString, int gnd) {
   } else if (parsedString.contains("AGL", Qt::CaseInsensitive)) {
     int s = parsedString.indexOf(QRegExp("[0-9]"));
     int e = parsedString.lastIndexOf(QRegExp("[0-9]"));
-    absoluteHeightInFt = gnd + parsedString.mid(s, e - s + 1).toInt();
+    absoluteHeightInFt = parsedString.mid(s, e - s + 1).toInt();
+    agl = true;
   }
   return absoluteHeightInFt;
 }
