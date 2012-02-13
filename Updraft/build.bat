@@ -14,8 +14,6 @@ cls
 mkdir build
 cd build
 
-set osg_dir=c:/osg
-set osgearth_dir=c:/osgearth
-cmake -G "Visual Studio 9 2008" -DOSG_DIR=%osg_dir% -DOSGEARTH_DIR=%osgearth_dir% ..
+cmake -DOSG_DIR=%osg_dir% -DOSGEARTH_DIR=%osgearth_dir% ..
 
 cd ..
