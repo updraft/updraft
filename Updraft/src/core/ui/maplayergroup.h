@@ -49,6 +49,10 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   osgEarth::MapNode* getMapNode();
   osgEarth::Util::ObjectPlacer* getObjectPlacer();
 
+  /// Public functions that are not in interface
+  QTreeWidgetItem* getTopItem();
+  osg::Group* getGroup();
+
  private slots:
   /// Called when a map layer is about to be displayed/hidden.
   /// \param item pointer to QTreeWidgetItem item which have been changed
@@ -59,9 +63,7 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   /// widget to draw the list of the map layers
   QTreeWidget* listWidget;
   /// top level item
-  QTreeWidgetItem *treeItem;
-  typedef QMap<MapLayerInterface*, QTreeWidgetItem*> TMapLayers;
-  TMapLayers mapLayers;
+  QTreeWidgetItem* treeItem;
 
   /// Pointer to the subtree of the scene associated with this layer.
   osg::Group* nodeGroup;
