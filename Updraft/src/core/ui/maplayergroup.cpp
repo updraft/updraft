@@ -242,15 +242,5 @@ void MapLayerGroup::addIntoList(QTreeWidgetItem *item, int pos) {
   treeItem->insertChild(position, item);
 }
 
-// These functions are not in the interface:
-
-QTreeWidgetItem* getTopItem() {
-  return treeItem;
-}
-
-osg::Group* getGroup() {
-  return nodeGroup;
-}
-
 }  // End namespace Core
 }  // End namespace Updraft

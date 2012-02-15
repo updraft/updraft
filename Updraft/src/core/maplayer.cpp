@@ -7,58 +7,32 @@
 namespace Updraft {
 namespace Core {
 
-MapLayer::MapLayer(MapLayerType t, Layer l,
-  MapLayerGroup* parentMapLayerGroup, QTreeWidgetItem* checkbox) {
+MapLayer::MapLayer(MapLayerType t, Layer l) {
   layerType = t;
   layer = l;
-
-  mapLayerGroup = parentMapLayerGroup;
-  listItem = checkbox;
 }
 
-MapLayer::MapLayer
-  (MapLayerGroup* parentMapLayerGroup, QTreeWidgetItem* checkbox) {
-  layerType = OSG_NODE_LAYER;
-  layer.node = NULL;
-  
-  mapLayerGroup = parentMapLayerGroup;
-  listItem = checkbox;
+MapLayer::MapLayer() {
 }
 
-MapLayer::MapLayer(osg::Node* node,
-  MapLayerGroup* parentMapLayerGroup, QTreeWidgetItem* checkbox) {
+MapLayer::MapLayer(osg::Node* node) {
   layerType = OSG_NODE_LAYER;
   layer.osgNode = node;
-
-  mapLayerGroup = parentMapLayerGroup;
-  listItem = checkbox;
 }
 
-MapLayer::MapLayer(osgEarth::ImageLayer* imageLayer,
-  MapLayerGroup* parentMapLayerGroup, QTreeWidgetItem* checkbox) {
+MapLayer::MapLayer(osgEarth::ImageLayer* imageLayer) {
   layerType = IMAGE_LAYER;
   layer.imageLayer = imageLayer;
-
-  mapLayerGroup = parentMapLayerGroup;
-  listItem = checkbox;
 }
 
-MapLayer::MapLayer(osgEarth::ElevationLayer* elevationLayer,
-  MapLayerGroup* parentMapLayerGroup, QTreeWidgetItem* checkbox) {
+MapLayer::MapLayer(osgEarth::ElevationLayer* elevationLayer) {
   layerType = ELEVATION_LAYER;
   layer.elevationLayer = elevationLayer;
-
-  mapLayerGroup = parentMapLayerGroup;
-  listItem = checkbox;
 }
 
-MapLayer::MapLayer(osgEarth::ModelLayer* modelLayer,
-  MapLayerGroup* parentMapLayerGroup, QTreeWidgetItem* checkbox) {
+MapLayer::MapLayer(osgEarth::ModelLayer* modelLayer) {
   layerType = MODEL_LAYER;
   layer.modelLayer = modelLayer;
-
-  mapLayerGroup = parentMapLayerGroup;
-  listItem = checkbox;
 }
 
 MapLayer::~MapLayer() {

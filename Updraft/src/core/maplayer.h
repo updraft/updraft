@@ -18,27 +18,22 @@ class MapLayer : public QObject, public MapLayerInterface {
 
  public:
   /// Creates an empty map layer.
-  MapLayer(MapLayerGroup* parentMapLayerGroup, QTreeWidgetItem* checkbox);
+  MapLayer();
 
   /// Creates a MapLayer with given values.
-  MapLayer(MapLayerType type, Layer layer,
-    MapLayerGroup* parentMapLayerGroup, QTreeWidgetItem* checkbox);
+  MapLayer(MapLayerType type, Layer layer);
 
   /// Constructs a MapLayer and sets its type to OSG_NODE_LAYER.
-  MapLayer(osg::Node* node,
-    MapLayerGroup* parentMapLayerGroup, QTreeWidgetItem* checkbox);
+  explicit MapLayer(osg::Node* node);
 
   /// Constructs a MapLayer and sets its type to IMAGE_LAYER.
-  MapLayer(osgEarth::ImageLayer* imageLayer,
-    MapLayerGroup* parentMapLayerGroup, QTreeWidgetItem* checkbox);
+  explicit MapLayer(osgEarth::ImageLayer* imageLayer);
 
   /// Constructs a MapLayer and sets its type to ELEVATION_LAYER.
-  MapLayer(osgEarth::ElevationLayer* elevationLayer,
-    MapLayerGroup* parentMapLayerGroup, QTreeWidgetItem* checkbox);
+  explicit MapLayer(osgEarth::ElevationLayer* elevationLayer);
 
   /// Constructs a MapLayer and sets its type to MODEL_LAYER.
-  MapLayer(osgEarth::ModelLayer* modelLayer,
-    MapLayerGroup* parentMapLayerGroup, QTreeWidgetItem* checkbox);
+  explicit MapLayer(osgEarth::ModelLayer* modelLayer);
 
   ~MapLayer();
 
@@ -68,12 +63,6 @@ class MapLayer : public QObject, public MapLayerInterface {
 
   /// The pointer to the appropriate map layer structure.
   Layer layer;
-
-  /// The group this map layer belongs to.
-  MapLayerGroup* mapLayerGroup;
-
-  /// Checkbox in the menu related to this map layer.
-  QTreeWidgetItem* listItem;
 };
 
 }  // End namespace Core
