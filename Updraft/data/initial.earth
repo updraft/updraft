@@ -6,10 +6,18 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
 -->
 
 <map name="Initial map" type="geocentric">
+    <!--
     <cache type="filesystem" >
        <path>cache</path>
     </cache>
+    -->
+    
+    <cache type="sqlite3">
+     <path>maps_cache.db</path>
+     <max_size>300</max_size> <!-- MB -->
+    </cache>
 
+    <lighting>false</lighting>
     <options>
         <lighting>false</lighting>
     </options>
@@ -19,13 +27,48 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
     </image>
         
     <image name="Online maps" driver="arcgis">
-        <!--<cache_policy usage="cache_only"/>-->
         <url>http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_Imagery_World_2D/MapServer</url>
     </image>
     
 	  <elevation name="Elevation layer" driver="tms">
         <url>http://readymap.org/readymap/tiles/1.0.0/9/</url>    
     </elevation>
+    
+    <!--
+    <model name="states" driver="feature_geom">
+        <features name="states" driver="ogr">
+            <url>world.shp</url>
+        </features>
+        <max_granularity>5.0</max_granularity>
+
+        <styles>
+            <style type="text/css">
+                states {
+                   stroke: #ffff00;
+                   altitude-offset: 1000;                   
+                }                    
+            </style>
+        </styles>
+		<lighting>false</lighting> 
+    </model>
+    -->
+    
+    <model name="State borders" driver="feature_stencil">
+        <features name="world" driver="ogr">
+            <url>world.shp</url>
+            <convert type="line"/>
+        </features>
+        <extrusion_distance>400000</extrusion_distance>
+        <styles>
+            <style type="text/css">
+                world {
+                   stroke: #ffff00;
+                   stroke-opacity: 0.5;
+                   stroke-width: 0.1;
+                }            
+            </style>
+        </styles>
+    </model>
 </map>
 
 

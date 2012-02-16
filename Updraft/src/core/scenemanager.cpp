@@ -1,10 +1,10 @@
 #include <osgQt/GraphicsWindowQt>
 // TODO(Kuba) Remove the #ifdefs once we know the correct includes
-#ifdef __linux__
+// #ifdef __linux__
   #include <osgEarthUtil/Viewpoint>
-#else
-  #include <osgEarth/Viewpoint>
-#endif
+// #else
+//  #include <osgEarth/Viewpoint>
+// #endif
 #include <osgEarthUtil/ObjectPlacer>
 #include <osgEarth/Map>
 #include <osgEarth/MapNode>
@@ -30,6 +30,7 @@ SceneManager::SceneManager(QString baseEarthFile,
   // create camera
   camera = createCamera(traits);
   camera->setGraphicsContext(graphicsWindow);
+  camera->setClearStencil(128);
   camera->setClearMask
     (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   viewer->setCamera(camera);
@@ -54,7 +55,7 @@ SceneManager::SceneManager(QString baseEarthFile,
 
   // set manipulator
   osgEarth::Util::Viewpoint start(14.42046, 50.087811,
-    0, 0.0, -90.0, /*6e3*/6e7);
+    0, 0.0, -90.0, 12e6 /*6e7*/);
   // osgEarth::Util::EarthManipulator* manipulator =
     // new osgEarth::Util::EarthManipulator();
   MapManipulator* manipulator = new MapManipulator();
@@ -113,6 +114,7 @@ osg::GraphicsContext::Traits* SceneManager::createGraphicsTraits
     (int x, int y, int w, int h, const std::string& name,
     bool windowDecoration) {
   osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
+  ds->setMinimumNumStencilBits(8);
   osg::GraphicsContext::Traits* traits = new osg::GraphicsContext::Traits();
   traits->windowName = name;
   traits->windowDecoration = windowDecoration;

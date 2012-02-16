@@ -25,7 +25,9 @@ Updraft::Updraft(int argc, char** argv)
   // Create the map layer group for initial map.
   osgEarth::MapNode* map = sceneManager->getMapNode();
   osg::Group* group = updraft->sceneManager->newGroup();
-  QString title = QString::fromStdString(map->getMap()->getName());
+  // TODO(Maria): Get name from the .earth file.
+  // QString title = QString::fromStdString(map->getMap()->getName());
+  QString title("Maps");
   MapLayerGroupInterface* mapLayerGroup =
     mainWindow->createMapLayerGroup(title, group, map);
   sceneManager->getMapManager()->fillMapLayerGroup(mapLayerGroup);
