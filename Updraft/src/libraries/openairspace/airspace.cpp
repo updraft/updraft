@@ -354,4 +354,44 @@ namespace OpenAirspace {
 
     // DP,DC,DA,DB
   }
+
+int Airspace::ParseHeight(bool floor, bool* agl) {
+  // parse the string to number in ft
+  // if none of cond hit, return 0
+  int absoluteHeightInFt = 0;
+  *agl = false;
+  QString* parsedString;
+
+  // set the related parsed text
+  if (floor) {
+    if (this->AL)
+      parsedString = this->AL;
+    else
+      return 0;
+  } else {
+    if (this->AH)
+      parsedString = this->AH;
+    else
+      return 0;
+  }
+
+  if (parsedString->contains("FL", Qt::CaseInsensitive)) {
+    // Compute the flight level = QNH1013.25 hPa MSL
+    int s = parsedString->indexOf(QRegExp("[0-9]"));
+    int e = parsedString->lastIndexOf(QRegExp("[0-9]"));
+    int FL = parsedString->mid(s, e - s + 1).toInt();
+    absoluteHeightInFt = FL * 100;
+  } else if (parsedString->contains("MSL", Qt::CaseInsensitive)) {
+    int s = parsedString->indexOf(QRegExp("[0-9]"));
+    int e = parsedString->lastIndexOf(QRegExp("[0-9]"));
+    absoluteHeightInFt = parsedString->mid(s, e - s + 1).toInt();
+  } else if (parsedString->contains("AGL", Qt::CaseInsensitive)) {
+    int s = parsedString->indexOf(QRegExp("[0-9]"));
+    int e = parsedString->lastIndexOf(QRegExp("[0-9]"));
+    absoluteHeightInFt = parsedString->mid(s, e - s + 1).toInt();
+    *agl = true;
+  }
+
+  return absoluteHeightInFt;
+}
 }  // OpenAirspace

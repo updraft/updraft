@@ -6,6 +6,7 @@
 #include "openairspace_global.h"
 #include "geometry.h"
 
+
 /*!
 UserAirspace parser library.
 
@@ -206,12 +207,12 @@ class OPENAIRSPACE_EXPORT Airspace {
       return *this->geometry; }
 
     /// Get Pen & Brush
-    inline const SP_str* GetPen() {
+    inline const SP_str* GetPen() const {
       if (this->validSP)
         return SP;
       else
         return NULL; }
-    inline const SB_str* GetBrush() {
+    inline const SB_str* GetBrush() const {
       if (this->validSB)
         return SB;
       else
@@ -223,6 +224,8 @@ class OPENAIRSPACE_EXPORT Airspace {
     /// Coordinates of the center used by more airspaces.
     static Position X;
     static bool validX;
+
+    int ParseHeight(bool floor, bool* agl);
 
   private :
     /// Parse the coordinates from string

@@ -21,6 +21,7 @@ namespace Airspaces {
 
 typedef OpenAirspace::Coordinate Position;
 
+/// Init constants
 /// PI/180 constant
 static const double DEG_TO_RAD = 0.017453292519943295769236907684886;
 static const double RAD_TO_DEG = 1/DEG_TO_RAD;
@@ -35,15 +36,24 @@ static const double FT_TO_M = 0.3048;
 /// Earth's quatratic mean radius for WGS-84
 static const double EARTH_RADIUS_IN_METERS = 6372797.560856;
 
-/// airspace arcs granularity
-static const double ARC_GRANULARITY = 0.05;
-
 /// 2pi
 static const double M_2PI = 2*M_PI;
 
+/// airspace arcs granularity
+static const double ARC_GRANULARITY = 0.05;
+
+/// Default line trnsparency
+static const float DEFAULT_TRANSPARENCY = 0.1f;
+
+/// Default elevations in ft
+static const int GND = 0;
+static const int ROOF = 80000;
+
+
+
 class oaEngine {
  public:
-  explicit oaEngine(MapLayerGroupInterface* LG) {mapLayerGroup = LG;}
+  explicit oaEngine(MapLayerGroupInterface* LG);
   MapLayerInterface* Draw(const QString&);
   // bool Draw(const QString&);
 
@@ -51,6 +61,11 @@ class oaEngine {
   /// Map Layer Interface.
   MapLayerGroupInterface *mapLayerGroup;
   QVector<QTreeWidgetItem*> treeItems;
+
+  /// Line properties
+  /// width, colour
+  float width;
+  osg::Vec4f col;
 
   /// Draw polygon
   osg::Geometry* DrawPolygon(
@@ -100,10 +115,8 @@ class oaEngine {
   Position ComputeArcPoint(const Position& centre, double r, double partAngle);
   // double Dot(const osg::Vec2d&, const osg::Vec2d&);
 
-  /// compute height
-  int ParseHeight(const QString& parsedString, bool& agl);
-  /// Split the arc
-  // Split()
+  /// Set the colour and width of the line if possible
+  void oaEngine::SetWidthAndColour(const OpenAirspace::Airspace* A);
 };  // oaEngine
 }  // Airspaces
 }  // Updraft

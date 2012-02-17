@@ -7,6 +7,8 @@
 #include <QtCore/qtextstream.h>
 #include <QtCore/qlist.h>
 #include <QPair>
+#include <QString>
+#include <QRegExp>
 
 
 #ifdef UPDRAFT_OPENAIRSPACE_INTERNAL

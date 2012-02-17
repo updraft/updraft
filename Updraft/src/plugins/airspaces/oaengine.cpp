@@ -4,56 +4,48 @@
 namespace Updraft {
 namespace Airspaces {
 
+oaEngine::oaEngine(MapLayerGroupInterface* LG) {
+  this->mapLayerGroup = LG;
+  // set the defeault line width
+  this->width = 1.0f;
+  // set the default line colour
+  col = osg::Vec4f(0.0f, 0.5f, 1.0f, DEFAULT_TRANSPARENCY);
+}
+
 MapLayerInterface* oaEngine::Draw(const QString& fileName) {
   OpenAirspace::Parser AirspaceSet(fileName);
 
-  float TRANSPARENCY = 0.1f;
-
   if (mapLayerGroup != NULL) {
-    osg::Geode* OAGeode = new osg::Geode();  // the root of the subscene
-    osg::Vec4 col(0.0f, 0.5f, 1.0f, TRANSPARENCY);
-    float width = 1;
+    // Init the elevation manager
+    osgEarth::Map* map = mapLayerGroup->getMapNode()->getMap();
+    osgEarth::Util::ElevationManager* elevationMan =
+      new osgEarth::Util::ElevationManager(map);
+
+    // init the subscene
+    osg::Geode* OAGeode = new osg::Geode();
+
+    // Cycle through all the parsed airspaces
     for (size_t i = 0; i < AirspaceSet.size(); ++i) {
-      // set colour
+      // Process the Airspace
       OpenAirspace::Airspace* A = AirspaceSet.at(i);
-      if (A->GetBrush()) {
-        float r = A->GetBrush()->R/255.0f;
-        float g = A->GetBrush()->G/255.0f;
-        float b = A->GetBrush()->B/255.0f;
-        if ( r >= 0 && g >= 0 && b >= 0)
-          col.set(r, g, b, col.w());
-      }
-      if (A->GetPen()) {
-        float r = A->GetPen()->R/255.0f;
-        float g = A->GetPen()->G/255.0f;
-        float b = A->GetPen()->B/255.0f;
-        if ( r >= 0 && g >= 0 && b >= 0)
-          col.set(r, g, b, col.w());
-        width = A->GetPen()->width;
-      }
+
+      // set the colour of the geometry if defined
+      SetWidthAndColour(A);
 
       // Get the floor and ceiling of the airspace in ft msl
       // set the height of the ground in ft msl
-      // osgEarth::MapNode* map = mapLayerGroup->getMapNode();
-      // osgEarth::Util::ElevationManager* elevationMan =
-        // new osgEarth::Util::ElevationManager(map);
-      // elevationMan->getElevation(0,0
-      int gnd = 0;
-      int roof = 80000;
+      // distinguish whether is the height value related to gnd level
       bool floorAgl = false;
       bool ceilingAgl = false;
       // set the heights of the airspace in ft msl
-      double ceiling = (A->GetCeiling()) ?
-        ParseHeight(*A->GetCeiling(), ceilingAgl) : roof;
-      if (ceiling == gnd) ceiling = roof;
-      double floor = (A->GetFloor()) ?
-        ParseHeight(*A->GetFloor(), floorAgl) : gnd;
-      if (floor == gnd) floorAgl = true;
+      int ceiling = A->ParseHeight(false, &ceilingAgl);
+      if (ceiling == 0) ceiling = ROOF;
+      int floor = A->ParseHeight(true, &floorAgl);
 
       // To destroy artefacts of two planes in one space
-      double rnd = 0.00001 * (qrand() % 100000);
+      double rnd = 0.05 * (qrand() % 100);
       floor += rnd;
-      ceiling += rnd;
+      ceiling -= rnd;
 
       // array of coords to draw
       QList<Position>* pointsWGS = new QList<Position>();
@@ -89,17 +81,19 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
         QList<double>* pointsGnd = NULL;
         if (floorAgl || ceilingAgl) {
           pointsGnd = new QList<double>();
-          osgEarth::Map* map = mapLayerGroup->getMapNode()->getMap();
-          osgEarth::Util::ElevationManager* elevationMan =
-            new osgEarth::Util::ElevationManager(map);
           double res = 0;
           double addGnd;
+          osgEarth::Util::ElevationManager::Technique t =
+            elevationMan->getTechnique();
+          elevationMan->setTechnique(
+            osgEarth::Util::ElevationManager::TECHNIQUE_GEOMETRIC);
+          // int b = elevationMan->getMaxTilesToCache();
 
           for (int k = 0; k < pointsWGS->size(); ++k) {
             elevationMan->getElevation(
               pointsWGS->at(k).lon,
               pointsWGS->at(k).lat,
-              0, 0, addGnd, res);
+              0.0001, 0, addGnd, res);
             pointsGnd->push_back(addGnd);
           }
         }
@@ -137,7 +131,7 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
           osg::PrimitiveSet::LINE_STRIP, ceiling, ceilingAgl);
         OAGeode->addDrawable(geom);
         // draw bottom poly
-        if (floor > gnd) {
+        if (floor > GND) {
           geom = DrawPolygon(pointsWGS, pointsGnd, fullCol,
             osg::PrimitiveSet::LINE_STRIP, floor, floorAgl);
           OAGeode->addDrawable(geom);
@@ -411,29 +405,22 @@ Position oaEngine::ComputeArcPoint(const Position& centre, double r,
   return result;
 }
 
-int oaEngine::ParseHeight(const QString& parsedString,
-  bool& agl) {
-  // parse the string to number in ft
-  // if none of cond hit, return 0
-  int absoluteHeightInFt = 0;
-  agl = false;
-  if (parsedString.contains("FL", Qt::CaseInsensitive)) {
-    // Compute the flight level = QNH1013.25 hPa MSL
-    int s = parsedString.indexOf(QRegExp("[0-9]"));
-    int e = parsedString.lastIndexOf(QRegExp("[0-9]"));
-    int FL = parsedString.mid(s, e - s + 1).toInt();
-    absoluteHeightInFt = FL * 100;
-  } else if (parsedString.contains("MSL", Qt::CaseInsensitive)) {
-    int s = parsedString.indexOf(QRegExp("[0-9]"));
-    int e = parsedString.lastIndexOf(QRegExp("[0-9]"));
-    absoluteHeightInFt = parsedString.mid(s, e - s + 1).toInt();
-  } else if (parsedString.contains("AGL", Qt::CaseInsensitive)) {
-    int s = parsedString.indexOf(QRegExp("[0-9]"));
-    int e = parsedString.lastIndexOf(QRegExp("[0-9]"));
-    absoluteHeightInFt = parsedString.mid(s, e - s + 1).toInt();
-    agl = true;
+void oaEngine::SetWidthAndColour(const OpenAirspace::Airspace* A) {
+  if (A->GetBrush()) {
+    float r = A->GetBrush()->R/255.0f;
+    float g = A->GetBrush()->G/255.0f;
+    float b = A->GetBrush()->B/255.0f;
+    if ( r >= 0 && g >= 0 && b >= 0)
+      col.set(r, g, b, col.w());
   }
-  return absoluteHeightInFt;
+  if (A->GetPen()) {
+    float r = A->GetPen()->R/255.0f;
+    float g = A->GetPen()->G/255.0f;
+    float b = A->GetPen()->B/255.0f;
+    if ( r >= 0 && g >= 0 && b >= 0)
+      col.set(r, g, b, col.w());
+    this->width = A->GetPen()->width;
+  }
 }
 }  // Airspaces
 }  // Updraft
