@@ -12,15 +12,11 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
     </cache>
     -->
     
-    <cache type="sqlite3">
-     <path>maps_cache.db</path>
-     <max_size>300</max_size> <!-- MB -->
+    <cache type="tms">
+      <path>osgearth_cache</path>
     </cache>
-
+    
     <lighting>false</lighting>
-    <options>
-        <lighting>false</lighting>
-    </options>
   
     <image name="Offline map" driver="gdal">
         <url>world.tif</url>
@@ -34,28 +30,10 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
         <url>http://readymap.org/readymap/tiles/1.0.0/9/</url>    
     </elevation>
     
-    <!--
-    <model name="states" driver="feature_geom">
-        <features name="states" driver="ogr">
-            <url>world.shp</url>
-        </features>
-        <max_granularity>5.0</max_granularity>
-
-        <styles>
-            <style type="text/css">
-                states {
-                   stroke: #ffff00;
-                   altitude-offset: 1000;                   
-                }                    
-            </style>
-        </styles>
-		<lighting>false</lighting> 
-    </model>
-    -->
-    
     <model name="State borders" driver="feature_stencil">
         <features name="world" driver="ogr">
-            <url>world.shp</url>
+            <url>state_borders_lq.shp</url>
+            <!-- <url>state_borders_hq.shp</url> -->
             <convert type="line"/>
         </features>
         <extrusion_distance>400000</extrusion_distance>
