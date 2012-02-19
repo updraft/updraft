@@ -30,13 +30,8 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   // Implementation of the virtual functions.
   MapLayerInterface* createEmptyMapLayer();
 
-  /// Inserts the map layer.
-  /// This function is called by all the other inserting functions,
-  /// that are just interface.
-  MapLayerInterface* insertMapLayer
-    (MapLayerInterface* layer, const QString& title, int pos = -1);
-  MapLayerInterface* insertMapLayer
-    (MapLayerType type, Layer layer, const QString& title, int pos = -1);
+  /// Multiple overloaded functions that instert maplayer
+  /// depending on the type of the layer.
   MapLayerInterface* insertMapLayer
     (osg::Node* layer, const QString& title, int pos = -1);
   MapLayerInterface* insertMapLayer
@@ -76,6 +71,12 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   void displayTree();
   void hideTree();
 
+  /// Inserts the map layer.
+  /// This function is called by all the other public inserting functions,
+  /// that are just interface.
+  MapLayerInterface* insertMapLayer
+    (MapLayerInterface* layer, const QString& title, int pos = -1);
+
   /// A procedure for adding the map layer into the scene tree.
   void addIntoScene(MapLayerInterface* layer);
 
@@ -86,6 +87,18 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   /// \param pos The position at the list.
   /// Value < 0 or > list.Length means to add the item at the end.
   void addIntoList(QTreeWidgetItem* item, int pos);
+
+  /// Functions to add map layer without adding it to scene.
+  MapLayerInterface* insertExistingMapLayer
+    (MapLayerInterface* layer, const QString& title, int pos = -1);
+  MapLayerInterface* insertExistingMapLayer
+    (osg::Node* layer, const QString& title, int pos = -1);
+  MapLayerInterface* insertExistingMapLayer
+    (osgEarth::ImageLayer* layer, const QString& title, int pos = -1);
+  MapLayerInterface* insertExistingMapLayer
+    (osgEarth::ElevationLayer* layer, const QString& title, int pos = -1);
+  MapLayerInterface* insertExistingMapLayer
+    (osgEarth::ModelLayer* layer, const QString& title, int pos = -1);
 };
 
 }  // End namespace Core

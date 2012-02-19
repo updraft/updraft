@@ -1,5 +1,6 @@
 #include "openedfile.h"
 
+#include <osg/Geode>
 #include <osg/Geometry>
 #include <osg/LineWidth>
 
@@ -47,14 +48,9 @@ void OpenedFile::createTab() {
 }
 
 void OpenedFile::createTrack() {
-  geode = new osg::Geode();
-  redraw();
-}
-
-void OpenedFile::redraw() {
-  geode->removeDrawables(0);
-
   const osg::EllipsoidModel* ellipsoid = viewer->core->getEllipsoidModel();
+
+  osg::Geode* geode = new osg::Geode();
 
   osg::Geometry* geom = new osg::Geometry();
   geode->addDrawable(geom);
@@ -120,9 +116,9 @@ void OpenedFile::redraw() {
   osg::StateSet* stateSet = geode->getOrCreateStateSet();
   stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
   stateSet->setMode(GL_LINE_SMOOTH, osg::StateAttribute::ON);
-  stateSet->setAttributeAndModes(
-    new osg::LineWidth(viewer->lineWidthSetting->get().toFloat()));
-
+  stateSet->setAttributeAndModes(new osg::LineWidth(3));
+  // stateSet->setAttributeAndModes(
+  //   new osg::LineWidth(viewer->lineWidthSetting->get().toFloat()));
 
   track = viewer->mapLayerGroup->insertMapLayer(geode, fileInfo.fileName());
   track->connectDisplayedToVisibility();

@@ -51,12 +51,6 @@ MapLayerInterface* MapLayerGroup::createEmptyMapLayer() {
 }
 
 MapLayerInterface* MapLayerGroup::insertMapLayer
-  (MapLayerType type, Layer mapLayer, const QString &title, int pos) {
-  MapLayerInterface* layer = new MapLayer(type, mapLayer);
-  return insertMapLayer(layer, title, pos);
-}
-
-MapLayerInterface* MapLayerGroup::insertMapLayer
   (osg::Node* mapLayer, const QString& title, int pos) {
   MapLayerInterface* layer = new MapLayer(mapLayer);
   return insertMapLayer(layer, title, pos);
@@ -93,6 +87,46 @@ MapLayerInterface* MapLayerGroup::insertMapLayer
 
   // insert the node into the scene
   addIntoScene(layer);
+
+  return layer;
+}
+
+MapLayerInterface* MapLayerGroup::insertExistingMapLayer
+  (osg::Node* mapLayer, const QString& title, int pos) {
+  MapLayerInterface* layer = new MapLayer(mapLayer);
+  return insertExistingMapLayer(layer, title, pos);
+}
+
+MapLayerInterface* MapLayerGroup::insertExistingMapLayer
+  (osgEarth::ImageLayer* mapLayer, const QString& title, int pos) {
+  MapLayerInterface* layer = new MapLayer(mapLayer);
+  return insertExistingMapLayer(layer, title, pos);
+}
+
+MapLayerInterface* MapLayerGroup::insertExistingMapLayer
+  (osgEarth::ElevationLayer* mapLayer, const QString& title, int pos) {
+  MapLayerInterface* layer = new MapLayer(mapLayer);
+  return insertExistingMapLayer(layer, title, pos);
+}
+
+MapLayerInterface* MapLayerGroup::insertExistingMapLayer
+  (osgEarth::ModelLayer* mapLayer, const QString& title, int pos) {
+  MapLayerInterface* layer = new MapLayer(mapLayer);
+  return insertExistingMapLayer(layer, title, pos);
+}
+
+MapLayerInterface* MapLayerGroup::insertExistingMapLayer
+  (MapLayerInterface* layer, const QString &title, int pos) {
+  QTreeWidgetItem *newItem = new QTreeWidgetItem();
+  newItem->setText(0, title);
+  newItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+  newItem->setCheckState(0, Qt::Checked);
+
+  // add the item into the menu list and maplist
+  addIntoList(newItem, pos);
+  mapLayers.insert(layer, newItem);
+
+  // don't insert the node into the scene!
 
   return layer;
 }

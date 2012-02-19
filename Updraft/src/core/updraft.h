@@ -9,6 +9,7 @@
 #include "scenemanager.h"
 #include "../maplayerinterface.h"
 #include "settingsmanager.h"
+#include "splashscreen.h"
 
 /// Pointer to the instance of Updraft object.
 #define updraft (static_cast<Updraft*>(Updraft::instance()))
@@ -24,6 +25,9 @@ class Updraft : public QApplication {
 
   int exec();
 
+  /// Hides the splash screen when the application is done loading.
+  void hideSplash();
+
   // TODO(Tom): Load data directory from settings.
   QString getDataDirectory();
 
@@ -32,6 +36,8 @@ class Updraft : public QApplication {
   PluginManager* pluginManager;
   SceneManager* sceneManager;
   SettingsManager* settingsManager;
+
+  SplashScreen splash;
 };
 
 }  // End namespace Core

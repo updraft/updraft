@@ -11,11 +11,27 @@ Updraft::Updraft(int argc, char** argv)
 
   installTranslator(&trans);
 
+  QPixmap splashImage(
+    QCoreApplication::applicationDirPath() + "/data/splash.png");
+  splash.setPixmap(splashImage);
+  splash.show();
+
   mainWindow = new MainWindow(NULL);
   settingsManager = new SettingsManager();
   fileTypeManager = new FileTypeManager();
   sceneManager = new SceneManager(
     QCoreApplication::applicationDirPath() + "/data/initial.earth");
+
+  // Create the map layer group for initial map.
+  osgEarth::MapNode* map = sceneManager->getMapNode();
+  osg::Group* group = updraft->sceneManager->newGroup();
+  // TODO(Maria): Get name from the .earth file.
+  // QString title = QString::fromStdString(map->getMap()->getName());
+  QString title("Maps");
+  MapLayerGroupInterface* mapLayerGroup =
+    mainWindow->createMapLayerGroup(title, group, map);
+  sceneManager->getMapManager()->fillMapLayerGroup(mapLayerGroup);
+
   pluginManager = new PluginManager();
 
   mainWindow->setMapWidget(sceneManager->getWidget());
@@ -37,7 +53,12 @@ QString Updraft::getDataDirectory() {
 /// Shows main window, and enters event loop.
 int Updraft::exec() {
   mainWindow->show();
+  hideSplash();
   return QApplication::exec();
+}
+
+void Updraft::hideSplash() {
+  splash.finish(mainWindow);
 }
 
 }  // End namespace Core

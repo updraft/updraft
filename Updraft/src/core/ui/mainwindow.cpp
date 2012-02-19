@@ -15,23 +15,24 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
       activeTab(NULL) {
-    ui->setupUi(this);
+  ui->setupUi(this);
 
-    menuFile = new Menu(ui->menuFile, false);
-    menuEdit = new Menu(ui->menuEdit, false);
-    menuTools = new Menu(ui->menuTools, false);
-    menuHelp = new Menu(ui->menuHelp, false);
+  menuFile = new Menu(ui->menuFile, false);
+  menuEdit = new Menu(ui->menuEdit, false);
+  menuTools = new Menu(ui->menuTools, false);
+  menuHelp = new Menu(ui->menuHelp, false);
 
-    connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)),
-      this, SLOT(tabClose(int)));
-    connect(ui->tabWidget, SIGNAL(currentChanged(int)),
-      this, SLOT(tabSwitch(int)));
+  connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)),
+    this, SLOT(tabClose(int)));
+  connect(ui->tabWidget, SIGNAL(currentChanged(int)),
+    this, SLOT(tabSwitch(int)));
+  tabsVisibility();
 
-    // TODO(cestmir): This is here just to be able to test context menu.
-    QMenu* qContextMenu = new QMenu();
-    menuContext = new Menu(qContextMenu, true);
+  // TODO(cestmir): This is here just to be able to test context menu.
+  QMenu* qContextMenu = new QMenu();
+  menuContext = new Menu(qContextMenu, true);
 
-    standardMenuItems();
+  standardMenuItems();
 }
 
 MainWindow::~MainWindow() {
@@ -72,12 +73,17 @@ Menu* MainWindow::getSystemMenu(SystemMenu menu) {
 /// Create a new tab in the bottom pane.
 /// Takes ownership of content.
 Core::Tab* MainWindow::createTab(QWidget* content, QString title) {
-  return new Core::Tab(content, title, ui->tabWidget);
+  Core::Tab* ret = new Core::Tab(content, title, ui->tabWidget);
+
+  tabsVisibility();
+
+  return ret;
 }
 
 void MainWindow::tabClose(int index) {
   QWidget* tab = ui->tabWidget->widget(index);
   static_cast<Tab*>(tab)->close();
+  tabsVisibility();
 }
 
 void MainWindow::tabSwitch(int index) {
@@ -118,6 +124,10 @@ void MainWindow::standardMenuItems() {
   QAction* openAction = new QAction(tr("&Open File..."), this);
   menuFile->insertAction(0, openAction);
   connect(openAction, SIGNAL(triggered()), this, SLOT(openFile()));
+}
+
+void MainWindow::tabsVisibility() {
+  ui->tabWidget->setVisible(ui->tabWidget->count() > 0);
 }
 
 /// Handle File->Open... menu action.

@@ -23,6 +23,10 @@ namespace osgEarth {
 
 namespace Updraft {
 
+namespace Core {
+  class MapManager;
+}
+
 /// Map layer group used by plugins.
 /// This class encapsulates handling of the map layer group.
 /// It provides methods for creating and deleting layers and
@@ -42,35 +46,11 @@ class MapLayerGroupInterface {
   /// \param layer pointer to osg Node representing geometry of this layer
   /// \param title name of the layer; caption of the tree item
   virtual MapLayerInterface* insertMapLayer
-    (MapLayerInterface* layer, const QString &title, int pos = -1) = 0;
-
-  /// Creates a new instance of Map Layer with generated ID
-  /// and calls insertMapLayer
-  /// (MapLayerInterface* layer, const QString &title, int pos = -1)
-  virtual MapLayerInterface* insertMapLayer
-    (MapLayerType type, Layer layer, const QString& title, int pos = -1) = 0;
-
-  /// Creates a new instance of Map Layer with generated ID
-  /// and calls insertMapLayer
-  /// (MapLayerInterface* layer, const QString &title, int pos = -1)
-  virtual MapLayerInterface* insertMapLayer
     (osg::Node* layer, const QString& title, int pos = -1) = 0;
-
-  /// Creates a new instance of Map Layer with generated ID
-  /// and calls insertMapLayer
-  /// (MapLayerInterface* layer, const QString &title, int pos = -1)
   virtual MapLayerInterface* insertMapLayer
     (osgEarth::ImageLayer* layer, const QString& title, int pos = -1) = 0;
-
-  /// Creates a new instance of Map Layer with generated ID
-  /// and calls insertMapLayer
-  /// (MapLayerInterface* layer, const QString &title, int pos = -1)
   virtual MapLayerInterface* insertMapLayer
     (osgEarth::ElevationLayer* layer, const QString& title, int pos = -1) = 0;
-
-  /// Creates a new instance of Map Layer with generated ID
-  /// and calls insertMapLayer
-  /// (MapLayerInterface* layer, const QString &title, int pos = -1)
   virtual MapLayerInterface* insertMapLayer
     (osgEarth::ModelLayer* layer, const QString& title, int pos = -1) = 0;
 
@@ -89,6 +69,19 @@ class MapLayerGroupInterface {
 
   /// Returns the placer associated with the mapNode.
   virtual osgEarth::Util::ObjectPlacer* getObjectPlacer() = 0;
+
+  friend class Core::MapManager;
+
+ private:
+  /// Functions to add map layer without adding it to scene.
+  virtual MapLayerInterface* insertExistingMapLayer
+    (osg::Node* layer, const QString& title, int pos = -1) = 0;
+  virtual MapLayerInterface* insertExistingMapLayer
+    (osgEarth::ImageLayer* layer, const QString& title, int pos = -1) = 0;
+  virtual MapLayerInterface* insertExistingMapLayer
+    (osgEarth::ElevationLayer* layer, const QString& title, int pos = -1) = 0;
+  virtual MapLayerInterface* insertExistingMapLayer
+    (osgEarth::ModelLayer* layer, const QString& title, int pos = -1) = 0;
 };
 
 }  // End namespace Updraft

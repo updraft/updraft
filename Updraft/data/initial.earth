@@ -5,27 +5,48 @@ Please note that use of ESRI's free maps is subject to certain restrictions:
 http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
 -->
 
-<map name="initial_map" type="geocentric">
+<map name="Initial map" type="geocentric">
+    <!--
     <cache type="filesystem" >
        <path>cache</path>
     </cache>
-
-    <options>
-        <lighting>false</lighting>
-    </options>
+    -->
+    
+    <cache type="tms">
+      <path>osgearth_cache</path>
+    </cache>
+    
+    <lighting>false</lighting>
   
-    <image name="offline" driver="gdal">
+    <image name="Offline map" driver="gdal">
         <url>world.tif</url>
     </image>
         
-    <image name="online_maps" driver="arcgis">
-        <!--<cache_policy usage="cache_only"/>-->
+    <image name="Online maps" driver="arcgis">
         <url>http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_Imagery_World_2D/MapServer</url>
     </image>
     
-	  <elevation name="elevation_layer" driver="tms">
+	  <elevation name="Elevation layer" driver="tms">
         <url>http://readymap.org/readymap/tiles/1.0.0/9/</url>    
     </elevation>
+    
+    <model name="State borders" driver="feature_stencil">
+        <features name="world" driver="ogr">
+            <url>state_borders_lq.shp</url>
+            <!-- <url>state_borders_hq.shp</url> -->
+            <convert type="line"/>
+        </features>
+        <extrusion_distance>400000</extrusion_distance>
+        <styles>
+            <style type="text/css">
+                world {
+                   stroke: #ffff00;
+                   stroke-opacity: 0.5;
+                   stroke-width: 0.1;
+                }            
+            </style>
+        </styles>
+    </model>
 </map>
 
 
