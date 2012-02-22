@@ -52,7 +52,7 @@ class IGC_EXPORT IgcFile {
 
   ~IgcFile() { clear(); }
 
-  bool load(QString path, QTextCodec *codec = 0);
+  bool load(const QString &path, QTextCodec *codec = 0);
   bool load(QIODevice *file, QTextCodec *codec = 0);
 
   void clear();
