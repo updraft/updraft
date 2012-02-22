@@ -23,8 +23,8 @@ class OPENAIRSPACE_EXPORT Geometry {
   /// DC: Draw circle
   /// DP: Draw polygon
   enum GType { DAtype, DBtype, DCtype, DPtype };
-  virtual const Position& Centre() = 0;
-  virtual const GType GetGType() = 0;
+  virtual const Position& Centre() const = 0;
+  virtual const GType GetGType() const = 0;
   virtual ~Geometry() {}
 };
 
@@ -32,8 +32,8 @@ class OPENAIRSPACE_EXPORT Polygon : public Geometry {
  public:
   Polygon();
   Polygon(const Position& C_, const double& z_);
-  inline const Position& Centre() { return *this->centre; }
-  inline const GType GetGType() { return DPtype; }
+  inline const Position& Centre() const { return *this->centre; }
+  inline const GType GetGType() const { return DPtype; }
   ~Polygon();
  private:
   Position* centre;
@@ -46,12 +46,16 @@ class OPENAIRSPACE_EXPORT ArcI : public Geometry {
   ArcI();
   ArcI(const Position& C_, const double& R_, const bool CW_,
     const double& S_, const double& E_, const double& Z_);
-  inline const Position& Centre() { return *this->centre; }
-  inline const GType GetGType() { return DAtype; }
+  inline const Position& Centre() const { return *this->centre; }
+  inline const double& Start() const { return this->start; }
+  inline const double& End() const { return this->end; }
+  inline const bool CW() const { return this->cw; }
+  inline const double R() const { return this->r; }
+  inline const GType GetGType() const { return DAtype; }
   ~ArcI();
  private:
   Position* centre;
-  double R;  // radius in nm
+  double r;  // radius in nm
   bool cw;  // arc direction
   double start;  // start angle in deg
   double end;  // end angle in deg
@@ -64,11 +68,11 @@ class OPENAIRSPACE_EXPORT ArcII : public Geometry {
   ArcII();
   ArcII(const Position& c_, const Position& s_, const Position e_,
     const bool cw_, const double& z_);
-  inline const Position& Centre() { return *this->centre; }
-  inline const Position& Start() { return *this->start; }
-  inline const Position& End() { return *this->end; }
-  inline const bool CW() { return this->cw; }
-  inline const GType GetGType() { return DBtype; }
+  inline const Position& Centre() const { return *this->centre; }
+  inline const Position& Start() const { return *this->start; }
+  inline const Position& End() const { return *this->end; }
+  inline const bool CW() const { return this->cw; }
+  inline const GType GetGType() const { return DBtype; }
   ~ArcII();
  private:
   Position* centre;
@@ -83,13 +87,13 @@ class OPENAIRSPACE_EXPORT Circle : public Geometry {
  public:
   Circle();
   Circle(const Position& c_, const double R_, const double& z_);
-  inline const Position& Centre() { return *this->centre; }
-  inline const double& GetR() { return this->R; }
-  inline const GType GetGType() { return DCtype; }
+  inline const Position& Centre() const { return *this->centre; }
+  inline const double& R() const { return this->r; }
+  inline const GType GetGType() const { return DCtype; }
   ~Circle();
  private:
   Position* centre;
-  double R;  // radius
+  double r;  // radius
   double zoom;
   bool valid;
 };

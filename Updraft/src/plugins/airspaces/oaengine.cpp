@@ -1,153 +1,312 @@
 #include "oaengine.h"
+#include <osgEarthUtil/ElevationManager>
 
 namespace Updraft {
 namespace Airspaces {
+
+oaEngine::oaEngine(MapLayerGroupInterface* LG) {
+  this->mapLayerGroup = LG;
+  // set the defeault line width
+  this->width = 1.0f;
+  // set the default line colour
+  col = osg::Vec4f(0.0f, 0.5f, 1.0f, DEFAULT_TRANSPARENCY);
+}
 
 MapLayerInterface* oaEngine::Draw(const QString& fileName) {
   OpenAirspace::Parser AirspaceSet(fileName);
 
   if (mapLayerGroup != NULL) {
-    // create map placer: to draw in the map
-    osgEarth::Util::ObjectPlacer* objectPlacer =
-      mapLayerGroup->getObjectPlacer();
+    // Init the elevation manager
+    osgEarth::Map* map = mapLayerGroup->getMapNode()->getMap();
+    osgEarth::Util::ElevationManager* elevationMan =
+      new osgEarth::Util::ElevationManager(map);
 
-    osg::Geode* OAGeode = new osg::Geode();  // the root of the subscene
-    osg::Vec4 col(0.0f, 0.5f, 1.0f, 0.5f);
-    float width = 1;
+    // init the subscene
+    osg::Geode* OAGeode = new osg::Geode();
+
+    // Cycle through all the parsed airspaces
     for (size_t i = 0; i < AirspaceSet.size(); ++i) {
-      // init the geometry
-      osg::Geometry* geom = new osg::Geometry();
-      OAGeode->addDrawable(geom);
-      geom->setUseDisplayList(false);
-      // we will be drawing lines
-      osg::DrawArrays* drawArrayLines = new
-        osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP);
-      geom->addPrimitiveSet(drawArrayLines);
-      // create vertex array for the lines
-      osg::Vec3Array* vertexData = new osg::Vec3Array();
-      geom->setVertexArray(vertexData);
-      osg::Vec4Array* colors = new osg::Vec4Array;
-
-      // set colour
+      // Process the Airspace
       OpenAirspace::Airspace* A = AirspaceSet.at(i);
-      if (A->GetBrush()) {
-        float r = A->GetBrush()->R/255.0f;
-        float g = A->GetBrush()->G/255.0f;
-        float b = A->GetBrush()->B/255.0f;
-        if ( r >= 0 && g >= 0 && b >= 0)
-          col.set(r, g, b, col.w());
-      }
-      if (A->GetPen()) {
-        float r = A->GetPen()->R/255.0f;
-        float g = A->GetPen()->G/255.0f;
-        float b = A->GetPen()->B/255.0f;
-        if ( r >= 0 && g >= 0 && b >= 0)
-          col.set(r, g, b, col.w());
-        width = A->GetPen()->width;
-      }
-      // draw airspace geometry
-      osg::Matrixd coorTransformation;
-      osg::Vec3 coord;
-      double r;
-      Position arcPoint;
-      // Position point;
 
+      // set the colour of the geometry if defined
+      SetWidthAndColour(A);
+
+      // Get the floor and ceiling of the airspace in ft msl
+      // set the height of the ground in ft msl
+      // distinguish whether is the height value related to gnd level
+      bool floorAgl = false;
+      bool ceilingAgl = false;
+      // set the heights of the airspace in ft msl
+      int ceiling = A->ParseHeight(false, &ceilingAgl);
+      if (ceiling == 0) ceiling = ROOF;
+      int floor = A->ParseHeight(true, &floorAgl);
+      Position* heightRefPoint = NULL;  // where to take height
+
+      // To destroy artefacts of two planes in one space
+      double rnd = 0.05 * (qrand() % 100);
+      floor += rnd;
+      ceiling -= rnd;
+
+      // array of coords to draw
+      QList<Position>* pointsWGS = new QList<Position>();
+
+      // main cycle through the geometry group
       if (A->GetGeometrySize() > 0) {
         for (int j = 0; j < A->GetGeometrySize(); ++j) {
-          // if (!A->GetPolygon(j).valid) qDebug("Polygon coords expected!");
+          // get the geometric primitive type
           OpenAirspace::Geometry::GType gtype =
             A->GetGeometry().at(j)->GetGType();
 
-          OpenAirspace::Polygon* p;
-          OpenAirspace::ArcI* aa;
-          OpenAirspace::ArcII* ab;
-          OpenAirspace::Circle* c;
-          switch (gtype) {
-            // Draw polygon point
-            case OpenAirspace::Geometry::DPtype:
-              p = (OpenAirspace::Polygon*)A->GetGeometry().at(j);
-              objectPlacer->createPlacerMatrix(p->Centre().lat,
-                p->Centre().lon, 2000, coorTransformation);
-              coord = osg::Vec3(0, 0, 0) * coorTransformation;
-              vertexData->push_back(coord);
-              colors->push_back(col);
-              break;
-            /* Draw a Circle - can be done in relative fashion
-            case OpenAirspace::Airspace::GType::DCtype:
-              OpenAirspace::Airspace::Circle* c =
-                static_cast<OpenAirspace::Airspace::Circle*>(A->GetGeometry().at(i));
-              for (int angle = 0; angle <= 360; ++angle) {
-              }
-              break;*/
-            // DA radius, angleStart, angleEnd
-            // add an arc, angles in degrees, radius in nm
-            case OpenAirspace::Geometry::DAtype:
-              aa = (OpenAirspace::ArcI*)A->GetGeometry().at(j);
-              // for (unsigned int angle = aa->Start;
-              // angle <= aa->End; ++angle) {
-              // }
-              break;
-            case OpenAirspace::Geometry::DCtype:
-              c = (OpenAirspace::Circle*)A->GetGeometry().at(j);
-              for (double k = 0; k < 2*M_PI; k += 0.05) {
-                r = DistToAngle(c->GetR());
-                arcPoint = ComputeArcPoint(c->Centre(), r, k);
-                objectPlacer->createPlacerMatrix(arcPoint.lat,
-                  arcPoint.lon, 2000, coorTransformation);
-                coord = osg::Vec3(0, 0, 0) * coorTransformation;
-                vertexData->push_back(coord);
-                colors->push_back(col);
-              }
-              break;
-            // DB coordinate1, coordinate2 : add an arc,
-            // from coordinate1 to coordinate2
-            case OpenAirspace::Geometry::DBtype:
-              ab = (OpenAirspace::ArcII*)A->GetGeometry().at(j);
-              QList<Position>* arc = new QList<Position>();
-              arc->push_back(ab->Start());
-              int depth = 0;
-              InsertArcII(ab->Centre(), ab->Start(),
-                ab->End(), ab->CW(), arc, depth);
-              arc->push_back(ab->End());
-              for (int k = 0; k < arc->size(); ++k) {
-                objectPlacer->createPlacerMatrix(arc->at(k).lat, arc->at(k).lon,
-                  2000, coorTransformation);
-                coord = osg::Vec3(0, 0, 0) * coorTransformation;
-                vertexData->push_back(coord);
-                colors->push_back(col);
-              }
-              break;
+          if  (gtype == OpenAirspace::Geometry::DPtype) {
+              OpenAirspace::Polygon* p =
+                (OpenAirspace::Polygon*)A->GetGeometry().at(j);
+              pointsWGS->push_back(p->Centre());
+          } else if (gtype == OpenAirspace::Geometry::DAtype) {
+              OpenAirspace::ArcI* aa =
+                (OpenAirspace::ArcI*)A->GetGeometry().at(j);
+              InsertArcI(*aa, pointsWGS);
+              if (!heightRefPoint)
+                heightRefPoint = new Position(aa->Centre());
+          } else if (gtype == OpenAirspace::Geometry::DCtype) {
+              OpenAirspace::Circle* c =
+                (OpenAirspace::Circle*)A->GetGeometry().at(j);
+              InsertCircle(*c, pointsWGS);
+              if (!heightRefPoint)
+                heightRefPoint = new Position(c->Centre());
+          } else if (gtype == OpenAirspace::Geometry::DBtype) {
+            OpenAirspace::ArcII* ab =
+              (OpenAirspace::ArcII*)A->GetGeometry().at(j);
+            InsertArcII(*ab, pointsWGS);
+            if (!heightRefPoint)
+                heightRefPoint = new Position(ab->Centre());
           }
-
-
-          // objectPlacer->createPlacerMatrix(A->GetPolygon(j).lat,
-            // A->GetPolygon(j).lon, 2000, coorTransformation);
-          // coord = osg::Vec3(0, 0, 0) * coorTransformation;
-
-          // vertexData->push_back(coord);
-          // colors->push_back(col);
         }
-        drawArrayLines->setFirst(0);
-        drawArrayLines->setCount(vertexData->size());
-        geom->setColorArray(colors);
-        geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
-        // change the thickness of the line
-        osg::LineWidth* linewidth = new osg::LineWidth();
-        linewidth->setWidth(width);
-        osg::StateSet* stateSet = OAGeode->getOrCreateStateSet();
-        stateSet->setAttributeAndModes(linewidth,
-          osg::StateAttribute::ON);
-        stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-        stateSet->setMode(GL_LINE_SMOOTH, osg::StateAttribute::ON);
+
+        // Compute the ground level
+        // TODO(Monkey): Not working without internet access
+        QList<double>* pointsGnd = NULL;
+        if (floorAgl || ceilingAgl) {
+          if (!heightRefPoint && A->GetGeometrySize() > 0)
+            heightRefPoint = new Position(
+            A->GetGeometry().at(0)->Centre());
+
+          // use only one refpoint
+          // pointsGnd = new QList<double>();
+          double res = 0;
+          double addGnd;
+          // resolution of the elevation tiles
+          // put the 0 or 0.0001 for highest resol
+          double tileResolution = 0.01;
+
+          elevationMan->getElevation(
+              heightRefPoint->lon,
+              heightRefPoint->lat,
+              tileResolution, 0,
+              addGnd, res);
+
+          if (floorAgl) floor += addGnd * M_TO_FT;
+          if (ceilingAgl) ceiling += addGnd * M_TO_FT;
+          /* for (int k = 0; k < pointsWGS->size(); ++k) {
+            elevationMan->getElevation(
+              pointsWGS->at(k).lon,
+              pointsWGS->at(k).lat,
+              0.0001, 0, addGnd, res);
+            pointsGnd->push_back(addGnd);
+          }*/
+        }
+
+        // OGL draw the geom
+        osg::Geometry* geom;
+/* // volume representation not used
+        // Draw volume
+        // draw top polygon
+        geom = DrawPolygon(
+          pointsWGS,
+          pointsGnd,
+          col,
+          osg::PrimitiveSet::POLYGON,
+          ceiling);
+        OAGeode->addDrawable(geom);
+        // draw bottom poly
+        if (floor > gnd) {
+          geom = DrawPolygon(pointsWGS, pointsGnd, col,
+            osg::PrimitiveSet::POLYGON, floor, floorAgl);
+          OAGeode->addDrawable(geom);
+        }*/
+        // draw the sides
+        geom = DrawPolygonSides(pointsWGS, pointsGnd, col,
+          osg::PrimitiveSet::TRIANGLE_STRIP, floor, ceiling,
+          floorAgl, ceilingAgl);
+        OAGeode->addDrawable(geom);
+
+        // TODO(Monkey): query the height only once!
+        // Draw contours
+        osg::Vec4 fullCol(col.x(), col.y(), col.z(), 0.5f);
+        // osg::Vec4 fullCol(0.0f, 0.0f, 0.0f, 1.0f);
+        // draw top polygon
+        geom = DrawPolygon(pointsWGS, pointsGnd, fullCol,
+          osg::PrimitiveSet::LINE_STRIP, ceiling, ceilingAgl);
+        OAGeode->addDrawable(geom);
+        // draw bottom poly
+        if (floor > GND) {
+          geom = DrawPolygon(pointsWGS, pointsGnd, fullCol,
+            osg::PrimitiveSet::LINE_STRIP, floor, floorAgl);
+          OAGeode->addDrawable(geom);
+        }
+        // Side contours
+        /* geom = DrawPolygonSides(pointsWGS, pointsGnd, fullCol,
+          osg::PrimitiveSet::LINES, floor, ceiling,
+          floorAgl, ceilingAgl);
+        OAGeode->addDrawable(geom);*/
+
+        delete pointsWGS;
+        pointsWGS = NULL;
+
+        if (pointsGnd) {
+          delete pointsGnd;
+          pointsGnd = NULL;
+        }
       }
     }
+    // change the thickness of the line
+    osg::LineWidth* linewidth = new osg::LineWidth();
+    linewidth->setWidth(width);
+    // set geode params
+    osg::StateSet* stateSet = OAGeode->getOrCreateStateSet();
+    stateSet->setAttributeAndModes(linewidth,
+      osg::StateAttribute::ON);
+    stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    stateSet->setMode(GL_LINE_SMOOTH, osg::StateAttribute::ON);
+    // set transparency
+    stateSet->setMode(GL_ALPHA_TEST, osg::StateAttribute::ON);
+    stateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
 
-    QString displayName = fileName;
+    QString displayName = fileName.left(fileName.indexOf('.'));
     int cuntSlashes = displayName.count('/');
     displayName = displayName.section('/', cuntSlashes, cuntSlashes);
+
     return mapLayerGroup->insertMapLayer(OAGeode, displayName);
   }
   return NULL;
+}
+
+osg::Geometry* oaEngine::DrawPolygon(
+  QList<Position>* pointsWGS,
+  const QList<double>* pointsGnd,
+  osg::Vec4& col,
+  osg::PrimitiveSet::Mode primitiveMode,
+  int height,
+  bool agl) {
+  // Draw the closed polygon. In case of filled polygon,
+  // ensure of its convexity (it's TRIANGLE_FAN)
+
+  // create map placer: to draw in the map
+  osgEarth::Util::ObjectPlacer* objectPlacer =
+    mapLayerGroup->getObjectPlacer();
+  // init the geometry
+  osg::Geometry* geom = new osg::Geometry();
+  // OAGeode->addDrawable(geom);
+  geom->setUseDisplayList(false);
+  // we will be drawing polygons
+  osg::DrawArrays* drawArrayLines = new
+    osg::DrawArrays(primitiveMode);
+  geom->addPrimitiveSet(drawArrayLines);
+  // create vertex array for the lines
+  osg::Vec3Array* vertexData = new osg::Vec3Array();
+  geom->setVertexArray(vertexData);
+  osg::Vec4Array* colors = new osg::Vec4Array;
+  // transformation matrix & coords
+  osg::Matrixd coorTransformation;
+  osg::Vec3 coord;
+  double addGnd = 0;
+
+  // Fill the OGL vertexArray
+  for (int k = 0; k < pointsWGS->size(); ++k) {
+    if (agl && pointsGnd
+      && pointsGnd->size() == pointsWGS->size()) {
+      addGnd = pointsGnd->at(k);
+    }
+    objectPlacer->createPlacerMatrix(
+      pointsWGS->at(k).lat,
+      pointsWGS->at(k).lon,
+      (height*FT_TO_M) + addGnd,
+      coorTransformation);
+    coord = osg::Vec3(0, 0, 0) * coorTransformation;
+
+    vertexData->push_back(coord);
+  }
+  colors->push_back(col);
+
+  drawArrayLines->setFirst(0);
+  drawArrayLines->setCount(vertexData->size());
+  geom->setColorArray(colors);
+  geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+  return geom;
+}
+
+osg::Geometry* oaEngine::DrawPolygonSides(const QList<Position>* pointsWGS,
+  const QList<double>* pointsGnd,
+  osg::Vec4& col,
+  osg::PrimitiveSet::Mode primitiveMode,
+  const int floor, const int ceiling,
+  const bool floorAgl, const bool ceilingAgl) {
+  // create map placer: to draw in the map
+  osgEarth::Util::ObjectPlacer* objectPlacer =
+    mapLayerGroup->getObjectPlacer();
+  // init the geometry
+  osg::Geometry* geom = new osg::Geometry();
+  // OAGeode->addDrawable(geom);
+  geom->setUseDisplayList(false);
+  // we will be drawing polygons
+  osg::DrawArrays* drawArrayLines = new
+    osg::DrawArrays(primitiveMode);
+  geom->addPrimitiveSet(drawArrayLines);
+  // create vertex array for the lines
+  osg::Vec3Array* vertexData = new osg::Vec3Array();
+  geom->setVertexArray(vertexData);
+  osg::Vec4Array* colors = new osg::Vec4Array;
+  // transformation matrix & coords
+  osg::Matrixd coorTransformation;
+  osg::Vec3 coord;
+
+  double addFloorGnd = 0;
+  double addCeilingGnd = 0;
+
+  // Fill the OGL vertexArray
+  for (int k = 0; k < pointsWGS->size(); ++k) {
+    if (ceilingAgl && pointsGnd
+      && pointsGnd->size() == pointsWGS->size()) {
+      addCeilingGnd = pointsGnd->at(k);
+    }
+    objectPlacer->createPlacerMatrix(pointsWGS->at(k).lat,
+      pointsWGS->at(k).lon, ceiling*FT_TO_M + addCeilingGnd,
+      coorTransformation);
+    coord = osg::Vec3(0, 0, 0) * coorTransformation;
+
+    vertexData->push_back(coord);
+
+    if (floorAgl && pointsGnd
+      && pointsGnd->size() == pointsWGS->size()) {
+      addFloorGnd = pointsGnd->at(k);
+    }
+    objectPlacer->createPlacerMatrix(pointsWGS->at(k).lat,
+      pointsWGS->at(k).lon, floor*FT_TO_M + addFloorGnd,
+      coorTransformation);
+    coord = osg::Vec3(0, 0, 0) * coorTransformation;
+
+    vertexData->push_back(coord);
+
+    if (primitiveMode == osg::PrimitiveSet::LINES)
+      colors->push_back(col);
+  }
+  colors->push_back(col);
+
+  drawArrayLines->setFirst(0);
+  drawArrayLines->setCount(vertexData->size());
+  geom->setColorArray(colors);
+  geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+  return geom;
 }
 
 double oaEngine::DistToAngle(double dInNauticalMiles) {
@@ -172,89 +331,80 @@ double oaEngine::DistanceInMeters(const Position& from, const Position& to) {
   return EARTH_RADIUS_IN_METERS*ArcInRadians(from, to);
 }
 
-void oaEngine::InsertArcII(const Position& centre, const Position& start,
-  const Position& end, bool cw, QList<Position>* vertexList, int& depth) {
-  /*if (start.lon == end.lon && start.lat == end.lat) return;
-  // insert start
-  // vertexList->push_back(start);
-  // probably not working on the 360-0 transition
-  // comp radius
-  depth++;
-  if (depth > 500) return;
-  double dLat = start.lat - centre.lat;
-  double dLon = start.lon - centre.lon;
-  double r = sqrt(dLat*dLat + dLon*dLon);
-  // vector of the chord
-  dLat = end.lat - start.lat;
-  dLon = end.lon - start.lon;
-  // osg::Vec2d chord(dLat, dLon);
-  // double c2 = dLat*dLat + dLon*dLon;
-  double a1 = AngleRad(centre, start);
-  double a2 = AngleRad(centre, end);
-  double arcAngleRad = (cw) ? a2 - a1 : a1 - a2;
-  if (arcAngleRad < 0) arcAngleRad += M_PI*2;
-  // normal (rot 90 deg cw:(y,-x) ccw:(-y,x))
-  // for arcs < 180 deg
-  // TODO: correct for the circles > 180
-  osg::Vec2d cN;
-  if (arcAngleRad < M_PI)
-    cN = (cw) ? osg::Vec2d(dLon, -dLat) : osg::Vec2d(-dLon, dLat);
-  else
-    cN = (!cw) ? osg::Vec2d(dLon, -dLat) : osg::Vec2d(-dLon, dLat);
-  
-  osg::Vec2d cent(centre.lat, centre.lon);
-  double l = cN.length();
-  // double a = cN.x;
-  cN = osg::Vec2d(cN.x()/l, cN.y()/l);
-  Position result;
-  result.valid = true;
-  result.lat = cent.x() + cN.x()*r;
-  result.lon = cent.y() + cN.y()*r;
-  if (start.lat == result.lat && start.lon == result.lon) return;
-  if (end.lat == result.lat && end.lon == result.lon) return;
-  if (l < 0.01) {
-    vertexList->push_back(result);
-  } else {
-    InsertArcII(centre, start, result, cw, vertexList, depth);
-    vertexList->push_back(result);
-    InsertArcII(centre, result, end, cw, vertexList, depth);
-  }*/
-  // radius
-  double dLat = start.lat - centre.lat;
-  double dLon = (start.lon - centre.lon);
-  double r = sqrt(dLat*dLat + dLon*dLon);
-  r = DistToAngle(DistanceInMeters(start, centre)/NM_TO_M);
+void oaEngine::InsertArcI(const OpenAirspace::ArcI& aa,
+  QList<Position>* vertexList) {
+  // init
+  const Position centre = aa.Centre();
+  const double fromAngle = aa.Start() * DEG_TO_RAD;
+  const double toAngle = aa.End() * DEG_TO_RAD;
+  const bool cw = aa.CW();
+  const double r = DistToAngle(aa.R());
+
+  // insert the Arc
+  InsertMidArc(centre, fromAngle, toAngle, cw, r, vertexList);
+}
+void oaEngine::InsertArcII(const OpenAirspace::ArcII& ab,
+  QList<Position>* vertexList) {
+  // init:
+  const Position centre = ab.Centre();
+  const Position start = ab.Start();
+  const Position end = ab.End();
+  const bool cw = ab.CW();
+
+  // compute the radius
+  double r = DistToAngle(DistanceInMeters(start, centre)/NM_TO_M);
+
   // compute the angle of the arc
   double a1 = AngleRad(centre, start);
   double a2 = AngleRad(centre, end);
-  double arcAngleRad = (cw) ? a2 - a1 : a1 - a2;
-  if (arcAngleRad < 0) arcAngleRad += M_PI*2;
-  // divide the arc to n sectors according the angle
-  int n = 10;
-  double part = arcAngleRad /n;
-  for (int i = 1; i < n-1; ++i) {
-    // insert the middle arc vertex
-    double partAngle = (cw) ? a1 + i*part : a1 - i*part;
-    Position arcPoint = ComputeArcPoint(centre, r, partAngle);
-    vertexList->push_back(arcPoint);
-  }
+
+  // insert arc points coordinates
+  // insert start
+  vertexList->push_back(ab.Start());
+
+  // mid points
+  InsertMidArc(centre, a1, a2, cw, r, vertexList);
+
   // insert end
-  // vertexList->push_back(end);
+  vertexList->push_back(ab.End());
+}
+
+void oaEngine::InsertCircle(const OpenAirspace::Circle &cc,
+  QList<Position>* vertexList) {
+  const double r = DistToAngle(cc.R());
+  for (double k = 0; k < M_2PI; k += ARC_GRANULARITY) {
+    vertexList->push_back(ComputeArcPoint(cc.Centre(), r, k));
+  }
+  // close the loop
+  vertexList->push_back(ComputeArcPoint(cc.Centre(), r, 0));
+}
+
+void oaEngine::InsertMidArc(const Position& centre, double from,
+  double to, const bool cw, const double& r,
+  QList<Position>* vertexList) {
+  if (cw) {
+    if (to < from) to += M_2PI;
+    for (double angle = from; angle < to;
+      angle += ARC_GRANULARITY) {
+      Position arcPoint = ComputeArcPoint(centre, r, angle);
+      vertexList->push_back(arcPoint);
+    }
+  } else {
+    if (from < to) from += M_2PI;
+    for (double angle = from; angle > to;
+      angle -= ARC_GRANULARITY) {
+      // if (angle < M_PI) angle += M_2PI;
+      Position arcPoint = ComputeArcPoint(centre, r, angle);
+      vertexList->push_back(arcPoint);
+    }
+  }
 }
 
 double oaEngine::AngleRad(const Position& centre, const Position& point) {
   double lat = point.lat - centre.lat;
-  double lon = (point.lon - centre.lon)*cos(point.lat);
+  double lon = (point.lon - centre.lon)*cos(point.lat*DEG_TO_RAD);
   double a;
-  if (lat != 0) {
-    a = atan(lon/lat);
-    if (lat < 0) a += M_PI;
-  } else {
-    // a = acot(lat/lon);
-    a = (lon > 0) ? M_PI/2 : 3 * M_PI/2;
-  }
-  if (a < 0) a += 2*M_PI;
-  if (a > 2*M_PI) a -= 2*M_PI;
+  a = atan2(lon, lat);
   return a;
 }
 
@@ -264,8 +414,26 @@ Position oaEngine::ComputeArcPoint(const Position& centre, double r,
   double lat = cos(partAngle) * r;
   Position result;
   result.lat = centre.lat + lat;
-  result.lon = centre.lon + lon * 1/cos(result.lat*DEG_TO_RAD);
+  result.lon = centre.lon + lon / cos(result.lat*DEG_TO_RAD);
   return result;
+}
+
+void oaEngine::SetWidthAndColour(const OpenAirspace::Airspace* A) {
+  if (A->GetBrush()) {
+    float r = A->GetBrush()->R/255.0f;
+    float g = A->GetBrush()->G/255.0f;
+    float b = A->GetBrush()->B/255.0f;
+    if ( r >= 0 && g >= 0 && b >= 0)
+      col.set(r, g, b, col.w());
+  }
+  if (A->GetPen()) {
+    float r = A->GetPen()->R/255.0f;
+    float g = A->GetPen()->G/255.0f;
+    float b = A->GetPen()->B/255.0f;
+    if ( r >= 0 && g >= 0 && b >= 0)
+      col.set(r, g, b, col.w());
+    this->width = A->GetPen()->width;
+  }
 }
 }  // Airspaces
 }  // Updraft

@@ -25,8 +25,6 @@ void Airspaces::initialize() {
   OAirspaceFileReg.plugin = this;
   core->registerFiletype(OAirspaceFileReg);
 
-  qDebug("Loading deafault for testing");
-
   // Create map layers items in the left pane.
   engine = new oaEngine(core->createMapLayerGroup("Airspaces"));
   // MapLayerInterface* layer1;
