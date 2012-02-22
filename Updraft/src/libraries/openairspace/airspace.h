@@ -6,6 +6,7 @@
 #include "openairspace_global.h"
 #include "geometry.h"
 
+
 /*!
 UserAirspace parser library.
 
@@ -155,62 +156,43 @@ class OPENAIRSPACE_EXPORT Airspace {
     // Airspace(const Airspace&);
 
     /// Returns the name of the AirSpace
-    inline const QString& GetName() { return *this->AN; }
+    inline const QString* const GetName() const { return this->AN; }
 
     /// Returns the class of the AirSpace
-    inline const OpenAirspace::Airspace::ACType& GetClass() { return this->AC; }
+    inline const OpenAirspace::Airspace::ACType& GetClass() {
+      return this->AC;
+    }
 
     /// Returns the floor of the AirSpace
-    inline const QString& GetFloor() { return *this->AL; }
+    inline const QString* const GetFloor() const { return this->AL; }
 
     /// Returns the ceiling of the AirSpace
-    inline const QString& GetCeiling() { return *this->AH; }
+    inline const QString* const GetCeiling() const { return this->AH; }
 
     /// Returns the tag coordinates of the AirSpace
     inline const QList<Position*>& GetTagCoor() {
       return *this->AT; }
 
-    /// Returns the arcs type I
-/*    inline const QList<OpenAirspace::Airspace::ArcI*>& GetArcI() {
-      return *this->DA; }
-
-    /// Returns the arcs type I
-    inline const QList<OpenAirspace::Airspace::ArcII*>& GetArcII() {
-      return *this->DB; }
-
-    /// Returns the circles
-    inline const QList<OpenAirspace::Airspace::Circle*>& GetCircle() {
-      return *this->DC; }
-
-    /// Returns the AirWay
-    inline const QList<OpenAirspace::Airspace::Coordinate*>& GetAirWay() {
-      return *this->DY; }
-
-    /// Returns the Polygon
-    inline const QList<OpenAirspace::Airspace::Coordinate*>& GetPolygon() {
-      return *this->DP; }
-
-    /// Returns the Polygon point
-    inline const OpenAirspace::Airspace::Coordinate& GetPolygon(int i) {
-      return *this->DP->at(i); }
-*/
-    /// Returns the geometry element
-    // inline const QPair<OpenAirspace::Airspace::ACType, void*>&
-      // GetGeometry(int i) { return this->geometry->at(i); }
-
+    /// Returns geometry array size
     inline int GetGeometrySize() {
-      return (validG) ? this->geometry->size() : 0; }
+      return (geometry) ? this->geometry->size() : 0; }
+
+    /// Returns the geometry array = primitive
     inline const QList<OpenAirspace::Geometry*>& GetGeometry() {
       return *this->geometry; }
 
+    /// Returns the AirWay
+    inline const QList<Position*>& GetAirWay() {
+      return *this->DY; }
+
     /// Get Pen & Brush
-    inline const SP_str* GetPen() {
-      if (this->validSP)
+    inline const SP_str* GetPen() const {
+      if (this->SP)
         return SP;
       else
         return NULL; }
-    inline const SB_str* GetBrush() {
-      if (this->validSB)
+    inline const SB_str* GetBrush() const {
+      if (this->SB)
         return SB;
       else
         return NULL; }
@@ -221,6 +203,9 @@ class OPENAIRSPACE_EXPORT Airspace {
     /// Coordinates of the center used by more airspaces.
     static Position X;
     static bool validX;
+
+    /// Parse the height data from the text
+    int ParseHeight(bool floor, bool* agl);
 
   private :
     /// Parse the coordinates from string
@@ -233,40 +218,32 @@ class OPENAIRSPACE_EXPORT Airspace {
     /// Contains the name of the aispace.
     /// Required.
     QString* AN;
-    bool validAN;
 
     /// Airspace Floor.
     /// Altitude floor of the airspace in ft.
     /// Use -10000 for SFC.
     QString* AL;
-    bool validAL;
 
     /// Airspace Ceiling
     /// Altitude ciling of the airspace in ft.
     /// AH < AL
     QString* AH;
-    bool validAH;
 
     /// Airspace name label coordinates.
     /// List of coordinates, where to place the airspace name label on the map.
     /// Optional.
     QList<Position*>* AT;
-    bool validAT;
 
     /// Terrain related variables \{
     /// Terrain open polygon name
     QString* TO;
-    bool validTO;
 
     /// Terrain closed polygon
     QString* TC;
-    bool validTC;
 
     /// Pen & Brush var
     SP_str* SP;
-    bool validSP;
     SB_str* SB;
-    bool validSB;
 
     /// \}
     /// Record type - terrain & airspace \{
@@ -274,41 +251,18 @@ class OPENAIRSPACE_EXPORT Airspace {
     bool CW;
 
     /// Airway width in nm. -1 for not set.
-    int Wi;
+    double Wi;
 
     /// Zoom level.
     /// Sets the zoom level at which the airspace become visible.
     float Z;
-    bool validZ;
-
-    /// Add polygon points
-    QList<Position*>* DP;
-    bool validDP;
-
-    /// Arc \{
-
-    /// Arcs in airspace
-    QList<ArcI*>* DA;
-    QList<ArcII*>* DB;
-    bool validDA;
-    bool validDB;
-    /// \}
-
-    /// Circles in the airspace. \{
-
-    /// Cisrcles in airspace
-    QList<Circle*>* DC;
-    /// \}
 
     /// Airway
     QList<Position*>* DY;
-    bool validDY;
     /// \}
 
     /// Array of geometry
-    // QList< QPair<GType, void*> >* geometry;
     QList<Geometry*>* geometry;
-    bool validG;
   };  // Airspace
 }  // OpenAirspace
 

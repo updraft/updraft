@@ -33,29 +33,24 @@ namespace OpenAirspace {
     */
 
 
-    this->validAN = false;
-    this->validAL = false;
-    this->validAH = false;
-    this->validAT = false;
-    this->validTO = false;
-    this->validTC = false;
-    this->CW      = true;
-    this->Wi      = -1;
-    this->validDA = false;
-    this->validDB = false;
-    this->validDP = false;
-    this->validG  = false;
-    this->Z       = -1;
-    this->validSP = false;
-    this->validSB = false;
-    this->validDY = false;
+    this->AL        = NULL;
+    this->AH        = NULL;
+    this->AN        = NULL;
+    this->DY        = NULL;
+    this->SP        = NULL;
+    this->SB        = NULL;
+    this->TO        = NULL;
+    this->TC        = NULL;
+    this->AT        = NULL;
+    this->geometry  = NULL;
+    this->CW        = true;
+    this->Wi        = -1;
+    this->Z         = -1;
 
     (*ts) >> text;
     if (text != "AC") return;
 
     (*ts) >> text;
-    // this->AC = text;
-    // NA because more classes than defined available e.g. "E" - not in specs
     if (text      == "R") this->AC = R;
     else if (text == "Q") this->AC = Q;
     else if (text == "P") this->AC = P;
@@ -87,44 +82,39 @@ namespace OpenAirspace {
         parse = parse.left(comment);
 
       if (text == "AN") {
-        if (this->validAN)
+        if (this->AN)
           *this->AN = parse;
         else
           this->AN = new QString(parse);
-        qDebug("%s", AN->toAscii().data());
-        this->validAN = true;
+        // qDebug("%s", AN->toAscii().data());
       } else if (text == "AL") {
-        if (this->validAL)
+        if (this->AL)
           *this->AL = parse;
         else
           this->AL = new QString(parse);  // can be text e.g. Ask on 122.8
-        this->validAL = true;
       } else if (text == "AH") {
-        if (this->validAH)
+        if (this->AH)
           *this->AH = parse;
         else
-          this->AH = new QString(parse);  // can be text e.g. Ask on 122.8
-        this->validAH = true;
+          // can be text e.g. Ask on 122.8
+          this->AH = new QString(parse);
       } else if (text == "AT") {
-        if (!this->validAT)
+        if (!this->AT)
           this->AT = new QList<Position*>();
         Position* pos = new Position(ParseCoord(parse));
         this->AT->push_back(pos);
-        this->validAT = true;
       } else if (text == "TO") {
-        if (this->validTO)
+        if (this->TO)
           *this->TO = parse;
         else
           this->TO = new QString(parse);
-        this->validTO = true;
       } else if (text == "TC") {
-        if (this->validTC)
+        if (this->TC)
           *this->TC = parse;
         else
           this->TC = new QString(parse);
-        this->validTC = true;
       } else if (text == "SP") {
-        if (!this->validSP)
+        if (!this->SP)
           this->SP = new SP_str();
         int i = parse.indexOf(',');
         this->SP->style = parse.left(i).toInt();
@@ -140,9 +130,8 @@ namespace OpenAirspace {
         parse = parse.right(parse.size() - i -1);
         i = parse.indexOf(',');
         this->SP->B = parse.left(i).toInt();
-        this->validSP = true;
       } else if (text == "SB") {
-        if (!this->validSB)
+        if (!this->SB)
           this->SB = new SB_str();
         int i = parse.indexOf(',');
         this->SB->R = parse.left(i).toInt();
@@ -153,12 +142,10 @@ namespace OpenAirspace {
         i = parse.indexOf(',');
         this->SB->B = parse.left(i).toInt();
         parse = parse.right(parse.size() - i -1);
-        this->validSB = true;
       } else if (text == "V") {
         QChar ch = parse.at(0);
         parse = parse.right(parse.size() - parse.indexOf('=') -1);
         if (ch == 'X') {
-          // this->X = ParseCoord(parse);
           X = ParseCoord(parse);
           this->validX = true;
         } else if (ch == 'D') {
@@ -167,33 +154,20 @@ namespace OpenAirspace {
           else
             this->CW = true;
         } else if (ch == 'W') {
-          this->Wi = parse.toInt();
+          this->Wi = parse.toDouble();
         } else if (ch == 'Z') {
           this->Z = parse.toFloat();
           // this->validZ = true;
         }
       }  /* V */      else if (text == "DP") {
-        if (!this->validG) {
-          // this->geometry = new QList< QPair<GType, void*> >();
+        if (!this->geometry) {
           this->geometry = new QList<Geometry*>();
-          this->validG = true;
         }
         Polygon* p = new Polygon(ParseCoord(parse), this->Z);
-        // p->type = DPtype;
-        // p->coor = ParseCoord(parse);
-        // this->geometry->push_back(QPair<GType, void*>(DPtype, p));
         this->geometry->push_back(p);
       } else if (text == "DA") {
-        if (!this->validG) {
+        if (!this->geometry)
           this->geometry = new QList<Geometry*>();
-          // this->geometry = new QList< QPair<GType, void*> >();
-          this->validG = true;
-        }
-        // ArcI* arc = new ArcI();
-        // arc->type = DAtype;
-        // double Zoom = this->Z;
-        // arc->Centre = new Position(X);
-        // bool CW = this->CW;
         int i = parse.indexOf(',');
         double R = parse.left(i).toDouble();
         parse = parse.right(parse.size() - i -1);
@@ -203,48 +177,26 @@ namespace OpenAirspace {
         double End = parse.toDouble();
         ArcI* arc = new
           ArcI(X, R, this->CW, Start, End, this->Z);
-        // arc->valid = true;
-        // this->DA.push_back(arc);
-        // this->geometry->push_back(QPair<GType, void*>(DAtype, arc));
         this->geometry->push_back(arc);
       } else if (text == "DB") {
-        if (!this->validG) {
+        if (!this->geometry)
           this->geometry = new QList<Geometry*>();
-          // this->geometry = new QList< QPair<GType, void*> >();
-          this->validG = true;
-        }
-        // ArcII* arc = new ArcII();
-        // arc->type = DBtype;
-        // arc->Zoom = this->Z;
-        // arc->Centre = new Position(X);
-        // arc->CW = this->CW;
         int i = parse.indexOf(',');
         Position Start = ParseCoord(parse.left(i));
         parse = parse.right(parse.size() - i -1);
         Position End = ParseCoord(parse);
-        // arc->valid = true;
         ArcII* arc = new
           ArcII(X, Start, End, this->CW, this->Z);
-        // this->DB.push_back(arc);
-        // this->geometry->push_back(QPair<GType, void*>(DBtype, arc));
         this->geometry->push_back(arc);
       } else if (text == "DC") {
-        if (!this->validG) {
+        if (!this->geometry)
           this->geometry = new QList<Geometry*>();
-          // this->geometry = new QList< QPair<GType, void*> >();
-          this->validG = true;
-        }
         Circle* cir = new Circle(X, parse.toDouble(), this->Z);
-        // cir->type = DCtype;
-        // cir->Zoom = this->Z;
-        // cir->Centre = new Position(X);
-        // cir->R = parse.toFloat();
-        // cir->valid = true;
-        // this->DC.push_back(cir);
-        // this->geometry->push_back(QPair<GType, void*>(DCtype, cir));
         this->geometry->push_back(cir);
       } else if (text == "DY") {
         Position* pos = new Position(ParseCoord(parse));
+        if (!this->DY)
+          this->DY = new QList<Position*>;
         this->DY->push_back(pos);
       }
     }
@@ -304,42 +256,42 @@ namespace OpenAirspace {
   }
 
   Airspace::~Airspace() {
-    if (validAN) {
+    if (AN) {
       delete AN;
       AN = NULL;
     }
-    if (validAL) {
+    if (AL) {
       delete AL;
       AL = NULL;
     }
-    if (validAH) {
+    if (AL) {
       delete AH;
       AH = NULL;
     }
-    if (validAT) {
+    if (AT) {
       for (int i = 0; i < AT->size(); ++i) {
         delete AT->at(i);
       }
       if (AT->size() != 0)
         delete AT;
     }
-    if (validTO) {
+    if (TO) {
       delete TO;
       TO = NULL;
     }
-    if (validTC) {
+    if (TC) {
       delete TC;
       TC = NULL;
     }
-    if (validSP) {
+    if (SP) {
       delete SP;
       SP = NULL;
     }
-    if (validSB) {
+    if (SB) {
       delete SB;
       SB = NULL;
     }
-    if (this->validG) {
+    if (geometry) {
       for (int i = 0; i < geometry->size(); ++i) {
         Geometry* g = this->geometry->at(i);
         delete g;
@@ -347,7 +299,51 @@ namespace OpenAirspace {
       delete geometry;
       geometry = NULL;
     }
-
-    // DP,DC,DA,DB
+    if (DY) {
+      for (int i = 0; i < this->DY->size(); i++)
+        delete this->DY->at(i);
+      delete this->DY;
+      this->DY = NULL;
+    }
   }
+
+int Airspace::ParseHeight(bool floor, bool* agl) {
+  // parse the string to number in ft
+  // if none of cond hit, return 0
+  int absoluteHeightInFt = 0;
+  *agl = false;
+  QString* parsedString;
+
+  // set the related parsed text
+  if (floor) {
+    if (this->AL)
+      parsedString = this->AL;
+    else
+      return 0;
+  } else {
+    if (this->AH)
+      parsedString = this->AH;
+    else
+      return 0;
+  }
+
+  if (parsedString->contains("FL", Qt::CaseInsensitive)) {
+    // Compute the flight level = QNH1013.25 hPa MSL
+    int s = parsedString->indexOf(QRegExp("[0-9]"));
+    int e = parsedString->lastIndexOf(QRegExp("[0-9]"));
+    int FL = parsedString->mid(s, e - s + 1).toInt();
+    absoluteHeightInFt = FL * 100;
+  } else if (parsedString->contains("MSL", Qt::CaseInsensitive)) {
+    int s = parsedString->indexOf(QRegExp("[0-9]"));
+    int e = parsedString->lastIndexOf(QRegExp("[0-9]"));
+    absoluteHeightInFt = parsedString->mid(s, e - s + 1).toInt();
+  } else if (parsedString->contains("AGL", Qt::CaseInsensitive)) {
+    int s = parsedString->indexOf(QRegExp("[0-9]"));
+    int e = parsedString->lastIndexOf(QRegExp("[0-9]"));
+    absoluteHeightInFt = parsedString->mid(s, e - s + 1).toInt();
+    *agl = true;
+  }
+
+  return absoluteHeightInFt;
+}
 }  // OpenAirspace
