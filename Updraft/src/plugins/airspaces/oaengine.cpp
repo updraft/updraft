@@ -41,6 +41,7 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
       int ceiling = A->ParseHeight(false, &ceilingAgl);
       if (ceiling == 0) ceiling = ROOF;
       int floor = A->ParseHeight(true, &floorAgl);
+      Position* heightRefPoint = NULL;  // where to take height
 
       // To destroy artefacts of two planes in one space
       double rnd = 0.05 * (qrand() % 100);
@@ -65,14 +66,20 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
               OpenAirspace::ArcI* aa =
                 (OpenAirspace::ArcI*)A->GetGeometry().at(j);
               InsertArcI(*aa, pointsWGS);
+              if (!heightRefPoint)
+                heightRefPoint = new Position(aa->Centre());
           } else if (gtype == OpenAirspace::Geometry::DCtype) {
               OpenAirspace::Circle* c =
                 (OpenAirspace::Circle*)A->GetGeometry().at(j);
               InsertCircle(*c, pointsWGS);
+              if (!heightRefPoint)
+                heightRefPoint = new Position(c->Centre());
           } else if (gtype == OpenAirspace::Geometry::DBtype) {
             OpenAirspace::ArcII* ab =
               (OpenAirspace::ArcII*)A->GetGeometry().at(j);
             InsertArcII(*ab, pointsWGS);
+            if (!heightRefPoint)
+                heightRefPoint = new Position(ab->Centre());
           }
         }
 
@@ -80,22 +87,33 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
         // TODO(Monkey): Not working without internet access
         QList<double>* pointsGnd = NULL;
         if (floorAgl || ceilingAgl) {
-          pointsGnd = new QList<double>();
+          if (!heightRefPoint && A->GetGeometrySize() > 0)
+            heightRefPoint = new Position(
+            A->GetGeometry().at(0)->Centre());
+
+          // use only one refpoint
+          // pointsGnd = new QList<double>();
           double res = 0;
           double addGnd;
-          osgEarth::Util::ElevationManager::Technique t =
-            elevationMan->getTechnique();
-          elevationMan->setTechnique(
-            osgEarth::Util::ElevationManager::TECHNIQUE_GEOMETRIC);
-          // int b = elevationMan->getMaxTilesToCache();
+          // resolution of the elevation tiles
+          // put the 0 or 0.0001 for highest resol
+          double tileResolution = 0.01;
 
-          for (int k = 0; k < pointsWGS->size(); ++k) {
+          elevationMan->getElevation(
+              heightRefPoint->lon,
+              heightRefPoint->lat,
+              tileResolution, 0,
+              addGnd, res);
+
+          if (floorAgl) floor += addGnd * M_TO_FT;
+          if (ceilingAgl) ceiling += addGnd * M_TO_FT;
+          /* for (int k = 0; k < pointsWGS->size(); ++k) {
             elevationMan->getElevation(
               pointsWGS->at(k).lon,
               pointsWGS->at(k).lat,
               0.0001, 0, addGnd, res);
             pointsGnd->push_back(addGnd);
-          }
+          }*/
         }
 
         // OGL draw the geom
@@ -163,11 +181,6 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
     // set transparency
     stateSet->setMode(GL_ALPHA_TEST, osg::StateAttribute::ON);
     stateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
-
-    // stateSet->setMode(GL_POLYGON_OFFSET_FILL, osg::StateAttribute::ON);
-    // stateSet->setMode(GL_POLYGON_OFFSET_LINE, osg::StateAttribute::ON);
-    // stateSet->setMode(GL_POLYGON_SMOOTH, osg::StateAttribute::ON);
-
 
     QString displayName = fileName.left(fileName.indexOf('.'));
     int cuntSlashes = displayName.count('/');

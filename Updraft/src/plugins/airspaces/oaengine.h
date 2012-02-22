@@ -32,6 +32,7 @@ static const double M_TO_NM = 1/1852;
 
 /// Foot to meters const
 static const double FT_TO_M = 0.3048;
+static const double M_TO_FT = 1/0.3048;
 
 /// Earth's quatratic mean radius for WGS-84
 static const double EARTH_RADIUS_IN_METERS = 6372797.560856;
