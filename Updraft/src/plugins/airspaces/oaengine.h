@@ -117,7 +117,7 @@ class oaEngine {
   // double Dot(const osg::Vec2d&, const osg::Vec2d&);
 
   /// Set the colour and width of the line if possible
-  void oaEngine::SetWidthAndColour(const OpenAirspace::Airspace* A);
+  void SetWidthAndColour(const OpenAirspace::Airspace* A);
 };  // oaEngine
 }  // Airspaces
 }  // Updraft
