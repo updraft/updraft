@@ -41,6 +41,7 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
       int ceiling = A->ParseHeight(false, &ceilingAgl);
       if (ceiling == 0) ceiling = ROOF;
       int floor = A->ParseHeight(true, &floorAgl);
+      if (floor == 0) floorAgl = true;
       Position* heightRefPoint = NULL;  // where to take height
 
       // To destroy artefacts of two planes in one space
@@ -92,7 +93,7 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
             A->GetGeometry().at(0)->Centre());
 
           // use only one refpoint
-          // pointsGnd = new QList<double>();
+          pointsGnd = new QList<double>();
           double res = 0;
           double addGnd;
           // resolution of the elevation tiles
@@ -105,15 +106,15 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
               tileResolution, 0,
               addGnd, res);
 
-          if (floorAgl) floor += addGnd * M_TO_FT;
-          if (ceilingAgl) ceiling += addGnd * M_TO_FT;
-          /* for (int k = 0; k < pointsWGS->size(); ++k) {
+          // if (floorAgl) floor += addGnd * M_TO_FT;
+          // if (ceilingAgl) ceiling += addGnd * M_TO_FT;
+          for (int k = 0; k < pointsWGS->size(); ++k) {
             elevationMan->getElevation(
               pointsWGS->at(k).lon,
               pointsWGS->at(k).lat,
               0.0001, 0, addGnd, res);
             pointsGnd->push_back(addGnd);
-          }*/
+          }
         }
 
         // OGL draw the geom
@@ -135,10 +136,10 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
           OAGeode->addDrawable(geom);
         }*/
         // draw the sides
-        geom = DrawPolygonSides(pointsWGS, pointsGnd, col,
+        /* geom = DrawPolygonSides(pointsWGS, pointsGnd, col,
           osg::PrimitiveSet::TRIANGLE_STRIP, floor, ceiling,
           floorAgl, ceilingAgl);
-        OAGeode->addDrawable(geom);
+        OAGeode->addDrawable(geom);*/
 
         // TODO(Monkey): query the height only once!
         // Draw contours
