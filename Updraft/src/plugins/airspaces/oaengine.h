@@ -8,6 +8,7 @@
 #include <osgEarthUtil/ObjectPlacer>
 #include <osg/PositionAttitudeTransform>
 #include <osg/Geometry>
+#include <osg/Depth>
 #include <QString>
 #include <QtGui>
 
@@ -48,7 +49,7 @@ static const float DEFAULT_TRANSPARENCY = 0.1f;
 
 /// Default elevations in ft
 static const int GND = 0;
-static const int ROOF = 80000;
+static const int ROOF = 0;  // 80000;
 
 
 
@@ -67,6 +68,37 @@ class oaEngine {
   /// width, colour
   float width;
   osg::Vec4f col;
+
+  /// Centre of the airspace if possible
+  /// where to take height
+  Position* heightRefPoint;
+
+  /// Engine settings
+  /// settings of how the drawing engine behaves
+  /// Turn this on to read elevation data for each
+  /// of the polygon polints
+  bool USE_POINTWISE_ELEVATION;
+  /// Turn this on to simplify drawing by draw the
+  /// polygons under ground (no ground elevation data needed)
+  bool DRAW_UNDERGROUND;
+  /// Turn this on to draw the top polygon face
+  bool TOP_FACE;
+  /// Turnt his on to draw the bottom polygon face
+  bool BOTTOM_FACE;
+  /// Turn this on to draw the face sides
+  bool SIDE_FACE;
+  /// Turn this on to draw the top polygon wireframe
+  bool TOP_WIREFRAME;
+  /// Turnt his on to draw the bottom polygon wireframe
+  bool BOTTOM_WIREFRAME;
+  /// Turn this on to draw the wireframe sides
+  bool SIDE_WIREFRAME;
+  /// Turn this on to draw the sides with colour gradient
+  bool SIDE_COL_GRADIENT;
+  /// Opacity of the surface
+  float POLY_OPACITY;
+  /// Opacity of the wireframe
+  float WIRE_OPACITY;
 
   /// Draw polygon
   osg::Geometry* DrawPolygon(

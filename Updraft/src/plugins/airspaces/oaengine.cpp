@@ -10,11 +10,28 @@ oaEngine::oaEngine(MapLayerGroupInterface* LG) {
   this->width = 1.0f;
   // set the default line colour
   col = osg::Vec4f(0.0f, 0.5f, 1.0f, DEFAULT_TRANSPARENCY);
+
+  // some defaults
+  USE_POINTWISE_ELEVATION = true;
+  DRAW_UNDERGROUND        = false;
+  TOP_FACE                = false;
+  BOTTOM_FACE             = false;
+  SIDE_FACE               = true;
+  TOP_WIREFRAME           = true;
+  BOTTOM_WIREFRAME        = true;
+  SIDE_WIREFRAME          = true;
+  SIDE_COL_GRADIENT       = true;
+  POLY_OPACITY            = DEFAULT_TRANSPARENCY;
+  WIRE_OPACITY            = 0.5;
+
+  heightRefPoint = NULL;
 }
 
 MapLayerInterface* oaEngine::Draw(const QString& fileName) {
+  // Parse the file
   OpenAirspace::Parser AirspaceSet(fileName);
 
+  // if valid maplayer proceed
   if (mapLayerGroup != NULL) {
     // Init the elevation manager
     osgEarth::Map* map = mapLayerGroup->getMapNode()->getMap();
@@ -41,8 +58,8 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
       int ceiling = A->ParseHeight(false, &ceilingAgl);
       if (ceiling == 0) ceiling = ROOF;
       int floor = A->ParseHeight(true, &floorAgl);
-      if (floor == 0) floorAgl = true;
-      Position* heightRefPoint = NULL;  // where to take height
+      if (!DRAW_UNDERGROUND)
+        if (floor == 0) floorAgl = true;
 
       // To destroy artefacts of two planes in one space
       double rnd = 0.05 * (qrand() % 100);
@@ -88,12 +105,23 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
         // TODO(Monkey): Not working without internet access
         QList<double>* pointsGnd = NULL;
         if (floorAgl || ceilingAgl) {
-          if (!heightRefPoint && A->GetGeometrySize() > 0)
-            heightRefPoint = new Position(
-            A->GetGeometry().at(0)->Centre());
+          if (!heightRefPoint && A->GetGeometrySize() > 0) {
+            // compute the center of gravity
+            double sumLon = 0;
+            double sumLat = 0;
+            for (int m = 0; m < A->GetGeometrySize(); ++m) {
+              sumLon += A->GetGeometry().at(m)->Centre().lon;
+              sumLat += A->GetGeometry().at(m)->Centre().lat;
+            }
+            sumLat /= A->GetGeometrySize();
+            sumLon /= A->GetGeometrySize();
+            heightRefPoint = new Position();
+            heightRefPoint->lat = sumLat;
+            heightRefPoint->lon = sumLon;
+            heightRefPoint->valid = true;
+          }
 
           // use only one refpoint
-          pointsGnd = new QList<double>();
           double res = 0;
           double addGnd;
           // resolution of the elevation tiles
@@ -106,60 +134,66 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
               tileResolution, 0,
               addGnd, res);
 
-          // if (floorAgl) floor += addGnd * M_TO_FT;
-          // if (ceilingAgl) ceiling += addGnd * M_TO_FT;
-          for (int k = 0; k < pointsWGS->size(); ++k) {
-            elevationMan->getElevation(
-              pointsWGS->at(k).lon,
-              pointsWGS->at(k).lat,
-              0.0001, 0, addGnd, res);
-            pointsGnd->push_back(addGnd);
+          // Get the elevation data for whole airspace
+          // or for each and every point of the polygon
+          if (USE_POINTWISE_ELEVATION) {
+            pointsGnd = new QList<double>();
+            for (int k = 0; k < pointsWGS->size(); ++k) {
+              elevationMan->getElevation(
+                pointsWGS->at(k).lon,
+                pointsWGS->at(k).lat,
+                0.0001, 0, addGnd, res);
+              pointsGnd->push_back(addGnd);
+            }
+          } else {
+            if (floorAgl) floor += addGnd * M_TO_FT;
+            if (ceilingAgl) ceiling += addGnd * M_TO_FT;
           }
         }
 
         // OGL draw the geom
         osg::Geometry* geom;
-/* // volume representation not used
+
         // Draw volume
         // draw top polygon
-        geom = DrawPolygon(
-          pointsWGS,
-          pointsGnd,
-          col,
-          osg::PrimitiveSet::POLYGON,
-          ceiling);
-        OAGeode->addDrawable(geom);
+        if (TOP_FACE) {
+          geom = DrawPolygon(pointsWGS, pointsGnd, col,
+            osg::PrimitiveSet::POLYGON, ceiling, ceilingAgl);
+          OAGeode->addDrawable(geom);
+        }
         // draw bottom poly
-        if (floor > gnd) {
+        if (BOTTOM_WIREFRAME && floor > GND) {
           geom = DrawPolygon(pointsWGS, pointsGnd, col,
             osg::PrimitiveSet::POLYGON, floor, floorAgl);
           OAGeode->addDrawable(geom);
-        }*/
+        }
         // draw the sides
-        /* geom = DrawPolygonSides(pointsWGS, pointsGnd, col,
+        geom = DrawPolygonSides(pointsWGS, pointsGnd, col,
           osg::PrimitiveSet::TRIANGLE_STRIP, floor, ceiling,
           floorAgl, ceilingAgl);
-        OAGeode->addDrawable(geom);*/
-
-        // TODO(Monkey): query the height only once!
-        // Draw contours
-        osg::Vec4 fullCol(col.x(), col.y(), col.z(), 0.5f);
-        // osg::Vec4 fullCol(0.0f, 0.0f, 0.0f, 1.0f);
-        // draw top polygon
-        geom = DrawPolygon(pointsWGS, pointsGnd, fullCol,
-          osg::PrimitiveSet::LINE_STRIP, ceiling, ceilingAgl);
         OAGeode->addDrawable(geom);
+
+        // Draw contours
+        osg::Vec4 fullCol(col.x(), col.y(), col.z(), WIRE_OPACITY);
+        // draw top polygon
+        if (TOP_WIREFRAME) {
+          geom = DrawPolygon(pointsWGS, pointsGnd, fullCol,
+            osg::PrimitiveSet::LINE_STRIP, ceiling, ceilingAgl);
+          OAGeode->addDrawable(geom);
+        }
         // draw bottom poly
-        if (floor > GND) {
+        if (BOTTOM_WIREFRAME && floor > GND) {
           geom = DrawPolygon(pointsWGS, pointsGnd, fullCol,
             osg::PrimitiveSet::LINE_STRIP, floor, floorAgl);
           OAGeode->addDrawable(geom);
         }
-        // Side contours
-        /* geom = DrawPolygonSides(pointsWGS, pointsGnd, fullCol,
-          osg::PrimitiveSet::LINES, floor, ceiling,
-          floorAgl, ceilingAgl);
-        OAGeode->addDrawable(geom);*/
+        // Side wireframe
+        if (SIDE_WIREFRAME) {
+          geom = DrawPolygonSides(pointsWGS, pointsGnd, fullCol,
+            osg::PrimitiveSet::LINES, floor, ceiling,
+            floorAgl, ceilingAgl);
+          OAGeode->addDrawable(geom);
+        }
 
         delete pointsWGS;
         pointsWGS = NULL;
@@ -168,25 +202,47 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
           delete pointsGnd;
           pointsGnd = NULL;
         }
+
+        delete heightRefPoint;
+        heightRefPoint = NULL;
       }
     }
+
     // change the thickness of the line
     osg::LineWidth* linewidth = new osg::LineWidth();
     linewidth->setWidth(width);
+
     // set geode params
     osg::StateSet* stateSet = OAGeode->getOrCreateStateSet();
     stateSet->setAttributeAndModes(linewidth,
       osg::StateAttribute::ON);
     stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     stateSet->setMode(GL_LINE_SMOOTH, osg::StateAttribute::ON);
-    // set transparency
-    stateSet->setMode(GL_ALPHA_TEST, osg::StateAttribute::ON);
-    stateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
 
+    // Enable blending, select transparent bin.
+    stateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
+    stateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+
+    // Enable depth test so that an opaque polygon will occlude
+    // a transparent one behind it.
+    stateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
+
+    // Conversely, disable writing to depth buffer so that
+    // a transparent polygon will allow polygons behind it to shine thru.
+    // OSG renders transparent polygons after opaque ones.
+    osg::Depth* depth = new osg::Depth;
+    depth->setWriteMask(false);
+    stateSet->setAttributeAndModes(depth, osg::StateAttribute::ON);
+
+    // Disable conflicting modes.
+    stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+    // get the name of the airspace
     QString displayName = fileName.left(fileName.indexOf('.'));
     int cuntSlashes = displayName.count('/');
     displayName = displayName.section('/', cuntSlashes, cuntSlashes);
 
+    // result in new map layer
     return mapLayerGroup->insertMapLayer(OAGeode, displayName);
   }
   return NULL;
@@ -223,6 +279,19 @@ osg::Geometry* oaEngine::DrawPolygon(
   double addGnd = 0;
 
   // Fill the OGL vertexArray
+  // if polygon face add the center
+  /* if (heightRefPoint &&
+    primitiveMode == osg::PrimitiveSet::POLYGON) {
+    if (pointsGnd) addGnd = pointsGnd->at(0);
+    objectPlacer->createPlacerMatrix(
+      heightRefPoint->lat,
+      heightRefPoint->lon,
+      (height*FT_TO_M) + addGnd,
+      coorTransformation);
+    coord = osg::Vec3(0, 0, 0) * coorTransformation;
+    vertexData->push_back(coord);
+  }*/
+  // fill the array
   for (int k = 0; k < pointsWGS->size(); ++k) {
     if (agl && pointsGnd
       && pointsGnd->size() == pointsWGS->size()) {
@@ -286,6 +355,8 @@ osg::Geometry* oaEngine::DrawPolygonSides(const QList<Position>* pointsWGS,
     coord = osg::Vec3(0, 0, 0) * coorTransformation;
 
     vertexData->push_back(coord);
+    if (SIDE_COL_GRADIENT)
+      colors->push_back(osg::Vec4f(0, 0, 0, 0));
 
     if (floorAgl && pointsGnd
       && pointsGnd->size() == pointsWGS->size()) {
@@ -297,16 +368,21 @@ osg::Geometry* oaEngine::DrawPolygonSides(const QList<Position>* pointsWGS,
     coord = osg::Vec3(0, 0, 0) * coorTransformation;
 
     vertexData->push_back(coord);
-
-    if (primitiveMode == osg::PrimitiveSet::LINES)
+    if (SIDE_COL_GRADIENT)
+      colors->push_back(col);
+    else if (primitiveMode == osg::PrimitiveSet::LINES)
       colors->push_back(col);
   }
-  colors->push_back(col);
+  if (!SIDE_COL_GRADIENT && !primitiveMode == osg::PrimitiveSet::LINES)
+    colors->push_back(col);
 
   drawArrayLines->setFirst(0);
   drawArrayLines->setCount(vertexData->size());
   geom->setColorArray(colors);
-  geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+  if (SIDE_COL_GRADIENT)
+    geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+  else
+    geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
   return geom;
 }
 
