@@ -21,10 +21,12 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
     <image name="Offline map" driver="gdal">
         <url>world.tif</url>
     </image>
-        
+     
+    <!--   
     <image name="Online maps" driver="arcgis">
         <url>http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_Imagery_World_2D/MapServer</url>
     </image>
+    -->
     
 	  <elevation name="Elevation layer" driver="tms">
         <url>http://readymap.org/readymap/tiles/1.0.0/9/</url>    
