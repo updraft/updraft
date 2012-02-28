@@ -12,9 +12,9 @@ oaEngine::oaEngine(MapLayerGroupInterface* LG) {
   col = osg::Vec4f(0.0f, 0.5f, 1.0f, DEFAULT_TRANSPARENCY);
 
   // some defaults
-  USE_POINTWISE_ELEVATION = true;
+  USE_POINTWISE_ELEVATION = false;
   DRAW_UNDERGROUND        = false;
-  TOP_FACE                = false;
+  TOP_FACE                = true;
   BOTTOM_FACE             = false;
   SIDE_FACE               = true;
   TOP_WIREFRAME           = true;
@@ -162,16 +162,18 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
           OAGeode->addDrawable(geom);
         }
         // draw bottom poly
-        if (BOTTOM_WIREFRAME && floor > GND) {
+        if (BOTTOM_FACE && floor > GND) {
           geom = DrawPolygon(pointsWGS, pointsGnd, col,
             osg::PrimitiveSet::POLYGON, floor, floorAgl);
           OAGeode->addDrawable(geom);
         }
         // draw the sides
-        geom = DrawPolygonSides(pointsWGS, pointsGnd, col,
-          osg::PrimitiveSet::TRIANGLE_STRIP, floor, ceiling,
-          floorAgl, ceilingAgl);
-        OAGeode->addDrawable(geom);
+        if (SIDE_FACE) {
+          geom = DrawPolygonSides(pointsWGS, pointsGnd, col,
+            osg::PrimitiveSet::TRIANGLE_STRIP, floor, ceiling,
+            floorAgl, ceilingAgl);
+          OAGeode->addDrawable(geom);
+        }
 
         // Draw contours
         osg::Vec4 fullCol(col.x(), col.y(), col.z(), WIRE_OPACITY);
@@ -243,6 +245,8 @@ MapLayerInterface* oaEngine::Draw(const QString& fileName) {
     displayName = displayName.section('/', cuntSlashes, cuntSlashes);
 
     // result in new map layer
+    // layerGroup->push_back(
+      // mapLayerGroup->insertMapLayer(OAGeode, displayName));
     return mapLayerGroup->insertMapLayer(OAGeode, displayName);
   }
   return NULL;

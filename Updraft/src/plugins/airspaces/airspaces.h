@@ -37,7 +37,7 @@ class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
   /// Registration for loading Airspaces from OpenAirspace file.
   FileRegistration OAirspaceFileReg;
 
-  QVector<MapLayerInterface*> mapLayers;
+  // QVector<MapLayerInterface*>* mapLayers;
   oaEngine* engine;
 };
 

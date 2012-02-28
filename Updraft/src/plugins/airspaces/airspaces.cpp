@@ -51,7 +51,7 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
       MapLayerInterface* layer1 = engine->Draw(fileName);
       layer1->connectSignalDisplayed
         (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
-      mapLayers.append(layer1);
+      // mapLayers->append(layer1);
       return true;
       break;
   }
