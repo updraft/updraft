@@ -11,7 +11,7 @@ namespace OpenAirspace {
     Position* pos = new Position();
     pos->lat = 10;
     pos->lon = 20;
-    QList<Geometry*> g;
+    QVector<Geometry*> g;
     Polygon* pp = new Polygon(*pos, 1);
     g.push_back(pp);
     OpenAirspace::ArcI* aa = new OpenAirspace::ArcI(*pos, 10, true,
@@ -43,6 +43,7 @@ namespace OpenAirspace {
     this->TC        = NULL;
     this->AT        = NULL;
     this->geometry  = NULL;
+    this->ACstring  = NULL;
     this->CW        = true;
     this->Wi        = -1;
     this->Z         = -1;
@@ -51,6 +52,10 @@ namespace OpenAirspace {
     if (text != "AC") return;
 
     (*ts) >> text;
+    if (!this->ACstring)
+      this->ACstring = new QString(text);
+    else
+      *this->ACstring = text;
     if (text      == "R") this->AC = R;
     else if (text == "Q") this->AC = Q;
     else if (text == "P") this->AC = P;
@@ -100,7 +105,7 @@ namespace OpenAirspace {
           this->AH = new QString(parse);
       } else if (text == "AT") {
         if (!this->AT)
-          this->AT = new QList<Position*>();
+          this->AT = new QVector<Position*>();
         Position* pos = new Position(ParseCoord(parse));
         this->AT->push_back(pos);
       } else if (text == "TO") {
@@ -161,13 +166,13 @@ namespace OpenAirspace {
         }
       }  /* V */      else if (text == "DP") {
         if (!this->geometry) {
-          this->geometry = new QList<Geometry*>();
+          this->geometry = new QVector<Geometry*>();
         }
         Polygon* p = new Polygon(ParseCoord(parse), this->Z);
         this->geometry->push_back(p);
       } else if (text == "DA") {
         if (!this->geometry)
-          this->geometry = new QList<Geometry*>();
+          this->geometry = new QVector<Geometry*>();
         int i = parse.indexOf(',');
         double R = parse.left(i).toDouble();
         parse = parse.right(parse.size() - i -1);
@@ -180,7 +185,7 @@ namespace OpenAirspace {
         this->geometry->push_back(arc);
       } else if (text == "DB") {
         if (!this->geometry)
-          this->geometry = new QList<Geometry*>();
+          this->geometry = new QVector<Geometry*>();
         int i = parse.indexOf(',');
         Position Start = ParseCoord(parse.left(i));
         parse = parse.right(parse.size() - i -1);
@@ -190,13 +195,13 @@ namespace OpenAirspace {
         this->geometry->push_back(arc);
       } else if (text == "DC") {
         if (!this->geometry)
-          this->geometry = new QList<Geometry*>();
+          this->geometry = new QVector<Geometry*>();
         Circle* cir = new Circle(X, parse.toDouble(), this->Z);
         this->geometry->push_back(cir);
       } else if (text == "DY") {
         Position* pos = new Position(ParseCoord(parse));
         if (!this->DY)
-          this->DY = new QList<Position*>;
+          this->DY = new QVector<Position*>;
         this->DY->push_back(pos);
       }
     }
@@ -304,6 +309,10 @@ namespace OpenAirspace {
         delete this->DY->at(i);
       delete this->DY;
       this->DY = NULL;
+    }
+    if (this->ACstring) {
+      delete this->ACstring;
+      this->ACstring = NULL;
     }
   }
 

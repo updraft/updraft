@@ -11,6 +11,7 @@
 #include <osg/Depth>
 #include <QString>
 #include <QtGui>
+#include <osgEarthUtil/ElevationManager>
 
 #include "../../pluginbase.h"
 #include "../../libraries/openairspace/openairspace.h"
@@ -49,20 +50,23 @@ static const float DEFAULT_TRANSPARENCY = 0.1f;
 
 /// Default elevations in ft
 static const int GND = 0;
-static const int ROOF = 0;  // 80000;
+static const int ROOF = 80000;
 
 
 
 class oaEngine {
  public:
   explicit oaEngine(MapLayerGroupInterface* LG);
-  MapLayerInterface* Draw(const QString&);
+  QVector<MapLayerInterface*>* Draw(const QString&);
   // bool Draw(const QString&);
 
  private:
   /// Map Layer Interface.
   MapLayerGroupInterface *mapLayerGroup;
   QVector<QTreeWidgetItem*> treeItems;
+  QVector<MapLayerInterface*>* mapLayers;
+  osg::Geode* OAGeode;
+  osgEarth::Util::ElevationManager* elevationMan;
 
   /// Line properties
   /// width, colour
@@ -78,6 +82,10 @@ class oaEngine {
   /// Turn this on to read elevation data for each
   /// of the polygon polints
   bool USE_POINTWISE_ELEVATION;
+  /// Elevation tile resolution
+  /// set this to 0.0001 to get the highest resolution
+  /// for polygon elevation essesment
+  float ELEV_TILE_RESOLUTION;
   /// Turn this on to simplify drawing by draw the
   /// polygons under ground (no ground elevation data needed)
   bool DRAW_UNDERGROUND;
@@ -96,23 +104,47 @@ class oaEngine {
   /// Turn this on to draw the sides with colour gradient
   bool SIDE_COL_GRADIENT;
   /// Opacity of the surface
-  float POLY_OPACITY;
+  float POLY_OPACITY_BOTTOM;
+  float POLY_OPACITY_TOP;
   /// Opacity of the wireframe
-  float WIRE_OPACITY;
+  float WIRE_OPACITY_BOTTOM;
+  float WIRE_OPACITY_TOP;
+  /// Default elevations in ft
+  int GND;
+  int ROOF;
+
+
+  /// Compute the height
+  QVector<double>* ComputeHeightData(
+  int* floor, int* ceiling,
+  bool* floorAgl, bool* ceilingAgl,
+  Position* heightRefPoint,
+  OpenAirspace::Airspace* A,
+  QVector<Position>* pointsWGS);
+
+  /// Fill the OpenGL vertex arrays
+  void oaEngine::FillOGLArrays(
+  QVector<Position>* pointsWGS,
+  QVector<double>* pointsGnd,
+  int floor, int ceiling,
+  bool floorAgl, bool ceilingAgl);
+
+  /// Insert the geometry Layer into the array
+  void PushLayer(osg::Geode* geode, const QString& displayName);
 
   /// Draw polygon
   osg::Geometry* DrawPolygon(
-    QList<Position>* pointsWGS,  // list of WGS polygon points
-    const QList<double>* pointsGnd,  // list of the groud levels
+    QVector<Position>* pointsWGS,  // list of WGS polygon points
+    const QVector<double>* pointsGnd,  // list of the groud levels
     osg::Vec4& col,   // colour of the vertices
     osg::PrimitiveSet::Mode primitive,  // drawing mode
-    int height, bool agl);   // height
+    int height, bool agl, bool cw);   // height, orientation
 
   /// Draw polygon sides
   osg::Geometry* DrawPolygonSides(
-    const QList<Position>* pointsWGS,
-    const QList<double>* pointsGnd,
-    osg::Vec4& col,
+    const QVector<Position>* pointsWGS,
+    const QVector<double>* pointsGnd,
+    osg::Vec4& colBot, osg::Vec4& colTop,
     osg::PrimitiveSet::Mode primitive,
     const int floor, const int ceiling,
     const bool floorAgl, const bool ceilingAgl);
@@ -128,18 +160,18 @@ class oaEngine {
 
   /// Insert Arc into the OGL vertex array
   void InsertArcI(const OpenAirspace::ArcI& aa,
-    QList<Position>* vertexList);
+    QVector<Position>* vertexList);
   void InsertArcII(const OpenAirspace::ArcII& aa,
-    QList<Position>* vertexList);
+    QVector<Position>* vertexList);
   // void InsertArcII(const Position& centre, const Position& start,
-  //   const Position& end, bool cw, QList<Position>* vertexList);
+  //   const Position& end, bool cw, QVector<Position>* vertexList);
   void InsertCircle(const OpenAirspace::Circle& cc,
-    QList<Position>* vertexList);
+    QVector<Position>* vertexList);
 
   /// Insert middle of the arc - angles from/to in rads, r in degs, pos WGS
   void InsertMidArc(const Position& centre, double from,
     double to, const bool cw, const double& r,
-    QList<Position>* vertexList);
+    QVector<Position>* vertexList);
 
   /// compute the circular coord angle given centre and point on circ 0 ontop
   double AngleRad(const Position& centre, const Position& point);
@@ -150,6 +182,9 @@ class oaEngine {
 
   /// Set the colour and width of the line if possible
   void oaEngine::SetWidthAndColour(const OpenAirspace::Airspace* A);
+
+  /// Get the orientation for given array of closed poly points
+  bool IsPolyOrientationCW(QVector<Position>* pointsWGS);
 };  // oaEngine
 }  // Airspaces
 }  // Updraft
