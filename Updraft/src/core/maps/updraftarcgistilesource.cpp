@@ -1,30 +1,30 @@
 #include "updraftarcgistilesource.h"
+
+#include <limits.h>
+#include <QDebug>
+
 #include <osgEarth/HTTPClient>
 #include <osgEarth/JsonUtils>
 #include <osgEarth/Registry>
 #include <osg/Notify>
-#include <sstream>
-#include <limits.h>
-#include <QDebug>
 
-using namespace osgEarth;
-using namespace osgEarth::Drivers;
+#include <sstream>
 
 namespace Updraft {
 namespace Core {
 
-Extent::Extent(): is_valid(false) {
+Extent::Extent() : is_valid(false) {
 }
 
 Extent::Extent(double _xmin, double _ymin, double _xmax, double _ymax,
-  const std::string &_srs):
+  const std::string &_srs) :
   xmin(_xmin), ymin(_ymin), xmax(_xmax), ymax(_ymax), srs_str(_srs),
   is_valid(true) {
 }
 
-Extent::Extent(const Updraft::Core::Extent &rhs):
-  xmin(rhs.xmin), ymin(rhs.ymin), xmax(rhs.xmax), ymax(rhs.ymax), srs_str(rhs.srs_str),
-  is_valid(rhs.is_valid) {
+Extent::Extent(const Extent &rhs)
+  : xmin(rhs.xmin), ymin(rhs.ymin), xmax(rhs.xmax), ymax(rhs.ymax),
+  srs_str(rhs.srs_str), is_valid(rhs.is_valid) {
 }
 
 double Extent::xMax() const {
@@ -51,8 +51,8 @@ bool Extent::isValid() const {
   return is_valid;
 }
 
-MapServiceLayer::MapServiceLayer(int in_id, const std::string& in_name):
-  id(in_id), name(in_name) {
+MapServiceLayer::MapServiceLayer(int in_id, const std::string& in_name)
+  : id(in_id), name(in_name) {
 }
 
 int MapServiceLayer::getId() const {
@@ -63,12 +63,13 @@ const std::string& MapServiceLayer::getName() const {
   return name;
 }
 
-TileInfo::TileInfo(): is_valid(false) {
+TileInfo::TileInfo()
+  : is_valid(false) {
 }
 
 TileInfo::TileInfo(int _tile_size, const std::string& _format, int _min_level,
-  int _max_level, int _num_tiles_wide, int _num_tiles_high):
-  format(_format),
+  int _max_level, int _num_tiles_wide, int _num_tiles_high)
+  : format(_format),
   tile_size(_tile_size),
   min_level(_min_level),
   max_level(_max_level),
@@ -77,8 +78,8 @@ TileInfo::TileInfo(int _tile_size, const std::string& _format, int _min_level,
   num_tiles_high(_num_tiles_high) {
 }
 
-TileInfo::TileInfo(const TileInfo& rhs):
-  format(rhs.format),
+TileInfo::TileInfo(const TileInfo& rhs)
+  : format(rhs.format),
   tile_size(rhs.tile_size),
   min_level(rhs.min_level),
   max_level(rhs.max_level),
@@ -114,9 +115,9 @@ int TileInfo::getNumTilesWide() const {
 int TileInfo::getNumTilesHigh() const {
   return num_tiles_high;
 }
-                                 
-MapService::MapService():
-  is_valid(false),
+
+MapService::MapService()
+  : is_valid(false),
   tiled(false) {
 }
 
@@ -128,7 +129,7 @@ bool MapService::isTiled() const {
   return tiled;
 }
 
-const Profile* MapService::getProfile() const {
+const osgEarth::Profile* MapService::getProfile() const {
   return profile.get();
 }
 
@@ -142,12 +143,13 @@ bool MapService::init(const std::string& _url,
   std::string sep = url.find("?") == std::string::npos ? "?" : "&";
   // request the data in JSON format
   std::string json_url = url + sep + std::string("f=pjson");
-  HTTPResponse response = HTTPClient::get(json_url, options);
+  osgEarth::Drivers::HTTPResponse response =
+    osgEarth::Drivers::HTTPClient::get(json_url, options);
   if (!response.isOK())
     return setError("Unable to read metadata from ArcGIS service");
 
-  Json::Value doc;
-  Json::Reader reader;
+  osgEarth::Json::Value doc;
+  osgEarth::Json::Reader reader;
   if (!reader.parse(response.getPartStream(0), doc))
     return setError("Unable to parse metadata; invalid JSON");
 
@@ -159,29 +161,26 @@ bool MapService::init(const std::string& _url,
   double ymax = doc["fullExtent"].get("ymax", 0).asDouble();
   int srs = doc["fullExtent"].get("spatialReference",
     osgEarth::Json::Value::null).get("wkid", 0).asInt();
-  
-  //Assumes the SRS is going to be an EPSG code
+
+  // Assumes the SRS is going to be an EPSG code
   std::stringstream ss;
   ss << "epsg:" << srs;
-  
-  if (!(xmax > xmin && ymax > ymin && srs != 0))
-  {
+
+  if (!(xmax > xmin && ymax > ymin && srs != 0)) {
     return setError("Map service does not define a full extent");
   }
 
   // Read the layers list
-  Json::Value j_layers = doc["layers"];
+  osgEarth::Json::Value j_layers = doc["layers"];
   if (j_layers.empty())
     return setError("Map service contains no layers");
 
-  for(unsigned int i=0; i<j_layers.size(); i++)
-  {
-    Json::Value layer = j_layers[i];
-    int id = i; // layer.get("id", -1).asInt();
+  for (unsigned int i = 0; i < j_layers.size(); i++) {
+    osgEarth::Json::Value layer = j_layers[i];
+    int id = i;  // layer.get("id", -1).asInt();
     std::string name = layer["name"].asString();
 
-    if (id >= 0 && !name.empty())
-    {
+    if (id >= 0 && !name.empty()) {
       layers.push_back(MapServiceLayer(id, name));
     }
   }
@@ -196,11 +195,11 @@ bool MapService::init(const std::string& _url,
   int num_tiles_high = 1;
 
   // Read the tiling schema
-  Json::Value j_tileinfo = doc["tileInfo"];
+  osgEarth::Json::Value j_tileinfo = doc["tileInfo"];
   if (!j_tileinfo.empty()) {
     tiled = true;
 
-    // TODO(Maria): what do we do if the width <> height?
+    // TODO(OSGE) : what do we do if the width <> height?
     tile_rows = j_tileinfo.get("rows", 0).asInt();
     tile_cols = j_tileinfo.get("cols", 0).asInt();
     if (tile_rows <= 0 && tile_cols <= 0)
@@ -211,13 +210,13 @@ bool MapService::init(const std::string& _url,
       return setError
       ("Map service tile schema does not specify an image format");
 
-    Json::Value j_levels = j_tileinfo["lods"];
+    osgEarth::Json::Value j_levels = j_tileinfo["lods"];
     if (j_levels.empty())
       return setError("Map service tile schema contains no LODs");
-    
+
     min_level = INT_MAX;
     max_level = 0;
-    for(unsigned int i=0; i<j_levels.size(); i++) {
+    for (unsigned int i = 0; i < j_levels.size(); i++) {
       int level = j_levels[i].get("level", -1).asInt();
       if (level >= 0 && level < min_level)
         min_level = level;
@@ -228,13 +227,12 @@ bool MapService::init(const std::string& _url,
     if (j_levels.size() > 0) {
       int l = j_levels[0u].get("level", -1).asInt();
       double res = j_levels[0u].get("resolution", 0.0).asDouble();
-      num_tiles_wide = (int)osg::round((xmax - xmin) / (res * tile_cols));
-      num_tiles_high = (int)osg::round((ymax - ymin) / (res * tile_cols));
+      num_tiles_wide = osg::round((xmax - xmin) / (res * tile_cols));
+      num_tiles_high = osg::round((ymax - ymin) / (res * tile_cols));
 
       // In case the first level specified isn't level 0,
       // compute the number of tiles at level 0
-      for (int i = 0; i < l; i++)
-      {
+      for (int i = 0; i < l; i++) {
         num_tiles_wide /= 2;
         num_tiles_high /= 2;
       }
@@ -247,28 +245,29 @@ bool MapService::init(const std::string& _url,
   std::string ssStr;
   ssStr = ss.str();
 
-  osg::ref_ptr< SpatialReference > spatialReference =
-    SpatialReference::create(ssStr);
+  osg::ref_ptr<osgEarth::SpatialReference> spatialReference =
+    osgEarth::SpatialReference::create(ssStr);
   if (spatialReference->isGeographic()) {
     // If we have a geographic SRS, just use the geodetic profile
-    profile = Registry::instance()->getGlobalGeodeticProfile();
-  }
-  else if (spatialReference->isMercator()) {
-    // If we have a mercator SRS, just use the mercator profile
-    profile = Registry::instance()->getGlobalMercatorProfile();
-  }
-  else {
-    // It's not geodetic or mercator, so try to use the full extent
-    profile = Profile::create(
-      spatialReference.get(),
-      xmin, ymin, xmax, ymax,
-      NULL,
-      num_tiles_wide,
-      num_tiles_high);
+    profile = osgEarth::Registry::instance()->getGlobalGeodeticProfile();
+  } else {
+    if (spatialReference->isMercator()) {
+      // If we have a mercator SRS, just use the mercator profile
+      profile = osgEarth::Registry::instance()->getGlobalMercatorProfile();
+    } else {
+      // It's not geodetic or mercator, so try to use the full extent
+      profile = osgEarth::Profile::create(
+        spatialReference.get(),
+        xmin, ymin, xmax, ymax,
+        NULL,
+        num_tiles_wide,
+        num_tiles_high);
+    }
   }
 
   // now we're good.
-  tile_info = TileInfo(tile_rows, format, min_level, max_level, num_tiles_wide, num_tiles_high);
+  tile_info = TileInfo(tile_rows, format, min_level, max_level,
+    num_tiles_wide, num_tiles_high);
   is_valid = true;
   return is_valid;
 }
@@ -282,24 +281,24 @@ const std::string& MapService::getError() const {
   return error_msg;
 }
 
-UpdraftArcGisTileSource::UpdraftArcGisTileSource(const TileSourceOptions &options):
-  TileSource(options),
+UpdraftArcGisTileSource::UpdraftArcGisTileSource
+  (const osgEarth::TileSourceOptions &options) :
+  osgEarth::TileSource(options),
   _options(options),
-  _profileConf(ProfileOptions()) {
-  // TODO: allow single layers vs. "fused view"
+  _profileConf(osgEarth::ProfileOptions()) {
+  // TODO(OSGE): allow single layers vs. "fused view"
   if (_layer.empty())
-    _layer = "_alllayers"; // default to the AGS "fused view"
+    _layer = "_alllayers";  // default to the AGS "fused view"
 
-  // TODO: detect the format
+  // TODO(OSGE): detect the format
   if (_format.empty())
     _format = "png";
 
-  URI url = _options.url().value();
+  osgEarth::URI url = _options.url().value();
   // Add the token if necessary
-  if (_options.token().isSet())   {
+  if (_options.token().isSet()) {
     std::string token = _options.token().value();
-    if (!token.empty())
-    {
+    if (!token.empty()) {
       std::string sep = url.full().find("?") == std::string::npos ? "?" : "&";
       url = url.append(sep + std::string("token=") + token);
     }
@@ -311,34 +310,44 @@ UpdraftArcGisTileSource::UpdraftArcGisTileSource(const TileSourceOptions &option
       << _map_service.getError() << std::endl;
   }
 
-  // read the empty image
-  emptyImage = osgDB::readImageFile("data/empty_tile.png");
+  // read the no data image and set number of bytes to compare
+  nBytes = 50u;
+  noDataImage = osgDB::readImageFile("data/empty_tile.png");
+  if ((noDataImage != NULL) && (noDataImage->getImageSizeInBytes() < nBytes)) {
+    qDebug() << "The empty tile image is smaller than the number " <<
+      "of bytes we want to compare.\n"
+      << "Comparing the whole image.";
+    nBytes = noDataImage->getImageSizeInBytes();
+  }
 }
 
 void UpdraftArcGisTileSource::initialize(const std::string& referenceURI,
-  const Profile* overrideProfile) {
-  const Profile* profile = NULL;
+  const osgEarth::Profile* overrideProfile) {
+  const osgEarth::Profile* profile = NULL;
   if (_profileConf.isSet()) {
-    profile = Profile::create(_profileConf.get());
-  }
-  else if (overrideProfile) {
-    profile = overrideProfile;
-  }
-  else if (_map_service.getProfile()) {
-    profile = _map_service.getProfile();
+    profile = osgEarth::Profile::create(_profileConf.get());
   } else {
-    profile = osgEarth::Registry::instance()->getGlobalGeodeticProfile();
+    if (overrideProfile) {
+      profile = overrideProfile;
+    } else {
+      if (_map_service.getProfile()) {
+        profile = _map_service.getProfile();
+      } else {
+        profile = osgEarth::Registry::instance()->getGlobalGeodeticProfile();
+      }
+    }
   }
 
-	//Set the profile
-	setProfile(profile);
+  // Set the profile
+  setProfile(profile);
 }
 
 int UpdraftArcGisTileSource::getPixelsPerTile() const {
- return _map_service.getTileInfo().getTileSize();
+  return _map_service.getTileInfo().getTileSize();
 }
 
-osg::Image* UpdraftArcGisTileSource::createImage(const TileKey& key, ProgressCallback* progress) {
+osg::Image* UpdraftArcGisTileSource::createImage(const osgEarth::TileKey& key,
+  osgEarth::ProgressCallback* progress) {
   std::stringstream buf;
 
   int level = key.getLevelOfDetail();
@@ -357,19 +366,20 @@ osg::Image* UpdraftArcGisTileSource::createImage(const TileKey& key, ProgressCal
       << "/" << tile_y
       << "/" << tile_x << "." << f;
   } else {
-    const GeoExtent& ex = key.getExtent();
+    const osgEarth::GeoExtent& ex = key.getExtent();
 
     buf << std::setprecision(16)
       << _options.url()->full() << "/export"
-      << "?bbox=" << ex.xMin() << "," << ex.yMin() << "," << ex.xMax() << "," << ex.yMax()
-      << "&format=" << f 
+      << "?bbox=" << ex.xMin() << "," << ex.yMin() << ","
+      << ex.xMax() << "," << ex.yMax()
+      << "&format=" << f
       << "&size=256,256"
       << "&transparent=true"
       << "&f=image"
       << "&" << "." << f;
   }
 
-  //Add the token if necessary
+  // Add the token if necessary
   if (_options.token().isSet()) {
     std::string token = _options.token().value();
     if (!token.empty()) {
@@ -379,17 +389,29 @@ osg::Image* UpdraftArcGisTileSource::createImage(const TileKey& key, ProgressCal
       buf << sep << "token=" << token;
     }
   }
-  
-  osg::ref_ptr<osg::Image> image;
-	std::string bufStr;
-	bufStr = buf.str();
-  HTTPClient::readImageFile(bufStr, image, 0L, progress);
 
-    // check whether the image is not grey image
+  osg::ref_ptr<osg::Image> image;
+  std::string bufStr;
+  bufStr = buf.str();
+  osgEarth::Drivers::HTTPClient::readImageFile(bufStr, image, 0L, progress);
+
+  // check whether the noDataImage is loaded and
+  // if the image has minimum size to do the comparison
+  if (noDataImage == NULL) {
+    return image.release();
+  }
+  if (image == NULL) {
+    return NULL;
+  }
+  if ((image->getImageSizeInBytes() < nBytes)) {
+    return image.release();
+  }
+
+  // check whether the image is not grey image
   bool valid = false;
   unsigned char* imageData = image->data();
-  unsigned char* emptyData = emptyImage->data();
-  for (int i=0; i<50; i++) {
+  unsigned char* emptyData = noDataImage->data();
+  for (unsigned int i = 0; i < nBytes; i++) {
     if (*imageData != *emptyData) {
       valid = true;
       break;
@@ -402,16 +424,11 @@ osg::Image* UpdraftArcGisTileSource::createImage(const TileKey& key, ProgressCal
   } else {
     qDebug() << "empty tile";
     return NULL;
-    /*
-    TileKey newKey(level-1, key.getTileX(), key.getTileY(),
-      key.getProfile());
-    return createImage(newKey, progress);
-    */
   }
 }
 
-osg::HeightField* UpdraftArcGisTileSource::createHeightField(const TileKey& key,
-  ProgressCallback* progress) {
+osg::HeightField* UpdraftArcGisTileSource::createHeightField
+  (const osgEarth::TileKey& key, osgEarth::ProgressCallback* progress) {
   return NULL;
 }
 

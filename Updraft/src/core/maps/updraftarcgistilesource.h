@@ -14,8 +14,8 @@
 #include <osgEarthUtil/AutoClipPlaneHandler>
 #include <osgEarthDrivers/arcgis/ArcGISOptions>
 #include <osgEarth/TileSource>
-#include <osgEarth/Registry>
 #include <osgEarth/URI>
+#include <osgEarth/Profile>
 
 #include <osg/Notify>
 #include <osgDB/FileNameUtils>
@@ -27,12 +27,7 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
-
-#include <osgEarth/Profile>
 #include <list>
-
-using namespace osgEarth;
-using namespace osgEarth::Drivers;
 
 namespace Updraft {
 namespace Core {
@@ -40,8 +35,9 @@ namespace Core {
 class Extent {
  public:
   Extent();
-  Extent(double _xmin, double _ymin, double _xmax, double _ymax, const std::string& _srs);
-  Extent( const Extent& rhs );
+  Extent(double _xmin, double _ymin, double _xmax, double _ymax,
+    const std::string& _srs);
+  Extent(const Extent& rhs);
 
   double xMin() const;
   double yMin() const;
@@ -88,7 +84,7 @@ class TileInfo {
   int getNumTilesWide() const;
   int getNumTilesHigh() const;
 
-private:
+ private:
   std::string format;
   int tile_size;
   int min_level, max_level;
@@ -96,7 +92,6 @@ private:
   int num_tiles_wide;
   int num_tiles_high;
 };
-
 
 /**
  * ESRI ArcGIS Server Map Service interface.
@@ -110,7 +105,8 @@ class MapService {
    * provided REST API URL (e.g.: http://server/ArcGIS/rest/services/MyMapService)
    * Call isValid() to verify success.
    */
-  bool init(const std::string& url, const osgDB::ReaderWriter::Options* options = 0L);
+  bool init(const std::string& url,
+    const osgDB::ReaderWriter::Options* options = 0L);
 
   /**
    * Returns true if the map service initialized succesfully.
@@ -127,48 +123,53 @@ class MapService {
   /**
    * Gets the data profile associated with this map service.
    */
-  const Profile* getProfile() const;
+  const osgEarth::Profile* getProfile() const;
 
   /**
    * Gets the tile information for this service.
    */
   const TileInfo& getTileInfo() const;
 
-private:
+ private:
   bool is_valid;
   std::string url;
-  osg::ref_ptr<const Profile> profile;
+  osg::ref_ptr<const osgEarth::Profile> profile;
   std::string error_msg;
   MapServiceLayerList layers;
   bool tiled;
   TileInfo tile_info;
 
-  bool setError( const std::string& );
+  bool setError(const std::string&);
 };
 
-class UpdraftArcGisTileSource: public TileSource {
-public:
-  UpdraftArcGisTileSource(const TileSourceOptions& options);
+class UpdraftArcGisTileSource : public osgEarth::TileSource {
+ public:
+  explicit UpdraftArcGisTileSource(const osgEarth::TileSourceOptions& options);
   void initialize(const std::string& referenceURI,
-    const Profile* overrideProfile);
+    const osgEarth::Profile* overrideProfile);
   int getPixelsPerTile() const;
-  osg::Image* createImage(const TileKey& key, ProgressCallback* progress);
-  osg::HeightField* createHeightField(const TileKey& key,
-    ProgressCallback* progress);
+  osg::Image* createImage(const osgEarth::TileKey& key,
+    osgEarth::ProgressCallback* progress);
+  osg::HeightField* createHeightField(const osgEarth::TileKey& key,
+    osgEarth::ProgressCallback* progress);
   virtual std::string getExtension() const;
-  
+
  private:
-  const ArcGISOptions _options;
-  optional<ProfileOptions> _profileConf;
+  const osgEarth::Drivers::ArcGISOptions _options;
+  osgEarth::optional<osgEarth::ProfileOptions> _profileConf;
   std::string _map;
   std::string _layer;
   std::string _format;
   MapService _map_service;
 
-  osg::Image* emptyImage;
+  osg::Image* noDataImage;
+
+  /// Number of bytes to compare when comparing
+  /// against the empty tile image.
+  unsigned int nBytes;
 };
 
 }  // End namespace Core
 }  // End namespace Updraft
 
-#endif
+#endif  // UPDRAFT_SRC_CORE_MAPS_UPDRAFTARCGISTILESOURCE_H_
