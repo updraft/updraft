@@ -1,5 +1,5 @@
 #include <osgQt/GraphicsWindowQt>
-#include <osgEarthUtil/Viewpoint>
+#include <osgEarth/Viewpoint>
 #include <osgEarthUtil/ObjectPlacer>
 #include <osgEarth/Map>
 #include <osgEarth/MapNode>

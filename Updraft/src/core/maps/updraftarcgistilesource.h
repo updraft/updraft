@@ -145,7 +145,7 @@ class MapService {
 class UpdraftArcGisTileSource : public osgEarth::TileSource {
  public:
   explicit UpdraftArcGisTileSource(const osgEarth::TileSourceOptions& options);
-  void initialize(const std::string& referenceURI,
+  void initialize(const osgDB::Options* dbOptions,
     const osgEarth::Profile* overrideProfile);
   int getPixelsPerTile() const;
   osg::Image* createImage(const osgEarth::TileKey& key,
@@ -161,6 +161,7 @@ class UpdraftArcGisTileSource : public osgEarth::TileSource {
   std::string _layer;
   std::string _format;
   MapService _map_service;
+  osg::ref_ptr<const osgDB::Options> _dbOptions;
 
   osg::Image* noDataImage;
 

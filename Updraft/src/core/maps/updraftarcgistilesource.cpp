@@ -259,7 +259,6 @@ bool MapService::init(const std::string& _url,
       profile = osgEarth::Profile::create(
         spatialReference.get(),
         xmin, ymin, xmax, ymax,
-        NULL,
         num_tiles_wide,
         num_tiles_high);
     }
@@ -321,8 +320,9 @@ UpdraftArcGisTileSource::UpdraftArcGisTileSource
   }
 }
 
-void UpdraftArcGisTileSource::initialize(const std::string& referenceURI,
+void UpdraftArcGisTileSource::initialize(const osgDB::Options* dbOptions,
   const osgEarth::Profile* overrideProfile) {
+  _dbOptions = dbOptions;
   const osgEarth::Profile* profile = NULL;
   if (_profileConf.isSet()) {
     profile = osgEarth::Profile::create(_profileConf.get());
@@ -390,21 +390,24 @@ osg::Image* UpdraftArcGisTileSource::createImage(const osgEarth::TileKey& key,
     }
   }
 
-  osg::ref_ptr<osg::Image> image;
+  // osg::ref_ptr<osg::Image> image;
+  osg::Image* image;
   std::string bufStr;
   bufStr = buf.str();
-  osgEarth::Drivers::HTTPClient::readImageFile(bufStr, image, 0L, progress);
+  // osgEarth::Drivers::HTTPClient::readImageFile(bufStr, image, 0L, progress);
+  image = osgEarth::URI(bufStr).readImage(0L, osgEarth::CachePolicy::NO_CACHE,
+    progress).releaseImage();
 
   // check whether the noDataImage is loaded and
   // if the image has minimum size to do the comparison
   if (noDataImage == NULL) {
-    return image.release();
+    return image;
   }
   if (image == NULL) {
     return NULL;
   }
   if ((image->getImageSizeInBytes() < nBytes)) {
-    return image.release();
+    return image;
   }
 
   // check whether the image is not grey image
@@ -420,7 +423,7 @@ osg::Image* UpdraftArcGisTileSource::createImage(const osgEarth::TileKey& key,
     emptyData++;
   }
   if (valid) {
-    return image.release();
+    return image;
   } else {
     qDebug() << "empty tile";
     return NULL;

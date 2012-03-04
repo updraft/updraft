@@ -88,15 +88,15 @@ void MapLayer::setVisible(bool value) {
       break;
     }
     case IMAGE_LAYER: {
-      layer.imageLayer->setEnabled(value);
+      layer.imageLayer->setVisible(value);
       break;
     }
     case ELEVATION_LAYER: {
-      layer.elevationLayer->setEnabled(value);
+      layer.elevationLayer->setVisible(value);
       break;
     }
     case MODEL_LAYER: {
-      layer.modelLayer->setEnabled(value);
+      layer.modelLayer->setVisible(value);
       break;
     }
   }
