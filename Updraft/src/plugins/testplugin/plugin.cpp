@@ -163,11 +163,13 @@ void TestPlugin::initialize() {
     osg::Node* randomLines = objectPlacer->placeNode(geode,
       50.087811, 14.42046, 1000);
 
+    /*
     Updraft::MapLayerInterface* layer1 =
       mapLayerGroup->insertMapLayer(randomLines, "Relative Lines", 0);
     layer1->connectSignalDisplayed
       (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
     mapLayers.append(layer1);
+    */
 
     // LAYER #2
     // draw route from Brno to Plzen:
@@ -210,6 +212,7 @@ void TestPlugin::initialize() {
     geom2->setColorArray(colors2);
     geom2->setColorBinding(osg::Geometry::BIND_OVERALL);
 
+    /*
     MapLayerInterface* layer2 =
       mapLayerGroup->insertMapLayer(BrnoPlzen, "Brno to Plzen");
 
@@ -217,6 +220,7 @@ void TestPlugin::initialize() {
     layer2->connectSignalDisplayed
       (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
     mapLayers.append(layer2);
+    */
 
     // ADD JUST CHECKBOX
 	/*

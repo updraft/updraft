@@ -2,6 +2,7 @@
 #include <osgDB/ReadFile>
 #include <osgEarthUtil/ElevationManager>
 #include <osgEarthDrivers/arcgis/ArcGISOptions>
+#include <osgEarthDrivers/tms/TMSOptions>
 #include <QDebug>
 #include <string>
 #include "maps/updraftarcgistilesource.h"
@@ -29,7 +30,7 @@ MapManager::MapManager(QString earthFile) {
       new UpdraftArcGisTileSource(opt);
 
     osgEarth::ImageLayerOptions* imOpt =
-      new osgEarth::ImageLayerOptions("Online Maps", opt);
+      new osgEarth::ImageLayerOptions("Satellite map", opt);
 
     osgEarth::ImageLayer* onlineMaps =
       new osgEarth::ImageLayer(*imOpt, source);
