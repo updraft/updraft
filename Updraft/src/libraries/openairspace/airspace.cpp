@@ -75,8 +75,11 @@ namespace OpenAirspace {
 
       if (text == "AC")
         return;
-      if (text.size() == 0 || text.at(0) == '*')
+      if (text.size() == 0 || text.at(0) == '*') {
+        if (text.size() != 0)
+          ts->readLine();
         continue;
+      }
 
       QString parse;
       ts->skipWhiteSpace();

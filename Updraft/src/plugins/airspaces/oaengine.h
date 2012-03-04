@@ -174,7 +174,12 @@ class oaEngine {
     QVector<Position>* vertexList);
 
   /// compute the circular coord angle given centre and point on circ 0 ontop
+  /// return (-pi, +pi)
   double AngleRad(const Position& centre, const Position& point);
+
+  /// compute the angle btw 12oo position and point for given center
+  /// return (0, 2pi)
+  double AngleRadPos(const Position& centre, const Position& point);
 
   /// Compute the point for given angle, centre and radius
   Position ComputeArcPoint(const Position& centre, double r, double partAngle);

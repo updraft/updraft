@@ -21,7 +21,7 @@ oaEngine::oaEngine(MapLayerGroupInterface* LG) {
   SIDE_WIREFRAME          = true;
   SIDE_COL_GRADIENT       = true;
   POLY_OPACITY_BOTTOM     = 0.5;
-  POLY_OPACITY_TOP        = 0.1;
+  POLY_OPACITY_TOP        = 0.5;
   WIRE_OPACITY_BOTTOM     = 0.6;
   WIRE_OPACITY_TOP        = 0.2;
   ELEV_TILE_RESOLUTION    = 0.01;
@@ -133,6 +133,15 @@ QVector<MapLayerInterface*>* oaEngine::Draw(const QString& fileName) {
           }
         }
 
+        // close the polygon if open :
+        if (pointsWGS) {
+          if ((pointsWGS->first().lat != pointsWGS->last().lat) ||
+            (pointsWGS->first().lon != pointsWGS->last().lon)) {
+            qDebug("otevreny");
+            pointsWGS->push_back(pointsWGS->first());
+          }
+        }
+
         // Compute the height data
         QVector<double>* pointsGnd = ComputeHeightData(
           &floor, &ceiling, &floorAgl, &ceilingAgl,
@@ -229,7 +238,7 @@ void oaEngine::FillOGLArrays(
   bool cw = true;
   if (TOP_FACE || BOTTOM_FACE)
     cw = IsPolyOrientationCW(pointsWGS);
-  
+
   // OGL draw the geom
   osg::Geometry* geom;
 
@@ -327,7 +336,7 @@ osg::Geometry* oaEngine::DrawPolygon(
   osg::Vec4& col,
   osg::PrimitiveSet::Mode primitiveMode,
   int height,
-  bool agl) {
+  bool agl, bool cw) {
   // Draw the closed polygon. In case of filled polygon,
   // ensure of its filled correctly (it's TRIANGLE_FAN)
   // that means recursively fill all the correctly oriented points
@@ -511,7 +520,7 @@ void oaEngine::InsertArcII(const OpenAirspace::ArcII& ab,
 
   // insert arc points coordinates
   // insert start
-  vertexList->push_back(ab.Start());
+  // vertexList->push_back(ab.Start());
 
   // mid points
   InsertMidArc(centre, a1, a2, cw, r, vertexList);
@@ -588,7 +597,42 @@ void oaEngine::SetWidthAndColour(const OpenAirspace::Airspace* A) {
 }
 
 bool oaEngine::IsPolyOrientationCW(QVector<Position>* pointsWGS) {
-  return true;
+  // if not enough geometry
+  if (!pointsWGS || pointsWGS->size() < 2)
+    return true;
+  // compute the first angle
+  Position first = pointsWGS->at(0);
+  Position second = pointsWGS->at(1);
+  double alpha1 = AngleRad(first, second);
+  double sum = 0;
+  double prev = alpha1;
+  for (int i = 2; i < pointsWGS->size(); ++i) {
+    first = second;
+    second = pointsWGS->at(i);
+    double alpha = AngleRad(first, second);
+    double add = alpha - prev;
+    if (add > M_PI)
+      add = -M_2PI + add;
+    else if (add < -M_PI)
+      add = M_2PI + add;
+    sum += add;
+    prev = alpha;
+  }
+  double add = alpha1 - prev;
+  if (add > M_PI)
+    add = -M_2PI + add;
+  else if (add < -M_PI)
+    add = M_2PI + add;
+  sum += add;
+  if (abs(sum) == 0 || abs(sum) > 7)
+    qDebug("spatne");
+  qDebug("%f", sum);
+  return (sum > 0) ? true : false;
+}
+
+double oaEngine::AngleRadPos(const Position& centre, const Position& point) {
+  double angle = AngleRad(centre, point);
+  return (angle >= 0) ? angle : angle + M_2PI;
 }
 }  // Airspaces
 }  // Updraft
