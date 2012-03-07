@@ -2,6 +2,8 @@
 
 #include <limits.h>
 #include <QDebug>
+#include <QApplication>
+#include <QString>
 
 #include <osgEarth/HTTPClient>
 #include <osgEarth/JsonUtils>
@@ -312,7 +314,9 @@ UpdraftArcGisTileSource::UpdraftArcGisTileSource
 
   // read the no data image and set number of bytes to compare
   nBytes = 50u;
-  noDataImage = osgDB::readImageFile("data/empty_tile.png");
+  QString pathToEmptyTile =
+    QCoreApplication::applicationDirPath() + "/data/empty_tile.png";
+  noDataImage = osgDB::readImageFile(pathToEmptyTile.toStdString());
   if ((noDataImage != NULL) && (noDataImage->getImageSizeInBytes() < nBytes)) {
     qDebug() << "The empty tile image is smaller than the number " <<
       "of bytes we want to compare.\n"
