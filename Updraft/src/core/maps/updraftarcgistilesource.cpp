@@ -426,7 +426,7 @@ osg::Image* UpdraftArcGisTileSource::createImage(const osgEarth::TileKey& key,
   if (valid) {
     return image.release();
   } else {
-    qDebug() << "empty tile";
+    // qDebug() << "empty tile";
     return NULL;
   }
 }
