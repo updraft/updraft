@@ -1,6 +1,3 @@
-# gitignore
-/.gitignore
-
 # Vim swap files
 .*.sw[poxn]
 
@@ -9,8 +6,3 @@
 
 # Build directory for cmake
 /build/
-
-# My build bat
-/build-Maria.bat
-
-
