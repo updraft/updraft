@@ -29,7 +29,7 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
     -->
     
     <image name="Simple map" driver="wms">
-      <url>http://labs.metacarta.com/wms-c/Basic.py</url>
+      <url>http://terraservice.net/ogccapabilities.ashx?</url>
       <layers>basic</layers>
       <format>png</format>
       <tile_size>256</tile_size>
