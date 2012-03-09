@@ -29,18 +29,23 @@ void Coloring::init(const QList<TrackFix> *fixList) {
 }
 
 QColor Coloring::color(int i) {
-  qreal scaled = 255 * (value(i) - min) / (max - min);
-  qDebug() << scaled;
+  qreal scaled = (value(i) - min) / (max - min);
   return colorFromScaled(scaled);
 }
+
+AltitudeColoring::AltitudeColoring()
+  : g(Qt::darkGray, Qt::red) {}
 
 qreal AltitudeColoring::value(int i) {
   return fixList->at(i).location.alt;
 }
 
 QColor AltitudeColoring::colorFromScaled(qreal scaled) {
-  return QColor(scaled, 0, 0);
+  return g.get(scaled);
 }
+
+GroundSpeedColoring::GroundSpeedColoring()
+  : g(Qt::darkGray, Qt::blue) {}
 
 qreal GroundSpeedColoring::value(int i) {
   if (fixList->count() < 2) {
@@ -78,7 +83,7 @@ qreal GroundSpeedColoring::speedBefore(int i) {
 }
 
 QColor GroundSpeedColoring::colorFromScaled(qreal scaled) {
-  return QColor(0, 0, scaled);
+  return g.get(scaled);
 }
 
 }  // End namespace IgcViewer
