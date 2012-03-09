@@ -90,6 +90,29 @@ class GroundSpeedColoring : public Coloring {
   Util::Gradient g;
 };
 
+/// Color the track according to vertical speed.
+class VerticalSpeedColoring : public Coloring {
+ public:
+  VerticalSpeedColoring();
+
+  /// Calculate the scale symetrically to zero.
+  void init(const QList<TrackFix> *fixList);
+
+ protected:
+  //// Find the value of item number i, without scaling.
+  virtual qreal value(int i);
+
+  /// Return the speed of the segment before i (fixes no i and i-1)
+  qreal speedBefore(int i);
+
+  /// Convert scaled value to color.
+  /// \param scaled Scaled value from 0 to 255.
+  virtual QColor colorFromScaled(qreal scaled);
+
+  Util::Gradient positiveGradient;
+  Util::Gradient negativeGradient;
+};
+
 }  // End namespace IgcViewer
 }  // End namespace Updraft
 

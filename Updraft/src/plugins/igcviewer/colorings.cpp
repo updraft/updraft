@@ -12,12 +12,6 @@ void Coloring::init(const QList<TrackFix> *fixList) {
   for (int i = 1; i < fixList->count(); ++i) {
     qreal v = value(i);
 
-    // We want negative values to scale symmetrically.
-    if (v < 0) {
-      min = 0;
-      v = -v;
-    }
-
     if (min > v) {
       min = v;
     }
@@ -84,6 +78,67 @@ qreal GroundSpeedColoring::speedBefore(int i) {
 
 QColor GroundSpeedColoring::colorFromScaled(qreal scaled) {
   return g.get(scaled);
+}
+
+void VerticalSpeedColoring::init(const QList<TrackFix> *fixList) {
+  this->fixList = fixList;
+
+  max = this->value(0);
+
+  for (int i = 1; i < fixList->count(); ++i) {
+    qreal v = value(i);
+
+    if (v < -max) {
+      max = -v;
+    } else if (v > max) {
+      max = v;
+    }
+  }
+
+  min = -max;
+}
+
+VerticalSpeedColoring::VerticalSpeedColoring()
+  : positiveGradient(Qt::green, Qt::darkGray),
+  negativeGradient(Qt::darkGray, Qt::red) {}
+
+qreal VerticalSpeedColoring::value(int i) {
+  if (fixList->count() < 2) {
+    // This is a protection against malicious IGC files.
+    return 0;
+  }
+
+  if (i == 0) {
+    return speedBefore(1);
+  } else if (i == fixList->count() - 1) {
+    return speedBefore(i);
+  } else {
+    return (speedBefore(i + 1) + speedBefore(i)) / 2;
+  }
+}
+
+qreal VerticalSpeedColoring::speedBefore(int i) {
+  const TrackFix &f1 = fixList->at(i - 1);
+  const TrackFix &f2 = fixList->at(i);
+
+  qreal dist = f2.location.alt - f1.location.alt;
+  int seconds = f1.timestamp.secsTo(f2.timestamp);
+
+  if (seconds <= 0) {
+    // Since only time and not date is stored, it's possible that we cross
+    // midnight and get negative value here. Improbable, though.
+    seconds += 24 * 3600;
+  }
+
+  return dist / seconds;
+}
+
+QColor VerticalSpeedColoring::colorFromScaled(qreal scaled) {
+  if (scaled > 0.5) {
+    return positiveGradient.get(scaled * 2 - 1);
+  } else {
+    return negativeGradient.get(scaled * 2);
+  }
 }
 
 }  // End namespace IgcViewer
