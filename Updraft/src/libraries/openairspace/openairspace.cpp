@@ -26,7 +26,7 @@ namespace OpenAirspace {
     else
       // qDebug("Parsing OpenAirspace file %s", fileName.toAscii().data());
 
-    this->allAirspaces = new QList<Airspace*>();
+    this->allAirspaces = new QVector<Airspace*>();
     while (!ts.atEnd()) {
       if (!ts.atEnd())
         ts.seek(ts.pos() -3);

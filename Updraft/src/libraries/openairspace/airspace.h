@@ -162,6 +162,9 @@ class OPENAIRSPACE_EXPORT Airspace {
     inline const OpenAirspace::Airspace::ACType& GetClass() {
       return this->AC;
     }
+    inline const QString& GetClassName() const {
+      return *this->ACstring;
+    }
 
     /// Returns the floor of the AirSpace
     inline const QString* const GetFloor() const { return this->AL; }
@@ -170,7 +173,7 @@ class OPENAIRSPACE_EXPORT Airspace {
     inline const QString* const GetCeiling() const { return this->AH; }
 
     /// Returns the tag coordinates of the AirSpace
-    inline const QList<Position*>& GetTagCoor() {
+    inline const QVector<Position*>& GetTagCoor() {
       return *this->AT; }
 
     /// Returns geometry array size
@@ -178,11 +181,11 @@ class OPENAIRSPACE_EXPORT Airspace {
       return (geometry) ? this->geometry->size() : 0; }
 
     /// Returns the geometry array = primitive
-    inline const QList<OpenAirspace::Geometry*>& GetGeometry() {
+    inline const QVector<OpenAirspace::Geometry*>& GetGeometry() {
       return *this->geometry; }
 
     /// Returns the AirWay
-    inline const QList<Position*>& GetAirWay() {
+    inline const QVector<Position*>& GetAirWay() {
       return *this->DY; }
 
     /// Get Pen & Brush
@@ -213,6 +216,7 @@ class OPENAIRSPACE_EXPORT Airspace {
 
     /// Airspace class type.
     ACType AC;
+    QString* ACstring;
 
     /// Airspace Name.
     /// Contains the name of the aispace.
@@ -232,7 +236,7 @@ class OPENAIRSPACE_EXPORT Airspace {
     /// Airspace name label coordinates.
     /// List of coordinates, where to place the airspace name label on the map.
     /// Optional.
-    QList<Position*>* AT;
+    QVector<Position*>* AT;
 
     /// Terrain related variables \{
     /// Terrain open polygon name
@@ -258,11 +262,11 @@ class OPENAIRSPACE_EXPORT Airspace {
     float Z;
 
     /// Airway
-    QList<Position*>* DY;
+    QVector<Position*>* DY;
     /// \}
 
     /// Array of geometry
-    QList<Geometry*>* geometry;
+    QVector<Geometry*>* geometry;
   };  // Airspace
 }  // OpenAirspace
 

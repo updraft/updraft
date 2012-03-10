@@ -5,6 +5,7 @@
 #include <QList>
 
 #include "openedfile.h"
+#include "util/util.h"
 
 namespace Updraft {
 namespace IgcViewer {
@@ -23,10 +24,11 @@ class Coloring {
   virtual QColor color(int i);
 
  protected:
-  //// Find the value of item number i, without scaling.
+  //// Get the value of item number i.
   virtual qreal value(int i) = 0;
 
   /// Convert scaled value to color.
+  /// \param scaled value from 0 to 1.
   virtual QColor colorFromScaled(qreal scaled) = 0;
 
   const QList<TrackFix> *fixList;
@@ -57,16 +59,23 @@ class ConstantColoring : public Coloring {
 
 /// Color the track according to altitude.
 class AltitudeColoring : public Coloring {
+ public:
+  AltitudeColoring();
+
  protected:
   //// Find the value of item number i, without scaling.
   virtual qreal value(int i);
 
   /// Convert scaled value to color.
   virtual QColor colorFromScaled(qreal scaled);
+
+  Util::Gradient g;
 };
 
 /// Color the track according to GPS speed.
 class GroundSpeedColoring : public Coloring {
+ public:
+  GroundSpeedColoring();
  protected:
   //// Find the value of item number i, without scaling.
   virtual qreal value(int i);
@@ -77,6 +86,31 @@ class GroundSpeedColoring : public Coloring {
   /// Convert scaled value to color.
   /// \param scaled Scaled value from 0 to 255.
   virtual QColor colorFromScaled(qreal scaled);
+
+  Util::Gradient g;
+};
+
+/// Color the track according to vertical speed.
+class VerticalSpeedColoring : public Coloring {
+ public:
+  VerticalSpeedColoring();
+
+  /// Calculate the scale symetrically to zero.
+  void init(const QList<TrackFix> *fixList);
+
+ protected:
+  //// Find the value of item number i, without scaling.
+  virtual qreal value(int i);
+
+  /// Return the speed of the segment before i (fixes no i and i-1)
+  qreal speedBefore(int i);
+
+  /// Convert scaled value to color.
+  /// \param scaled Scaled value from 0 to 255.
+  virtual QColor colorFromScaled(qreal scaled);
+
+  Util::Gradient positiveGradient;
+  Util::Gradient negativeGradient;
 };
 
 }  // End namespace IgcViewer

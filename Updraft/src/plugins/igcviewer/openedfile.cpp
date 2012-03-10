@@ -48,13 +48,14 @@ void OpenedFile::createTab() {
     colorsCombo->addItem(name, \
       QVariant::fromValue(static_cast<Coloring*>(pointer)))
 
+  ADD_COLORING(tr("Vertical Speed"), new VerticalSpeedColoring());
+  ADD_COLORING(tr("Ground Speed"), new GroundSpeedColoring());
+  ADD_COLORING(tr("Altitude"), new AltitudeColoring());
   ADD_COLORING(tr("Red"), new ConstantColoring(Qt::red));
   ADD_COLORING(tr("Green"), new ConstantColoring(Qt::green));
   ADD_COLORING(tr("Blue"), new ConstantColoring(Qt::blue));
-  ADD_COLORING(tr("Black"), new ConstantColoring(Qt::black));
+  ADD_COLORING(tr("Gray"), new ConstantColoring(Qt::gray));
   ADD_COLORING(tr("Yellow"), new ConstantColoring(Qt::yellow));
-  ADD_COLORING(tr("Altitude"), new AltitudeColoring());
-  ADD_COLORING(tr("Ground Speed"), new GroundSpeedColoring());
 
   tab = viewer->core->createTab(colorsCombo, fileInfo.fileName());
 
