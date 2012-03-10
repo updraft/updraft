@@ -8,6 +8,8 @@
 namespace Updraft {
 namespace Util {
 
+static const qreal ACHROMATIC_THRESHOLD = 0.005;
+
 /// Color gradient in HSV space.
 class UTIL_EXPORT Gradient {
  public:
@@ -19,7 +21,7 @@ class UTIL_EXPORT Gradient {
   QColor get(qreal t) const;
 
  protected:
-  static const qreal ACHROMATIC_THRESHOLD = 0.005;
+  // static const double ACHROMATIC_THRESHOLD = 0.005;
 
   qreal hA, hB;
   qreal sA, sB;
