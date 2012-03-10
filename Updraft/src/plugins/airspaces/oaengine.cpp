@@ -18,10 +18,10 @@ oaEngine::oaEngine(MapLayerGroupInterface* LG) {
   SIDE_FACE               = true;
   TOP_WIREFRAME           = true;
   BOTTOM_WIREFRAME        = true;
-  SIDE_WIREFRAME          = true;
+  SIDE_WIREFRAME          = false;
   SIDE_COL_GRADIENT       = true;
   POLY_OPACITY_BOTTOM     = 0.5;
-  POLY_OPACITY_TOP        = 0.5;
+  POLY_OPACITY_TOP        = 0.1;
   WIRE_OPACITY_BOTTOM     = 0.6;
   WIRE_OPACITY_TOP        = 0.2;
   ELEV_TILE_RESOLUTION    = 0.01;
@@ -137,7 +137,7 @@ QVector<MapLayerInterface*>* oaEngine::Draw(const QString& fileName) {
         if (pointsWGS) {
           if ((pointsWGS->first().lat != pointsWGS->last().lat) ||
             (pointsWGS->first().lon != pointsWGS->last().lon)) {
-            qDebug("otevreny");
+            // qDebug("otevreny");
             pointsWGS->push_back(pointsWGS->first());
           }
         }
@@ -511,8 +511,9 @@ void oaEngine::InsertArcII(const OpenAirspace::ArcII& ab,
   const Position end = ab.End();
   const bool cw = ab.CW();
 
-  // compute the radius
-  double r = DistToAngle(DistanceInMeters(start, centre)/NM_TO_M);
+  // compute the radius as mean of two distances (start/end to centre)
+  double r = (DistToAngle(DistanceInMeters(start, centre) * M_TO_NM)
+    + DistToAngle(DistanceInMeters(end, centre) * M_TO_NM)) * 0.5;
 
   // compute the angle of the arc
   double a1 = AngleRad(centre, start);
@@ -521,12 +522,14 @@ void oaEngine::InsertArcII(const OpenAirspace::ArcII& ab,
   // insert arc points coordinates
   // insert start
   // vertexList->push_back(ab.Start());
+  vertexList->push_back(ComputeArcPoint(centre, r, a1));
 
   // mid points
   InsertMidArc(centre, a1, a2, cw, r, vertexList);
 
   // insert end
-  vertexList->push_back(ab.End());
+  // vertexList->push_back(ab.End());
+  vertexList->push_back(ComputeArcPoint(centre, r, a2));
 }
 
 void oaEngine::InsertCircle(const OpenAirspace::Circle &cc,
@@ -544,14 +547,14 @@ void oaEngine::InsertMidArc(const Position& centre, double from,
   QVector<Position>* vertexList) {
   if (cw) {
     if (to < from) to += M_2PI;
-    for (double angle = from; angle < to;
+    for (double angle = from + ARC_GRANULARITY; angle < to;
       angle += ARC_GRANULARITY) {
       Position arcPoint = ComputeArcPoint(centre, r, angle);
       vertexList->push_back(arcPoint);
     }
   } else {
     if (from < to) from += M_2PI;
-    for (double angle = from; angle > to;
+    for (double angle = from - ARC_GRANULARITY; angle > to;
       angle -= ARC_GRANULARITY) {
       // if (angle < M_PI) angle += M_2PI;
       Position arcPoint = ComputeArcPoint(centre, r, angle);
@@ -597,6 +600,8 @@ void oaEngine::SetWidthAndColour(const OpenAirspace::Airspace* A) {
 }
 
 bool oaEngine::IsPolyOrientationCW(QVector<Position>* pointsWGS) {
+  // TODO(monkey): finish this
+  return true;
   // if not enough geometry
   if (!pointsWGS || pointsWGS->size() < 2)
     return true;
@@ -624,9 +629,9 @@ bool oaEngine::IsPolyOrientationCW(QVector<Position>* pointsWGS) {
   else if (add < -M_PI)
     add = M_2PI + add;
   sum += add;
-  if (abs(sum) == 0 || abs(sum) > 7)
-    qDebug("spatne");
-  qDebug("%f", sum);
+  // if (abs(sum) == 0 || abs(sum) > 7)
+    // qDebug("spatne");
+  // qDebug("%f", sum);
   return (sum > 0) ? true : false;
 }
 

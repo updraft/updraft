@@ -30,7 +30,7 @@ static const double RAD_TO_DEG = 1/DEG_TO_RAD;
 
 /// Nautical miles to meter const
 static const int NM_TO_M = 1852;
-static const double M_TO_NM = 1/1852;
+static const double M_TO_NM = 1./1852;
 
 /// Foot to meters const
 static const double FT_TO_M = 0.3048;
