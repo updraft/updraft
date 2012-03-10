@@ -1,3 +1,4 @@
+SET(updraft_src_root ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # Collect all source files (cpp, h, ui and qrc) in current directory and
 # subdirectories and process them, optionally skipping some of the subdirectories.
@@ -61,6 +62,7 @@ MACRO(LIBRARY_BUILD name)
   #QT4_CREATE_TRANSLATION(TRANSLATIONS ${library_sources} ${CORE_HEADERS} ${CORE_FORMS} ${LANG})
 
   INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+  INCLUDE_DIRECTORIES(${updraft_src_root}/libraries)
 
   if(NOT WIN32)	# If it was set on win32 it also added no_debug to debug conf.
     ADD_DEFINITIONS(-DQT_NO_DEBUG)
@@ -140,6 +142,8 @@ MACRO(PLUGIN_BUILD name)
   #QT4_CREATE_TRANSLATION(TRANSLATIONS ${library_sources} ${CORE_HEADERS} ${CORE_FORMS} ${LANG})
 
   INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+  INCLUDE_DIRECTORIES(${updraft_src_root})
+  INCLUDE_DIRECTORIES(${updraft_src_root}/libraries)
 
   if(NOT WIN32)	# If it was set on win32 it also added no_debug to debug conf.
     ADD_DEFINITIONS(-DQT_NO_DEBUG)
@@ -204,6 +208,7 @@ MACRO(TEST_BUILD name)
   #QT4_CREATE_TRANSLATION(TRANSLATIONS ${library_sources} ${CORE_HEADERS} ${CORE_FORMS} ${LANG})
 
   INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+  INCLUDE_DIRECTORIES(${updraft_src_root}/libraries)
 
   if(NOT WIN32)	# If it was set on win32 it also added no_debug to debug conf.
     ADD_DEFINITIONS(-DQT_NO_DEBUG)

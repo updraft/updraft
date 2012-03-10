@@ -1,10 +1,5 @@
 #include <osgQt/GraphicsWindowQt>
-// TODO(Kuba) Remove the #ifdefs once we know the correct includes
-// #ifdef __linux__
-  #include <osgEarthUtil/Viewpoint>
-// #else
-//  #include <osgEarth/Viewpoint>
-// #endif
+#include <osgEarthUtil/Viewpoint>
 #include <osgEarthUtil/ObjectPlacer>
 #include <osgEarth/Map>
 #include <osgEarth/MapNode>

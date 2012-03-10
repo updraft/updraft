@@ -16,27 +16,53 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
       <path>osgearth_cache</path>
     </cache>
     
-    <lighting>false</lighting>
+    <lighting>true</lighting>
   
     <image name="Offline map" driver="gdal">
         <url>world.tif</url>
     </image>
-        
+     
+    <!--
     <image name="Online maps" driver="arcgis">
         <url>http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_Imagery_World_2D/MapServer</url>
     </image>
+    -->
     
+    <image name="Simple map" driver="wms">
+      <url>http://labs.metacarta.com/wms-c/Basic.py</url>
+      <layers>basic</layers>
+      <format>png</format>
+      <tile_size>256</tile_size>
+      <srs>EPSG:4326</srs>
+    </image>
+
 	  <elevation name="Elevation layer" driver="tms">
         <url>http://readymap.org/readymap/tiles/1.0.0/9/</url>    
     </elevation>
     
+    <!--
+    <image name="State borders" driver="agglite">          
+        <features name="world" driver="ogr">
+            <url>state_borders_lq.shp</url>
+            <convert type="line"/>
+        </features>
+        <style type="text/css">
+          world {
+             stroke: #ffff00;
+             stroke-opacity: 0.5;
+             stroke-width: 0.1;
+          }            
+        </style>
+    </image>
+    -->
+    
+    <!--
     <model name="State borders" driver="feature_stencil">
         <features name="world" driver="ogr">
             <url>state_borders_lq.shp</url>
-            <!-- <url>state_borders_hq.shp</url> -->
             <convert type="line"/>
         </features>
-        <extrusion_distance>400000</extrusion_distance>
+        <extrusion_distance>40000</extrusion_distance>
         <styles>
             <style type="text/css">
                 world {
@@ -47,6 +73,8 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
             </style>
         </styles>
     </model>
+    -->
+    
 </map>
 
 

@@ -1,11 +1,11 @@
 #include "openedfile.h"
 
+#include <QDebug>
+
 #include <osg/Geode>
-#include <osg/Geometry>
 #include <osg/LineWidth>
 
-#include <QDebug>
-#include <QPushButton>
+#include "colorings.h"
 
 namespace Updraft {
 namespace IgcViewer {
@@ -28,8 +28,8 @@ bool OpenedFile::init(IgcViewer* viewer, const QString& filename) {
     return false;
   }
 
-  createTab();
   createTrack();
+  createTab();
 
   return true;
 }
@@ -40,11 +40,34 @@ void OpenedFile::close() {
 }
 
 void OpenedFile::createTab() {
-  QPushButton *b = new QPushButton("a nice graph should be here");
+  colorsCombo = new QComboBox();
 
-  tab = viewer->core->createTab(b, fileInfo.fileName());
+  /// \bug The following allocations cause a memmory leak!
+
+  #define ADD_COLORING(name, pointer) \
+    colorsCombo->addItem(name, \
+      QVariant::fromValue(static_cast<Coloring*>(pointer)))
+
+  ADD_COLORING(tr("Vertical Speed"), new VerticalSpeedColoring());
+  ADD_COLORING(tr("Ground Speed"), new GroundSpeedColoring());
+  ADD_COLORING(tr("Altitude"), new AltitudeColoring());
+  ADD_COLORING(tr("Red"), new ConstantColoring(Qt::red));
+  ADD_COLORING(tr("Green"), new ConstantColoring(Qt::green));
+  ADD_COLORING(tr("Blue"), new ConstantColoring(Qt::blue));
+  ADD_COLORING(tr("Gray"), new ConstantColoring(Qt::gray));
+  ADD_COLORING(tr("Yellow"), new ConstantColoring(Qt::yellow));
+
+  tab = viewer->core->createTab(colorsCombo, fileInfo.fileName());
 
   tab->connectSignalClosed(this, SLOT(close()));
+  connect(colorsCombo, SIGNAL(currentIndexChanged(int)),
+    this, SLOT(updateColors(int)));
+
+  updateColors(colorsCombo->currentIndex());
+}
+
+void OpenedFile::updateColors(int row) {
+  setColors(colorsCombo->itemData(row).value<Coloring*>());
 }
 
 void OpenedFile::createTrack() {
@@ -52,7 +75,7 @@ void OpenedFile::createTrack() {
 
   osg::Geode* geode = new osg::Geode();
 
-  osg::Geometry* geom = new osg::Geometry();
+  geom = new osg::Geometry();
   geode->addDrawable(geom);
 
   osg::DrawArrays* drawArrayLines =
@@ -62,52 +85,27 @@ void OpenedFile::createTrack() {
   osg::Vec3Array* vertices = new osg::Vec3Array();
   geom->setVertexArray(vertices);
 
-  osg::Vec4Array* colors = new osg::Vec4Array;
-  geom->setColorArray(colors);
   geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
-  qreal minAltitude = 10000;
-  qreal maxAltitude = -10000;
-
   foreach(Igc::Event const* ev, igc.events()) {
     if (ev->type != Igc::Event::FIX) {
       continue;
     }
-    Igc::Fix const* fix = static_cast<Igc::Fix const*>(ev);
+    Igc::Fix const* igcFix = static_cast<Igc::Fix const*>(ev);
 
-    if (!fix->valid) {
-      continue;
-    }
-
-    if (minAltitude > fix->gpsLoc.alt) {
-      minAltitude = fix->gpsLoc.alt;
-    }
-
-    if (maxAltitude < fix->gpsLoc.alt) {
-      maxAltitude = fix->gpsLoc.alt;
-    }
-  }
-
-  foreach(Igc::Event const* ev, igc.events()) {
-    if (ev->type != Igc::Event::FIX) {
-      continue;
-    }
-    Igc::Fix const* fix = static_cast<Igc::Fix const*>(ev);
-
-    if (!fix->valid) {
+    if (!igcFix->valid) {
       continue;
     }
 
     double x, y, z;
 
     ellipsoid->convertLatLongHeightToXYZ(
-      fix->gpsLoc.lat_radians(), fix->gpsLoc.lon_radians(), fix->gpsLoc.alt,
+      igcFix->gpsLoc.lat_radians(), igcFix->gpsLoc.lon_radians(),
+      igcFix->gpsLoc.alt,
       x, y, z);
 
     vertices->push_back(osg::Vec3(x, y, z));
-    colors->push_back(osg::Vec4(
-      0.5, 0.5, (fix->gpsLoc.alt - minAltitude) / (maxAltitude - minAltitude),
-      1.0));
+    fixList.append(TrackFix(ev->timestamp, igcFix->gpsLoc, x, y, z));
   }
 
   drawArrayLines->setFirst(0);
@@ -122,6 +120,20 @@ void OpenedFile::createTrack() {
 
   track = viewer->mapLayerGroup->insertMapLayer(geode, fileInfo.fileName());
   track->connectDisplayedToVisibility();
+}
+
+void OpenedFile::setColors(Coloring *coloring) {
+  osg::Vec4Array* colors = new osg::Vec4Array();
+
+  coloring->init(&fixList);
+
+  for (int i = 0; i < fixList.count(); ++i) {
+    QColor color = coloring->color(i);
+    colors->push_back(osg::Vec4(
+      color.redF(), color.greenF(), color.blueF(), color.alphaF()));
+  }
+
+  geom->setColorArray(colors);
 }
 
 }  // End namespace IgcViewer

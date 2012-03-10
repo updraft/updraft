@@ -9,7 +9,7 @@ namespace Igc {
 
 /// Open a file with given path and
 /// load it.
-bool IgcFile::load(QString path, QTextCodec* codec) {
+bool IgcFile::load(const QString& path, QTextCodec* codec) {
   QFile f(path);
 
   if (!f.open(QIODevice::ReadOnly)) {
