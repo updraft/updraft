@@ -1,4 +1,5 @@
 # Vim swap files
+./.gitignore
 .*.sw[poxn]
 
 # Qt creator user files
@@ -6,3 +7,4 @@
 
 # Build directory for cmake
 /build/
+/build-Maria.bat
