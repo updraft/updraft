@@ -5,7 +5,7 @@
 #include <osg/Geode>
 #include <osg/LineWidth>
 
-#include "colorings.h"
+#include "igcinfo.h"
 
 namespace Updraft {
 namespace IgcViewer {
@@ -35,27 +35,30 @@ bool OpenedFile::init(IgcViewer* viewer, const QString& filename) {
 }
 
 void OpenedFile::close() {
-  tab = NULL;  // tab is already deleted
+  tab = NULL;  // tab will be deleted after we drop out of this function
+
+  for (int i = 0; i < colorsCombo->model()->rowCount(); ++i) {
+    delete colorsCombo->itemData(i).value<IgcInfo*>();
+  }
+
   delete this;
 }
 
 void OpenedFile::createTab() {
   colorsCombo = new QComboBox();
 
-  /// \bug The following allocations cause a memmory leak!
-
   #define ADD_COLORING(name, pointer) \
     colorsCombo->addItem(name, \
-      QVariant::fromValue(static_cast<Coloring*>(pointer)))
+      QVariant::fromValue(static_cast<IgcInfo*>(pointer)))
 
-  ADD_COLORING(tr("Vertical Speed"), new VerticalSpeedColoring());
-  ADD_COLORING(tr("Ground Speed"), new GroundSpeedColoring());
-  ADD_COLORING(tr("Altitude"), new AltitudeColoring());
-  ADD_COLORING(tr("Red"), new ConstantColoring(Qt::red));
-  ADD_COLORING(tr("Green"), new ConstantColoring(Qt::green));
-  ADD_COLORING(tr("Blue"), new ConstantColoring(Qt::blue));
-  ADD_COLORING(tr("Gray"), new ConstantColoring(Qt::gray));
-  ADD_COLORING(tr("Yellow"), new ConstantColoring(Qt::yellow));
+  ADD_COLORING(tr("Vertical Speed"), new VerticalSpeedIgcInfo());
+  ADD_COLORING(tr("Ground Speed"), new GroundSpeedIgcInfo());
+  ADD_COLORING(tr("Altitude"), new AltitudeIgcInfo());
+  ADD_COLORING(tr("Red"), new ConstantIgcInfo(Qt::red));
+  ADD_COLORING(tr("Green"), new ConstantIgcInfo(Qt::green));
+  ADD_COLORING(tr("Blue"), new ConstantIgcInfo(Qt::blue));
+  ADD_COLORING(tr("Gray"), new ConstantIgcInfo(Qt::gray));
+  ADD_COLORING(tr("Yellow"), new ConstantIgcInfo(Qt::yellow));
 
   tab = viewer->core->createTab(colorsCombo, fileInfo.fileName());
 
@@ -67,7 +70,7 @@ void OpenedFile::createTab() {
 }
 
 void OpenedFile::updateColors(int row) {
-  setColors(colorsCombo->itemData(row).value<Coloring*>());
+  setColors(colorsCombo->itemData(row).value<IgcInfo*>());
 }
 
 void OpenedFile::createTrack() {
@@ -105,7 +108,9 @@ void OpenedFile::createTrack() {
       x, y, z);
 
     vertices->push_back(osg::Vec3(x, y, z));
-    fixList.append(TrackFix(ev->timestamp, igcFix->gpsLoc, x, y, z));
+
+    /// \todo fill terrain height
+    fixList.append(TrackFix(ev->timestamp, igcFix->gpsLoc, x, y, z, 0));
   }
 
   drawArrayLines->setFirst(0);
@@ -122,7 +127,7 @@ void OpenedFile::createTrack() {
   track->connectDisplayedToVisibility();
 }
 
-void OpenedFile::setColors(Coloring *coloring) {
+void OpenedFile::setColors(IgcInfo *coloring) {
   osg::Vec4Array* colors = new osg::Vec4Array();
 
   coloring->init(&fixList);

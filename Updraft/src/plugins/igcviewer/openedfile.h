@@ -8,30 +8,14 @@
 
 #include <osg/Geometry>
 
-#include "igcviewer.h"
 #include "igc/igc.h"
 #include "util/util.h"
 
+#include "igcviewer.h"
+#include "igcinfo.h"
+
 namespace Updraft {
 namespace IgcViewer {
-
-class Coloring;
-
-/// Structure representing a single point of the igc recording,
-/// already projected and prepared for displaying.
-struct TrackFix {
-  TrackFix(QTime timestamp, Util::Location location,
-    double x, double y, double z) :
-    timestamp(timestamp), location(location), x(x), y(y), z(z) {}
-
-  QTime timestamp;
-
-  /// Location of the fix
-  Util::Location location;
-
-  /// Projected location of the fix
-  double x, y, z;
-};
 
 /// Helper class representing a single opened IGC file.
 class OpenedFile: public QObject {
@@ -63,7 +47,7 @@ class OpenedFile: public QObject {
   void createTrack();
 
   /// Set coloring of the track.
-  void setColors(Coloring *coloring);
+  void setColors(IgcInfo *coloring);
 
   QFileInfo fileInfo;
 
