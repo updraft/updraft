@@ -48,7 +48,7 @@ bool IgcViewer::fileOpen(const QString &filename, int roleId) {
   }
 
   foreach(OpenedFile* other, opened) {
-    Q_ASSERT(other->igcInfoList.count == f->igcInfoList.count());
+    Q_ASSERT(other->igcInfoList.count() == f->igcInfoList.count());
 
     for (int i = 0; i < f->igcInfoList.count(); ++i) {
       IgcInfo *info1 = f->igcInfoList[i];
@@ -59,7 +59,7 @@ bool IgcViewer::fileOpen(const QString &filename, int roleId) {
   }
 
   foreach(OpenedFile* other, opened) {
-    Q_ASSERT(other->igcInfoList.count == f->igcInfoList.count());
+    Q_ASSERT(other->igcInfoList.count() == f->igcInfoList.count());
 
     for (int i = 0; i < f->igcInfoList.count(); ++i) {
       IgcInfo *info1 = f->igcInfoList[i];
