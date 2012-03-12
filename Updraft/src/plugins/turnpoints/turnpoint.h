@@ -40,10 +40,10 @@ struct TurnPoint {
   WaypointStyle type;
 
   /// For turnpoits type 2,3,4,5 = Runway
-  /// \{Runway heading
-  double rwyHeading;
+  /// \{Runway heading in degrees
+  int rwyHeading;
   /// Runway length in meters
-  double rwyLengthM;
+  float rwyLengthM;
   /// Airport frequency
   float airportFreq;
   /// \}
