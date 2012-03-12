@@ -28,6 +28,7 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
     </image>
     -->
     
+    <!--
     <image name="Simple map" driver="wms">
       <url>http://labs.metacarta.com/wms-c/Basic.py</url>
       <layers>basic</layers>
@@ -35,6 +36,7 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
       <tile_size>256</tile_size>
       <srs>EPSG:4326</srs>
     </image>
+    -->
 
 	  <elevation name="Elevation layer" driver="tms">
         <url>http://readymap.org/readymap/tiles/1.0.0/9/</url>    
