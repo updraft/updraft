@@ -1,15 +1,11 @@
 #ifndef UPDRAFT_SRC_PLUGINS_IGCVIEWER_OPENEDFILE_H_
 #define UPDRAFT_SRC_PLUGINS_IGCVIEWER_OPENEDFILE_H_
 
-#include <QComboBox>
 #include <QObject>
 #include <QFileInfo>
 #include <QList>
 
 #include <osg/Geometry>
-
-#include "igc/igc.h"
-#include "util/util.h"
 
 #include "igcviewer.h"
 #include "igcinfo.h"
@@ -22,32 +18,33 @@ class OpenedFile: public QObject {
   Q_OBJECT
 
  public:
-  /// Don't use delete on this class.
-  /// Use close() instead.
+  /// Destructor. Also removes the file from the list
+  /// of opened files in IgcViewer.
   ~OpenedFile();
 
   bool init(IgcViewer* viewer, const QString& filename);
+
+  /// Force redraw of everything.
   void redraw();
 
- public slots:
-  /// Slot that gets called when the tab associated with this file gets closed.
+ private slots:
+  /// Slot that gets called when the tab associated with this file is closed.
   /// Deletes the opened file.
-  /// This slot is the only way to destroy this class.
   void close();
 
   /// Set colors of the track according to the value selected in the combo.
   void updateColors(int row);
 
  private:
-  /// Create a tab with the flight recording's graph and controls.
-  /// Must be called after createTrack(), since it sets the colors of the track.
-  void createTab();
+  /// Load the igc file to our own representation and close it.
+  /// Fills fixList.
+  bool loadIgc(const QString& filename);
 
   /// Create the track in map.
   void createTrack();
 
   /// Set coloring of the track.
-  void setColors(IgcInfo *coloring);
+  void setColors(IgcInfo* coloring);
 
   QFileInfo fileInfo;
 
@@ -55,13 +52,24 @@ class OpenedFile: public QObject {
   MapLayerInterface* track;
   IgcViewer *viewer;
 
-  Igc::IgcFile igc;
-
-  QComboBox *colorsCombo;
-
+  /// Geometry of the 3D track visualisation.
+  /// Used for coloring.
   osg::Geometry* geom;
 
+  IgcInfo *currentColoring;
+
+  /// List of track points.
   QList<TrackFix> fixList;
+
+  /// This variable contains all available igc infos accessible for mass
+  /// rescaling / delete / whatever.
+  /// There are separate variables for named access to specific info classes.
+  QList<IgcInfo*> igcInfoList;
+
+  IgcInfo* altitudeInfo;
+  IgcInfo* verticalSpeedInfo;
+
+  friend class IgcViewer;
 };
 
 }  // End namespace IgcViewer
