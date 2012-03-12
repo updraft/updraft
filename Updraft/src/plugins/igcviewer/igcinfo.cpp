@@ -1,47 +1,59 @@
-#include "colorings.h"
+#include "igcinfo.h"
 
 namespace Updraft {
 namespace IgcViewer {
 
-void Coloring::init(const QList<TrackFix> *fixList) {
+void IgcInfo::init(const QList<TrackFix> *fixList) {
   this->fixList = fixList;
 
-  min = this->value(0);
-  max = min;
+  min_ = this->value(0);
+  max_ = min_;
 
   for (int i = 1; i < fixList->count(); ++i) {
     qreal v = value(i);
 
-    if (min > v) {
-      min = v;
+    if (min_ > v) {
+      min_ = v;
     }
 
-    if (max < v) {
-      max = v;
+    if (max_ < v) {
+      max_ = v;
     }
   }
+
+  resetGlobalScale();
 }
 
-QColor Coloring::color(int i) {
-  qreal scaled = (value(i) - min) / (max - min);
+void IgcInfo::resetGlobalScale() {
+  globalMin_ = min_;
+  globalMax_ = max_;
+}
+
+void IgcInfo::addGlobalScale(qreal minimum, qreal maximum) {
+  globalMin_ = qMin(minimum, globalMin_);
+  globalMax_ = qMax(maximum, globalMax_);
+}
+
+QColor IgcInfo::color(int i) {
+  qreal scaled = (value(i) - globalMin_) / (globalMax_ - globalMin_);
   return colorFromScaled(scaled);
 }
 
-AltitudeColoring::AltitudeColoring()
+AltitudeIgcInfo::AltitudeIgcInfo()
   : g(Qt::darkGray, Qt::red) {}
 
-qreal AltitudeColoring::value(int i) {
+qreal AltitudeIgcInfo::value(int i) {
   return fixList->at(i).location.alt;
 }
 
-QColor AltitudeColoring::colorFromScaled(qreal scaled) {
+QColor AltitudeIgcInfo::colorFromScaled(qreal scaled) {
   return g.get(scaled);
 }
 
-GroundSpeedColoring::GroundSpeedColoring()
+GroundSpeedIgcInfo::GroundSpeedIgcInfo()
   : g(Qt::darkGray, Qt::blue) {}
 
-qreal GroundSpeedColoring::value(int i) {
+qreal GroundSpeedIgcInfo::value(int i) {
   if (fixList->count() < 2) {
     // This is a protection against malicious IGC files.
     return 0;
@@ -56,7 +68,7 @@ qreal GroundSpeedColoring::value(int i) {
   }
 }
 
-qreal GroundSpeedColoring::speedBefore(int i) {
+qreal GroundSpeedIgcInfo::speedBefore(int i) {
   const TrackFix &f1 = fixList->at(i - 1);
   const TrackFix &f2 = fixList->at(i);
 
@@ -76,33 +88,35 @@ qreal GroundSpeedColoring::speedBefore(int i) {
   return dist / seconds;
 }
 
-QColor GroundSpeedColoring::colorFromScaled(qreal scaled) {
+QColor GroundSpeedIgcInfo::colorFromScaled(qreal scaled) {
   return g.get(scaled);
 }
 
-void VerticalSpeedColoring::init(const QList<TrackFix> *fixList) {
+void VerticalSpeedIgcInfo::init(const QList<TrackFix> *fixList) {
   this->fixList = fixList;
 
-  max = this->value(0);
+  max_ = this->value(0);
 
   for (int i = 1; i < fixList->count(); ++i) {
     qreal v = value(i);
 
-    if (v < -max) {
-      max = -v;
-    } else if (v > max) {
-      max = v;
+    if (v < -max_) {
+      max_ = -v;
+    } else if (v > max_) {
+      max_ = v;
     }
   }
 
-  min = -max;
+  min_ = -max_;
+
+  resetGlobalScale();
 }
 
-VerticalSpeedColoring::VerticalSpeedColoring()
-  : positiveGradient(Qt::green, Qt::darkGray),
+VerticalSpeedIgcInfo::VerticalSpeedIgcInfo()
+  : positiveGradient(Qt::darkGray, Qt::green),
   negativeGradient(Qt::darkGray, Qt::red) {}
 
-qreal VerticalSpeedColoring::value(int i) {
+qreal VerticalSpeedIgcInfo::value(int i) {
   if (fixList->count() < 2) {
     // This is a protection against malicious IGC files.
     return 0;
@@ -117,7 +131,7 @@ qreal VerticalSpeedColoring::value(int i) {
   }
 }
 
-qreal VerticalSpeedColoring::speedBefore(int i) {
+qreal VerticalSpeedIgcInfo::speedBefore(int i) {
   const TrackFix &f1 = fixList->at(i - 1);
   const TrackFix &f2 = fixList->at(i);
 
@@ -133,7 +147,7 @@ qreal VerticalSpeedColoring::speedBefore(int i) {
   return dist / seconds;
 }
 
-QColor VerticalSpeedColoring::colorFromScaled(qreal scaled) {
+QColor VerticalSpeedIgcInfo::colorFromScaled(qreal scaled) {
   if (scaled > 0.5) {
     return positiveGradient.get(scaled * 2 - 1);
   } else {

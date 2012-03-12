@@ -1,19 +1,42 @@
-#ifndef UPDRAFT_SRC_PLUGINS_IGCVIEWER_COLORINGS_H_
-#define UPDRAFT_SRC_PLUGINS_IGCVIEWER_COLORINGS_H_
+#ifndef UPDRAFT_SRC_PLUGINS_IGCVIEWER_IGCINFO_H_
+#define UPDRAFT_SRC_PLUGINS_IGCVIEWER_IGCINFO_H_
 
 #include <QColor>
+#include <QTime>
 #include <QList>
+#include <QMetaType>
 
-#include "openedfile.h"
 #include "util/util.h"
 
 namespace Updraft {
 namespace IgcViewer {
 
-/// Base for track computing recording colors.
-class Coloring {
+/// Structure representing a single point of the igc recording,
+/// already projected and prepared for displaying.
+struct TrackFix {
+  TrackFix(QTime timestamp, Util::Location location,
+    double x, double y, double z, qreal terrainHeight) :
+    timestamp(timestamp), location(location), x(x), y(y), z(z),
+    terrainHeight(terrainHeight) {}
+
+  QTime timestamp;
+
+  /// Location of the fix
+  Util::Location location;
+
+  /// Projected location of the fix
+  qreal x, y, z;
+
+  /// Terrain height at the position of the fix.
+  qreal terrainHeight;
+};
+
+/// Base for track computing values and colors from igc recording.
+/// For multiple opened tracks the colorings can scale together,
+/// this is called global scale in the code.
+class IgcInfo {
  public:
-  virtual ~Coloring() {}
+  virtual ~IgcInfo() {}
 
   /// Initialize the coloring.
   /// \param fixList List of fixes, usable for scaling, smoothing, ...
@@ -23,23 +46,41 @@ class Coloring {
   /// \param i Index of the fix.
   virtual QColor color(int i);
 
- protected:
-  //// Get the value of item number i.
+  //// Get the raw value of item number i.
   virtual qreal value(int i) = 0;
 
+  /// Forget any values previously associated with the global scale.
+  virtual void resetGlobalScale();
+
+  /// Add a new minimum and maximum to the global scale;
+  virtual void addGlobalScale(qreal minimum, qreal maximum);
+
+  /// Return the minimal value of this track.
+  qreal min() { return min_; }
+
+  /// Return the maximal value of this track.
+  qreal max() { return max_; }
+
+  /// Return the minimal value of all tracks.
+  qreal globalMin() { return globalMin_; }
+
+  /// Return the maximal value of all tracks.
+  qreal globalMax() { return globalMax_; }
+
+ protected:
   /// Convert scaled value to color.
   /// \param scaled value from 0 to 1.
   virtual QColor colorFromScaled(qreal scaled) = 0;
 
   const QList<TrackFix> *fixList;
-  qreal min;
-  qreal max;
+  qreal min_, max_;
+  qreal globalMin_, globalMax_;
 };
 
 /// Color the track with constant color.
-class ConstantColoring : public Coloring {
+class ConstantIgcInfo : public IgcInfo {
  public:
-  explicit ConstantColoring(QColor val) : val(val) {}
+  explicit ConstantIgcInfo(QColor val) : val(val) {}
 
   /// Do nothing.
   void init(const QList<TrackFix> *fixList) {}
@@ -47,10 +88,10 @@ class ConstantColoring : public Coloring {
   /// Return the constant color
   QColor color(int i) { return val; }
 
- protected:
   /// Do nothing.
   virtual qreal value(int i) { return 0; }
 
+ protected:
   /// Do nothing.
   virtual QColor colorFromScaled(qreal scaled) { return QColor(); }
 
@@ -58,14 +99,14 @@ class ConstantColoring : public Coloring {
 };
 
 /// Color the track according to altitude.
-class AltitudeColoring : public Coloring {
+class AltitudeIgcInfo : public IgcInfo {
  public:
-  AltitudeColoring();
+  AltitudeIgcInfo();
 
- protected:
   //// Find the value of item number i, without scaling.
   virtual qreal value(int i);
 
+ protected:
   /// Convert scaled value to color.
   virtual QColor colorFromScaled(qreal scaled);
 
@@ -73,13 +114,14 @@ class AltitudeColoring : public Coloring {
 };
 
 /// Color the track according to GPS speed.
-class GroundSpeedColoring : public Coloring {
+class GroundSpeedIgcInfo : public IgcInfo {
  public:
-  GroundSpeedColoring();
- protected:
+  GroundSpeedIgcInfo();
+
   //// Find the value of item number i, without scaling.
   virtual qreal value(int i);
 
+ protected:
   /// Return the speed of the segment before i (fixes no i and i-1)
   qreal speedBefore(int i);
 
@@ -91,17 +133,17 @@ class GroundSpeedColoring : public Coloring {
 };
 
 /// Color the track according to vertical speed.
-class VerticalSpeedColoring : public Coloring {
+class VerticalSpeedIgcInfo : public IgcInfo {
  public:
-  VerticalSpeedColoring();
+  VerticalSpeedIgcInfo();
 
   /// Calculate the scale symetrically to zero.
   void init(const QList<TrackFix> *fixList);
 
- protected:
   //// Find the value of item number i, without scaling.
   virtual qreal value(int i);
 
+ protected:
   /// Return the speed of the segment before i (fixes no i and i-1)
   qreal speedBefore(int i);
 
@@ -116,7 +158,7 @@ class VerticalSpeedColoring : public Coloring {
 }  // End namespace IgcViewer
 }  // End namespace Updraft
 
-Q_DECLARE_METATYPE(Updraft::IgcViewer::Coloring*)
+Q_DECLARE_METATYPE(Updraft::IgcViewer::IgcInfo*)
 
-#endif  // UPDRAFT_SRC_PLUGINS_IGCVIEWER_COLORINGS_H_
+#endif  // UPDRAFT_SRC_PLUGINS_IGCVIEWER_IGCINFO_H_
 

@@ -1,5 +1,7 @@
 #include "igcviewer.h"
 
+#include <assert.h>
+
 #include "openedfile.h"
 
 namespace Updraft {
@@ -30,14 +32,11 @@ void IgcViewer::initialize() {
 }
 
 void IgcViewer::deinitialize() {
-  qDebug("igcviewer unloaded");
-
-  QList<OpenedFile*> copy = opened;
-  opened.clear();
-
-  foreach(OpenedFile* f, copy) {
-    f->close();
+  foreach(OpenedFile* f, opened) {
+    delete f;
   }
+
+  qDebug("igcviewer unloaded");
 }
 
 bool IgcViewer::fileOpen(const QString &filename, int roleId) {
@@ -48,9 +47,70 @@ bool IgcViewer::fileOpen(const QString &filename, int roleId) {
     return false;
   }
 
+  foreach(OpenedFile* other, opened) {
+    Q_ASSERT(other->igcInfoList.count() == f->igcInfoList.count());
+
+    for (int i = 0; i < f->igcInfoList.count(); ++i) {
+      IgcInfo *info1 = f->igcInfoList[i];
+      IgcInfo *info2 = other->igcInfoList[i];
+
+      info1->addGlobalScale(info2->globalMin(), info2->globalMax());
+    }
+  }
+
+  foreach(OpenedFile* other, opened) {
+    Q_ASSERT(other->igcInfoList.count() == f->igcInfoList.count());
+
+    for (int i = 0; i < f->igcInfoList.count(); ++i) {
+      IgcInfo *info1 = f->igcInfoList[i];
+      IgcInfo *info2 = other->igcInfoList[i];
+
+      info2->addGlobalScale(info1->globalMin(), info1->globalMax());
+    }
+  }
+
   opened.append(f);
 
+  redrawAll();
+
   return true;
+}
+
+void IgcViewer::fileClose(OpenedFile *f) {
+  opened.removeAll(f);
+
+  foreach(OpenedFile *other, opened) {
+    for (int i = 0; i < f->igcInfoList.count(); ++i) {
+      other->igcInfoList[i]->resetGlobalScale();
+    }
+  }
+
+  if (opened.count() <= 1) {
+    // There is no point in global scale if there is only one file.
+    return;
+  }
+
+  for (int i = 0; i < opened[0]->igcInfoList.count(); ++i) {
+    qreal min = opened[0]->igcInfoList[i]->min();
+    qreal max = opened[0]->igcInfoList[i]->max();
+
+    foreach(OpenedFile* other, opened) {
+      min = qMin(other->igcInfoList[i]->min(), min);
+      max = qMax(other->igcInfoList[i]->max(), max);
+    }
+
+    foreach(OpenedFile* other, opened) {
+      other->igcInfoList[i]->addGlobalScale(min, max);
+    }
+  }
+
+  redrawAll();
+}
+
+void IgcViewer::redrawAll() {
+  foreach(OpenedFile *f, opened) {
+    f->redraw();
+  }
 }
 
 /*void IgcViewer::fileIdentification(QStringList *roles,

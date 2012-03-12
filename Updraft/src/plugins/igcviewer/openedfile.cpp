@@ -1,21 +1,68 @@
 #include "openedfile.h"
 
+#include <QComboBox>
 #include <QDebug>
 
 #include <osg/Geode>
 #include <osg/LineWidth>
 
-#include "colorings.h"
+#include "igc/igc.h"
+
+#include "igcinfo.h"
 
 namespace Updraft {
 namespace IgcViewer {
 
 OpenedFile::~OpenedFile() {
   if (tab) {
-    delete tab;
+    TabInterface *tmp = tab;
+    tab = NULL;
+    delete tmp;
   }
+
+  foreach(IgcInfo* info, igcInfoList) {
+    delete info;
+  }
+
   viewer->mapLayerGroup->removeMapLayer(track);
-  viewer->opened.removeAll(this);
+
+  viewer->fileClose(this);
+}
+
+bool OpenedFile::loadIgc(const QString& filename) {
+  Igc::IgcFile igc;
+
+  if (!igc.load(filename)) {
+    qDebug() << "Loading IGC file failed.";
+    return false;
+  }
+
+  const osg::EllipsoidModel* ellipsoid = viewer->core->getEllipsoidModel();
+
+  fixList.clear();
+
+  foreach(Igc::Event const* ev, igc.events()) {
+    if (ev->type != Igc::Event::FIX) {
+      continue;
+    }
+    Igc::Fix const* igcFix = static_cast<Igc::Fix const*>(ev);
+
+    if (!igcFix->valid) {
+      continue;
+    }
+
+    qreal x, y, z;
+
+    ellipsoid->convertLatLongHeightToXYZ(
+      igcFix->gpsLoc.lat_radians(), igcFix->gpsLoc.lon_radians(),
+      igcFix->gpsLoc.alt,
+      x, y, z);
+
+    /// \todo fill terrain height
+    fixList.append(TrackFix(ev->timestamp, igcFix->gpsLoc, x, y, z, 0));
+  }
+
+  return true;
 }
 
 bool OpenedFile::init(IgcViewer* viewer, const QString& filename) {
@@ -23,39 +70,29 @@ bool OpenedFile::init(IgcViewer* viewer, const QString& filename) {
 
   fileInfo = QFileInfo(filename);
 
-  if (!igc.load(filename)) {
-    qDebug() << "Loading IGC file failed.";
+  if (!loadIgc(filename)) {
     return false;
   }
 
-  createTrack();
-  createTab();
+  QComboBox *colorsCombo = new QComboBox();
 
-  return true;
-}
+  #define ADD_IGCINFO(name, pointer) \
+    do { \
+      igcInfoList.append(pointer); \
+      igcInfoList[igcInfoList.count() - 1]->init(&fixList); \
+      colorsCombo->addItem(name); \
+    } while (0)
 
-void OpenedFile::close() {
-  tab = NULL;  // tab is already deleted
-  delete this;
-}
-
-void OpenedFile::createTab() {
-  colorsCombo = new QComboBox();
-
-  /// \bug The following allocations cause a memmory leak!
-
-  #define ADD_COLORING(name, pointer) \
-    colorsCombo->addItem(name, \
-      QVariant::fromValue(static_cast<Coloring*>(pointer)))
-
-  ADD_COLORING(tr("Vertical Speed"), new VerticalSpeedColoring());
-  ADD_COLORING(tr("Ground Speed"), new GroundSpeedColoring());
-  ADD_COLORING(tr("Altitude"), new AltitudeColoring());
-  ADD_COLORING(tr("Red"), new ConstantColoring(Qt::red));
-  ADD_COLORING(tr("Green"), new ConstantColoring(Qt::green));
-  ADD_COLORING(tr("Blue"), new ConstantColoring(Qt::blue));
-  ADD_COLORING(tr("Gray"), new ConstantColoring(Qt::gray));
-  ADD_COLORING(tr("Yellow"), new ConstantColoring(Qt::yellow));
+  ADD_IGCINFO(tr("Vertical Speed"), new VerticalSpeedIgcInfo());
+  verticalSpeedInfo = igcInfoList[igcInfoList.count() - 1];
+  ADD_IGCINFO(tr("Ground Speed"), new GroundSpeedIgcInfo());
+  ADD_IGCINFO(tr("Altitude"), new AltitudeIgcInfo());
+  altitudeInfo = igcInfoList[igcInfoList.count() - 1];
+  ADD_IGCINFO(tr("Red"), new ConstantIgcInfo(Qt::red));
+  ADD_IGCINFO(tr("Green"), new ConstantIgcInfo(Qt::green));
+  ADD_IGCINFO(tr("Blue"), new ConstantIgcInfo(Qt::blue));
+  ADD_IGCINFO(tr("Gray"), new ConstantIgcInfo(Qt::gray));
+  ADD_IGCINFO(tr("Yellow"), new ConstantIgcInfo(Qt::yellow));
 
   tab = viewer->core->createTab(colorsCombo, fileInfo.fileName());
 
@@ -63,16 +100,33 @@ void OpenedFile::createTab() {
   connect(colorsCombo, SIGNAL(currentIndexChanged(int)),
     this, SLOT(updateColors(int)));
 
+  createTrack();
+
   updateColors(colorsCombo->currentIndex());
+
+  return true;
+}
+
+void OpenedFile::redraw() {
+  setColors(currentColoring);
+}
+
+void OpenedFile::close() {
+  if (!tab) {
+    // If we were destroying this file starting from the regular consturctor,
+    // then the tab is already set to null and we don't have to do anything.
+    return;
+  }
+
+  tab = NULL;  // tab will be deleted after we drop out of this function
+  delete this;
 }
 
 void OpenedFile::updateColors(int row) {
-  setColors(colorsCombo->itemData(row).value<Coloring*>());
+  setColors(igcInfoList[row]);
 }
 
 void OpenedFile::createTrack() {
-  const osg::EllipsoidModel* ellipsoid = viewer->core->getEllipsoidModel();
-
   osg::Geode* geode = new osg::Geode();
 
   geom = new osg::Geometry();
@@ -87,25 +141,8 @@ void OpenedFile::createTrack() {
 
   geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
-  foreach(Igc::Event const* ev, igc.events()) {
-    if (ev->type != Igc::Event::FIX) {
-      continue;
-    }
-    Igc::Fix const* igcFix = static_cast<Igc::Fix const*>(ev);
-
-    if (!igcFix->valid) {
-      continue;
-    }
-
-    double x, y, z;
-
-    ellipsoid->convertLatLongHeightToXYZ(
-      igcFix->gpsLoc.lat_radians(), igcFix->gpsLoc.lon_radians(),
-      igcFix->gpsLoc.alt,
-      x, y, z);
-
-    vertices->push_back(osg::Vec3(x, y, z));
-    fixList.append(TrackFix(ev->timestamp, igcFix->gpsLoc, x, y, z));
+  foreach(TrackFix fix, fixList) {
+    vertices->push_back(osg::Vec3(fix.x, fix.y, fix.z));
   }
 
   drawArrayLines->setFirst(0);
@@ -122,7 +159,9 @@ void OpenedFile::createTrack() {
   track->connectDisplayedToVisibility();
 }
 
-void OpenedFile::setColors(Coloring *coloring) {
+void OpenedFile::setColors(IgcInfo *coloring) {
+  currentColoring = coloring;
+
   osg::Vec4Array* colors = new osg::Vec4Array();
 
   coloring->init(&fixList);

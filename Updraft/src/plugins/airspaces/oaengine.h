@@ -126,7 +126,7 @@ class oaEngine {
   QVector<Position>* pointsWGS);
 
   /// Fill the OpenGL vertex arrays
-  void oaEngine::FillOGLArrays(
+  void FillOGLArrays(
   QVector<Position>* pointsWGS,
   QVector<double>* pointsGnd,
   int floor, int ceiling,
