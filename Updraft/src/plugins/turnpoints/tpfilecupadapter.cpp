@@ -64,11 +64,11 @@ float TPFileCupAdapter::parseLength(const QString& text) {
 
   // Get the units
   if        (text.contains("nm", Qt::CaseInsensitive)) {
-    length *= Util::NM_TO_M;
+    length = Util::Units::nauticlaMilesToMeters(length);
   } else if (text.contains("ml", Qt::CaseInsensitive)) {
-    length *= Util::ML_TO_M;
+    length = Util::Units::statuteMilesToMeters(length);
   } else if (text.contains("ft", Qt::CaseInsensitive)) {
-    length *= Util::FT_TO_M;
+    length = Util::Units::feetToMeters(length);
   }
   return length;
 }
