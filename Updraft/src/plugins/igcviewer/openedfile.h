@@ -7,8 +7,9 @@
 
 #include <osg/Geometry>
 
-#include "igcviewer.h"
+#include "colorings.h"
 #include "igcinfo.h"
+#include "igcviewer.h"
 
 namespace Updraft {
 namespace IgcViewer {
@@ -22,10 +23,18 @@ class OpenedFile: public QObject {
   /// of opened files in IgcViewer.
   ~OpenedFile();
 
-  bool init(IgcViewer* viewer, const QString& filename);
+  /// Open the filename.
+  /// \param id Number of the file, used only for "automatic coloring"
+  bool init(IgcViewer* viewer, const QString& filename, int id);
 
   /// Force redraw of everything.
   void redraw();
+
+  /// Reset the global scales.
+  void resetScales();
+
+  /// Update the global scales based on the other opened file.
+  void updateScales(const OpenedFile* other);
 
  private slots:
   /// Slot that gets called when the tab associated with this file is closed.
@@ -44,7 +53,7 @@ class OpenedFile: public QObject {
   void createTrack();
 
   /// Set coloring of the track.
-  void setColors(IgcInfo* coloring);
+  void setColors(Coloring* coloring);
 
   QFileInfo fileInfo;
 
@@ -56,18 +65,24 @@ class OpenedFile: public QObject {
   /// Used for coloring.
   osg::Geometry* geom;
 
-  IgcInfo *currentColoring;
+  Coloring *currentColoring;
 
   /// List of track points.
   QList<TrackFix> fixList;
 
-  /// This variable contains all available igc infos accessible for mass
-  /// rescaling / delete / whatever.
-  /// There are separate variables for named access to specific info classes.
-  QList<IgcInfo*> igcInfoList;
+  QList<Coloring*> colorings;
 
+  /// This variable contains all available igc infos accessible for mass
+  /// rescaling / deleting / whatever.
+  /// There are separate variables for named access to specific info classes.
+  QList<IgcInfo*> igcInfo;
+
+  IgcInfo* trackIdInfo;
   IgcInfo* altitudeInfo;
   IgcInfo* verticalSpeedInfo;
+  IgcInfo* groundSpeedInfo;
+
+  Util::Gradient gradient;
 
   friend class IgcViewer;
 };

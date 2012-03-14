@@ -31,11 +31,10 @@ class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
   /// all scales.
   void fileClose(OpenedFile* f);
 
-  /// Call redraw() on all opened files.
-  void redrawAll();
-
   QList<OpenedFile*> opened;
   MapLayerGroupInterface* mapLayerGroup;
+
+  int openedCounter;
 
   friend class OpenedFile;
 };

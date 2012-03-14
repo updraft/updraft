@@ -29,6 +29,8 @@ void IgcViewer::initialize() {
   core->registerFiletype(registration);
 
   mapLayerGroup = core->createMapLayerGroup(tr("IGC files"));
+
+  openedCounter = 0;
 }
 
 void IgcViewer::deinitialize() {
@@ -42,36 +44,21 @@ void IgcViewer::deinitialize() {
 bool IgcViewer::fileOpen(const QString &filename, int roleId) {
   OpenedFile* f = new OpenedFile();
 
-  if (!f->init(this, filename)) {
+  if (!f->init(this, filename, openedCounter)) {
     delete f;
     return false;
   }
 
-  foreach(OpenedFile* other, opened) {
-    Q_ASSERT(other->igcInfoList.count() == f->igcInfoList.count());
-
-    for (int i = 0; i < f->igcInfoList.count(); ++i) {
-      IgcInfo *info1 = f->igcInfoList[i];
-      IgcInfo *info2 = other->igcInfoList[i];
-
-      info1->addGlobalScale(info2->globalMin(), info2->globalMax());
-    }
-  }
+  ++openedCounter;
 
   foreach(OpenedFile* other, opened) {
-    Q_ASSERT(other->igcInfoList.count() == f->igcInfoList.count());
+    f->updateScales(other);
+    other->updateScales(f);
 
-    for (int i = 0; i < f->igcInfoList.count(); ++i) {
-      IgcInfo *info1 = f->igcInfoList[i];
-      IgcInfo *info2 = other->igcInfoList[i];
-
-      info2->addGlobalScale(info1->globalMin(), info1->globalMax());
-    }
+    other->redraw();
   }
 
   opened.append(f);
-
-  redrawAll();
 
   return true;
 }
@@ -80,36 +67,24 @@ void IgcViewer::fileClose(OpenedFile *f) {
   opened.removeAll(f);
 
   foreach(OpenedFile *other, opened) {
-    for (int i = 0; i < f->igcInfoList.count(); ++i) {
-      other->igcInfoList[i]->resetGlobalScale();
-    }
+    other->resetScales();
   }
 
-  if (opened.count() <= 1) {
-    // There is no point in global scale if there is only one file.
+  if (opened.count() == 0) {
     return;
   }
 
-  for (int i = 0; i < opened[0]->igcInfoList.count(); ++i) {
-    qreal min = opened[0]->igcInfoList[i]->min();
-    qreal max = opened[0]->igcInfoList[i]->max();
+  OpenedFile *first = opened[0];
 
-    foreach(OpenedFile* other, opened) {
-      min = qMin(other->igcInfoList[i]->min(), min);
-      max = qMax(other->igcInfoList[i]->max(), max);
-    }
-
-    foreach(OpenedFile* other, opened) {
-      other->igcInfoList[i]->addGlobalScale(min, max);
-    }
+  for (int i = 1; i < opened.count(); ++i) {
+    first->updateScales(opened[i]);
   }
 
-  redrawAll();
-}
+  first->redraw();
 
-void IgcViewer::redrawAll() {
-  foreach(OpenedFile *f, opened) {
-    f->redraw();
+  for (int i = 1; i < opened.count(); ++i) {
+    opened[i]->updateScales(first);
+    opened[i]->redraw();
   }
 }
 
