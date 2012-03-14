@@ -43,9 +43,9 @@ struct TurnPoint {
   /// \{Runway heading in degrees
   int rwyHeading;
   /// Runway length in meters
-  float rwyLengthM;
+  qreal rwyLengthM;
   /// Airport frequency
-  float airportFreq;
+  qreal airportFreq;
   /// \}
 };
 
