@@ -38,6 +38,13 @@ class SymmetricColoring : public DefaultColoring {
   QColor color(int i);
 };
 
+/// Same as default coloring, but doesn't use global scale.
+class LocalColoring : public DefaultColoring {
+ public:
+  LocalColoring(const IgcInfo *info, const Util::Gradient *gradient);
+  QColor color(int i);
+};
+
 /// Coloring that cycles colors.
 class CyclingColoring : public Coloring {
  public:

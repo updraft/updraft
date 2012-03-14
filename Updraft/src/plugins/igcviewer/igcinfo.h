@@ -38,7 +38,7 @@ class IgcInfo {
 
   /// Initialize the coloring.
   /// \param fixList List of fixes, usable for scaling, smoothing, ...
-  void init(const QList<TrackFix> *fixList);
+  virtual void init(const QList<TrackFix> *fixList);
 
   //// Get the raw value of item number i.
   virtual qreal value(int i) const = 0;
@@ -106,6 +106,14 @@ class TrackIdIgcInfo : public IgcInfo {
   qreal value(int i) const;
  private:
   int id;
+};
+
+/// Returns altitude.
+class TimeIgcInfo : public IgcInfo {
+ public:
+  void init(const QList<TrackFix> *fixList);
+  qreal value(int i) const;
+ private:
 };
 
 }  // End namespace IgcViewer

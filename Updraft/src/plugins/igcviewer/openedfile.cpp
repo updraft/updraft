@@ -91,6 +91,7 @@ bool OpenedFile::init(IgcViewer* viewer, const QString& filename, int id) {
   ADD_IGCINFO(altitudeInfo, new AltitudeIgcInfo());
   ADD_IGCINFO(verticalSpeedInfo, new VerticalSpeedIgcInfo());
   ADD_IGCINFO(groundSpeedInfo, new GroundSpeedIgcInfo());
+  ADD_IGCINFO(timeInfo, new TimeIgcInfo());
 
   #define ADD_COLORING(name, pointer) \
     do { \
@@ -106,6 +107,8 @@ bool OpenedFile::init(IgcViewer* viewer, const QString& filename, int id) {
     new DefaultColoring(groundSpeedInfo, &gradient));
   ADD_COLORING(tr("Altitude"),
     new DefaultColoring(altitudeInfo, &gradient));
+  ADD_COLORING(tr("Time"),
+    new LocalColoring(timeInfo, &gradient));
 
   tab = viewer->core->createTab(colorsCombo, fileInfo.fileName());
 

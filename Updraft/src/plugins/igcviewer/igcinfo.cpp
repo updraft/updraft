@@ -92,6 +92,27 @@ qreal TrackIdIgcInfo::value(int i) const {
   return id;
 }
 
+void TimeIgcInfo::init(const QList<TrackFix> *fixList) {
+  this->fixList = fixList;
+
+  if (fixList->count() >= 1) {
+    min_ = 0;
+    max_ = value(fixList->count() - 1);
+  }
+
+  resetGlobalScale();
+}
+
+qreal TimeIgcInfo::value(int i) const {
+  int ret = fixList->at(0).timestamp.secsTo(fixList->at(i).timestamp);
+
+  if (ret < 0) {
+    return ret + 24 * 3600;
+  } else {
+    return ret;
+  }
+}
+
 }  // End namespace IgcViewer
 }  // End namespace Updraft
 

@@ -81,6 +81,7 @@ class OpenedFile: public QObject {
   IgcInfo* altitudeInfo;
   IgcInfo* verticalSpeedInfo;
   IgcInfo* groundSpeedInfo;
+  IgcInfo* timeInfo;
 
   Util::Gradient gradient;
 

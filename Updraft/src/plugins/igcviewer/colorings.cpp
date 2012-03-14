@@ -26,6 +26,16 @@ QColor SymmetricColoring::color(int i) {
   return gradient->get(scaled);
 }
 
+LocalColoring::LocalColoring(
+  const IgcInfo *info, const Util::Gradient *gradient)
+  : DefaultColoring(info, gradient) {}
+
+QColor LocalColoring::color(int i) {
+  qreal scaled = (info->value(i) - info->min()) /
+    (info->max() - info->min());
+  return gradient->get(scaled);
+}
+
 CyclingColoring::CyclingColoring(const IgcInfo* info,
   int count, QColor firstColor)
   : info(info) {
