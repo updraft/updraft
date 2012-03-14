@@ -191,8 +191,7 @@ void OpenedFile::setColors(Coloring *coloring) {
 
 void OpenedFile::updateScales(const OpenedFile *other) {
   for (int i = 0; i < igcInfo.count(); ++i) {
-    igcInfo[i]->addGlobalScale(
-      other->igcInfo[i]->globalMin(), other->igcInfo[i]->globalMax());
+    igcInfo[i]->addGlobalScale(other->igcInfo[i]);
   }
 }
 

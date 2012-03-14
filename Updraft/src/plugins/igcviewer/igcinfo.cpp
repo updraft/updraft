@@ -1,31 +1,36 @@
 #include "igcinfo.h"
 
+#include <QtAlgorithms>
+#include <QtCore>
+
 namespace Updraft {
 namespace IgcViewer {
+
+/// How large part of the range shold be skiped as outliers.
+/// \todo Right now the value is just a wild guess. Measure it.
+qreal OUTLIERS_SKIP_RANGE = 0.03;
 
 void IgcInfo::init(const QList<TrackFix> *fixList) {
   this->fixList = fixList;
 
   if (fixList->count() < 1) {
-    min_ = max_ = 0;
+    min_ = max_ = robustMin_ = robustMax_ = 0;
     resetGlobalScale();
     return;
   }
 
-  min_ = this->value(0);
-  max_ = min_;
-
+  QList<qreal> values;
   for (int i = 1; i < fixList->count(); ++i) {
-    qreal v = this->value(i);
-
-    if (min_ > v) {
-      min_ = v;
-    }
-
-    if (max_ < v) {
-      max_ = v;
-    }
+    values.append(this->value(i));
   }
+  qSort(values);
+
+  int skipCount = qRound(values.count() * OUTLIERS_SKIP_RANGE);
+
+  min_ = values[0];
+  max_ = values[values.count() - 1];
+  robustMin_ = values[skipCount];
+  robustMax_ = values[values.count() - 1 - skipCount];
 
   resetGlobalScale();
 }
@@ -33,11 +38,15 @@ void IgcInfo::init(const QList<TrackFix> *fixList) {
 void IgcInfo::resetGlobalScale() {
   globalMin_ = min_;
   globalMax_ = max_;
+  globalRobustMin_ = robustMin_;
+  globalRobustMax_ = robustMax_;
 }
 
-void IgcInfo::addGlobalScale(qreal minimum, qreal maximum) {
-  globalMin_ = qMin(minimum, globalMin_);
-  globalMax_ = qMax(maximum, globalMax_);
+void IgcInfo::addGlobalScale(const IgcInfo* other) {
+  globalMin_ = qMin(other->globalMin_, globalMin_);
+  globalMax_ = qMax(other->globalMax_, globalMax_);
+  globalRobustMin_ = qMin(other->globalRobustMin_, globalRobustMin_);
+  globalRobustMax_ = qMax(other->globalRobustMax_, globalRobustMax_);
 }
 
 qreal AltitudeIgcInfo::value(int i) const {
@@ -96,8 +105,8 @@ void TimeIgcInfo::init(const QList<TrackFix> *fixList) {
   this->fixList = fixList;
 
   if (fixList->count() >= 1) {
-    min_ = 0;
-    max_ = value(fixList->count() - 1);
+    min_ = robustMin_ = 0;
+    max_ = robustMax_ = value(fixList->count() - 1);
   }
 
   resetGlobalScale();
