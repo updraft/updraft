@@ -52,6 +52,12 @@ Gradient::Gradient() {
 }
 
 QColor Gradient::get(qreal t) const {
+  if (t > 1) {
+    t = 1;
+  } else if (t < 0) {
+    t = 0;
+  }
+
   qreal h = hA * t + hB;
   h = h - qFloor(h);
 
