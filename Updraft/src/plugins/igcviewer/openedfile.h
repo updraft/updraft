@@ -40,6 +40,11 @@ class OpenedFile: public QObject {
     return automaticColor;
   }
 
+  void selectTab();
+
+  /// Return the absolute file name.
+  QString fileName();
+
  private slots:
   /// Slot that gets called when the tab associated with this file is closed.
   /// Deletes the opened file.

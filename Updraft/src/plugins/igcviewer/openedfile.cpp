@@ -195,10 +195,18 @@ void OpenedFile::updateScales(const OpenedFile *other) {
   }
 }
 
+void OpenedFile::selectTab() {
+  tab->select();
+}
+
 void OpenedFile::resetScales() {
   for (int i = 0; i < igcInfo.count(); ++i) {
     igcInfo[i]->resetGlobalScale();
   }
+}
+
+QString OpenedFile::fileName() {
+  return fileInfo.absoluteFilePath();
 }
 
 }  // End namespace IgcViewer

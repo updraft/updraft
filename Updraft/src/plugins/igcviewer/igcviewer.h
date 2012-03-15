@@ -41,7 +41,7 @@ class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
 
   QList<QPair<QColor, int> > automaticColors;
 
-  QList<OpenedFile*> opened;
+  QMap<QString, OpenedFile*> opened;
   MapLayerGroupInterface* mapLayerGroup;
 
   friend class OpenedFile;

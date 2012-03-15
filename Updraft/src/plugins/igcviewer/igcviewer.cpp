@@ -1,6 +1,6 @@
 #include "igcviewer.h"
 
-#include <assert.h>
+#include <QDebug>
 
 #include "openedfile.h"
 
@@ -48,6 +48,15 @@ void IgcViewer::deinitialize() {
 }
 
 bool IgcViewer::fileOpen(const QString &filename, int roleId) {
+  QFileInfo info(filename);
+  QString absFilename = info.absoluteFilePath();
+
+  if (opened.contains(absFilename)) {
+    qDebug() "already opened, ignoring";
+    opened[absFilename]->selectTab();
+    return true;
+  }
+
   OpenedFile* f = new OpenedFile();
 
   QColor c = findAutomaticColor();
@@ -64,13 +73,13 @@ bool IgcViewer::fileOpen(const QString &filename, int roleId) {
     other->redraw();
   }
 
-  opened.append(f);
+  opened.insert(filename, f);
 
   return true;
 }
 
 void IgcViewer::fileClose(OpenedFile *f) {
-  opened.removeAll(f);
+  opened.remove(f->fileName());
 
   freeAutomaticColor(f->getAutomaticColor());
 
@@ -82,17 +91,17 @@ void IgcViewer::fileClose(OpenedFile *f) {
     return;
   }
 
-  OpenedFile *first = opened[0];
+  OpenedFile *first = *(opened.begin());
 
-  for (int i = 1; i < opened.count(); ++i) {
-    first->updateScales(opened[i]);
+  foreach(OpenedFile *other, opened) {
+    first->updateScales(other);
   }
 
   first->redraw();
 
-  for (int i = 1; i < opened.count(); ++i) {
-    opened[i]->updateScales(first);
-    opened[i]->redraw();
+  foreach(OpenedFile *other, opened) {
+    other->updateScales(first);
+    other->redraw();
   }
 }
 
