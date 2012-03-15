@@ -64,6 +64,10 @@ void TurnPoints::fileIdentification(QStringList *roles,
     roles->append(tr("Turn-points file"));
 }
 
+void TurnPoints::handleMouseEvent(MapObject* obj, const EventInfo* evt) {
+  qDebug("Clicked a map object (turnpoint plugin says)");
+}
+
 void TurnPoints::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
   if (sender == NULL) {
     return;
