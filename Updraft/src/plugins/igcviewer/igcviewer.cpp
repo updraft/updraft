@@ -52,7 +52,7 @@ bool IgcViewer::fileOpen(const QString &filename, int roleId) {
   QString absFilename = info.absoluteFilePath();
 
   if (opened.contains(absFilename)) {
-    qDebug() "already opened, ignoring";
+    qDebug() << "already opened, ignoring";
     opened[absFilename]->selectTab();
     return true;
   }
