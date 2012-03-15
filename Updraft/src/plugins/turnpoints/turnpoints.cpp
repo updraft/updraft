@@ -114,7 +114,7 @@ void TurnPoints::addLayer(TPFile *file) {
   // Create new layer item, build scene.
   TPLayer *turnPointsLayer = new TPLayer(true,
     mapLayerGroup->getObjectPlacer(), file,
-    core->getDataDirectory());
+    core->getDataDirectory(), this);
 
   // Create new mapLayer in mapLayerGroup, assign osgNode and file name.
   Updraft::MapLayerInterface* mapLayer =

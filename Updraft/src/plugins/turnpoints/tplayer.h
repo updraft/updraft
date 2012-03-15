@@ -18,11 +18,13 @@ namespace Util {
 
 namespace Updraft {
 
+class TurnPoints;
+
 /// Class storing a turn-points layer.
 class TPLayer {
  public:
   TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
-    const TPFile *file_, const QString &dataDir);
+    const TPFile *file_, const QString &dataDir, TurnPoints* parent_);
 
   virtual ~TPLayer();
 
@@ -67,6 +69,8 @@ class TPLayer {
 
   // Path to application data directory.
   QString dataDir;
+
+  TurnPoints* parent;
 };
 
 }  // End namespace Updraft
