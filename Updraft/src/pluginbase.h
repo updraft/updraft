@@ -11,6 +11,8 @@
 
 namespace Updraft {
 
+class EventInfo;
+
 // Forward declarations
 namespace Core {
   class UpdraftParent;
@@ -40,6 +42,9 @@ class PluginBase {
 
   /// Called before the plugin is unloaded.
   virtual void deinitialize() = 0;
+
+  /// Called when a MapObject is clicked on a map
+  virtual void handleMouseEvent(MapObject* obj, const EventInfo* evt) {}
 
   /// Callback to open a file.
   /// \return Was opening successful?

@@ -1,6 +1,8 @@
 #include "pickhandler.h"
 #include "scenemanager.h"
 #include "updraft.h"
+#include "../eventinfo.h"
+#include "../pluginbase.h"
 
 namespace Updraft {
 namespace Core {
@@ -43,9 +45,14 @@ bool PickHandler::handle(
 }
 
 void PickHandler::raiseClickEvent(QVector<MapObject*> mapObjects) {
-  foreach(MapObject *mapObject, mapObjects) {
+  foreach(MapObject* mapObject, mapObjects) {
     if (!mapObject) continue;
-    qDebug() << QString("LEFT CLICK: ") + mapObject->name;
+
+    EventInfo eventInfo(LEFT_CLICK);
+
+    foreach(PluginBase* plugin, updraft->pluginManager->getAllPlugins()) {
+      plugin->handleMouseEvent(mapObject, &eventInfo);
+    }
   }
 }
 
