@@ -5,8 +5,10 @@
 #include <osgQt/GraphicsWindowQt>
 #include <osgViewer/Viewer>
 #include <QTimer>
+#include <QHash>
 #include <string>
 #include "mapmanager.h"
+#include "../mapobject.h"
 
 namespace Updraft {
 namespace Core {
@@ -45,6 +47,20 @@ class SceneManager: public QObject {
   /// Returns pointer to the group node for random drawing.
   osg::Group* getSimpleGroup();
 
+  /// Registers the osg node into Updraft for mouse picking.
+  /// \param node The node that should be registered
+  void registerOsgNode(osg::Node* node, QString name);
+
+  /// Unregisters osg node for mouse picking
+  /// \param node The node that should be unregistered
+  void unregisterOsgNode(osg::Node* node);
+
+  /// Tries to get the associated MapObject for the given node
+  /// \param node The node whose MapObject we want
+  /// \return Pointer to the MapObject that contains the registration info
+  ///         for the given node, if the node was registered.
+  MapObject* getNodeMapObject(osg::Node* node);
+
  public slots:
   void redrawScene();
 
@@ -70,6 +86,9 @@ class SceneManager: public QObject {
   osgQt::GraphicsWindowQt* createGraphicsWindow
     (osg::GraphicsContext::Traits* traits);
   osg::Camera* createCamera(osg::GraphicsContext::Traits* traits);
+
+  /// Map of osg nodes registered for mouse picking
+  QHash<osg::Node*, MapObject*> pickingMap;
 };
 
 }  // end namespace Core

@@ -7,6 +7,7 @@
 
 #include "scenemanager.h"
 #include "mapmanipulator.h"
+#include "pickhandler.h"
 
 namespace Updraft {
 namespace Core {
@@ -62,6 +63,10 @@ SceneManager::SceneManager(QString baseEarthFile,
   // camera->setViewMatrixAsLookAt(osg::Vec3d(0, 0, -6e7),
     // osg::Vec3d(0, 0, 0), osg::Vec3d(0, 1, 0));
 
+  // Create a picking handler
+  // TODO(cestmir): No memory leak here? Is pickhandler refcounted or what?
+  viewer->addEventHandler(new PickHandler());
+
   // start drawing
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(redrawScene()));
@@ -99,6 +104,26 @@ osgEarth::MapNode* SceneManager::getMapNode() {
 
 osg::Group* SceneManager::getSimpleGroup() {
   return simpleGroup;
+}
+
+void SceneManager::registerOsgNode(osg::Node* node, QString name) {
+  MapObject* mo = new MapObject(node, name);
+  mo->ref();
+  pickingMap.insert(node, mo);
+}
+
+void SceneManager::unregisterOsgNode(osg::Node* node) {
+  MapObject* mo = pickingMap.take(node);
+  mo->unref();
+}
+
+MapObject* SceneManager::getNodeMapObject(osg::Node* node) {
+  QHash<osg::Node*, MapObject*>::iterator it = pickingMap.find(node);
+  if (it != pickingMap.end()) {
+    return it.value();
+  } else {
+    return NULL;
+  }
 }
 
 MapManager* SceneManager::getMapManager() {

@@ -44,6 +44,8 @@ class CoreImplementation : public CoreInterface {
 
   osg::Group* getSimpleGroup();
 
+  void registerOsgNode(osg::Node* node, QString name);
+
  private:
   PluginBase* plugin;
 };

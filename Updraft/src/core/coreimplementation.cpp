@@ -74,6 +74,10 @@ osg::Group* CoreImplementation::getSimpleGroup() {
   return updraft->sceneManager->getSimpleGroup();
 }
 
+void CoreImplementation::registerOsgNode(osg::Node* node, QString name) {
+  updraft->sceneManager->registerOsgNode(node, name);
+}
+
 }  // End namespace Core
 }  // End namespace Updraft
 
