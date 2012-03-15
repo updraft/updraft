@@ -74,6 +74,11 @@ SceneManager::SceneManager(QString baseEarthFile,
 }
 
 SceneManager::~SceneManager() {
+  // We should unregister all the registered osg nodes
+  QList<osg::Node*> registeredNodes = pickingMap.keys();
+  foreach(osg::Node* node, registeredNodes) {
+    unregisterOsgNode(node);
+  }
 }
 
 QWidget* SceneManager::getWidget() {
