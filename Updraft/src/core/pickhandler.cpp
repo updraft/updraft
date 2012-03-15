@@ -1,4 +1,6 @@
 #include "pickhandler.h"
+
+#include <QSet>
 #include "scenemanager.h"
 #include "updraft.h"
 #include "../eventinfo.h"
@@ -45,8 +47,14 @@ bool PickHandler::handle(
 }
 
 void PickHandler::raiseClickEvent(QVector<MapObject*> mapObjects) {
+  qDebug("--- Left click event ---");
+
+  QSet<MapObject*> alreadyHandled;  // Prevent double handnling of objects
   foreach(MapObject* mapObject, mapObjects) {
     if (!mapObject) continue;
+
+    if (alreadyHandled.contains(mapObject)) continue;
+    alreadyHandled.insert(mapObject);
 
     EventInfo eventInfo(LEFT_CLICK);
 
