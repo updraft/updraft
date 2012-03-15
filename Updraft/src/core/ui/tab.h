@@ -25,6 +25,8 @@ class Tab : public QWidget, public TabInterface {
 
   QWidget* getWidget() { return widget; }
 
+  void select();
+
   void connectSlotClose(const QObject* sender, const char *signal);
   void connectSignalClosed(const QObject* receiver, const char *method);
   void connectSignalSelected(const QObject* receiver, const char *method);

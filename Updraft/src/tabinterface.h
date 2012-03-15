@@ -36,6 +36,9 @@ class TabInterface {
   /// Close this tab.
   /// This method deletes the tab and its widget.
   virtual void close() = 0;
+
+  /// Select this tab in the tab pane.
+  virtual void select() = 0;
 };
 
 }  // End namespace Updraft

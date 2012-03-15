@@ -22,6 +22,11 @@ Tab::~Tab() {
   emit closed();
 }
 
+void Tab::select() {
+  int id = tabWidget->indexOf(this);
+  tabWidget->setCurrentIndex(id);
+}
+
 /// Close this tab.
 /// This method deletes the tab and its widget.
 void Tab::close() {
