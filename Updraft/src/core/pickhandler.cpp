@@ -49,18 +49,32 @@ bool PickHandler::handle(
 void PickHandler::raiseClickEvent(QVector<MapObject*> mapObjects) {
   qDebug("--- Left click event ---");
 
-  QSet<MapObject*> alreadyHandled;  // Prevent double handnling of objects
+  Menu* moMenu = updraft->mainWindow->getSystemMenu(MENU_MAPOBJECT);
+  moMenu->clear();
+
+  EventInfo eventInfo(LEFT_CLICK);
+
+  QSet<MapObject*> alreadyHandled;  // Prevent double handling of objects
   foreach(MapObject* mapObject, mapObjects) {
     if (!mapObject) continue;
 
     if (alreadyHandled.contains(mapObject)) continue;
     alreadyHandled.insert(mapObject);
 
-    EventInfo eventInfo(LEFT_CLICK);
+    moMenu->appendAction(new QAction(mapObject->name, NULL));
 
     foreach(PluginBase* plugin, updraft->pluginManager->getAllPlugins()) {
       plugin->handleMouseEvent(mapObject, &eventInfo);
     }
+  }
+
+  // Show the menu if more than one action was inserted
+  if (moMenu->getQMenu()->actions().size() > 1) {
+    QWidget* mapWidget = updraft->mainWindow->getMapWidget();
+    int mh = mapWidget->height();
+
+    // The coordinates have to be Y-inverted and mapped to screen
+    moMenu->getQMenu()->exec(mapWidget->mapToGlobal(QPoint(mX, mh - mY)));
   }
 }
 

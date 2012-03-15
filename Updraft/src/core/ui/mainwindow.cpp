@@ -32,6 +32,9 @@ MainWindow::MainWindow(QWidget *parent)
   QMenu* qContextMenu = new QMenu();
   menuContext = new Menu(qContextMenu, true);
 
+  qContextMenu = new QMenu();
+  menuMapObject = new Menu(qContextMenu, true);
+
   standardMenuItems();
 }
 
@@ -41,6 +44,7 @@ MainWindow::~MainWindow() {
     delete menuEdit;
     delete menuFile;
     delete menuContext;
+    delete menuMapObject;
     delete ui;
 
     // TODO(Kuba): Delete the built-in menus together with custom menus?
@@ -62,6 +66,9 @@ Menu* MainWindow::getSystemMenu(SystemMenu menu) {
     break;
     case MENU_HELP:
       return menuHelp;
+    break;
+    case MENU_MAPOBJECT:
+      return menuMapObject;
     break;
     case MENU_CONTEXT:
     default:
@@ -136,7 +143,15 @@ void MainWindow::openFile() {
 }
 
 void MainWindow::setMapWidget(QWidget *widget) {
+  QLayoutItem* child;
+  while ( (child = ui->layoutFrame->takeAt(0)) != 0) {
+    delete child;
+  }
   ui->layoutFrame->addWidget(widget);
+}
+
+QWidget* MainWindow::getMapWidget() {
+  return (ui->layoutFrame->itemAt(0)->widget());
 }
 
 }  // End namespace Core
