@@ -52,6 +52,10 @@ class PluginBase {
     core = coreInterface;
   }
 
+  CoreInterface* getCoreInterface() {
+    return core;
+  }
+
  private:
   /// Disallow copying
   PluginBase(const PluginBase& other) {}
