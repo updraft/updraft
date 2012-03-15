@@ -11,6 +11,7 @@
 #include "fileregistration.h"
 #include "maplayergroupinterface.h"
 #include "settinginterface.h"
+#include "mapobject.h"
 
 class QWidget;
 class QMainWindow;
@@ -100,6 +101,11 @@ class CoreInterface {
 
   /// Returns the pointer to the basic node group for drawing.
   virtual osg::Group* getSimpleGroup() = 0;
+
+  /// Registers the osg node into Updraft for mouse picking.
+  /// \param node The node that should be registered
+  //TODO(cestmir): We will probably need unregistering as well
+  virtual void registerOsgNode(osg::Node* node, QString name) = 0;
 };
 
 }  // End namespace Updraft
