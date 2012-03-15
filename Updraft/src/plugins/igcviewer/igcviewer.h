@@ -28,6 +28,11 @@ class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
   void fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename);
 
+ private slots:
+  /// One of the opened files changed its coloring.
+  /// propagate this change to all of them.
+  void coloringChanged(int i);
+
  private:
   /// Remove the opened file from the lists and notify recalculate
   /// all scales.
@@ -38,6 +43,9 @@ class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
 
   /// Decrement use count for the given automatic color.
   void freeAutomaticColor(QColor c);
+
+  /// Currently selected coloring.
+  int currentColoring;
 
   QList<QPair<QColor, int> > automaticColors;
 

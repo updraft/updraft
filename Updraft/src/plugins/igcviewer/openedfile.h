@@ -45,13 +45,13 @@ class OpenedFile: public QObject {
   /// Return the absolute file name.
   QString fileName();
 
+  /// Set colors of the track according to the value selected in the viewer.
+  void coloringChanged();
+
  private slots:
   /// Slot that gets called when the tab associated with this file is closed.
   /// Deletes the opened file.
   void close();
-
-  /// Set colors of the track according to the value selected in the combo.
-  void updateColors(int row);
 
  private:
   /// Load the igc file to our own representation and close it.
@@ -65,6 +65,8 @@ class OpenedFile: public QObject {
   void setColors(Coloring* coloring);
 
   QFileInfo fileInfo;
+
+  QComboBox *colorsCombo;
 
   TabInterface *tab;
   MapLayerInterface* track;

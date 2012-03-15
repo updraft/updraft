@@ -77,7 +77,7 @@ bool OpenedFile::init(IgcViewer* viewer,
     return false;
   }
 
-  QComboBox *colorsCombo = new QComboBox();
+  colorsCombo = new QComboBox();
 
   gradient = Util::Gradient(Qt::blue, Qt::red, true);
 
@@ -114,17 +114,17 @@ bool OpenedFile::init(IgcViewer* viewer,
 
   tab->connectSignalClosed(this, SLOT(close()));
   connect(colorsCombo, SIGNAL(currentIndexChanged(int)),
-    this, SLOT(updateColors(int)));
+    viewer, SLOT(coloringChanged(int)));
 
   createTrack();
 
-  updateColors(colorsCombo->currentIndex());
+  coloringChanged();
 
   return true;
 }
 
 void OpenedFile::redraw() {
-  setColors(currentColoring);
+  setColors(colorings[viewer->currentColoring]);
 }
 
 void OpenedFile::close() {
@@ -138,8 +138,9 @@ void OpenedFile::close() {
   delete this;
 }
 
-void OpenedFile::updateColors(int row) {
-  setColors(colorings[row]);
+void OpenedFile::coloringChanged() {
+  colorsCombo->setCurrentIndex(viewer->currentColoring);
+  setColors(colorings[viewer->currentColoring]);
 }
 
 void OpenedFile::createTrack() {

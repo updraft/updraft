@@ -37,6 +37,8 @@ void IgcViewer::initialize() {
   automaticColors.append(QPair<QColor, int>(Qt::magenta, 0));
   automaticColors.append(QPair<QColor, int>(Qt::yellow, 0));
   automaticColors.append(QPair<QColor, int>(Qt::gray, 0));
+
+  currentColoring = 0;
 }
 
 void IgcViewer::deinitialize() {
@@ -102,6 +104,18 @@ void IgcViewer::fileClose(OpenedFile *f) {
   foreach(OpenedFile *other, opened) {
     other->updateScales(first);
     other->redraw();
+  }
+}
+
+void IgcViewer::coloringChanged(int i) {
+  if (i == currentColoring) {
+    return;
+  }
+
+  currentColoring = i;
+
+  foreach(OpenedFile *f, opened) {
+    f->coloringChanged();
   }
 }
 
