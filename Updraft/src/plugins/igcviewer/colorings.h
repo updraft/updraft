@@ -45,16 +45,14 @@ class LocalColoring : public DefaultColoring {
   QColor color(int i);
 };
 
-/// Coloring that cycles colors.
-class CyclingColoring : public Coloring {
+/// Coloring that returns a constant color.
+class ConstantColoring : public Coloring {
  public:
-  CyclingColoring(const IgcInfo *info, int count, QColor firstColor = Qt::red);
+  explicit ConstantColoring(QColor color);
   QColor color(int i);
 
  protected:
-  const IgcInfo *info;
-  qreal h, s, v, a;
-  qreal step;
+  QColor c;
 };
 
 }  // End namespace IgcViewer

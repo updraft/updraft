@@ -30,7 +30,13 @@ void IgcViewer::initialize() {
 
   mapLayerGroup = core->createMapLayerGroup(tr("IGC files"));
 
-  openedCounter = 0;
+  automaticColors.append(QPair<QColor, int>(Qt::red, 0));
+  automaticColors.append(QPair<QColor, int>(Qt::green, 0));
+  automaticColors.append(QPair<QColor, int>(Qt::blue, 0));
+  automaticColors.append(QPair<QColor, int>(Qt::cyan, 0));
+  automaticColors.append(QPair<QColor, int>(Qt::magenta, 0));
+  automaticColors.append(QPair<QColor, int>(Qt::yellow, 0));
+  automaticColors.append(QPair<QColor, int>(Qt::gray, 0));
 }
 
 void IgcViewer::deinitialize() {
@@ -44,12 +50,12 @@ void IgcViewer::deinitialize() {
 bool IgcViewer::fileOpen(const QString &filename, int roleId) {
   OpenedFile* f = new OpenedFile();
 
-  if (!f->init(this, filename, openedCounter)) {
+  QColor c = findAutomaticColor();
+  if (!f->init(this, filename, c)) {
     delete f;
+    freeAutomaticColor(c);
     return false;
   }
-
-  ++openedCounter;
 
   foreach(OpenedFile* other, opened) {
     f->updateScales(other);
@@ -65,6 +71,8 @@ bool IgcViewer::fileOpen(const QString &filename, int roleId) {
 
 void IgcViewer::fileClose(OpenedFile *f) {
   opened.removeAll(f);
+
+  freeAutomaticColor(f->getAutomaticColor());
 
   foreach(OpenedFile *other, opened) {
     other->resetScales();
@@ -85,6 +93,28 @@ void IgcViewer::fileClose(OpenedFile *f) {
   for (int i = 1; i < opened.count(); ++i) {
     opened[i]->updateScales(first);
     opened[i]->redraw();
+  }
+}
+
+QColor IgcViewer::findAutomaticColor() {
+  int min = 0;
+  for (int i = 1; i < automaticColors.count(); ++i) {
+    if (automaticColors[i].second < automaticColors[min].second) {
+      min = i;
+    }
+  }
+  ++automaticColors[min].second;
+
+  return automaticColors[min].first;
+}
+
+void IgcViewer::freeAutomaticColor(QColor c) {
+  for (int i = 1; i < automaticColors.count(); ++i) {
+    if (automaticColors[i].first == c) {
+      --automaticColors[i].second;
+
+      return;
+    }
   }
 }
 

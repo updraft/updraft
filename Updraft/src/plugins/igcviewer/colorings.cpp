@@ -36,20 +36,11 @@ QColor LocalColoring::color(int i) {
   return gradient->get(scaled);
 }
 
-CyclingColoring::CyclingColoring(const IgcInfo* info,
-  int count, QColor firstColor)
-  : info(info) {
-  step = 1 / static_cast<qreal>(count);
+ConstantColoring::ConstantColoring(QColor color)
+  : c(color) {}
 
-  firstColor.getHsvF(&h, &s, &v, &a);
-}
-
-QColor CyclingColoring::color(int i) {
-  qreal newh = h + step * info->value(i);
-
-  newh = newh - qFloor(newh);
-
-  return QColor::fromHsvF(newh, s, v, a);
+QColor ConstantColoring::color(int i) {
+  return c;
 }
 
 }  // End namespace IgcViewer

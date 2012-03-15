@@ -67,10 +67,11 @@ bool OpenedFile::loadIgc(const QString& filename) {
   return true;
 }
 
-bool OpenedFile::init(IgcViewer* viewer, const QString& filename, int id) {
+bool OpenedFile::init(IgcViewer* viewer,
+  const QString& filename, QColor color) {
   this->viewer = viewer;
-
   fileInfo = QFileInfo(filename);
+  automaticColor = color;
 
   if (!loadIgc(filename)) {
     return false;
@@ -87,7 +88,6 @@ bool OpenedFile::init(IgcViewer* viewer, const QString& filename, int id) {
       variable = igcInfo[igcInfo.count() - 1]; \
     } while (0)
 
-  ADD_IGCINFO(trackIdInfo, new TrackIdIgcInfo(id));
   ADD_IGCINFO(altitudeInfo, new AltitudeIgcInfo());
   ADD_IGCINFO(verticalSpeedInfo, new VerticalSpeedIgcInfo());
   ADD_IGCINFO(groundSpeedInfo, new GroundSpeedIgcInfo());
@@ -100,7 +100,7 @@ bool OpenedFile::init(IgcViewer* viewer, const QString& filename, int id) {
     } while (0)
 
   ADD_COLORING(tr("Automatic"),
-    new CyclingColoring(trackIdInfo, 6, Qt::red));
+    new ConstantColoring(color));
   ADD_COLORING(tr("Vertical Speed"),
     new SymmetricColoring(verticalSpeedInfo, &gradient));
   ADD_COLORING(tr("Ground Speed"),
