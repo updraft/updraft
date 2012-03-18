@@ -19,21 +19,21 @@ FUNCTION(GATHER_SOURCES prefix)
     SET(skipped_dir_abs ${CMAKE_CURRENT_SOURCE_DIR}/${skipped_dir})
 
     FILE(GLOB_RECURSE skipped_sources ${skipped_dir_abs}/*.cpp)
-    LIST(REMOVE_ITEM sources "${skipped_sources}")
+    LIST(REMOVE_ITEM sources ${skipped_sources} "")
 
     FILE(GLOB_RECURSE skipped_headers ${skipped_dir_abs}/*.h)
-    LIST(REMOVE_ITEM headers "${skipped_headers}")
+    LIST(REMOVE_ITEM headers ${skipped_headers} "")
 
     FILE(GLOB_RECURSE skipped_forms ${skipped_dir_abs}/*.ui)
-    LIST(REMOVE_ITEM forms "${skipped_forms}")
+    LIST(REMOVE_ITEM forms ${skipped_forms} "")
 
     FILE(GLOB_RECURSE skipped_resources ${skipped_dir_abs}/*.qrc)
-    LIST(REMOVE_ITEM resources "${skipped_resources}")
+    LIST(REMOVE_ITEM resources ${skipped_resources} "")
   ENDFOREACH()
 
-  QT4_WRAP_CPP_FILTERED(headers_wrapped "${headers}")
-  QT4_WRAP_UI(forms_wrapped "${forms}")
-  QT4_ADD_RESOURCES(resources_wrapped "${resources}")
+  QT4_WRAP_CPP_FILTERED(headers_wrapped ${headers})
+  QT4_WRAP_UI(forms_wrapped ${forms})
+  QT4_ADD_RESOURCES(resources_wrapped ${resources})
 
   SET(${prefix}_sources ${sources} PARENT_SCOPE)
   SET(${prefix}_headers ${headers} PARENT_SCOPE)
