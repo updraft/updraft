@@ -33,17 +33,22 @@ bool IgcFile::load(QIODevice *dev, QTextCodec* codec) {
     activeCodec = QTextCodec::codecForName("Latin1");
   }
 
-  while (!isEndOfFile()) {
-    buffer = file->readLine().trimmed();
+  if (!loadOneRecord()) {
+    clear();
+    return false;
+  }
 
-    if (buffer.size() == 0 && !file->atEnd()) {
-      qDebug() << "Error reading file (" << file->errorString() << ")";
+  if (previousRecord != 'A') {
+    qDebug() << "IGC file must start with A record.";
+    clear();
+    return false;
+  }
+
+  while (!file->atEnd()) {
+    if (!loadOneRecord()) {
+      clear();
       return false;
     }
-
-    parseOneRecord();
-
-    previousRecord = buffer[0];
   }
 
   qSort(eventList.begin(), eventList.end(), eventLessThan);
@@ -71,142 +76,183 @@ void IgcFile::clear() {
   eventList.clear();
 }
 
-/// Parse a single record stored in the buffer.
-void IgcFile::parseOneRecord() {
+bool IgcFile::loadOneRecord() {
+  buffer = file->readLine().trimmed();
+
+  if (buffer.size() == 0 && !file->atEnd()) {
+    qDebug() << "Error reading file (" << file->errorString() << ")";
+    return false;
+  }
+
+  bool ret = parseOneRecord();
+
+  previousRecord = buffer[0];
+
+  return ret;
+}
+
+bool IgcFile::parseOneRecord() {
   switch (buffer[0]) {
-    case 'A':
-      /* Do nothing */
-      break;
     case 'B':
-      processRecordB();
-      break;
-    case 'C':
-      /* Do nothing */
-      break;
-    case 'D':
-      /* Do nothing */
-      break;
-    case 'E':
-      /* Do nothing */
-      break;
-    case 'F':
-      /* Do nothing */
-      break;
-    case 'G':
-      /* Do nothing */
-      break;
+      return processRecordB();
     case 'H':
-      processRecordH();
-      break;
-    case 'I':
-      /* Do nothing */
-      break;
-    case 'J':
-      /* Do nothing */
-      break;
-    case 'K':
-      /* Do nothing */
-      break;
+      return processRecordH();
     case 'L':
-      processRecordL();
-      break;
+      return processRecordL();
+    default:
+      /* We ignore unknown record types. */
+      return true;
   }
 }
 
-/// Fid out if the current IGC file has ended.
-/// This happens either if the file ends, or after the last G record.
-bool IgcFile::isEndOfFile() {
-  if (file->atEnd()) {
-    return true;
+QTime IgcFile::parseTimestamp(QByteArray bytes, bool* ok) {
+  if (bytes.size() != 6) {
+    *ok = false;
+    return QTime();
   }
 
-  if (previousRecord != 'G') {
-    return false;
+  int h = bytes.mid(0, 2).toInt(ok);
+  if (!*ok) {
+    return QTime();
   }
 
-  buffer = file->peek(1);
-  if (buffer.size() != 1) {
-    // There was a problem with peeking.
-    // Now we're saying everything is OK, but the problem should show up later.
-    return false;
+  int m = bytes.mid(2, 2).toInt(ok);
+  if (!*ok) {
+    return QTime();
   }
 
-  if (buffer[0] != 'G') {
-    return true;
+  int s = bytes.mid(4, 2).toInt(ok);
+  if (!*ok) {
+    return QTime();
   }
 
-  return false;
-}
-
-/// Parse time from IGC encoding.
-/// HHMMSS
-QTime IgcFile::parseTimestamp(QByteArray bytes) {
-  Q_ASSERT(bytes.size() == 6);
-  int h = bytes.mid(0, 2).toInt();
-  int m = bytes.mid(2, 2).toInt();
-  int s = bytes.mid(4, 2).toInt();
   return QTime(h, m, s);
 }
 
-/// Parse latitude or longitude from IGC encoding.
-/// \return Degrees. Negative values go south and west.
-/// DDMMmmm[NS] or DDDMMmmm[EW]
-qreal IgcFile::parseLatLon(QByteArray bytes) {
-  Q_ASSERT(bytes.size() == 8 || bytes.size() == 9);
+qreal IgcFile::parseLatLon(QByteArray bytes, bool* ok) {
+  if (bytes.size() != 8 && bytes.size() != 9) {
+    *ok = false;
+    return 0;
+  }
 
   int degreesSize = (bytes.size() == 8) ? 2 : 3;
 
-  int d = bytes.mid(0, degreesSize).toInt();
-  int m = bytes.mid(degreesSize, 2).toInt();
-  int mDecimal = bytes.mid(degreesSize + 2, 3).toInt();
+  int d = bytes.mid(0, degreesSize).toInt(ok);
+  if (!*ok) {
+    return 0;
+  }
+
+  int m = bytes.mid(degreesSize, 2).toInt(ok);
+  if (!*ok) {
+    return 0;
+  }
+
+  int mDecimal = bytes.mid(degreesSize + 2, 3).toInt(ok);
+  if (!*ok) {
+    return 0;
+  }
 
   qreal ret = d + m / 60.0 + mDecimal / 60000.0;
 
   char lastChar = bytes[bytes.size() - 1];
   if (lastChar == 'S' || lastChar == 'W') {
     return -ret;
-  } else {
+  } else if (lastChar == 'N' || lastChar == 'E') {
     return ret;
+  } else {
+    *ok = false;
+    return 0;
   }
 }
 
-/// Parse a decimal number in igc format.
-qreal IgcFile::parseDecimal(QByteArray bytes) {
-  int whole = bytes.left(bytes.size() - 2).toInt();
-  int decimal = bytes.right(2).toInt();
+qreal IgcFile::parseDecimal(QByteArray bytes, bool* ok) {
+  if (bytes.size() < 3) {
+    *ok = false;
+    return 0;
+  }
+
+  int whole = bytes.left(bytes.size() - 2).toInt(ok);
+  if (!*ok) {
+    return 0;
+  }
+
+  int decimal = bytes.right(2).toInt(ok);
+  if (!*ok) {
+    return 0;
+  }
 
   return whole + decimal / 100.0;
 }
 
-/// Parse date specification.
-/// \bug Date field in igc files has only two digits for year.
-///   Now we're just adding 2000 to it, but maybe there is some
-///   smarter way around?
-QDate IgcFile::parseDate(QByteArray bytes) {
-  return QDate(
-    bytes.mid(4, 2).toInt() + 2000,
-    bytes.mid(2, 2).toInt(),
-    bytes.mid(0, 2).toInt());
+QDate IgcFile::parseDate(QByteArray bytes, bool* ok) {
+  if (bytes.size() != 6) {
+    *ok = false;
+    return QDate();
+  }
+
+  int y = bytes.mid(4, 2).toInt(ok) + 2000;
+  if (!*ok) {
+    return QDate();
+  }
+
+  int m = bytes.mid(2, 2).toInt(ok);
+  if (!*ok) {
+    return QDate();
+  }
+
+  /// \bug Date field in igc files has only two digits for year.
+  ///   Now we're just adding 2000 to it, but maybe there is some
+  ///   smarter way around?
+  int d = bytes.mid(0, 2).toInt(ok);
+  if (!*ok) {
+    return QDate();
+  }
+
+  return QDate(y, m, d);
 }
 
-/// Process a single record of type B (fix data) stored in buffer.
-void IgcFile::processRecordB() {
+bool IgcFile::processRecordB() {
+  bool ok = true;
+
   Fix* ret = new Fix;
+  eventList.append(ret);
 
   ret->type = Event::FIX;
 
-  ret->timestamp = parseTimestamp(buffer.mid(1, 6));
-  ret->gpsLoc.lat = parseLatLon(buffer.mid(7, 8));
-  ret->gpsLoc.lon = parseLatLon(buffer.mid(15, 9));
-  ret->valid = (buffer[24] == 'A');
-  ret->pressureAlt = buffer.mid(25, 5).toInt();
-  ret->gpsLoc.alt = buffer.mid(30, 5).toInt();
+  ret->timestamp = parseTimestamp(buffer.mid(1, 6), &ok);
+  if (!ok) {
+    return false;
+  }
 
-  eventList.append(ret);
+  ret->gpsLoc.lat = parseLatLon(buffer.mid(7, 8), &ok);
+  if (!ok) {
+    return false;
+  }
+
+  ret->gpsLoc.lon = parseLatLon(buffer.mid(15, 9), &ok);
+  if (!ok) {
+    return false;
+  }
+
+  if (buffer[24] != 'A' && buffer[24] != 'V') {
+    return false;
+  }
+  ret->valid = (buffer[24] == 'A');
+
+  ret->pressureAlt = buffer.mid(25, 5).toInt(&ok);
+  if (!ok) {
+    return false;
+  }
+
+  ret->gpsLoc.alt = buffer.mid(30, 5).toInt(&ok);
+  if (!ok) {
+    return false;
+  }
+
+  return true;
 }
 
-/// Process a single record of type H (headers) stored in buffer.
-void IgcFile::processRecordH() {
+bool IgcFile::processRecordH() {
   // char dataSource = buffer[1];
   QByteArray subtype = buffer.mid(2, 3);
   QByteArray data = buffer.mid(5);
@@ -219,16 +265,25 @@ void IgcFile::processRecordH() {
   }
 
   if (subtype == "ATS") {
-    altimeterSetting_ = parseDecimal(value);
+    bool ok;
+    altimeterSetting_ = parseDecimal(value, &ok);
+    if (!ok) {
+      return false;
+    }
   } else if (subtype == "CCL") {
     competitionClass_ = activeCodec->toUnicode(value);
   } else if (subtype == "CID") {
     competitionId_ = activeCodec->toUnicode(value);
   } else if (subtype == "DTE") {
-    date_ = parseDate(data);
+    bool ok;
+    date_ = parseDate(data, &ok);
+    if (!ok) {
+      return false;
+    }
   } else if (subtype == "DTM") {
     if (data.left(3) != "100") {
       qDebug() << "We only support WGS84!";
+      return false;
     }
   } else if (subtype == "FTY") {
     QList<QByteArray> list = value.split(',');
@@ -243,18 +298,21 @@ void IgcFile::processRecordH() {
   } else if (subtype == "PLT") {
     pilot_ = activeCodec->toUnicode(value);
   }
+
+  return true;
 }
 
-/// Process a single record of type L (comments) stored in buffer.
-void IgcFile::processRecordL() {
+bool IgcFile::processRecordL() {
   if (buffer.mid(1, 4) == "CU::") {
     // This is a special seeyou comment.
     // Causes the rest of line to be read as a new record.
     // Used for saving values from user interface (security record
     // disregard L records)
     buffer = buffer.mid(5);
-    parseOneRecord();
+    return parseOneRecord();
   }
+
+  return true;
 }
 
 /// Comparator function for sorting events in the list according to timestamp.
