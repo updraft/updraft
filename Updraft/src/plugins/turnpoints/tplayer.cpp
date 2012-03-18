@@ -7,6 +7,7 @@
 #include <osgDB/ReadFile>
 #include <osgEarthUtil/ObjectPlacer>
 #include "tplayer.h"
+#include "../airfields/aflayer.h"
 
 namespace Updraft {
 
@@ -104,6 +105,8 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
 
   TTPList points = file->getTurnPoints();
 
+  AFLayer* airfieldLayer = NULL;
+
   for (TTPList::const_iterator itPoint = points.begin();
     itPoint != points.end(); ++itPoint) {
     osg::Matrixd matrix;
@@ -122,6 +125,18 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
 
     // Add new Autotransform node.
     group->addChild(createAutoTransform(matrix, geode));
+
+    // If is the airport (type 2,3,4,5) - add the airport
+    if (itPoint->type >= 2 || itPoint->type <= 5) {
+      if (!airfieldLayer)
+        airfieldLayer = new AFLayer();
+      // Add the airport
+      airfieldLayer->AddAirport(*itPoint);
+    }
+  }
+  if (airfieldLayer) {
+    delete airfieldLayer;
+    airfieldLayer = NULL;
   }
 }
 
