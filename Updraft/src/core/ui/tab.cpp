@@ -14,11 +14,17 @@ Tab::Tab(QWidget* content, QString title, QTabWidget* parent)
   layout->addWidget(widget);
   widget->setParent(this);
 
-  tabWidget->addTab(this, title);
+  int index = tabWidget->addTab(this, title);
+  tabWidget->setCurrentIndex(index);
 }
 
 Tab::~Tab() {
   emit closed();
+}
+
+void Tab::select() {
+  int id = tabWidget->indexOf(this);
+  tabWidget->setCurrentIndex(id);
 }
 
 /// Close this tab.

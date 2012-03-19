@@ -68,6 +68,9 @@ class oaEngine {
   osg::Geode* OAGeode;
   osgEarth::Util::ElevationManager* elevationMan;
 
+  /// Settings
+  SettingInterface* testSetting;
+
   /// Line properties
   /// width, colour
   float width;

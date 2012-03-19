@@ -45,9 +45,31 @@ TPFileCupAdapter::TPFileCupAdapter(const Cup::CupFile *cup)
 
 void TPFileCupAdapter::convertCupTPEntry(TurnPoint *tp,
   const Cup::TPEntry &tpEntry) {
-  tp->code = tpEntry.code;
-  tp->name = tpEntry.name;
-  tp->location = tpEntry.location;
+  tp->code        = tpEntry.code;
+  tp->name        = tpEntry.name;
+  tp->location    = tpEntry.location;
+  tp->type        = (WaypointStyle)tpEntry.style.toInt();
+  tp->rwyHeading  = tpEntry.rwyDirection.toInt();
+  tp->rwyLengthM  = parseLength(tpEntry.rwLength);
+  tp->airportFreq = tpEntry.frequency.toFloat();
 }
 
+float TPFileCupAdapter::parseLength(const QString& text) {
+  // Parse the text to number
+  int s = text.indexOf(QRegExp("[0-9]"));
+  int e = text.lastIndexOf(QRegExp("[0-9]"));
+  if (s >= e)
+    return -1;
+  float length = text.mid(s, e - s + 1).toFloat();
+
+  // Get the units
+  if        (text.contains("nm", Qt::CaseInsensitive)) {
+    length = Util::Units::nauticlaMilesToMeters(length);
+  } else if (text.contains("ml", Qt::CaseInsensitive)) {
+    length = Util::Units::statuteMilesToMeters(length);
+  } else if (text.contains("ft", Qt::CaseInsensitive)) {
+    length = Util::Units::feetToMeters(length);
+  }
+  return length;
+}
 }  // End namespace Updraft

@@ -8,8 +8,6 @@
 
 #include "igc/igc.h"
 
-#include "igcinfo.h"
-
 namespace Updraft {
 namespace IgcViewer {
 
@@ -20,8 +18,12 @@ OpenedFile::~OpenedFile() {
     delete tmp;
   }
 
-  foreach(IgcInfo* info, igcInfoList) {
+  foreach(IgcInfo* info, igcInfo) {
     delete info;
+  }
+
+  foreach(Coloring* coloring, colorings) {
+    delete coloring;
   }
 
   viewer->mapLayerGroup->removeMapLayer(track);
@@ -65,50 +67,64 @@ bool OpenedFile::loadIgc(const QString& filename) {
   return true;
 }
 
-bool OpenedFile::init(IgcViewer* viewer, const QString& filename) {
+bool OpenedFile::init(IgcViewer* viewer,
+  const QString& filename, QColor color) {
   this->viewer = viewer;
-
   fileInfo = QFileInfo(filename);
+  automaticColor = color;
 
   if (!loadIgc(filename)) {
     return false;
   }
 
-  QComboBox *colorsCombo = new QComboBox();
+  colorsCombo = new QComboBox();
 
-  #define ADD_IGCINFO(name, pointer) \
+  gradient = Util::Gradient(Qt::blue, Qt::red, true);
+
+  #define ADD_IGCINFO(variable, pointer) \
     do { \
-      igcInfoList.append(pointer); \
-      igcInfoList[igcInfoList.count() - 1]->init(&fixList); \
+      igcInfo.append(pointer); \
+      igcInfo[igcInfo.count() - 1]->init(&fixList); \
+      variable = igcInfo[igcInfo.count() - 1]; \
+    } while (0)
+
+  ADD_IGCINFO(altitudeInfo, new AltitudeIgcInfo());
+  ADD_IGCINFO(verticalSpeedInfo, new VerticalSpeedIgcInfo());
+  ADD_IGCINFO(groundSpeedInfo, new GroundSpeedIgcInfo());
+  ADD_IGCINFO(timeInfo, new TimeIgcInfo());
+
+  #define ADD_COLORING(name, pointer) \
+    do { \
+      colorings.append(pointer); \
       colorsCombo->addItem(name); \
     } while (0)
 
-  ADD_IGCINFO(tr("Vertical Speed"), new VerticalSpeedIgcInfo());
-  verticalSpeedInfo = igcInfoList[igcInfoList.count() - 1];
-  ADD_IGCINFO(tr("Ground Speed"), new GroundSpeedIgcInfo());
-  ADD_IGCINFO(tr("Altitude"), new AltitudeIgcInfo());
-  altitudeInfo = igcInfoList[igcInfoList.count() - 1];
-  ADD_IGCINFO(tr("Red"), new ConstantIgcInfo(Qt::red));
-  ADD_IGCINFO(tr("Green"), new ConstantIgcInfo(Qt::green));
-  ADD_IGCINFO(tr("Blue"), new ConstantIgcInfo(Qt::blue));
-  ADD_IGCINFO(tr("Gray"), new ConstantIgcInfo(Qt::gray));
-  ADD_IGCINFO(tr("Yellow"), new ConstantIgcInfo(Qt::yellow));
+  ADD_COLORING(tr("Automatic"),
+    new ConstantColoring(color));
+  ADD_COLORING(tr("Vertical Speed"),
+    new SymmetricColoring(verticalSpeedInfo, &gradient));
+  ADD_COLORING(tr("Ground Speed"),
+    new DefaultColoring(groundSpeedInfo, &gradient));
+  ADD_COLORING(tr("Altitude"),
+    new DefaultColoring(altitudeInfo, &gradient));
+  ADD_COLORING(tr("Time"),
+    new LocalColoring(timeInfo, &gradient));
 
   tab = viewer->core->createTab(colorsCombo, fileInfo.fileName());
 
   tab->connectSignalClosed(this, SLOT(close()));
   connect(colorsCombo, SIGNAL(currentIndexChanged(int)),
-    this, SLOT(updateColors(int)));
+    viewer, SLOT(coloringChanged(int)));
 
   createTrack();
 
-  updateColors(colorsCombo->currentIndex());
+  coloringChanged();
 
   return true;
 }
 
 void OpenedFile::redraw() {
-  setColors(currentColoring);
+  setColors(colorings[viewer->currentColoring]);
 }
 
 void OpenedFile::close() {
@@ -122,8 +138,9 @@ void OpenedFile::close() {
   delete this;
 }
 
-void OpenedFile::updateColors(int row) {
-  setColors(igcInfoList[row]);
+void OpenedFile::coloringChanged() {
+  colorsCombo->setCurrentIndex(viewer->currentColoring);
+  setColors(colorings[viewer->currentColoring]);
 }
 
 void OpenedFile::createTrack() {
@@ -159,12 +176,10 @@ void OpenedFile::createTrack() {
   track->connectDisplayedToVisibility();
 }
 
-void OpenedFile::setColors(IgcInfo *coloring) {
+void OpenedFile::setColors(Coloring *coloring) {
   currentColoring = coloring;
 
   osg::Vec4Array* colors = new osg::Vec4Array();
-
-  coloring->init(&fixList);
 
   for (int i = 0; i < fixList.count(); ++i) {
     QColor color = coloring->color(i);
@@ -173,6 +188,26 @@ void OpenedFile::setColors(IgcInfo *coloring) {
   }
 
   geom->setColorArray(colors);
+}
+
+void OpenedFile::updateScales(const OpenedFile *other) {
+  for (int i = 0; i < igcInfo.count(); ++i) {
+    igcInfo[i]->addGlobalScale(other->igcInfo[i]);
+  }
+}
+
+void OpenedFile::selectTab() {
+  tab->select();
+}
+
+void OpenedFile::resetScales() {
+  for (int i = 0; i < igcInfo.count(); ++i) {
+    igcInfo[i]->resetGlobalScale();
+  }
+}
+
+QString OpenedFile::fileName() {
+  return fileInfo.absoluteFilePath();
 }
 
 }  // End namespace IgcViewer

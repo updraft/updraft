@@ -1,3 +1,4 @@
+AXXXYYY           Required A record
 LXXX              A hand crafted IGC file to test updraft's igc loading library.
 LXXX              It's not strictly valid IGC file, but should parse without
 LXXX              any difficulties.

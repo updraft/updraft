@@ -5,7 +5,6 @@
 
 namespace Updraft {
 namespace Util {
-
 /// Class for units conversion.
 class Units {
  public:
@@ -14,6 +13,12 @@ class Units {
 
   /// Converts feet to meters.
   static qreal feetToMeters(qreal feet) { return 0.3048 * feet; }
+
+  /// Converts nautical miles to meters
+  static qreal nauticlaMilesToMeters(qreal nm) { return 1852 * nm; }
+
+  /// Converts Statute miles to meters
+  static qreal statuteMilesToMeters(qreal ml) { return 1609.344 * ml; }
 };
 
 }  // End namespace Util

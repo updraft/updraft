@@ -8,13 +8,20 @@
 namespace Updraft {
 namespace Util {
 
-static const qreal ACHROMATIC_THRESHOLD = 0.005;
-
 /// Color gradient in HSV space.
 class UTIL_EXPORT Gradient {
  public:
   /// Initialize the gradient with end colors.
-  Gradient(const QColor &c1, const QColor &c2);
+  /// \param c1 Color to start at.
+  /// \param c2 Color to stop at.
+  /// \param reverseHue If this is true, then hue is interpolated in the reverse
+  ///   direction -- that means it takes the longer path.
+  ///   Example: Gradient(Qt::red, Qt::green, false) only goes through yellow,
+  ///   while Gradient(Qt::red, Qt::green, true) becomes violet, blue and cyan.
+  Gradient(const QColor &c1, const QColor &c2, bool reverseHue = false);
+
+  /// Gradients made with this constructor are completely black.
+  Gradient();
 
   /// Return the color at given position.
   /// \param t position in the gradient, t >= 0, t <= 1

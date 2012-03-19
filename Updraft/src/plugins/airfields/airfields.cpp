@@ -12,6 +12,24 @@ unsigned Airfields::getPriority() {
 }
 
 void Airfields::initialize() {
+/*  // File type registration
+  OAirspaceFileReg.category = CATEGORY_PERSISTENT;
+  OAirspaceFileReg.extension = ".cup";
+  OAirspaceFileReg.typeDescription = tr("AirFields file");
+  OAirspaceFileReg.roleDescription = tr("Import Open Airspace");
+  OAirspaceFileReg.importDirectory = "airspaces";
+  OAirspaceFileReg.roleId = IMPORT_OPENAIRSPACE_FILE;
+  OAirspaceFileReg.plugin = this;
+  core->registerFiletype(OAirspaceFileReg);
+
+  // Create map layers items in the left pane.
+  // QObject* airspacesMenu = core // ->createTreeItem("Airspaces");
+  engine = new oaEngine(core->createMapLayerGroup("Airspaces"));
+  // MapLayerInterface* layer1;
+  // LoadFile("c:/Updraft/CZ2011CTR.txt", 0);
+  // LoadFile("c:/Updraft/CZ2011TMA.txt", 0);
+  loadImportedFiles();
+  */
   qDebug("airfields loaded");
 }
 

@@ -1,6 +1,6 @@
 #include "igcviewer.h"
 
-#include <assert.h>
+#include <QDebug>
 
 #include "openedfile.h"
 
@@ -29,6 +29,16 @@ void IgcViewer::initialize() {
   core->registerFiletype(registration);
 
   mapLayerGroup = core->createMapLayerGroup(tr("IGC files"));
+
+  automaticColors.append(QPair<QColor, int>(Qt::red, 0));
+  automaticColors.append(QPair<QColor, int>(Qt::green, 0));
+  automaticColors.append(QPair<QColor, int>(Qt::blue, 0));
+  automaticColors.append(QPair<QColor, int>(Qt::cyan, 0));
+  automaticColors.append(QPair<QColor, int>(Qt::magenta, 0));
+  automaticColors.append(QPair<QColor, int>(Qt::yellow, 0));
+  automaticColors.append(QPair<QColor, int>(Qt::gray, 0));
+
+  currentColoring = 0;
 }
 
 void IgcViewer::deinitialize() {
@@ -40,76 +50,94 @@ void IgcViewer::deinitialize() {
 }
 
 bool IgcViewer::fileOpen(const QString &filename, int roleId) {
+  QFileInfo info(filename);
+  QString absFilename = info.absoluteFilePath();
+
+  if (opened.contains(absFilename)) {
+    qDebug() << "already opened, ignoring";
+    opened[absFilename]->selectTab();
+    return true;
+  }
+
   OpenedFile* f = new OpenedFile();
 
-  if (!f->init(this, filename)) {
+  QColor c = findAutomaticColor();
+  if (!f->init(this, filename, c)) {
     delete f;
+    freeAutomaticColor(c);
     return false;
   }
 
   foreach(OpenedFile* other, opened) {
-    Q_ASSERT(other->igcInfoList.count() == f->igcInfoList.count());
+    f->updateScales(other);
+    other->updateScales(f);
 
-    for (int i = 0; i < f->igcInfoList.count(); ++i) {
-      IgcInfo *info1 = f->igcInfoList[i];
-      IgcInfo *info2 = other->igcInfoList[i];
-
-      info1->addGlobalScale(info2->globalMin(), info2->globalMax());
-    }
+    other->redraw();
   }
 
-  foreach(OpenedFile* other, opened) {
-    Q_ASSERT(other->igcInfoList.count() == f->igcInfoList.count());
-
-    for (int i = 0; i < f->igcInfoList.count(); ++i) {
-      IgcInfo *info1 = f->igcInfoList[i];
-      IgcInfo *info2 = other->igcInfoList[i];
-
-      info2->addGlobalScale(info1->globalMin(), info1->globalMax());
-    }
-  }
-
-  opened.append(f);
-
-  redrawAll();
+  opened.insert(filename, f);
 
   return true;
 }
 
 void IgcViewer::fileClose(OpenedFile *f) {
-  opened.removeAll(f);
+  opened.remove(f->fileName());
+
+  freeAutomaticColor(f->getAutomaticColor());
 
   foreach(OpenedFile *other, opened) {
-    for (int i = 0; i < f->igcInfoList.count(); ++i) {
-      other->igcInfoList[i]->resetGlobalScale();
-    }
+    other->resetScales();
   }
 
-  if (opened.count() <= 1) {
-    // There is no point in global scale if there is only one file.
+  if (opened.count() == 0) {
     return;
   }
 
-  for (int i = 0; i < opened[0]->igcInfoList.count(); ++i) {
-    qreal min = opened[0]->igcInfoList[i]->min();
-    qreal max = opened[0]->igcInfoList[i]->max();
+  OpenedFile *first = *(opened.begin());
 
-    foreach(OpenedFile* other, opened) {
-      min = qMin(other->igcInfoList[i]->min(), min);
-      max = qMax(other->igcInfoList[i]->max(), max);
-    }
-
-    foreach(OpenedFile* other, opened) {
-      other->igcInfoList[i]->addGlobalScale(min, max);
-    }
+  foreach(OpenedFile *other, opened) {
+    first->updateScales(other);
   }
 
-  redrawAll();
+  first->redraw();
+
+  foreach(OpenedFile *other, opened) {
+    other->updateScales(first);
+    other->redraw();
+  }
 }
 
-void IgcViewer::redrawAll() {
+void IgcViewer::coloringChanged(int i) {
+  if (i == currentColoring) {
+    return;
+  }
+
+  currentColoring = i;
+
   foreach(OpenedFile *f, opened) {
-    f->redraw();
+    f->coloringChanged();
+  }
+}
+
+QColor IgcViewer::findAutomaticColor() {
+  int min = 0;
+  for (int i = 1; i < automaticColors.count(); ++i) {
+    if (automaticColors[i].second < automaticColors[min].second) {
+      min = i;
+    }
+  }
+  ++automaticColors[min].second;
+
+  return automaticColors[min].first;
+}
+
+void IgcViewer::freeAutomaticColor(QColor c) {
+  for (int i = 1; i < automaticColors.count(); ++i) {
+    if (automaticColors[i].first == c) {
+      --automaticColors[i].second;
+
+      return;
+    }
   }
 }
 

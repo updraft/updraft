@@ -1,10 +1,8 @@
 #ifndef UPDRAFT_SRC_PLUGINS_IGCVIEWER_IGCINFO_H_
 #define UPDRAFT_SRC_PLUGINS_IGCVIEWER_IGCINFO_H_
 
-#include <QColor>
 #include <QTime>
 #include <QList>
-#include <QMetaType>
 
 #include "util/util.h"
 
@@ -31,7 +29,7 @@ struct TrackFix {
   qreal terrainHeight;
 };
 
-/// Base for track computing values and colors from igc recording.
+/// Base for track computing values and scales from igc recording.
 /// For multiple opened tracks the colorings can scale together,
 /// this is called global scale in the code.
 class IgcInfo {
@@ -42,123 +40,102 @@ class IgcInfo {
   /// \param fixList List of fixes, usable for scaling, smoothing, ...
   virtual void init(const QList<TrackFix> *fixList);
 
-  /// Return the color for vertex.
-  /// \param i Index of the fix.
-  virtual QColor color(int i);
-
   //// Get the raw value of item number i.
-  virtual qreal value(int i) = 0;
+  virtual qreal value(int i) const = 0;
 
   /// Forget any values previously associated with the global scale.
   virtual void resetGlobalScale();
 
-  /// Add a new minimum and maximum to the global scale;
-  virtual void addGlobalScale(qreal minimum, qreal maximum);
+  /// Propagate the global scales from the other igc info.
+  virtual void addGlobalScale(const IgcInfo* other);
 
   /// Return the minimal value of this track.
-  qreal min() { return min_; }
+  qreal min() const { return min_; }
 
   /// Return the maximal value of this track.
-  qreal max() { return max_; }
+  qreal max() const { return max_; }
+
+  /// Return the outlier-free minimal value of this track.
+  /// \note This is generally inside the (min, max) interval.
+  qreal robustMin() const { return robustMin_; }
+
+  /// Return the outlier-free maximal value of this track.
+  /// \note This is generally inside the (min, max) interval.
+  qreal robustMax() const { return robustMax_; }
 
   /// Return the minimal value of all tracks.
-  qreal globalMin() { return globalMin_; }
+  qreal globalMin() const { return globalMin_; }
 
   /// Return the maximal value of all tracks.
-  qreal globalMax() { return globalMax_; }
+  qreal globalMax() const { return globalMax_; }
+
+  /// Return the outlier-free minimal value of all tracks.
+  /// \note This is generally inside the (globalMin, globalMax) interval.
+  qreal globalRobustMin() const { return globalRobustMin_; }
+
+  /// Return the outlier-free maximal value of all tracks.
+  /// \note This is generally inside the (globalMin, globalMax) interval.
+  qreal globalRobustMax() const { return globalRobustMax_; }
 
  protected:
-  /// Convert scaled value to color.
-  /// \param scaled value from 0 to 1.
-  virtual QColor colorFromScaled(qreal scaled) = 0;
-
   const QList<TrackFix> *fixList;
   qreal min_, max_;
+  qreal robustMin_, robustMax_;
   qreal globalMin_, globalMax_;
+  qreal globalRobustMin_, globalRobustMax_;
 };
 
-/// Color the track with constant color.
-class ConstantIgcInfo : public IgcInfo {
- public:
-  explicit ConstantIgcInfo(QColor val) : val(val) {}
-
-  /// Do nothing.
-  void init(const QList<TrackFix> *fixList) {}
-
-  /// Return the constant color
-  QColor color(int i) { return val; }
-
-  /// Do nothing.
-  virtual qreal value(int i) { return 0; }
-
- protected:
-  /// Do nothing.
-  virtual QColor colorFromScaled(qreal scaled) { return QColor(); }
-
-  QColor val;
-};
-
-/// Color the track according to altitude.
+/// Returns altitude.
 class AltitudeIgcInfo : public IgcInfo {
  public:
-  AltitudeIgcInfo();
-
-  //// Find the value of item number i, without scaling.
-  virtual qreal value(int i);
-
- protected:
-  /// Convert scaled value to color.
-  virtual QColor colorFromScaled(qreal scaled);
-
-  Util::Gradient g;
+  qreal value(int i) const;
 };
 
-/// Color the track according to GPS speed.
-class GroundSpeedIgcInfo : public IgcInfo {
+/// Abstract helper for simplifying info classes with speeds.
+class SpeedIgcInfo : public IgcInfo {
  public:
-  GroundSpeedIgcInfo();
+  qreal value(int i) const;
 
-  //// Find the value of item number i, without scaling.
-  virtual qreal value(int i);
+ private:
+  /// Return the speed of the segment before i
+  /// (corresponding to distanceBefore(i)).
+  qreal speedBefore(int i) const;
 
- protected:
-  /// Return the speed of the segment before i (fixes no i and i-1)
-  qreal speedBefore(int i);
-
-  /// Convert scaled value to color.
-  /// \param scaled Scaled value from 0 to 255.
-  virtual QColor colorFromScaled(qreal scaled);
-
-  Util::Gradient g;
+  /// Return the distance of the segment before i (between fixes i-1 and i)
+  virtual qreal distanceBefore(int i) const = 0;
 };
 
-/// Color the track according to vertical speed.
-class VerticalSpeedIgcInfo : public IgcInfo {
- public:
-  VerticalSpeedIgcInfo();
+/// Calculates GPS speed.
+class GroundSpeedIgcInfo : public SpeedIgcInfo {
+ private:
+  qreal distanceBefore(int i) const;
+};
 
-  /// Calculate the scale symetrically to zero.
+/// Caclulate vertical speed.
+class VerticalSpeedIgcInfo : public SpeedIgcInfo {
+ private:
+  qreal distanceBefore(int i) const;
+};
+
+class TrackIdIgcInfo : public IgcInfo {
+ public:
+  explicit TrackIdIgcInfo(int id);
+
+  qreal value(int i) const;
+ private:
+  int id;
+};
+
+/// Returns altitude.
+class TimeIgcInfo : public IgcInfo {
+ public:
   void init(const QList<TrackFix> *fixList);
-
-  //// Find the value of item number i, without scaling.
-  virtual qreal value(int i);
-
- protected:
-  /// Return the speed of the segment before i (fixes no i and i-1)
-  qreal speedBefore(int i);
-
-  /// Convert scaled value to color.
-  /// \param scaled Scaled value from 0 to 255.
-  virtual QColor colorFromScaled(qreal scaled);
-
-  Util::Gradient positiveGradient;
-  Util::Gradient negativeGradient;
+  qreal value(int i) const;
+ private:
 };
 
 }  // End namespace IgcViewer
 }  // End namespace Updraft
-
-Q_DECLARE_METATYPE(Updraft::IgcViewer::IgcInfo*)
 
 #endif  // UPDRAFT_SRC_PLUGINS_IGCVIEWER_IGCINFO_H_
 

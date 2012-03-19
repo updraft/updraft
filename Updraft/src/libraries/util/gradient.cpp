@@ -5,7 +5,9 @@
 namespace Updraft {
 namespace Util {
 
-Gradient::Gradient(const QColor &c1, const QColor &c2) {
+static const qreal ACHROMATIC_THRESHOLD = 0.005;
+
+Gradient::Gradient(const QColor &c1, const QColor &c2, bool reverseHue) {
   qreal h1, s1, v1, a1;
   qreal h2, s2, v2, a2;
 
@@ -27,6 +29,11 @@ Gradient::Gradient(const QColor &c1, const QColor &c2) {
     } else if (hA < -0.5) {
       hA = hA + 1;
     }
+
+    if (reverseHue) {
+      hA = hA - 1;
+    }
+
     hB = h1;
   }
 
@@ -40,7 +47,17 @@ Gradient::Gradient(const QColor &c1, const QColor &c2) {
   aA = c2.alphaF() - aB;
 }
 
+Gradient::Gradient() {
+  hA = hB = sA = sB = vA = vB = aA = aB = 0;
+}
+
 QColor Gradient::get(qreal t) const {
+  if (t > 1) {
+    t = 1;
+  } else if (t < 0) {
+    t = 0;
+  }
+
   qreal h = hA * t + hB;
   h = h - qFloor(h);
 
