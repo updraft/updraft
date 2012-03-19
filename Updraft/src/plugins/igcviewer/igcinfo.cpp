@@ -30,12 +30,8 @@ void IgcInfo::resetGlobalScale() {
 }
 
 void IgcInfo::addGlobalScale(qreal minimum, qreal maximum) {
-  if (globalMin_ > minimum) {
-    globalMin_ = min_;
-  }
-  if (globalMax_ < maximum) {
-    globalMax_ = max_;
-  }
+  globalMin_ = qMin(minimum, globalMin_);
+  globalMax_ = qMax(maximum, globalMax_);
 }
 
 QColor IgcInfo::color(int i) {

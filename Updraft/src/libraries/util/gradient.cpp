@@ -1,7 +1,6 @@
 #include "gradient.h"
 
 #include <QtCore/qmath.h>
-#include <QDebug>
 
 namespace Updraft {
 namespace Util {
