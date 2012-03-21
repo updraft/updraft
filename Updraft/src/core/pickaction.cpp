@@ -14,7 +14,7 @@ PickAction::PickAction(
   QAction(mapObject->name, NULL),
   mapObject(mapObject),
   eventInfo(eventInfo) {
-  connect(this, SIGNAL(triggered), this, SLOT(sendEventToPlugins));
+  connect(this, SIGNAL(triggered()), this, SLOT(sendEventToPlugins()));
 }
 
 void PickAction::sendEventToPlugins() {
