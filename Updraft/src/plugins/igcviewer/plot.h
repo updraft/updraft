@@ -10,8 +10,11 @@ class PlotWidget : public QWidget {
  private:
   void paintEvent(QPaintEvent* paintEvent);
 
-  /// Intervals in which to draw a mark in the time axis.
-  QList<int> timeIntervals;
+  /// Intervals in which to draw a mark in the axes.
+  QVector<int> timeIntervals;
+  QVector<int> altitudeIntervals;
+  QVector<int> groundSpeedIntervals;
+  QVector<int> verticalSpeedIntervals
 
   /// Minimum number of pixels between the marks.
   int minPixels;

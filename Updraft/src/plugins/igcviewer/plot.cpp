@@ -6,8 +6,6 @@
 namespace Updraft {
 namespace IgcViewer {
 
-
-
 void PlotWidget::paintEvent(QPaintEvent* paintEvent) {
   QPen pen;
   QColor color;
