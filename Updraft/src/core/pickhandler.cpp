@@ -3,8 +3,10 @@
 #include <QSet>
 #include "scenemanager.h"
 #include "updraft.h"
+#include "pickaction.h"
 #include "../eventinfo.h"
 #include "../pluginbase.h"
+#include "pickaction.h"
 
 namespace Updraft {
 namespace Core {
@@ -54,18 +56,15 @@ void PickHandler::raiseClickEvent(QVector<MapObject*> mapObjects) {
 
   EventInfo eventInfo(LEFT_CLICK);
 
-  QSet<MapObject*> alreadyHandled;  // Prevent double handling of objects
+  // Prevent double handling of objects
+  QSet<MapObject*> alreadyHandled;
   foreach(MapObject* mapObject, mapObjects) {
     if (!mapObject) continue;
 
     if (alreadyHandled.contains(mapObject)) continue;
     alreadyHandled.insert(mapObject);
 
-    moMenu->appendAction(new QAction(mapObject->name, NULL));
-
-    foreach(PluginBase* plugin, updraft->pluginManager->getAllPlugins()) {
-      plugin->handleMouseEvent(mapObject, &eventInfo);
-    }
+    moMenu->appendAction(new PickAction(mapObject, &eventInfo));
   }
 
   // Show the menu if more than one action was inserted
@@ -75,6 +74,8 @@ void PickHandler::raiseClickEvent(QVector<MapObject*> mapObjects) {
 
     // The coordinates have to be Y-inverted and mapped to screen
     moMenu->getQMenu()->exec(mapWidget->mapToGlobal(QPoint(mX, mh - mY)));
+  } else {  // If there was only one inserted action, trigger it
+    moMenu->getQMenu()->actions().first()->trigger();
   }
 }
 
