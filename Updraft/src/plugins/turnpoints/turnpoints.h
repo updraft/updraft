@@ -41,9 +41,6 @@ class Q_DECL_EXPORT TurnPoints : public QObject, public PluginBase {
     IMPORT_CUP_FILE = 1
   };
 
-  /// Value which will be used as a next layer id.
-  int nextLayerId;
-
   /// List of imported files
   TTPLayerMap layers;
 

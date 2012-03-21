@@ -4,7 +4,7 @@
 namespace Updraft {
 
 TurnPoints::TurnPoints()
-  : nextLayerId(1), mapLayerGroup(NULL) {
+  : mapLayerGroup(NULL) {
   cupTPsReg.category = CATEGORY_PERSISTENT;
   cupTPsReg.extension = ".cup";
   cupTPsReg.typeDescription = tr("SeeYou turn-points file");
@@ -103,7 +103,6 @@ void TurnPoints::unloadFiles() {
     delete layer;
   }
   layers.clear();
-  nextLayerId = 1;
 }
 
 void TurnPoints::addLayer(TPFile *file) {
