@@ -70,7 +70,7 @@ bool TurnPoints::wantsToHandleClick(MapObject* obj) {
   return false;
 }
 
-void TurnPoints::handleMouseEvent(MapObject* obj, const EventInfo* evt) {
+void TurnPoints::handleClick(MapObject* obj, const EventInfo* evt) {
   qDebug(QString("Clicked a map object named %1").arg(obj->name).toAscii().data());
 }
 
