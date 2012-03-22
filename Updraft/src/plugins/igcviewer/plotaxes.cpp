@@ -2,24 +2,43 @@
 
 #include <QtCore/qmath.h>
 #include <QDebug>
+#include <QLayout>
 
 namespace Updraft {
 namespace IgcViewer {
 
-const QPen PlotAxes::AXES_PEN = QPen(Qt::gray);
+const QPen PlotAxes::AXES_PEN = QPen(QBrush(Qt::gray), 2);
 const QPen PlotAxes::TICKS_PEN = QPen(QBrush(Qt::gray), 0, Qt::DotLine);
 
 static const qreal LN10 = qLn(10);
 
-QPointF PlotAxes::placePoint(qreal x, qreal y) {
-  return QPointF(linX.get(x), linY.get(y));
+Qt::Orientations PlotAxes::expandingDirections() const {
+  return Qt::Vertical | Qt::Horizontal;
 }
 
-void PlotAxes::setLimits(
-  const QRectF& rect, qreal min, qreal max, qreal maxTime) {
+QRect PlotAxes::geometry() const {
+  return rect;
+}
 
+bool PlotAxes::isEmpty() const {
+  return false;
+}
+
+QSize PlotAxes::maximumSize() const {
+  return QSize(65536, 65536);
+}
+
+QSize PlotAxes::minimumSize() const {
+  return QSize(TICK_SPACING_X, TICK_SPACING_Y);
+}
+
+QSize PlotAxes::sizeHint() const {
+  return QSize(65536, 100);
+}
+
+void PlotAxes::setGeometry(const QRect& rect) {
   this->rect = rect;
-  
+
   linX.set(0, rect.left(), maxTime, rect.right());
   linY.set(min, rect.bottom(), max, rect.top());
 
@@ -43,10 +62,27 @@ void PlotAxes::setLimits(
   }
 }
 
+qreal PlotAxes::placeX(qreal x) {
+  return linX.get(x);
+}
+
+qreal PlotAxes::placeY(qreal y) {
+  return linY.get(y);
+}
+
+void PlotAxes::setLimits(qreal min, qreal max, qreal maxTime) {
+  this->min = min;
+  this->max = max;
+  this->maxTime = maxTime;
+
+  setGeometry(rect);
+}
+
 int PlotAxes::findTickIncrement(qreal range, qreal size, qreal minTickSpacing) {
   qreal tmp = minTickSpacing * range / size;
 
-  qreal increment = qExp(qCeil(qLn(tmp) / LN10) * LN10);
+  qreal logIncrement = qCeil(qLn(tmp) / LN10);
+  qreal increment = qExp(logIncrement * LN10);
 
   if (increment * size / range > 2 * minTickSpacing) {
     return increment / 2;
@@ -76,8 +112,8 @@ void PlotAxes::draw(QPainter *painter) {
   // Axes
   painter->setPen(AXES_PEN);
 
-  painter->drawLine(rect.topLeft(), rect.bottomLeft());
-  painter->drawLine(QPointF(rect.left(), base), QPointF(rect.right(),base));
+  painter->drawLine(QPointF(rect.topLeft()), QPointF(rect.bottomLeft()));
+  painter->drawLine(QPointF(rect.left(), base), QPointF(rect.right(), base));
 }
 
 }  // End namespace IgcViewer

@@ -3,19 +3,35 @@
 
 #include <QPoint>
 #include <QPainter>
+#include <QLayoutItem>
 
 #include "util/util.h"
 
 namespace Updraft {
 namespace IgcViewer {
 
-class PlotAxes {
+/// X and Y axis for graph plotting.
+class PlotAxes : public QLayoutItem {
  public:
-  /// Calculate a drawing position of a point.
-  QPointF placePoint(qreal x, qreal y);
-  
-  /// Set the limits for drawing
-  void setLimits(const QRectF& rect, qreal min, qreal max, qreal maxTime);
+  /// Overridden from QLayoutItem
+  /// \{
+  Qt::Orientations expandingDirections() const;
+  bool isEmpty() const;
+  QRect geometry() const;
+  QSize maximumSize() const;
+  QSize minimumSize() const;
+  QSize sizeHint() const;
+  void setGeometry(const QRect& rect);
+  /// \}
+
+  /// Get the X coordinate for drawing.
+  qreal placeX(qreal x);
+
+  /// Get the Y coordinate for drawing.
+  qreal placeY(qreal y);
+
+  /// Set the limits for drawing and recalculate all cached values.
+  void setLimits(qreal min, qreal max, qreal maxTime);
 
   /// Draw the axes to the painter
   void draw(QPainter *painter);
@@ -30,14 +46,15 @@ class PlotAxes {
   Util::LinearFunc tickX, tickY;
   int tickCountX, tickCountY;
 
-  QRectF rect;
+  QRect rect;
+  qreal min, max, maxTime;
 
   /// Position (in drawing cordinates) of the X base.
   qreal base;
 
   /// Smallest distance between ticks.
   static const int TICK_SPACING_X = 10;
-  static const int TICK_SPACING_Y = 15;
+  static const int TICK_SPACING_Y = 10;
 
   static const QPen AXES_PEN;
   static const QPen TICKS_PEN;

@@ -2,60 +2,64 @@
 
 #include <QDebug>
 #include <QPainter>
+#include <QVBoxLayout>
+
+#include "plotpainters.h"
 
 namespace Updraft {
 namespace IgcViewer {
 
 const QColor PlotWidget::BG_COLOR = Qt::black;
-const QPen PlotWidget::PLOT_PEN = QPen(Qt::red);
+const QPen PlotWidget::ALTITUDE_PEN = QPen(Qt::red);
+const QPen PlotWidget::VERTICAL_SPEED_PEN = QPen(Qt::blue);
+const QPen PlotWidget::GROUND_SPEED_PEN= QPen(Qt::yellow);
 
 static const qreal LN10 = qLn(10);
 
-PlotWidget::PlotWidget(IgcInfo* info)
-  : info(info) {
-  setMinimumSize(2 * PIXEL_OFFSET_X + MIN_TICK_SIZE,
-    2 * PIXEL_OFFSET_Y + MIN_TICK_SIZE);
-}
+PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
+  IgcInfo *groundSpeedInfo)
+  : altitudeInfo(altitudeInfo), verticalSpeedInfo(verticalSpeedInfo),
+    groundSpeedInfo(groundSpeedInfo) {
+  QVBoxLayout* layout = new QVBoxLayout();
 
-int PlotWidget::findTickIncrement(qreal range,
-  qreal size, qreal minTickSpacing) {
-  qreal tmp = minTickSpacing * range / size;
+  setLayout(layout);
 
-  qreal increment = qExp(qCeil(qLn(tmp) / LN10) * LN10);
+  qreal maxTime = altitudeInfo->maxTime();
 
-  if (increment * size / range > 2 * minTickSpacing) {
-    return increment / 2;
-  } else {
-    return increment;
-  }
-}
+  altitudeAxes.setLimits(
+    altitudeInfo->min(), altitudeInfo->max(), maxTime);
+  layout->addItem(&altitudeAxes);
 
-void PlotWidget::resizeEvent(QResizeEvent* resizeEvent) {
-  axes.setLimits(
-    rect().adjusted(OFFSET_X, OFFSET_Y, -OFFSET_X, -OFFSET_Y),
-    info->robustMin(), info->robustMax(), info->maxTime());
+  verticalSpeedAxes.setLimits(
+    verticalSpeedInfo->min(), verticalSpeedInfo->max(), maxTime);
+  layout->addItem(&verticalSpeedAxes);
+
+  groundSpeedAxes.setLimits(
+    groundSpeedInfo->min(), groundSpeedInfo->max(), maxTime);
+  layout->addItem(&groundSpeedAxes);
+
+  layout->setStretch(0, 2);
+  layout->setStretch(1, 1);
+  layout->setStretch(2, 1);
 }
 
 void PlotWidget::paintEvent(QPaintEvent* paintEvent) {
-  // int lengthX = width() - 2 * PIXEL_OFFSET_X;
-  // int lengthY = height() - 2 * PIXEL_OFFSET_Y;
-
   QPainter painter(this);
   painter.setRenderHint(QPainter::Antialiasing);
 
   painter.fillRect(rect(), BG_COLOR);
 
-  axes.draw(&painter);
+  AltitudePlotPainter altitudePainter;
+  altitudePainter.init(&painter, &altitudeAxes, altitudeInfo);
+  altitudePainter.draw();
 
-  painter.setPen(PLOT_PEN);
+  VerticalSpeedPlotPainter verticalSpeedPainter;
+  verticalSpeedPainter.init(&painter, &verticalSpeedAxes, verticalSpeedInfo);
+  verticalSpeedPainter.draw();
 
-  QPointF prevPoint = axes.placePoint(info->time(0), info->value(0));
-  for (int i = 1; i < info->count(); ++i) {
-    QPointF currentPoint = axes.placePoint(info->time(i), info->value(i));
-    painter.drawLine(prevPoint, currentPoint);
-
-    prevPoint = currentPoint;
-  }
+  GroundSpeedPlotPainter groundSpeedPainter;
+  groundSpeedPainter.init(&painter, &groundSpeedAxes, groundSpeedInfo);
+  groundSpeedPainter.draw();
 }
 
 }  // End namespace IgcViewer

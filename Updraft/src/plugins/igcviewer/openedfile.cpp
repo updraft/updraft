@@ -119,7 +119,8 @@ bool OpenedFile::init(IgcViewer* viewer,
 
   layout->setContentsMargins(0, 0, 0, 0);
 
-  PlotWidget* plot = new PlotWidget(altitudeInfo);
+  PlotWidget* plot = new PlotWidget(
+    altitudeInfo, verticalSpeedInfo, groundSpeedInfo);
 
   tabWidget->setLayout(layout);
   layout->addWidget(colorsCombo, 0, Qt::AlignTop);
