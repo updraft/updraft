@@ -64,6 +64,16 @@ void TurnPoints::fileIdentification(QStringList *roles,
     roles->append(tr("Turn-points file"));
 }
 
+bool TurnPoints::wantsToHandleClick(MapObject* obj) {
+  QObject* qObj = obj->asQObject();
+  if (qObj && qobject_cast<TPMapObject*>(qObj)) return true;
+  return false;
+}
+
+void TurnPoints::handleClick(MapObject* obj, const EventInfo* evt) {
+  qDebug(QString("Clicked a map object named %1").arg(obj->name).toAscii().data());
+}
+
 void TurnPoints::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
   if (sender == NULL) {
     return;
@@ -113,7 +123,7 @@ void TurnPoints::addLayer(TPFile *file) {
   // Create new layer item, build scene.
   TPLayer *turnPointsLayer = new TPLayer(true,
     mapLayerGroup->getObjectPlacer(), file,
-    core->getDataDirectory());
+    core->getDataDirectory(), this);
 
   // Create new mapLayer in mapLayerGroup, assign osgNode and file name.
   Updraft::MapLayerInterface* mapLayer =

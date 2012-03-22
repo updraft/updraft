@@ -32,6 +32,7 @@ class MainWindow : public QMainWindow {
   Menu* createMenu(QString title);
   void removeMenu(Menu* menu);
   void setMapWidget(QWidget *widget);
+  QWidget* getMapWidget();
 
   /// This method creates new map layer group.
   /// It is wrapped by CoreInterface::createMapLayerGroup.
@@ -70,6 +71,7 @@ class MainWindow : public QMainWindow {
   Menu* menuHelp;
 
   Menu* menuContext;
+  Menu* menuMapObject;
 
   Tab* activeTab;
 

@@ -7,6 +7,9 @@
 #include <osgDB/ReadFile>
 #include <osgEarthUtil/ObjectPlacer>
 #include "tplayer.h"
+#include "coreinterface.h"
+#include "turnpoints.h"
+#include "mapobject.h"
 
 namespace Updraft {
 
@@ -91,9 +94,9 @@ osg::AutoTransform* TPLayer::createAutoTransform(const osg::Matrix& matrix,
 }
 
 TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
-  const TPFile *file_, const QString &dataDir_)
+  const TPFile *file_, const QString &dataDir_, TurnPoints* parent_)
   : group(new osg::Group()), objectPlacer(objectPlacer_),
-  file(file_), displayed(displayed_), dataDir(dataDir_) {
+  file(file_), displayed(displayed_), dataDir(dataDir_), parent(parent_) {
   if (group == NULL || objectPlacer == NULL || file == NULL) {
     return;
   }
@@ -120,12 +123,22 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
       continue;
     }
 
-    // Add new Autotransform node.
-    group->addChild(createAutoTransform(matrix, geode));
+    // Create new Autotransform node.
+    osg::AutoTransform* tpNode = createAutoTransform(matrix, geode);
+
+    // Make the autotransform node pickable
+    TPMapObject* mapObject = new TPMapObject(itPoint->name);
+    mapObjects.push_back(mapObject);
+    parent->getCoreInterface()->registerOsgNode(tpNode, mapObject);
+
+    group->addChild(tpNode);
   }
 }
 
 TPLayer::~TPLayer() {
+  foreach(TPMapObject* tpObj, mapObjects) {
+    delete tpObj;
+  }
   delete file;
 }
 

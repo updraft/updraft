@@ -24,7 +24,10 @@ class Menu : public MenuInterface {
 
   ~Menu();
 
+  void clear();
+
   void insertAction(int position, QAction* action);
+  void appendAction(QAction* action);
 
   QMenu* getQMenu() { return menu; }
  private:

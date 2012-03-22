@@ -10,7 +10,8 @@ enum SystemMenu {
   MENU_EDIT,
   MENU_TOOLS,
   MENU_HELP,
-  MENU_CONTEXT
+  MENU_CONTEXT,
+  MENU_MAPOBJECT
 };
 
 /// Interface to menu used by plugins.
@@ -18,10 +19,17 @@ class MenuInterface {
  public:
   virtual ~MenuInterface() {}
 
+  /// Clears all the actions from this menu
+  void clear();
+
   /// Insert action into this menu.
   /// \param position Priority of this action. Actions with
   ///   lower value are closer to the top.
   virtual void insertAction(int position, QAction* action) = 0;
+
+  /// Append action to the last place of this menu.
+  /// \param action The action to be appended
+  void appendAction(QAction* action);
 };
 
 }  // End namespace Updraft
