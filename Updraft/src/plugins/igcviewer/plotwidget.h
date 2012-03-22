@@ -1,11 +1,12 @@
 #ifndef UPDRAFT_SRC_PLUGINS_IGCVIEWER_PLOTWIDGET_H_
 #define UPDRAFT_SRC_PLUGINS_IGCVIEWER_PLOTWIDGET_H_
 
-#include <QWidget>
-#include <QPen>
 #include <QColor>
+#include <QPen>
+#include <QWidget>
 
 #include "igcinfo.h"
+#include "plotaxes.h"
 
 namespace Updraft {
 namespace IgcViewer {
@@ -17,29 +18,18 @@ class PlotWidget : public QWidget {
   PlotWidget(IgcInfo* info);
 
  private:
-  /// Return tick value increment.
-  int findTickIncrement(qreal range, qreal width, qreal minTickSpacing);
-
+  void resizeEvent(QResizeEvent* resizeEvent);
   void paintEvent(QPaintEvent* paintEvent);
 
-  /// Calculate X position of a point
-  qreal placeX(qreal val);
-
-  /// Calculate Y position of a point.
-  qreal placeY(qreal val);
+  PlotAxes axes;
 
   IgcInfo* info;
 
   /// Offset from the window border
-  static const int PIXEL_OFFSET_X = 15;
-  static const int PIXEL_OFFSET_Y = 10;
-
-  /// Smallest distance between ticks.
-  static const int MIN_TICK_SIZE = 10;
+  static const int OFFSET_X = 15;
+  static const int OFFSET_Y = 10;
 
   static const QColor BG_COLOR;
-  static const QPen AXES_PEN;
-  static const QPen TICKS_PEN;
   static const QPen PLOT_PEN;
 };
 
