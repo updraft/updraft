@@ -64,6 +64,17 @@ void TurnPoints::fileIdentification(QStringList *roles,
     roles->append(tr("Turn-points file"));
 }
 
+void TurnPoints::fillContextMenu(MapObject* obj, MenuInterface* menu) {
+  // Only create context menu items for turnpoints
+  QObject* qObj = obj->asQObject();
+  TPMapObject* mObj = NULL;
+  if (qObj && (mObj = qobject_cast<TPMapObject*>(qObj))) {
+    QAction* action = new QAction(mObj->name, NULL);
+    action->setData(mObj->name);
+    QObject::connect(action, SIGNAL(triggered()), this, SLOT(contextAction()));
+  }
+}
+
 bool TurnPoints::wantsToHandleClick(MapObject* obj) {
   QObject* qObj = obj->asQObject();
   if (qObj && qobject_cast<TPMapObject*>(qObj)) return true;
@@ -89,6 +100,17 @@ void TurnPoints::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
   // Then if it is displayed, show it also in the map.
   itLayer.value()->display(value);
   sender->setVisible(itLayer.value()->isDisplayed());
+}
+
+void TurnPoints::contextAction() {
+  QObject* sender = this->sender();
+  if (!sender) {
+    qDebug("Sender is NULL, something went wrong");
+    return;
+  }
+
+  QAction* action = qobject_cast<QAction*>(sender);
+  qDebug(action->data().toString().toAscii().data());
 }
 
 void TurnPoints::loadImportedFiles() {

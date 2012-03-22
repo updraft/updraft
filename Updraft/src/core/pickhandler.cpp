@@ -38,7 +38,12 @@ bool PickHandler::handle(
         if (mapObjects.empty())
           return false;
 
-        raiseLeftClick(mapObjects);
+	int btn = ea.getButton();
+	if (btn == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON) {
+          raiseLeftClick(mapObjects);
+	} else if (btn == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON) {
+	  raiseRightClick(mapObjects);
+	}
         return true;
       }
       return false;
@@ -93,6 +98,53 @@ void PickHandler::raiseLeftClick(QVector<MapObject*> mapObjects) {
 
 void PickHandler::raiseRightClick(QVector<MapObject*> mapObjects) {
   qDebug("--- Right click event ---");
+
+  QMenu* topMenu = new QMenu(updraft->mainWindow);
+
+  // Create the submenu where plugins will push their actions
+  QMenu* qMenu = new QMenu(updraft->mainWindow);
+  Menu objectMenu(qMenu);
+
+  // Prevent double adding of objects
+  QSet<MapObject*> alreadyAdded;
+  foreach (MapObject* mapObject, mapObjects) {
+    if (!mapObject) continue;
+
+    if (alreadyAdded.contains(mapObject)) continue;
+    alreadyAdded.insert(mapObject);
+
+    // Let each plugin add items to the submenu
+    foreach (PluginBase* plugin, updraft->pluginManager->getAllPlugins()) {
+      plugin->fillContextMenu(mapObject, &objectMenu);
+    }
+   
+    // If the menu is not empty, add its actions to the top-level menu
+    if (!qMenu->isEmpty()) {
+      if (!topMenu->isEmpty()) {
+        topMenu->addSeparator();
+      }
+
+      // Create the MapObject name action
+      QAction* name = new QAction(mapObject->name, NULL);
+      name->setEnabled(false);  // We don't want the name to be clickable
+      topMenu->addAction(name);
+
+      foreach (QAction* action, qMenu->actions()) {
+	topMenu->addAction(action);
+      }
+    }
+
+    // Clear the helper submenu
+    qMenu->clear();
+  }
+
+  // Show the menu
+  QWidget* mapWidget = updraft->mainWindow->getMapWidget();
+  int mh = mapWidget->height();
+  topMenu->exec(mapWidget->mapToGlobal(QPoint(mX, mh - mY)));
+
+  delete qMenu;
+  delete topMenu;
 }
 
 MapObject* PickHandler::getMapObject(osg::Node* node) {

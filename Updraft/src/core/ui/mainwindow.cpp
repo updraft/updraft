@@ -108,7 +108,7 @@ void MainWindow::tabSwitch(int index) {
 
 Menu* MainWindow::createMenu(QString title) {
   QMenu* qMenu = new QMenu(title, ui->menuBar);
-  Menu* newMenu = new Menu(qMenu, true);  // Make the qmenu owned by our Menu
+  Menu* newMenu = new Menu(qMenu);
 
   customMenus.insert(newMenu);
   ui->menuBar->addMenu(qMenu);
