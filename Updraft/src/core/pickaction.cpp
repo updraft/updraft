@@ -17,9 +17,13 @@ PickAction::PickAction(
   connect(this, SIGNAL(triggered()), this, SLOT(sendEventToPlugins()));
 }
 
+void PickAction::pushPlugin(PluginBase* plugin) {
+  pluginList.push_back(plugin);
+}
+
 void PickAction::sendEventToPlugins() {
-  foreach(PluginBase* plugin, updraft->pluginManager->getAllPlugins()) {
-    plugin->handleMouseEvent(mapObject, eventInfo);
+  foreach(PluginBase* plugin, pluginList) {
+    plugin->handleClick(mapObject, eventInfo);
   }
 }
 

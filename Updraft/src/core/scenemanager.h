@@ -49,7 +49,8 @@ class SceneManager: public QObject {
 
   /// Registers the osg node into Updraft for mouse picking.
   /// \param node The node that should be registered
-  void registerOsgNode(osg::Node* node, QString name);
+  /// \param mapObject MapObject that represents this pickable node
+  void registerOsgNode(osg::Node* node, MapObject* mapObject);
 
   /// Unregisters osg node for mouse picking
   /// \param node The node that should be unregistered

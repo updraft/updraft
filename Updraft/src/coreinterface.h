@@ -104,8 +104,9 @@ class CoreInterface {
 
   /// Registers the osg node into Updraft for mouse picking.
   /// \param node The node that should be registered
+  /// \param mapObject The map object that this node represents when clicked
   //TODO(cestmir): We will probably need unregistering as well
-  virtual void registerOsgNode(osg::Node* node, QString name) = 0;
+  virtual void registerOsgNode(osg::Node* node, MapObject* mapObject) = 0;
 };
 
 }  // End namespace Updraft

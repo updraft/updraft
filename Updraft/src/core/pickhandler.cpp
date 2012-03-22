@@ -6,7 +6,6 @@
 #include "pickaction.h"
 #include "../eventinfo.h"
 #include "../pluginbase.h"
-#include "pickaction.h"
 
 namespace Updraft {
 namespace Core {
@@ -39,7 +38,7 @@ bool PickHandler::handle(
         if (mapObjects.empty())
           return false;
 
-        raiseClickEvent(mapObjects);
+        raiseLeftClick(mapObjects);
         return true;
       }
       return false;
@@ -48,7 +47,7 @@ bool PickHandler::handle(
   }
 }
 
-void PickHandler::raiseClickEvent(QVector<MapObject*> mapObjects) {
+void PickHandler::raiseLeftClick(QVector<MapObject*> mapObjects) {
   qDebug("--- Left click event ---");
 
   Menu* moMenu = updraft->mainWindow->getSystemMenu(MENU_MAPOBJECT);
@@ -56,15 +55,28 @@ void PickHandler::raiseClickEvent(QVector<MapObject*> mapObjects) {
 
   EventInfo eventInfo(LEFT_CLICK);
 
-  // Prevent double handling of objects
-  QSet<MapObject*> alreadyHandled;
+  // Create the PickActions and prevent double adding of objects
+  QSet<MapObject*> alreadyAdded;
   foreach(MapObject* mapObject, mapObjects) {
     if (!mapObject) continue;
 
-    if (alreadyHandled.contains(mapObject)) continue;
-    alreadyHandled.insert(mapObject);
+    if (alreadyAdded.contains(mapObject)) continue;
+    alreadyAdded.insert(mapObject);
 
-    moMenu->appendAction(new PickAction(mapObject, &eventInfo));
+    // Insert the plugins into PickAction only if they want to handle the event
+    PickAction* action = new PickAction(mapObject, &eventInfo);
+    foreach(PluginBase* plugin, updraft->pluginManager->getAllPlugins()) {
+      if (plugin->wantsToHandleClick(mapObject)) {
+        action->pushPlugin(plugin);
+      }
+    }
+
+    // Now insert the action into menu only if a plugin wants to handle the ev.
+    if (!action->isEmpty()) {
+      moMenu->appendAction(action);
+    } else {
+      delete action;  // Noone owns the action so we have to destroy it
+    }
   }
 
   // Show the menu if more than one action was inserted
@@ -77,6 +89,10 @@ void PickHandler::raiseClickEvent(QVector<MapObject*> mapObjects) {
   } else {  // If there was only one inserted action, trigger it
     moMenu->getQMenu()->actions().first()->trigger();
   }
+}
+
+void PickHandler::raiseRightClick(QVector<MapObject*> mapObjects) {
+  qDebug("--- Right click event ---");
 }
 
 MapObject* PickHandler::getMapObject(osg::Node* node) {

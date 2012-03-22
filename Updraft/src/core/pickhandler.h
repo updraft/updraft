@@ -19,7 +19,8 @@ class PickHandler: public osgGA::GUIEventHandler {
   // Store mouse xy location for button press & move events.
   float mX, mY;
 
-  void raiseClickEvent(QVector<MapObject*> mapObjects);
+  void raiseLeftClick(QVector<MapObject*> mapObjects);
+  void raiseRightClick(QVector<MapObject*> mapObjects);
   MapObject* getMapObject(osg::Node* node);
 
   // Get all MapObjectes associated with intersected nodes.

@@ -33,6 +33,7 @@ class Q_DECL_EXPORT TurnPoints : public QObject, public PluginBase {
   void fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename);
 
+  bool wantsToHandleClick(MapObject* obj);
   void handleMouseEvent(MapObject* obj, const EventInfo* evt);
  public slots:
   void mapLayerDisplayed(bool value, MapLayerInterface* sender);

@@ -64,6 +64,11 @@ void TurnPoints::fileIdentification(QStringList *roles,
     roles->append(tr("Turn-points file"));
 }
 
+bool TurnPoints::wantsToHandleClick(MapObject* obj) {
+  if (qobject_cast<TPMapObject*>(obj)) return true;
+  return false;
+}
+
 void TurnPoints::handleMouseEvent(MapObject* obj, const EventInfo* evt) {
   qDebug(QString("Clicked a map object named %1").arg(obj->name).toAscii().data());
 }

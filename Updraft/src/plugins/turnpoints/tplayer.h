@@ -1,13 +1,16 @@
 #ifndef UPDRAFT_SRC_PLUGINS_TURNPOINTS_TPLAYER_H_
 #define UPDRAFT_SRC_PLUGINS_TURNPOINTS_TPLAYER_H_
 
+#include <osg/Matrix>
 #include "tpfile.h"
+#include "mapobject.h"
 
 namespace osg {
   class Geometry;
   class Geode;
   class AutoTransform;
   class Group;
+  class Node;
 }
 
 namespace osgEarth {
@@ -17,6 +20,15 @@ namespace Util {
 }
 
 namespace Updraft {
+
+// TODO(cestmir): This is just a temporary class to test mouse picking
+// Remove it as soon as real turnpoint map objects are implemented
+class TPMapObject: public MapObject {
+ Q_OBJECT
+
+ public:
+  TPMapObject(const QString& name): MapObject(name) {}
+};
 
 class TurnPoints;
 
@@ -71,6 +83,10 @@ class TPLayer {
   QString dataDir;
 
   TurnPoints* parent;
+
+  // TODO(cestmir): Serves for destructor purposes. Remove in future
+  // when real turnpoint MapObjects are implemented
+  QList<TPMapObject*> mapObjects;
 };
 
 }  // End namespace Updraft

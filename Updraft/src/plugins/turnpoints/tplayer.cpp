@@ -9,6 +9,7 @@
 #include "tplayer.h"
 #include "coreinterface.h"
 #include "turnpoints.h"
+#include "mapobject.h"
 
 namespace Updraft {
 
@@ -126,13 +127,18 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     osg::AutoTransform* tpNode = createAutoTransform(matrix, geode);
 
     // Make the autotransform node pickable
-    parent->getCoreInterface()->registerOsgNode(tpNode, itPoint->name);
+    TPMapObject* mapObject = new TPMapObject(itPoint->name);
+    mapObjects.push_back(mapObject);
+    parent->getCoreInterface()->registerOsgNode(tpNode, mapObject);
 
     group->addChild(tpNode);
   }
 }
 
 TPLayer::~TPLayer() {
+  foreach(TPMapObject* tpObj, mapObjects) {
+    delete tpObj;
+  }
   delete file;
 }
 

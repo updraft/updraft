@@ -111,15 +111,12 @@ osg::Group* SceneManager::getSimpleGroup() {
   return simpleGroup;
 }
 
-void SceneManager::registerOsgNode(osg::Node* node, QString name) {
-  MapObject* mo = new MapObject(node, name);
-  mo->ref();
-  pickingMap.insert(node, mo);
+void SceneManager::registerOsgNode(osg::Node* node, MapObject* mapObject) {
+  pickingMap.insert(node, mapObject);
 }
 
 void SceneManager::unregisterOsgNode(osg::Node* node) {
-  MapObject* mo = pickingMap.take(node);
-  mo->unref();
+  pickingMap.remove(node);
 }
 
 MapObject* SceneManager::getNodeMapObject(osg::Node* node) {
