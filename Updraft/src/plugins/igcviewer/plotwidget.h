@@ -14,7 +14,7 @@ class PlotWidget : public QWidget {
   Q_OBJECT
 
  public:
-  PlotWidget(IgcInfo* info);
+  explicit PlotWidget(IgcInfo* info);
 
  private:
   /// Return tick value increment.

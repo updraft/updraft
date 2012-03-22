@@ -21,7 +21,8 @@ PlotWidget::PlotWidget(IgcInfo* info)
     2 * PIXEL_OFFSET_Y + MIN_TICK_SIZE);
 }
 
-int PlotWidget::findTickIncrement(qreal range, qreal size, qreal minTickSpacing) {
+int PlotWidget::findTickIncrement(qreal range,
+  qreal size, qreal minTickSpacing) {
   qreal tmp = minTickSpacing * range / size;
 
   qreal increment = qExp(qCeil(qLn(tmp) / LN10) * LN10);
@@ -44,8 +45,8 @@ qreal PlotWidget::placeY(qreal val) {
 }
 
 void PlotWidget::paintEvent(QPaintEvent* paintEvent) {
-  //int lengthX = width() - 2 * PIXEL_OFFSET_X;
-  //int lengthY = height() - 2 * PIXEL_OFFSET_Y;
+  // int lengthX = width() - 2 * PIXEL_OFFSET_X;
+  // int lengthY = height() - 2 * PIXEL_OFFSET_Y;
 
   QPainter painter(this);
   painter.setRenderHint(QPainter::Antialiasing);
