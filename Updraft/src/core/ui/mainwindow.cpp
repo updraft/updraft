@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
   menuHelp = new Menu(ui->menuHelp, false);
 
   connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)),
-    this, SLOT(tabClose(int)));
+    this, SLOT(tabCloseRequested(int)));
   connect(ui->tabWidget, SIGNAL(currentChanged(int)),
     this, SLOT(tabSwitch(int)));
   tabsVisibility();
@@ -75,14 +75,19 @@ Menu* MainWindow::getSystemMenu(SystemMenu menu) {
 Core::Tab* MainWindow::createTab(QWidget* content, QString title) {
   Core::Tab* ret = new Core::Tab(content, title, ui->tabWidget);
 
+  connect(ret, SIGNAL(tabRemoved(QWidget*)), this, SLOT(tabRemoved(QWidget*)));
+
   tabsVisibility();
 
   return ret;
 }
 
-void MainWindow::tabClose(int index) {
-  QWidget* tab = ui->tabWidget->widget(index);
-  static_cast<Tab*>(tab)->close();
+void MainWindow::tabCloseRequested(int index) {
+  Tab* tab = static_cast<Tab*>(ui->tabWidget->widget(index));
+  emit tab->tabCloseRequested();
+}
+
+void MainWindow::tabRemoved(QWidget* tab) {
   tabsVisibility();
 }
 

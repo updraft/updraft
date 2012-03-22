@@ -39,8 +39,12 @@ class MainWindow : public QMainWindow {
     osg::Group* nodeGroup, osgEarth::MapNode* map);
 
  private slots:
-  /// Called when tab in the bottom pane is closed using the little cross
-  void tabClose(int index);
+  /// Called when any tab is about to close.
+  /// Posts signal to appropriate tab.
+  void tabCloseRequested(int index);
+
+  /// Called when tab has been removed from the bottom pane.
+  void tabRemoved(QWidget* tab);
 
   /// Handles switchin an active tab in the bottom pane.
   void tabSwitch(int index);

@@ -19,7 +19,6 @@ Tab::Tab(QWidget* content, QString title, QTabWidget* parent)
 }
 
 Tab::~Tab() {
-  emit closed();
 }
 
 void Tab::select() {
@@ -32,6 +31,7 @@ void Tab::select() {
 void Tab::close() {
   int id = tabWidget->indexOf(this);
   tabWidget->removeTab(id);
+  emit tabRemoved(this);
 
   delete this;
 }
@@ -40,8 +40,13 @@ void Tab::connectSlotClose(const QObject* sender, const char *signal) {
   connect(sender, signal, this, SLOT(close()));
 }
 
-void Tab::connectSignalClosed(const QObject* receiver, const char *method) {
-  connect(this, SIGNAL(closed()), receiver, method);
+void Tab::connectSignalCloseRequested(const QObject* receiver,
+  const char *method) {
+  connect(this, SIGNAL(tabCloseRequested()), receiver, method);
+}
+
+void Tab::connectCloseRequestToClose() {
+  connect(this, SIGNAL(tabCloseRequested()), this, SLOT(close()));
 }
 
 void Tab::connectSignalSelected(const QObject* receiver, const char *method) {

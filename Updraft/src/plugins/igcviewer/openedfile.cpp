@@ -112,9 +112,12 @@ bool OpenedFile::init(IgcViewer* viewer,
 
   tab = viewer->core->createTab(colorsCombo, fileInfo.fileName());
 
-  tab->connectSignalClosed(this, SLOT(close()));
+  tab->connectSignalCloseRequested(this, SLOT(close()));
   connect(colorsCombo, SIGNAL(currentIndexChanged(int)),
     viewer, SLOT(coloringChanged(int)));
+
+  // Sets automatic tab closing on request (without prompt).
+  tab->connectCloseRequestToClose();
 
   createTrack();
 
