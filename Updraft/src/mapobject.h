@@ -6,7 +6,7 @@
 
 namespace Updraft {
 
-class MapObject: public osg::Referenced {
+class MapObject {
   public:
     /// Default constructor for use in QHash.
     /// Not to be used manually.
