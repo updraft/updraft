@@ -26,17 +26,23 @@ PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
 
   qreal maxTime = altitudeInfo->maxTime();
 
-  altitudeAxes.setLimits(
+  altitudeAxes = new PlotAxes();
+  altitudeAxes->setLimits(
     altitudeInfo->min(), altitudeInfo->max(), maxTime);
-  layout->addItem(&altitudeAxes);
+  layout->addItem(altitudeAxes);
 
-  verticalSpeedAxes.setLimits(
+  verticalSpeedAxes = new PlotAxes();
+  verticalSpeedAxes->setLimits(
     verticalSpeedInfo->min(), verticalSpeedInfo->max(), maxTime);
-  layout->addItem(&verticalSpeedAxes);
+  layout->addItem(verticalSpeedAxes);
 
-  groundSpeedAxes.setLimits(
+  groundSpeedAxes = new PlotAxes();
+  groundSpeedAxes->setLimits(
     groundSpeedInfo->min(), groundSpeedInfo->max(), maxTime);
-  layout->addItem(&groundSpeedAxes);
+  layout->addItem(groundSpeedAxes);
+
+  // ownership of axes is transfered to layout,
+  // ownership of layout is transfered to this.
 
   layout->setStretch(0, 2);
   layout->setStretch(1, 1);
@@ -50,15 +56,15 @@ void PlotWidget::paintEvent(QPaintEvent* paintEvent) {
   painter.fillRect(rect(), BG_COLOR);
 
   AltitudePlotPainter altitudePainter;
-  altitudePainter.init(&painter, &altitudeAxes, altitudeInfo);
+  altitudePainter.init(&painter, altitudeAxes, altitudeInfo);
   altitudePainter.draw();
 
   VerticalSpeedPlotPainter verticalSpeedPainter;
-  verticalSpeedPainter.init(&painter, &verticalSpeedAxes, verticalSpeedInfo);
+  verticalSpeedPainter.init(&painter, verticalSpeedAxes, verticalSpeedInfo);
   verticalSpeedPainter.draw();
 
   GroundSpeedPlotPainter groundSpeedPainter;
-  groundSpeedPainter.init(&painter, &groundSpeedAxes, groundSpeedInfo);
+  groundSpeedPainter.init(&painter, groundSpeedAxes, groundSpeedInfo);
   groundSpeedPainter.draw();
 }
 

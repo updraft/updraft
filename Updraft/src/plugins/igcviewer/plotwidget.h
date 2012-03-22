@@ -21,9 +21,9 @@ class PlotWidget : public QWidget {
  private:
   void paintEvent(QPaintEvent* paintEvent);
 
-  PlotAxes altitudeAxes;
-  PlotAxes verticalSpeedAxes;
-  PlotAxes groundSpeedAxes;
+  PlotAxes *altitudeAxes;
+  PlotAxes *verticalSpeedAxes;
+  PlotAxes *groundSpeedAxes;
 
   IgcInfo* altitudeInfo;
   IgcInfo* verticalSpeedInfo;
