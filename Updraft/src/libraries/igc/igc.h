@@ -118,9 +118,6 @@ class IGC_EXPORT IgcFile {
 
   /// Parse date specification.
   /// \param ok Set to true if parsing was successful, false otherwise.
-  /// \bug Date field in igc files has only two digits for year.
-  ///   Now we're just adding 2000 to it, but maybe there is some
-  ///   smarter way around?
   QDate parseDate(QByteArray bytes, bool* ok);
 
   /// Process a single record of type B (fix data) stored in buffer.

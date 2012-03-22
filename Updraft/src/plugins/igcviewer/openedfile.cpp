@@ -1,12 +1,15 @@
 #include "openedfile.h"
 
 #include <QComboBox>
+#include <QHBoxLayout>
 #include <QDebug>
 
 #include <osg/Geode>
 #include <osg/LineWidth>
 
 #include "igc/igc.h"
+
+#include "plotwidget.h"
 
 namespace Updraft {
 namespace IgcViewer {
@@ -110,7 +113,17 @@ bool OpenedFile::init(IgcViewer* viewer,
   ADD_COLORING(tr("Time"),
     new LocalColoring(timeInfo, &gradient));
 
-  tab = viewer->core->createTab(colorsCombo, fileInfo.fileName());
+
+  QWidget* tabWidget = new QWidget();
+  QHBoxLayout* layout = new QHBoxLayout();
+
+  PlotWidget* plot = new PlotWidget(altitudeInfo);
+
+  tabWidget->setLayout(layout);
+  layout->addWidget(colorsCombo);
+  layout->addWidget(plot);
+
+  tab = viewer->core->createTab(tabWidget, fileInfo.fileName());
 
   tab->connectSignalCloseRequested(this, SLOT(close()));
   connect(colorsCombo, SIGNAL(currentIndexChanged(int)),

@@ -41,13 +41,24 @@ class IgcInfo {
   virtual void init(const QList<TrackFix> *fixList);
 
   //// Get the raw value of item number i.
+  //// \pre i >= 0 && i < this->count()
   virtual qreal value(int i) const = 0;
+
+  //// Get the relative time of item i.
+  //// \pre i >= 0 && i < this->count()
+  qreal time(int i) const;
+
+  /// Return relative time of the last item.
+  qreal maxTime() const { return time(count() - 1); }
 
   /// Forget any values previously associated with the global scale.
   virtual void resetGlobalScale();
 
   /// Propagate the global scales from the other igc info.
   virtual void addGlobalScale(const IgcInfo* other);
+
+  /// Number of items in the underlying fix list.
+  int count() const { return fixList->count(); }
 
   /// Return the minimal value of this track.
   qreal min() const { return min_; }
