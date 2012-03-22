@@ -15,7 +15,7 @@ class PlotWidget : public QWidget {
   Q_OBJECT
 
  public:
-  PlotWidget(IgcInfo* info);
+  explicit PlotWidget(IgcInfo* info);
 
  private:
   void resizeEvent(QResizeEvent* resizeEvent);

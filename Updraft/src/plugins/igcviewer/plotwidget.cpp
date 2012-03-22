@@ -12,7 +12,23 @@ const QPen PlotWidget::PLOT_PEN = QPen(Qt::red);
 static const qreal LN10 = qLn(10);
 
 PlotWidget::PlotWidget(IgcInfo* info)
-  : info(info) {}
+  : info(info) {
+  setMinimumSize(2 * PIXEL_OFFSET_X + MIN_TICK_SIZE,
+    2 * PIXEL_OFFSET_Y + MIN_TICK_SIZE);
+}
+
+int PlotWidget::findTickIncrement(qreal range,
+  qreal size, qreal minTickSpacing) {
+  qreal tmp = minTickSpacing * range / size;
+
+  qreal increment = qExp(qCeil(qLn(tmp) / LN10) * LN10);
+
+  if (increment * size / range > 2 * minTickSpacing) {
+    return increment / 2;
+  } else {
+    return increment;
+  }
+}
 
 void PlotWidget::resizeEvent(QResizeEvent* resizeEvent) {
   axes.setLimits(
@@ -21,6 +37,9 @@ void PlotWidget::resizeEvent(QResizeEvent* resizeEvent) {
 }
 
 void PlotWidget::paintEvent(QPaintEvent* paintEvent) {
+  // int lengthX = width() - 2 * PIXEL_OFFSET_X;
+  // int lengthY = height() - 2 * PIXEL_OFFSET_Y;
+
   QPainter painter(this);
   painter.setRenderHint(QPainter::Antialiasing);
 

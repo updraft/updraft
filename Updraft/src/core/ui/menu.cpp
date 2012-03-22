@@ -10,6 +10,11 @@ Menu::~Menu() {
   }
 }
 
+void Menu::clear() {
+  menu->clear();
+  actions.clear();
+}
+
 /// Insert action into this menu.
 /// \param position Priority of this action. Actions with
 ///   lower value are closer to the top.
@@ -17,6 +22,10 @@ void Menu::insertAction(int position, QAction* action) {
   actions.insert(position, action);
 
   reorganizeMenu();
+}
+
+void Menu::appendAction(QAction* action) {
+  menu->addAction(action);
 }
 
 void Menu::reorganizeMenu() {
