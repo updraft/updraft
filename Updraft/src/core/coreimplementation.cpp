@@ -74,7 +74,8 @@ osg::Group* CoreImplementation::getSimpleGroup() {
   return updraft->sceneManager->getSimpleGroup();
 }
 
-void CoreImplementation::registerOsgNode(osg::Node* node, MapObject* mapObject) {
+void CoreImplementation::registerOsgNode(osg::Node* node,
+  MapObject* mapObject) {
   updraft->sceneManager->registerOsgNode(node, mapObject);
 }
 

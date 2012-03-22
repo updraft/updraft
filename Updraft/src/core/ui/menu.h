@@ -30,6 +30,7 @@ class Menu : public MenuInterface {
   void appendAction(QAction* action);
 
   QMenu* getQMenu() { return menu; }
+
  private:
   QMenu* menu;
   bool ownsMenu;

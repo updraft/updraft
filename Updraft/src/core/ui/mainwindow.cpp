@@ -149,7 +149,7 @@ void MainWindow::openFile() {
 
 void MainWindow::setMapWidget(QWidget *widget) {
   QLayoutItem* child;
-  while ( (child = ui->layoutFrame->takeAt(0)) != 0) {
+  while ((child = ui->layoutFrame->takeAt(0)) != 0) {
     delete child;
   }
   ui->layoutFrame->addWidget(widget);
