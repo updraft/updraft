@@ -66,13 +66,8 @@ void TurnPoints::fileIdentification(QStringList *roles,
 
 bool TurnPoints::wantsToHandleClick(MapObject* obj) {
   QObject* qObj = obj->asQObject();
-  if (qObj && qobject_cast<TPMapObject*>(qObj)) {
-    qDebug("Yes, please, I will handle this!");	  
-    return true;
-  } else {
-    qDebug("I don't want to handle this");
-    return false;
-  }
+  if (qObj && qobject_cast<TPMapObject*>(qObj)) return true;
+  return false;
 }
 
 void TurnPoints::handleMouseEvent(MapObject* obj, const EventInfo* evt) {
