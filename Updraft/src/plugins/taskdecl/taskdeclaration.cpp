@@ -87,6 +87,9 @@ int TaskDeclaration::getIndexForNewTask() {
       case TaskFile::UNSTORED_EDITED:
         maxIndex = qMax(layer->getNewTaskIndex(), maxIndex);
         break;
+      default:
+        // do nothing
+        break;
     }
   }
 

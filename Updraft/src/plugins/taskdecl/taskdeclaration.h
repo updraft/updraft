@@ -60,7 +60,7 @@ class Q_DECL_EXPORT TaskDeclaration: public QObject, public PluginBase {
   /// \return Number which is displayed in title of new task
   int getIndexForNewTask();
 
-  friend TaskLayer;
+  friend class TaskLayer;
 };
 
 }  // End namespace Updraft
