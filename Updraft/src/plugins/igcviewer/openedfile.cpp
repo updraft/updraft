@@ -117,11 +117,13 @@ bool OpenedFile::init(IgcViewer* viewer,
   QWidget* tabWidget = new QWidget();
   QHBoxLayout* layout = new QHBoxLayout();
 
+  layout->setContentsMargins(0, 0, 0, 0);
+
   PlotWidget* plot = new PlotWidget(altitudeInfo);
 
   tabWidget->setLayout(layout);
-  layout->addWidget(colorsCombo);
-  layout->addWidget(plot);
+  layout->addWidget(colorsCombo, 0, Qt::AlignTop);
+  layout->addWidget(plot, 1.0);
 
   tab = viewer->core->createTab(tabWidget, fileInfo.fileName());
 
