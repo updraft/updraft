@@ -4,11 +4,7 @@
 namespace Updraft {
 namespace Core {
 
-Menu::~Menu() {
-  if (ownsMenu) {
-    delete menu;
-  }
-}
+Menu::~Menu() {}
 
 void Menu::clear() {
   menu->clear();

@@ -17,10 +17,10 @@ MainWindow::MainWindow(QWidget *parent)
       activeTab(NULL) {
   ui->setupUi(this);
 
-  menuFile = new Menu(ui->menuFile, false);
-  menuEdit = new Menu(ui->menuEdit, false);
-  menuTools = new Menu(ui->menuTools, false);
-  menuHelp = new Menu(ui->menuHelp, false);
+  menuFile = new Menu(ui->menuFile);
+  menuEdit = new Menu(ui->menuEdit);
+  menuTools = new Menu(ui->menuTools);
+  menuHelp = new Menu(ui->menuHelp);
 
   connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)),
     this, SLOT(tabClose(int)));
@@ -30,10 +30,10 @@ MainWindow::MainWindow(QWidget *parent)
 
   // TODO(cestmir): This is here just to be able to test context menu.
   QMenu* qContextMenu = new QMenu(this);
-  menuContext = new Menu(qContextMenu, true);
+  menuContext = new Menu(qContextMenu);
 
   qContextMenu = new QMenu(this);
-  menuMapObject = new Menu(qContextMenu, true);
+  menuMapObject = new Menu(qContextMenu);
 
   standardMenuItems();
 }
