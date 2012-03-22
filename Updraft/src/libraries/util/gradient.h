@@ -4,6 +4,7 @@
 #include <QColor>
 
 #include "util.h"
+#include "linearfunc.h"
 
 namespace Updraft {
 namespace Util {
@@ -21,7 +22,7 @@ class UTIL_EXPORT Gradient {
   Gradient(const QColor &c1, const QColor &c2, bool reverseHue = false);
 
   /// Gradients made with this constructor are completely black.
-  Gradient();
+  Gradient() {}
 
   /// Return the color at given position.
   /// \param t position in the gradient, t >= 0, t <= 1
@@ -30,10 +31,10 @@ class UTIL_EXPORT Gradient {
  protected:
   // static const double ACHROMATIC_THRESHOLD = 0.005;
 
-  qreal hA, hB;
-  qreal sA, sB;
-  qreal vA, vB;
-  qreal aA, aB;
+  LinearFunc hue;
+  LinearFunc sat;
+  LinearFunc val;
+  LinearFunc alpha;
 };
 
 }  // End namespace Util
