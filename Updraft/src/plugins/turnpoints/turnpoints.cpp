@@ -65,7 +65,8 @@ void TurnPoints::fileIdentification(QStringList *roles,
 }
 
 bool TurnPoints::wantsToHandleClick(MapObject* obj) {
-  if (qobject_cast<TPMapObject*>(obj)) return true;
+  QObject* qObj = obj->asQObject();
+  if (qObj && qobject_cast<TPMapObject*>(qObj)) return true;
   return false;
 }
 

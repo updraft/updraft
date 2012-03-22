@@ -23,11 +23,12 @@ namespace Updraft {
 
 // TODO(cestmir): This is just a temporary class to test mouse picking
 // Remove it as soon as real turnpoint map objects are implemented
-class TPMapObject: public MapObject {
+class TPMapObject: public QObject, public MapObject {
  Q_OBJECT
 
  public:
-  TPMapObject(const QString& name): MapObject(name) {}
+  TPMapObject(const QString& name): QObject(NULL), MapObject(name) {}
+  QObject* asQObject() { return this; }
 };
 
 class TurnPoints;
