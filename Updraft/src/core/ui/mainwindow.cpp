@@ -29,10 +29,10 @@ MainWindow::MainWindow(QWidget *parent)
   tabsVisibility();
 
   // TODO(cestmir): This is here just to be able to test context menu.
-  QMenu* qContextMenu = new QMenu();
+  QMenu* qContextMenu = new QMenu(this);
   menuContext = new Menu(qContextMenu, true);
 
-  qContextMenu = new QMenu();
+  qContextMenu = new QMenu(this);
   menuMapObject = new Menu(qContextMenu, true);
 
   standardMenuItems();
