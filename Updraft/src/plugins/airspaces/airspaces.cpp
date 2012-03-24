@@ -46,6 +46,7 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
     case IMPORT_OPENAIRSPACE_FILE:
       // draw openairspace file
       mapLayers = engine->Draw(fileName);
+      if (!mapLayers) return false;
       for (int i = 0; i < mapLayers->size(); ++i) {
         MapLayerInterface* layer1 = mapLayers->at(i);
         layer1->connectSignalDisplayed

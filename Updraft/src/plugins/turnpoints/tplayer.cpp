@@ -43,12 +43,18 @@ osg::Geometry* TPLayer::createGeometry(qreal scale) {
   return geometry;
 }
 
-osg::Geode* TPLayer::createGeode(qreal scale) {
+osg::Geode* TPLayer::createGeode(qreal scale, bool isAirfield) {
   osg::Geode* geode = new osg::Geode();
   osg::StateSet* stateSet = geode->getOrCreateStateSet();
 
   // Create texture
-  QString texPath = dataDir + "/turnpoint.tga";
+  QString imageName("");
+  if (isAirfield) {
+    imageName = "airfield.tga";
+  } else {
+    imageName = "turnpoint.tga";
+  }
+  QString texPath = dataDir + "/" + imageName;
   osg::Image *image = osgDB::readImageFile(texPath.toStdString());
   osg::Texture2D *texture = new osg::Texture2D();
   texture->setImage(image);
@@ -101,7 +107,8 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
 
   // Create node for one turn-point.
   // It will be shared among Autotransform nodes.
-  osg::Geode *geode = createGeode(25.0);
+  osg::Geode *geode   = createGeode(25.0, 0);
+  osg::Geode *geodeAf = createGeode(25.0, 1);
 
   TTPList points = file->getTurnPoints();
 
@@ -124,20 +131,25 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     }
 
     // Add new Autotransform node.
-    group->addChild(createAutoTransform(matrix, geode));
+    if (itPoint->type >= 2 && itPoint->type <= 5) {
+      group->addChild(createAutoTransform(matrix, geodeAf));
+    } else {
+      group->addChild(createAutoTransform(matrix, geode));
+    }
 
     // If is the airport (type 2,3,4,5) - add the airport
-    if (itPoint->type >= 2 || itPoint->type <= 5) {
+    /*if (itPoint->type >= 2 || itPoint->type <= 5) {
       if (!airfieldLayer)
         airfieldLayer = new AFLayer();
       // Add the airport
       airfieldLayer->AddAirport(*itPoint);
-    }
+    }*/
   }
+  /*
   if (airfieldLayer) {
     delete airfieldLayer;
     airfieldLayer = NULL;
-  }
+  }*/
 }
 
 TPLayer::~TPLayer() {

@@ -45,7 +45,7 @@ class TPLayer {
   /// Creates osg::Geometry for turn-point billboard.
   /// \param scale relative size of the node.
   /// \return A new instance of osg::Geode
-  osg::Geode* createGeode(qreal scale);
+  osg::Geode* createGeode(qreal scale, bool isAirfield);
 
   /// Creates osg::AutoTransform for turn-point billboard.
   /// This function is called for each TP.

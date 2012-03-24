@@ -8,6 +8,7 @@
 namespace OpenAirspace {
   Parser::Parser(const QString& fileName) {
     // qDebug("Parser ctor");
+    this->allAirspaces = NULL;
     QFile file(fileName);
 
     if (!file.open(QFile::ReadOnly)) {
@@ -38,11 +39,13 @@ namespace OpenAirspace {
   }
   Parser::~Parser(void) {
     // qDebug("Parser dtor");
-    for (int i = 0; i < allAirspaces->size(); ++i) {
-      Airspace* a = allAirspaces->at(i);
-      delete a;
+    if (this->allAirspaces) {
+      for (int i = 0; i < allAirspaces->size(); ++i) {
+        Airspace* a = allAirspaces->at(i);
+        delete a;
+      }
+      delete allAirspaces;
+      allAirspaces = NULL;
     }
-    delete allAirspaces;
-    allAirspaces = NULL;
   }
 }  // OpenAirspace
