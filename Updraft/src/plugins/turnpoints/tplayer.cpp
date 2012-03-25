@@ -132,6 +132,9 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
 
     // Add new Autotransform node.
     if (itPoint->type >= 2 && itPoint->type <= 5) {
+      qreal afAngle = itPoint->rwyHeading * 3.14 / 180;
+      matrix = osg::Matrixd::identity().rotate
+        (afAngle, osg::Vec3f(0.0f, 0.0f, -1.0f)) * matrix;
       group->addChild(createAutoTransform(matrix, geodeAf));
     } else {
       group->addChild(createAutoTransform(matrix, geode));
