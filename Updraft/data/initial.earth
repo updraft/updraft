@@ -37,6 +37,14 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
       <srs>EPSG:4326</srs>
     </image>
     -->
+    
+    <image name="Simple map" driver="wms">
+      <url>http://terraservice.net/ogccapabilities.ashx?</url>
+      <layers>basic</layers>
+      <format>png</format>
+      <tile_size>256</tile_size>
+      <srs>EPSG:4326</srs>
+    </image>
 
 	  <elevation name="Elevation layer" driver="tms">
         <url>http://readymap.org/readymap/tiles/1.0.0/9/</url>    
