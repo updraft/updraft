@@ -33,6 +33,8 @@ class Q_DECL_EXPORT TurnPoints : public QObject, public PluginBase {
   void fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename);
 
+  bool wantsToHandleClick(MapObject* obj);
+  void handleClick(MapObject* obj, const EventInfo* evt);
  public slots:
   void mapLayerDisplayed(bool value, MapLayerInterface* sender);
 
@@ -40,9 +42,6 @@ class Q_DECL_EXPORT TurnPoints : public QObject, public PluginBase {
   enum FileRoles {
     IMPORT_CUP_FILE = 1
   };
-
-  /// Value which will be used as a next layer id.
-  int nextLayerId;
 
   /// List of imported files
   TTPLayerMap layers;

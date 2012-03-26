@@ -6,10 +6,13 @@
 
 #include "coreinterface.h"
 #include "tabinterface.h"
+#include "menuinterface.h"
 
 #define PLUGIN_API_VERSION 0
 
 namespace Updraft {
+
+class EventInfo;
 
 // Forward declarations
 namespace Core {
@@ -41,6 +44,15 @@ class PluginBase {
   /// Called before the plugin is unloaded.
   virtual void deinitialize() = 0;
 
+  /// Called when a MapObject is right-clicked on a map.
+  virtual void fillContextMenu(MapObject* obj, MenuInterface* menu) {}
+
+  /// Tells whether this plugin wants to handle a mouse click event.
+  virtual bool wantsToHandleClick(MapObject* obj) { return false; }
+
+  /// Handles the left mouse click event.
+  virtual void handleClick(MapObject* obj, const EventInfo* evt) {}
+
   /// Callback to open a file.
   /// \return Was opening successful?
   /// \param filename full path to a file
@@ -50,6 +62,10 @@ class PluginBase {
 
   void setCoreInterface(CoreInterface *coreInterface) {
     core = coreInterface;
+  }
+
+  CoreInterface* getCoreInterface() {
+    return core;
   }
 
  private:

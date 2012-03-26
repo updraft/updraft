@@ -12,5 +12,6 @@
 #include "location.h"
 #include "units.h"
 #include "gradient.h"
+#include "linearfunc.h"
 
 #endif  // UPDRAFT_SRC_LIBRARIES_UTIL_UTIL_H_

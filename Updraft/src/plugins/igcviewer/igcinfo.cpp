@@ -35,6 +35,20 @@ void IgcInfo::init(const QList<TrackFix> *fixList) {
   resetGlobalScale();
 }
 
+qreal IgcInfo::time(int i) const {
+  if (i == 0) {
+    return 0;
+  }
+
+  qreal ret = fixList->at(0).timestamp.secsTo(fixList->at(i).timestamp);
+
+  if (ret < 0) {
+    return ret + 24 * 3600;
+  } else {
+    return ret;
+  }
+}
+
 void IgcInfo::resetGlobalScale() {
   globalMin_ = min_;
   globalMax_ = max_;

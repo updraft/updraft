@@ -1,12 +1,15 @@
 #include "openedfile.h"
 
 #include <QComboBox>
+#include <QHBoxLayout>
 #include <QDebug>
 
 #include <osg/Geode>
 #include <osg/LineWidth>
 
 #include "igc/igc.h"
+
+#include "plotwidget.h"
 
 namespace Updraft {
 namespace IgcViewer {
@@ -110,11 +113,27 @@ bool OpenedFile::init(IgcViewer* viewer,
   ADD_COLORING(tr("Time"),
     new LocalColoring(timeInfo, &gradient));
 
-  tab = viewer->core->createTab(colorsCombo, fileInfo.fileName());
 
-  tab->connectSignalClosed(this, SLOT(close()));
+  QWidget* tabWidget = new QWidget();
+  QHBoxLayout* layout = new QHBoxLayout();
+
+  layout->setContentsMargins(0, 0, 0, 0);
+
+  PlotWidget* plot = new PlotWidget(
+    altitudeInfo, verticalSpeedInfo, groundSpeedInfo);
+
+  tabWidget->setLayout(layout);
+  layout->addWidget(colorsCombo, 0, Qt::AlignTop);
+  layout->addWidget(plot, 1.0);
+
+  tab = viewer->core->createTab(tabWidget, fileInfo.fileName());
+
+  tab->connectSignalCloseRequested(this, SLOT(close()));
   connect(colorsCombo, SIGNAL(currentIndexChanged(int)),
     viewer, SLOT(coloringChanged(int)));
+
+  // Sets automatic tab closing on request (without prompt).
+  tab->connectCloseRequestToClose();
 
   createTrack();
 
