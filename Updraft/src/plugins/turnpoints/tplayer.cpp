@@ -107,7 +107,7 @@ osg::Node* TPLayer::createAutoScale(
   qreal maxScale) {
   // Creates the autoscale transform node
   QString fontName = "AmphionExtrabold Regular.ttf";
-  QString fontPath = dataDir + "/fonts/" + fontName;
+  QString fontPath = dataDir + "/" + fontName;
 
   // set the osgText
   osgText::Text* text = new osgText::Text;
@@ -136,7 +136,8 @@ osg::Node* TPLayer::createAutoScale(
 }
 
 TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
-  const TPFile *file_, const QString &dataDir_, TurnPoints* parent_)
+  const TPFile *file_, const QString &dataDir_, TurnPoints* parent_,
+  CoreInterface* core)
   : group(new osg::Group()), objectPlacer(objectPlacer_),
   file(file_), displayed(displayed_), dataDir(dataDir_), parent(parent_) {
   if (group == NULL || objectPlacer == NULL || file == NULL) {
@@ -144,8 +145,26 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
   }
 
   // Settings
-  labelColour   = osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f);
-  labelMaxScale = 20;
+  // set defaults
+  core->addSettingsGroup(
+    "Turnpoints", "Turnpoints Plugin Settings");
+  labColSetR = core->addSetting("Turnpoints:labelColourR",
+    "Colour of the turnpoint labels - RED", 1.0);
+  labColSetG = core->addSetting("Turnpoints:labelColourG",
+    "Colour of the turnpoint labels - GREEN", 1.0);
+  labColSetB = core->addSetting("Turnpoints:labelColourB",
+    "Colour of the turnpoint labels - BLUE", 1.0);
+  labColSetA = core->addSetting("Turnpoints:labelColourA",
+    "Colour of the turnpoint labels - ALPHA", 1.0);
+  labMaxScaleSet = core->addSetting("Turnpoints:labelMaxScale",
+    "Maximum scale for label to be visible", 20.0, true);
+  // get stored values
+  labelColour   = osg::Vec4(
+    labColSetR->get().toFloat(),
+    labColSetG->get().toFloat(),
+    labColSetB->get().toFloat(),
+    labColSetA->get().toFloat());
+  labelMaxScale = labMaxScaleSet->get().toFloat();
 
   // Create node for one turn-point.
   // It will be shared among Autotransform nodes.

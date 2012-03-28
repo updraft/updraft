@@ -5,6 +5,7 @@
 #include <osg/Matrix>
 #include "tpfile.h"
 #include "mapobject.h"
+#include "../../pluginbase.h"
 
 namespace osg {
   class Geometry;
@@ -38,7 +39,8 @@ class TurnPoints;
 class TPLayer {
  public:
   TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
-    const TPFile *file_, const QString &dataDir, TurnPoints* parent_);
+    const TPFile *file_, const QString &dataDir, TurnPoints* parent_,
+    CoreInterface* core);
 
   virtual ~TPLayer();
 
@@ -103,6 +105,13 @@ class TPLayer {
 
   /// Min zoom to display the label
   qreal labelMaxScale;
+
+  /// Settings
+  SettingInterface* labColSetR;
+  SettingInterface* labColSetG;
+  SettingInterface* labColSetB;
+  SettingInterface* labColSetA;
+  SettingInterface* labMaxScaleSet;
 };
 
 }  // End namespace Updraft
