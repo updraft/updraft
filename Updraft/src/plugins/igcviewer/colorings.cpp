@@ -10,8 +10,8 @@ DefaultColoring::DefaultColoring(const IgcInfo *info,
   : info(info), gradient(gradient) {}
 
 QColor DefaultColoring::color(int i) {
-  qreal scaled = (info->value(i) - info->globalMin()) /
-    (info->globalMax() - info->globalMin());
+  qreal scaled = (info->value(i) - info->globalRobustMin()) /
+    (info->globalRobustMax() - info->globalRobustMin());
   return gradient->get(scaled);
 }
 
@@ -20,7 +20,7 @@ SymmetricColoring::SymmetricColoring(
   : DefaultColoring(info, gradient) {}
 
 QColor SymmetricColoring::color(int i) {
-  qreal max = qMax(info->globalMax(), -info->globalMin());
+  qreal max = qMax(info->globalRobustMax(), -info->globalRobustMin());
 
   qreal scaled = (info->value(i) + max) / (2 * max);
   return gradient->get(scaled);
@@ -31,25 +31,16 @@ LocalColoring::LocalColoring(
   : DefaultColoring(info, gradient) {}
 
 QColor LocalColoring::color(int i) {
-  qreal scaled = (info->value(i) - info->min()) /
-    (info->max() - info->min());
+  qreal scaled = (info->value(i) - info->robustMin()) /
+    (info->robustMax() - info->robustMin());
   return gradient->get(scaled);
 }
 
-CyclingColoring::CyclingColoring(const IgcInfo* info,
-  int count, QColor firstColor)
-  : info(info) {
-  step = 1 / static_cast<qreal>(count);
+ConstantColoring::ConstantColoring(QColor color)
+  : c(color) {}
 
-  firstColor.getHsvF(&h, &s, &v, &a);
-}
-
-QColor CyclingColoring::color(int i) {
-  qreal newh = h + step * info->value(i);
-
-  newh = newh - qFloor(newh);
-
-  return QColor::fromHsvF(newh, s, v, a);
+QColor ConstantColoring::color(int i) {
+  return c;
 }
 
 }  // End namespace IgcViewer

@@ -25,8 +25,12 @@ class Tab : public QWidget, public TabInterface {
 
   QWidget* getWidget() { return widget; }
 
+  void select();
+
   void connectSlotClose(const QObject* sender, const char *signal);
-  void connectSignalClosed(const QObject* receiver, const char *method);
+  void connectSignalCloseRequested(const QObject* receiver,
+    const char *method);
+  void connectCloseRequestToClose();
   void connectSignalSelected(const QObject* receiver, const char *method);
   void connectSignalDeselected(const QObject* receiver, const char *method);
 
@@ -34,7 +38,8 @@ class Tab : public QWidget, public TabInterface {
   void close();
 
  signals:
-  void closed();
+  void tabCloseRequested();
+  void tabRemoved(QWidget *tab);
   void selected();
   void deselected();
 

@@ -50,8 +50,8 @@ void TestPlugin::initialize() {
   // Add an action into a context menu
   core->getSystemMenu(MENU_CONTEXT)->insertAction(0, helpAction);
 
-  createTab("Button tab 1");
-  createTab("Button tab 2");
+  // createTab("Button tab 1");
+  // createTab("Button tab 2");
 
   FileRegistration regTxt1;
   regTxt1.category = CATEGORY_TEMPORARY;

@@ -17,11 +17,15 @@ class TabInterface {
   virtual void connectSlotClose(const QObject* sender,
     const char *signal) = 0;
 
-  /// Connect to a signal closed(void) that is emited before closing the tab.
-  /// After receiving this signal pointer to this becomes invalid.
+  /// Connect to a signal tabCloseRequested(void) that is emited before closing the tab.
   /// \see QObject::connect()
-  virtual void connectSignalClosed(const QObject* receiver,
+  virtual void connectSignalCloseRequested(const QObject* receiver,
     const char *method) = 0;
+
+  /// Connect signal tabCloseRequested(void) to slot close.
+  /// Call this method when the automatic closing is desired.
+  /// \see QObject::connect()
+  virtual void connectCloseRequestToClose() = 0;
 
   /// Connects to a signal selected(void) -- tab gets focus.
   /// \see QObject::connect()
@@ -36,6 +40,9 @@ class TabInterface {
   /// Close this tab.
   /// This method deletes the tab and its widget.
   virtual void close() = 0;
+
+  /// Select this tab in the tab pane.
+  virtual void select() = 0;
 };
 
 }  // End namespace Updraft

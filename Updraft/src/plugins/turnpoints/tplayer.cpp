@@ -7,7 +7,9 @@
 #include <osgDB/ReadFile>
 #include <osgEarthUtil/ObjectPlacer>
 #include "tplayer.h"
-#include "../airfields/aflayer.h"
+#include "coreinterface.h"
+#include "turnpoints.h"
+#include "mapobject.h"
 
 namespace Updraft {
 
@@ -98,21 +100,20 @@ osg::AutoTransform* TPLayer::createAutoTransform(const osg::Matrix& matrix,
 }
 
 TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
-  const TPFile *file_, const QString &dataDir_)
+  const TPFile *file_, const QString &dataDir_, TurnPoints* parent_)
   : group(new osg::Group()), objectPlacer(objectPlacer_),
-  file(file_), displayed(displayed_), dataDir(dataDir_) {
+  file(file_), displayed(displayed_), dataDir(dataDir_), parent(parent_) {
   if (group == NULL || objectPlacer == NULL || file == NULL) {
     return;
   }
 
   // Create node for one turn-point.
   // It will be shared among Autotransform nodes.
-  osg::Geode *geode   = createGeode(25.0, 0);
+  osg::Geode *geodeTp = createGeode(25.0, 0);
   osg::Geode *geodeAf = createGeode(25.0, 1);
 
   TTPList points = file->getTurnPoints();
 
-  AFLayer* airfieldLayer = NULL;
 
   for (TTPList::const_iterator itPoint = points.begin();
     itPoint != points.end(); ++itPoint) {
@@ -130,32 +131,44 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
       continue;
     }
 
-    // Add new Autotransform node.
+    // Create new Autotransform node.
+    osg::AutoTransform* tpNode = NULL;
+
     if (itPoint->type >= 2 && itPoint->type <= 5) {
+      qreal afAngle = itPoint->rwyHeading * 3.14 / 180;
+      matrix = osg::Matrixd::identity().rotate
+        (afAngle, osg::Vec3f(0.0f, 0.0f, -1.0f)) * matrix;
+      // group->addChild(createAutoTransform(matrix, geodeAf));
+      tpNode = createAutoTransform(matrix, geodeAf);
+    } else {
+      // group->addChild(createAutoTransform(matrix, geode));
+      tpNode = createAutoTransform(matrix, geodeTp);
+    }
+    // osg::AutoTransform* tpNode = createAutoTransform(matrix, geode);
+
+    // Make the autotransform node pickable
+    TPMapObject* mapObject = new TPMapObject(itPoint->name);
+    mapObjects.push_back(mapObject);
+    parent->getCoreInterface()->registerOsgNode(tpNode, mapObject);
+
+    group->addChild(tpNode);
+
+    // Add new Autotransform node.
+    /* if (itPoint->type >= 2 && itPoint->type <= 5) {
       qreal afAngle = itPoint->rwyHeading * 3.14 / 180;
       matrix = osg::Matrixd::identity().rotate
         (afAngle, osg::Vec3f(0.0f, 0.0f, -1.0f)) * matrix;
       group->addChild(createAutoTransform(matrix, geodeAf));
     } else {
       group->addChild(createAutoTransform(matrix, geode));
-    }
-
-    // If is the airport (type 2,3,4,5) - add the airport
-    /*if (itPoint->type >= 2 || itPoint->type <= 5) {
-      if (!airfieldLayer)
-        airfieldLayer = new AFLayer();
-      // Add the airport
-      airfieldLayer->AddAirport(*itPoint);
     }*/
   }
-  /*
-  if (airfieldLayer) {
-    delete airfieldLayer;
-    airfieldLayer = NULL;
-  }*/
 }
 
 TPLayer::~TPLayer() {
+  foreach(TPMapObject* tpObj, mapObjects) {
+    delete tpObj;
+  }
   delete file;
 }
 

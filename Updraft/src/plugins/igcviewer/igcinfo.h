@@ -41,13 +41,24 @@ class IgcInfo {
   virtual void init(const QList<TrackFix> *fixList);
 
   //// Get the raw value of item number i.
+  //// \pre i >= 0 && i < this->count()
   virtual qreal value(int i) const = 0;
+
+  //// Get the relative time of item i.
+  //// \pre i >= 0 && i < this->count()
+  qreal time(int i) const;
+
+  /// Return relative time of the last item.
+  qreal maxTime() const { return time(count() - 1); }
 
   /// Forget any values previously associated with the global scale.
   virtual void resetGlobalScale();
 
-  /// Add a new minimum and maximum to the global scale;
-  virtual void addGlobalScale(qreal minimum, qreal maximum);
+  /// Propagate the global scales from the other igc info.
+  virtual void addGlobalScale(const IgcInfo* other);
+
+  /// Number of items in the underlying fix list.
+  int count() const { return fixList->count(); }
 
   /// Return the minimal value of this track.
   qreal min() const { return min_; }
@@ -55,16 +66,34 @@ class IgcInfo {
   /// Return the maximal value of this track.
   qreal max() const { return max_; }
 
+  /// Return the outlier-free minimal value of this track.
+  /// \note This is generally inside the (min, max) interval.
+  qreal robustMin() const { return robustMin_; }
+
+  /// Return the outlier-free maximal value of this track.
+  /// \note This is generally inside the (min, max) interval.
+  qreal robustMax() const { return robustMax_; }
+
   /// Return the minimal value of all tracks.
   qreal globalMin() const { return globalMin_; }
 
   /// Return the maximal value of all tracks.
   qreal globalMax() const { return globalMax_; }
 
+  /// Return the outlier-free minimal value of all tracks.
+  /// \note This is generally inside the (globalMin, globalMax) interval.
+  qreal globalRobustMin() const { return globalRobustMin_; }
+
+  /// Return the outlier-free maximal value of all tracks.
+  /// \note This is generally inside the (globalMin, globalMax) interval.
+  qreal globalRobustMax() const { return globalRobustMax_; }
+
  protected:
   const QList<TrackFix> *fixList;
   qreal min_, max_;
+  qreal robustMin_, robustMax_;
   qreal globalMin_, globalMax_;
+  qreal globalRobustMin_, globalRobustMax_;
 };
 
 /// Returns altitude.

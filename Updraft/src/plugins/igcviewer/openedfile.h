@@ -24,8 +24,8 @@ class OpenedFile: public QObject {
   ~OpenedFile();
 
   /// Open the filename.
-  /// \param id Number of the file, used only for "automatic coloring"
-  bool init(IgcViewer* viewer, const QString& filename, int id);
+  /// \param color Color used for automatic coloring.
+  bool init(IgcViewer* viewer, const QString& filename, QColor color);
 
   /// Force redraw of everything.
   void redraw();
@@ -36,13 +36,22 @@ class OpenedFile: public QObject {
   /// Update the global scales based on the other opened file.
   void updateScales(const OpenedFile* other);
 
+  QColor getAutomaticColor() {
+    return automaticColor;
+  }
+
+  void selectTab();
+
+  /// Return the absolute file name.
+  QString fileName();
+
+  /// Set colors of the track according to the value selected in the viewer.
+  void coloringChanged();
+
  private slots:
   /// Slot that gets called when the tab associated with this file is closed.
   /// Deletes the opened file.
   void close();
-
-  /// Set colors of the track according to the value selected in the combo.
-  void updateColors(int row);
 
  private:
   /// Load the igc file to our own representation and close it.
@@ -57,9 +66,13 @@ class OpenedFile: public QObject {
 
   QFileInfo fileInfo;
 
+  QComboBox *colorsCombo;
+
   TabInterface *tab;
   MapLayerInterface* track;
   IgcViewer *viewer;
+
+  QColor automaticColor;
 
   /// Geometry of the 3D track visualisation.
   /// Used for coloring.
@@ -77,15 +90,12 @@ class OpenedFile: public QObject {
   /// There are separate variables for named access to specific info classes.
   QList<IgcInfo*> igcInfo;
 
-  IgcInfo* trackIdInfo;
   IgcInfo* altitudeInfo;
   IgcInfo* verticalSpeedInfo;
   IgcInfo* groundSpeedInfo;
   IgcInfo* timeInfo;
 
   Util::Gradient gradient;
-
-  friend class IgcViewer;
 };
 
 }  // End namespace IgcViewer

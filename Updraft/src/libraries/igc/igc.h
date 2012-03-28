@@ -94,18 +94,40 @@ class IGC_EXPORT IgcFile {
   const EventList& events() const { return eventList; }
 
  private:
-  bool isEndOfFile();
+  /// Load record into the buffer and parse it.
+  /// \return True on success.
+  bool loadOneRecord();
 
-  void parseOneRecord();
+  /// Parse a single record stored in the buffer.
+  bool parseOneRecord();
 
-  QTime parseTimestamp(QByteArray bytes);
-  qreal parseLatLon(QByteArray bytes);
-  qreal parseDecimal(QByteArray bytes);
-  QDate parseDate(QByteArray bytes);
+  /// Parse time from IGC encoding.
+  /// HHMMSS
+  /// \param ok Set to true if parsing was successful, false otherwise.
+  QTime parseTimestamp(QByteArray bytes, bool* ok);
 
-  void processRecordB();
-  void processRecordH();
-  void processRecordL();
+  /// Parse latitude or longitude from IGC encoding.
+  /// \param ok Set to true if parsing was successful, false otherwise.
+  /// \return Degrees. Negative values go south and west.
+  /// DDMMmmm[NS] or DDDMMmmm[EW]
+  qreal parseLatLon(QByteArray bytes, bool* ok);
+
+  /// Parse a decimal number in igc format.
+  /// \param ok Set to true if parsing was successful, false otherwise.
+  qreal parseDecimal(QByteArray bytes, bool* ok);
+
+  /// Parse date specification.
+  /// \param ok Set to true if parsing was successful, false otherwise.
+  QDate parseDate(QByteArray bytes, bool* ok);
+
+  /// Process a single record of type B (fix data) stored in buffer.
+  bool processRecordB();
+
+  /// Process a single record of type H (headers) stored in buffer.
+  bool processRecordH();
+
+  /// Process a single record of type L (comments) stored in buffer.
+  bool processRecordL();
 
   static bool eventLessThan(Event const* e1, Event const* e2);
 

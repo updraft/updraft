@@ -1,12 +1,15 @@
 #include "openedfile.h"
 
 #include <QComboBox>
+#include <QHBoxLayout>
 #include <QDebug>
 
 #include <osg/Geode>
 #include <osg/LineWidth>
 
 #include "igc/igc.h"
+
+#include "plotwidget.h"
 
 namespace Updraft {
 namespace IgcViewer {
@@ -67,16 +70,17 @@ bool OpenedFile::loadIgc(const QString& filename) {
   return true;
 }
 
-bool OpenedFile::init(IgcViewer* viewer, const QString& filename, int id) {
+bool OpenedFile::init(IgcViewer* viewer,
+  const QString& filename, QColor color) {
   this->viewer = viewer;
-
   fileInfo = QFileInfo(filename);
+  automaticColor = color;
 
   if (!loadIgc(filename)) {
     return false;
   }
 
-  QComboBox *colorsCombo = new QComboBox();
+  colorsCombo = new QComboBox();
 
   gradient = Util::Gradient(Qt::blue, Qt::red, true);
 
@@ -87,7 +91,6 @@ bool OpenedFile::init(IgcViewer* viewer, const QString& filename, int id) {
       variable = igcInfo[igcInfo.count() - 1]; \
     } while (0)
 
-  ADD_IGCINFO(trackIdInfo, new TrackIdIgcInfo(id));
   ADD_IGCINFO(altitudeInfo, new AltitudeIgcInfo());
   ADD_IGCINFO(verticalSpeedInfo, new VerticalSpeedIgcInfo());
   ADD_IGCINFO(groundSpeedInfo, new GroundSpeedIgcInfo());
@@ -100,7 +103,7 @@ bool OpenedFile::init(IgcViewer* viewer, const QString& filename, int id) {
     } while (0)
 
   ADD_COLORING(tr("Automatic"),
-    new CyclingColoring(trackIdInfo, 6, Qt::red));
+    new ConstantColoring(color));
   ADD_COLORING(tr("Vertical Speed"),
     new SymmetricColoring(verticalSpeedInfo, &gradient));
   ADD_COLORING(tr("Ground Speed"),
@@ -110,21 +113,37 @@ bool OpenedFile::init(IgcViewer* viewer, const QString& filename, int id) {
   ADD_COLORING(tr("Time"),
     new LocalColoring(timeInfo, &gradient));
 
-  tab = viewer->core->createTab(colorsCombo, fileInfo.fileName());
 
-  tab->connectSignalClosed(this, SLOT(close()));
+  QWidget* tabWidget = new QWidget();
+  QHBoxLayout* layout = new QHBoxLayout();
+
+  layout->setContentsMargins(0, 0, 0, 0);
+
+  PlotWidget* plot = new PlotWidget(
+    altitudeInfo, verticalSpeedInfo, groundSpeedInfo);
+
+  tabWidget->setLayout(layout);
+  layout->addWidget(colorsCombo, 0, Qt::AlignTop);
+  layout->addWidget(plot, 1.0);
+
+  tab = viewer->core->createTab(tabWidget, fileInfo.fileName());
+
+  tab->connectSignalCloseRequested(this, SLOT(close()));
   connect(colorsCombo, SIGNAL(currentIndexChanged(int)),
-    this, SLOT(updateColors(int)));
+    viewer, SLOT(coloringChanged(int)));
+
+  // Sets automatic tab closing on request (without prompt).
+  tab->connectCloseRequestToClose();
 
   createTrack();
 
-  updateColors(colorsCombo->currentIndex());
+  coloringChanged();
 
   return true;
 }
 
 void OpenedFile::redraw() {
-  setColors(currentColoring);
+  setColors(colorings[viewer->currentColoring]);
 }
 
 void OpenedFile::close() {
@@ -138,8 +157,9 @@ void OpenedFile::close() {
   delete this;
 }
 
-void OpenedFile::updateColors(int row) {
-  setColors(colorings[row]);
+void OpenedFile::coloringChanged() {
+  colorsCombo->setCurrentIndex(viewer->currentColoring);
+  setColors(colorings[viewer->currentColoring]);
 }
 
 void OpenedFile::createTrack() {
@@ -191,15 +211,22 @@ void OpenedFile::setColors(Coloring *coloring) {
 
 void OpenedFile::updateScales(const OpenedFile *other) {
   for (int i = 0; i < igcInfo.count(); ++i) {
-    igcInfo[i]->addGlobalScale(
-      other->igcInfo[i]->globalMin(), other->igcInfo[i]->globalMax());
+    igcInfo[i]->addGlobalScale(other->igcInfo[i]);
   }
+}
+
+void OpenedFile::selectTab() {
+  tab->select();
 }
 
 void OpenedFile::resetScales() {
   for (int i = 0; i < igcInfo.count(); ++i) {
     igcInfo[i]->resetGlobalScale();
   }
+}
+
+QString OpenedFile::fileName() {
+  return fileInfo.absoluteFilePath();
 }
 
 }  // End namespace IgcViewer

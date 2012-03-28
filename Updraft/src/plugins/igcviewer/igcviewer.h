@@ -1,7 +1,9 @@
 #ifndef UPDRAFT_SRC_PLUGINS_IGCVIEWER_IGCVIEWER_H_
 #define UPDRAFT_SRC_PLUGINS_IGCVIEWER_IGCVIEWER_H_
 
-#include <QtCore>
+#include <QColor>
+#include <QList>
+#include <QPair>
 #include "../../pluginbase.h"
 
 namespace Updraft {
@@ -26,15 +28,29 @@ class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
   void fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename);
 
+ private slots:
+  /// One of the opened files changed its coloring.
+  /// propagate this change to all of them.
+  void coloringChanged(int i);
+
  private:
   /// Remove the opened file from the lists and notify recalculate
   /// all scales.
   void fileClose(OpenedFile* f);
 
-  QList<OpenedFile*> opened;
-  MapLayerGroupInterface* mapLayerGroup;
+  /// Finds a least used automatic color and increments its use count.
+  QColor findAutomaticColor();
 
-  int openedCounter;
+  /// Decrement use count for the given automatic color.
+  void freeAutomaticColor(QColor c);
+
+  /// Currently selected coloring.
+  int currentColoring;
+
+  QList<QPair<QColor, int> > automaticColors;
+
+  QMap<QString, OpenedFile*> opened;
+  MapLayerGroupInterface* mapLayerGroup;
 
   friend class OpenedFile;
 };

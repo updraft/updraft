@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
   menuHelp = new Menu(ui->menuHelp, false);
 
   connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)),
-    this, SLOT(tabClose(int)));
+    this, SLOT(tabCloseRequested(int)));
   connect(ui->tabWidget, SIGNAL(currentChanged(int)),
     this, SLOT(tabSwitch(int)));
   tabsVisibility();
@@ -31,6 +31,9 @@ MainWindow::MainWindow(QWidget *parent)
   // TODO(cestmir): This is here just to be able to test context menu.
   QMenu* qContextMenu = new QMenu();
   menuContext = new Menu(qContextMenu, true);
+
+  qContextMenu = new QMenu();
+  menuMapObject = new Menu(qContextMenu, true);
 
   standardMenuItems();
 }
@@ -41,6 +44,7 @@ MainWindow::~MainWindow() {
     delete menuEdit;
     delete menuFile;
     delete menuContext;
+    delete menuMapObject;
     delete ui;
 
     // TODO(Kuba): Delete the built-in menus together with custom menus?
@@ -63,6 +67,9 @@ Menu* MainWindow::getSystemMenu(SystemMenu menu) {
     case MENU_HELP:
       return menuHelp;
     break;
+    case MENU_MAPOBJECT:
+      return menuMapObject;
+    break;
     case MENU_CONTEXT:
     default:
       return menuContext;
@@ -75,14 +82,19 @@ Menu* MainWindow::getSystemMenu(SystemMenu menu) {
 Core::Tab* MainWindow::createTab(QWidget* content, QString title) {
   Core::Tab* ret = new Core::Tab(content, title, ui->tabWidget);
 
+  connect(ret, SIGNAL(tabRemoved(QWidget*)), this, SLOT(tabRemoved(QWidget*)));
+
   tabsVisibility();
 
   return ret;
 }
 
-void MainWindow::tabClose(int index) {
-  QWidget* tab = ui->tabWidget->widget(index);
-  static_cast<Tab*>(tab)->close();
+void MainWindow::tabCloseRequested(int index) {
+  Tab* tab = static_cast<Tab*>(ui->tabWidget->widget(index));
+  emit tab->tabCloseRequested();
+}
+
+void MainWindow::tabRemoved(QWidget* tab) {
   tabsVisibility();
 }
 
@@ -136,7 +148,15 @@ void MainWindow::openFile() {
 }
 
 void MainWindow::setMapWidget(QWidget *widget) {
+  QLayoutItem* child;
+  while ((child = ui->layoutFrame->takeAt(0)) != 0) {
+    delete child;
+  }
   ui->layoutFrame->addWidget(widget);
+}
+
+QWidget* MainWindow::getMapWidget() {
+  return (ui->layoutFrame->itemAt(0)->widget());
 }
 
 }  // End namespace Core
