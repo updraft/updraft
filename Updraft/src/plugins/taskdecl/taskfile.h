@@ -5,6 +5,8 @@
 
 namespace Updraft {
 
+class DataHistory;
+
 class TaskFile {
  public:
   /// State of task storage (on disk)
@@ -29,6 +31,7 @@ class TaskFile {
  private:
   QString filePath;
   StorageState storageState;
+  DataHistory *dataHistory;
 };
 
 }  // End namespace Updraft

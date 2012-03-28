@@ -35,7 +35,7 @@ MapManager::MapManager(QString earthFile) {
     osgEarth::ImageLayer* onlineMaps =
       new osgEarth::ImageLayer(*imOpt, source);
 
-    // this->map->addImageLayer(onlineMaps);
+    this->map->addImageLayer(onlineMaps);
   } else {
     this->map = new osgEarth::Map();
     this->mapNode = new osgEarth::MapNode(this->map);
