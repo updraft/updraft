@@ -1,6 +1,7 @@
 #ifndef UPDRAFT_SRC_PLUGINS_TURNPOINTS_TPLAYER_H_
 #define UPDRAFT_SRC_PLUGINS_TURNPOINTS_TPLAYER_H_
 
+#include <osg/Geometry>
 #include <osg/Matrix>
 #include "tpfile.h"
 #include "mapobject.h"
@@ -71,6 +72,14 @@ class TPLayer {
     const osg::Matrix& matrix,
     osg::Geode* geode);
 
+  /// Autoscale creates the osg::Node Label
+  osg::Node* TPLayer::createAutoScale(
+    const osg::Vec3& position,
+    qreal characterSize,
+    const QString& message,
+    qreal minScale = 0.0,
+    qreal maxScale = FLT_MAX);
+
   /// osg Node representing this turn-points layer
   osg::Group* group;
 
@@ -88,6 +97,12 @@ class TPLayer {
   // TODO(cestmir): Serves for destructor purposes. Remove in future
   // when real turnpoint MapObjects are implemented
   QList<TPMapObject*> mapObjects;
+
+  /// Colour of the label setting
+  osg::Vec4 labelColour;
+
+  /// Min zoom to display the label
+  qreal labelMaxScale;
 };
 
 }  // End namespace Updraft
