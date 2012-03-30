@@ -112,6 +112,11 @@ osg::Node* TPLayer::createAutoScale(
   // set the osgText
   osgText::Text* text = new osgText::Text;
   text->setCharacterSize(static_cast<float>(characterSize));
+  // if contains the white char
+  // QString mess(message.simplified());
+  // while (mess.indexOf(' ') != -1) {
+    // mess.replace(mess.indexOf(' '), 1, "_");
+  // }
   text->setText(message.toStdString());
   text->setFont(fontPath.toStdString());
   text->setAlignment(osgText::Text::LEFT_BASE_LINE);
