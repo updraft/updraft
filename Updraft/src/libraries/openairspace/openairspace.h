@@ -20,7 +20,8 @@ namespace OpenAirspace {
 
     /// Returns the used airspaces count
     inline size_t size() {
-      return this->allAirspaces->size(); }
+      return (allAirspaces) ?
+        this->allAirspaces->size() : 0;}
 
     /// Returns the class of the AirSpace
     inline const Airspace::ACType& GetClass(int i) {

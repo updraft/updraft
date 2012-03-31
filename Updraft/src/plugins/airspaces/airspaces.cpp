@@ -26,11 +26,8 @@ void Airspaces::initialize() {
   core->registerFiletype(OAirspaceFileReg);
 
   // Create map layers items in the left pane.
-  // QObject* airspacesMenu = core // ->createTreeItem("Airspaces");
   engine = new oaEngine(core->createMapLayerGroup("Airspaces"));
-  // MapLayerInterface* layer1;
-  // LoadFile("c:/Updraft/CZ2011CTR.txt", 0);
-  // LoadFile("c:/Updraft/CZ2011TMA.txt", 0);
+
   loadImportedFiles();
 
   qDebug("airspaces laoded");
@@ -49,6 +46,7 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
     case IMPORT_OPENAIRSPACE_FILE:
       // draw openairspace file
       mapLayers = engine->Draw(fileName);
+      if (!mapLayers) return false;
       for (int i = 0; i < mapLayers->size(); ++i) {
         MapLayerInterface* layer1 = mapLayers->at(i);
         layer1->connectSignalDisplayed

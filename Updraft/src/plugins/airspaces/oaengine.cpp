@@ -60,6 +60,7 @@ QVector<MapLayerInterface*>* oaEngine::Draw(const QString& fileName) {
   if (mapLayerGroup != NULL) {
     // Parse the file
     OpenAirspace::Parser AirspaceSet(fileName);
+    if (!AirspaceSet.size()) return NULL;
 
     // reset const
     // check for mem leak

@@ -5,6 +5,7 @@
 
 namespace Updraft {
 
+/// Waypoint style as it reads in the cup file
 enum WaypointStyle {
   UNKNOWN         = 0,
   NORMAL          = 1,
