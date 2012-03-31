@@ -10,6 +10,7 @@ void PlotPainter::init(QPainter *painter, PlotAxes *axes, IgcInfo *info) {
 }
 
 void PlotPainter::draw() {
+  painter->fillRect(axes->geometry(), bg);
   int count = 1;
   int x = qFloor(axes->placeX(info->time(0)));
   qreal sum = axes->placeY(info->value(0));

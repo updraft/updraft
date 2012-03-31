@@ -36,6 +36,15 @@ class PlotAxes : public QLayoutItem {
   /// Draw the axes to the painter
   void draw(QPainter *painter);
 
+  /// Returns the value of the vertical step.
+  qreal getStep();
+
+  /// Returns the value of the first vertical tick.
+  qreal getFirst();
+
+  /// Returns the number of the vertical ticks.
+  int getVerticalTicks();
+
  private:
   /// Return tick value increment.
   int findTickIncrement(qreal range, qreal width, qreal minTickSpacing);
@@ -52,12 +61,49 @@ class PlotAxes : public QLayoutItem {
   /// Position (in drawing cordinates) of the X base.
   qreal base;
 
+  /// A step in vertical axis.
+  qreal step;
+
+  /// The value of the first vertical tick.
+  qreal first;
+
   /// Smallest distance between ticks.
   static const int TICK_SPACING_X = 10;
   static const int TICK_SPACING_Y = 10;
 
   static const QPen AXES_PEN;
   static const QPen TICKS_PEN;
+};
+
+class AxisLabel : public QLayoutItem {
+ public:
+  /// Overridden from QLayoutItem
+  /// \{
+  Qt::Orientations expandingDirections() const;
+  bool isEmpty() const;
+  QRect geometry() const;
+  QSize maximumSize() const;
+  QSize minimumSize() const;
+  QSize sizeHint() const;
+  void setGeometry(const QRect& rect);
+  /// \}
+
+  /// Draw the labels to the painter.
+  void draw(QPainter *painter);
+
+  explicit AxisLabel(PlotAxes* axis);
+  QColor bg;
+
+ private:
+  QRect rect;
+  PlotAxes* axis;
+
+  static const int MIN_WIDTH = 20;
+  static const int MIN_HEIGHT = 20;
+  static const int OFFSET_X = 3;
+  static const int TEXT_HEIGHT = 10;
+
+  static const QPen LABEL_PEN;
 };
 
 }  // End namespace Updraft

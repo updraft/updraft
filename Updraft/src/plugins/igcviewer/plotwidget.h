@@ -25,6 +25,10 @@ class PlotWidget : public QWidget {
   PlotAxes *verticalSpeedAxes;
   PlotAxes *groundSpeedAxes;
 
+  AxisLabel* altitudeLabel;
+  AxisLabel* verticalSpeedLabel;
+  AxisLabel* groundSpeedLabel;
+
   IgcInfo* altitudeInfo;
   IgcInfo* verticalSpeedInfo;
   IgcInfo *groundSpeedInfo;

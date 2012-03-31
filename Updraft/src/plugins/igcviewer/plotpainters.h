@@ -17,6 +17,8 @@ class PlotPainter {
 
   virtual void draw();
 
+  QColor bg;
+
  protected:
   /// Draw points from the buffer.
   /// This method is called every time the graph crosses zero,
