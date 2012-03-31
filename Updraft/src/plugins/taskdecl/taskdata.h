@@ -15,7 +15,7 @@ class TaskData {
   /// Only DataHistory objects can make copies of TaskData.
   TaskData(const TaskData&);
 
-  friend DataHistory;
+  friend class DataHistory;
 };
 
 }  // End namespace Updraft
