@@ -127,6 +127,13 @@ osg::Node* TPLayer::createAutoScale(
   geode->addDrawable(text);
   geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
+  /* Create billboard
+  osg::Billboard* nameBill = new osg::Billboard();
+  nameBill->addDrawable(text);
+  nameBill->setMode(osg::Billboard::AXIAL_ROT);
+  nameBill->setAxis(osg::Vec3(0.0, -1.0, 0.0f));
+  nameBill->setNormal(osg::Vec3(0.0, -1.0, 0.0f)); */
+
   // Create the autotransform
   osg::AutoTransform* at = new osg::AutoTransform;
   at->addChild(geode);
