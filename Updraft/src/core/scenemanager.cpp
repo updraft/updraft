@@ -64,7 +64,6 @@ SceneManager::SceneManager(QString baseEarthFile,
     // osg::Vec3d(0, 0, 0), osg::Vec3d(0, 1, 0));
 
   // Create a picking handler
-  // TODO(cestmir): No memory leak here? Is pickhandler refcounted or what?
   viewer->addEventHandler(new PickHandler());
 
   // start drawing
@@ -136,7 +135,6 @@ osg::GraphicsContext::Traits* SceneManager::createGraphicsTraits
     (int x, int y, int w, int h, const std::string& name,
     bool windowDecoration) {
   osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
-  ds->setMinimumNumStencilBits(8);
   osg::GraphicsContext::Traits* traits = new osg::GraphicsContext::Traits();
   traits->windowName = name;
   traits->windowDecoration = windowDecoration;
