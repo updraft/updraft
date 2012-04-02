@@ -10,6 +10,16 @@ struct TurnPoint;
 
 class TaskPoint {
  public:
+  TaskPoint() {}
+
+  /// Creates TaskPoint from DOM element.
+  explicit TaskPoint(const QDomElement &elem);
+
+  /// Stores TaskPoint to DOM element.
+  /// \param doc pointer to DOM element representing document.
+  /// \param parentElem pointer to DOM element representing TaskPoint.
+  void toDom(QDomDocument *doc, QDomElement *taskPointElem) const;
+
   /// \return Code of TaskPoint or empty string if it doesn't exist
   QString getCode() const;
 
@@ -18,6 +28,9 @@ class TaskPoint {
 
   /// \return Geographical location of the task point
   const Util::Location& getLocation() const;
+
+  /// \return AssignedArea of the task point
+  const AssignedArea& getAssignedArea() const;
 
   /// Gathers data from a TurnPoint and store them in the TaskPoint.
   void setTP(const TurnPoint *tp);
@@ -39,7 +52,7 @@ class TaskPoint {
   Util::Location location;
 
   /// structure defining shape of the assigned area.
-  AssignedArea assignedArea;
+  AssignedArea area;
 };
 
 }  // End namespace Updraft

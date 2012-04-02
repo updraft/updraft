@@ -26,6 +26,18 @@ void TaskDeclaration::initialize() {
 
   core->getSystemMenu(MENU_FILE)->insertAction(1, createTaskAction);
 
+  // File type registration
+
+  FileRegistration fileReg;
+  fileReg.category = CATEGORY_TEMPORARY;
+  fileReg.extension = ".tsk";
+  fileReg.typeDescription = tr("Task file");
+  fileReg.roleDescription = tr("Open task");
+  fileReg.roleId = OPEN_TASK_FILE;
+  fileReg.plugin = this;
+
+  core->registerFiletype(fileReg);
+
   qDebug("taskdecl loaded");
 }
 
@@ -39,8 +51,7 @@ bool TaskDeclaration::fileOpen(const QString &filename, int roleId) {
 
   switch (roleId) {
     case OPEN_TASK_FILE:
-      // TODO(Tom): Implement file loading.
-      // file = TPFileCupAdapter::load(filename);
+      file = new TaskFile(filename);
       break;
   }
 
