@@ -1,6 +1,8 @@
 #ifndef UPDRAFT_SRC_PLUGINS_TASKDECL_ASSIGNEDAREA_H_
 #define UPDRAFT_SRC_PLUGINS_TASKDECL_ASSIGNEDAREA_H_
 
+#include <QtGlobal>
+
 namespace Updraft {
 
 /// A structure defining area shape
@@ -34,22 +36,22 @@ struct AssignedArea {
 
   /// Radius defining outer circle (maximum distance)
   /// Unit is km
-  double maxRadius;
+  qreal maxRadius;
 
   /// Radius defining inner circle (minimal distance)
   /// Unit is km
-  double minRadius;
+  qreal minRadius;
 
   /// Angle from base direction to left and right,
   /// defining the range of outer sector. (range is 2*outerAngle)
-  double outerAngle;
+  qreal outerAngle;
 
   /// Angle from base direction to left and right,
   /// defining the range of inner sector. (range is 2*innerAngle)
-  double innerAngle;
+  qreal innerAngle;
 
   /// Angle which is used when the direction is FIXED
-  double fixedAngle;
+  qreal fixedAngle;
 
   /// Default constructor sets area to FAI cylinder.
   AssignedArea() : areaShape(SECTOR), direction(SYMMETRICAL), maxRadius(0.5),
