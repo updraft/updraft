@@ -9,6 +9,8 @@
 
 namespace Updraft {
 
+class MapObject;
+
 typedef QList<TaskLayer*> TTaskLayerList;
 
 class Q_DECL_EXPORT TaskDeclaration: public QObject, public PluginBase {
@@ -25,11 +27,12 @@ class Q_DECL_EXPORT TaskDeclaration: public QObject, public PluginBase {
   unsigned getPriority();
 
   void initialize();
-
   void deinitialize();
 
-  bool fileOpen(const QString &filename, int roleId);
+  bool wantsToHandleClick(MapObject* obj);
+  void handleClick(MapObject* obj, const EventInfo* evt);
 
+  bool fileOpen(const QString &filename, int roleId);
   void fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename);
 
@@ -46,6 +49,9 @@ class Q_DECL_EXPORT TaskDeclaration: public QObject, public PluginBase {
 
   /// List of opened files
   TTaskLayerList layers;
+
+  /// \return The currently active file (in terms of selected tab)
+  TaskLayer* getActiveLayer();
 
   /// Tasks map layer group
   MapLayerGroupInterface *mapLayerGroup;

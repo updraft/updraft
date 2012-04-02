@@ -1,4 +1,5 @@
 #include "taskdeclaration.h"
+#include "taskdeclpanel.h"
 
 namespace Updraft {
 
@@ -46,6 +47,22 @@ void TaskDeclaration::deinitialize() {
   qDebug("taskdecl unloaded");
 }
 
+bool TaskDeclaration::wantsToHandleClick(MapObject* obj) {
+  // TODO(cestmir): Check the map object type
+  TaskLayer* layer = getActiveLayer();
+  if (!layer) return false;
+
+  return layer->getTaskDeclPanel()->hasToggledButton();
+}
+
+void TaskDeclaration::handleClick(MapObject* obj, const EventInfo* evt) {
+  TaskLayer* layer = getActiveLayer();
+  if (!layer) return;
+
+  layer->newTaskPoint(obj->name);
+  return;
+}
+
 bool TaskDeclaration::fileOpen(const QString &filename, int roleId) {
   TaskFile *file = NULL;
 
@@ -70,6 +87,15 @@ void TaskDeclaration::fileIdentification(QStringList *roles,
 
 void TaskDeclaration::createTask() {
   addLayer(new TaskFile());
+}
+
+TaskLayer* TaskDeclaration::getActiveLayer() {
+  foreach(TaskLayer *layer, layers) {
+    if (layer->isTabSelected()) {
+      return layer;
+    }
+  }
+  return NULL;
 }
 
 void TaskDeclaration::unloadFiles() {
