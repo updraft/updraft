@@ -19,6 +19,7 @@ class TaskDeclPanel : public QWidget {
 
  private slots:
   void addTpButtonPushed();
+  void removeTpButtonPushed();
 
  private:
   /// Create and insert into GUI a new turnpoint button

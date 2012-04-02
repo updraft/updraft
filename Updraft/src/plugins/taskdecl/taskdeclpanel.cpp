@@ -38,6 +38,39 @@ void TaskDeclPanel::addTpButtonPushed() {
   adjustAddTpText();
 }
 
+void TaskDeclPanel::removeTpButtonPushed() {
+  if (!sender()) {  // Sender might be NULL in some threaded scenarions...
+    qDebug() << "sender() was NULL in a slot. See Qt documentation for info";
+    return;
+  }
+
+  QObject* closeFrame = sender()->parent();
+  if (!closeFrame) {
+    qDebug() << "could not get to closeFrame in removeTpButtonPushed!";
+    return;
+  }
+
+  QObject* topFrameObj = closeFrame->parent();
+  QFrame* topFrame = qobject_cast<QFrame*>(topFrameObj);
+  if (!topFrame) {
+    qDebug() << "could not get to topFrame in removeTpButtonPushed!";
+    return;
+  }
+
+  // Let's remove the top frame and the plus button now
+  int idx = ui->taskButtonsLayout->indexOf(topFrame);
+  // The ownership of the QLayoutItems returns to us -> we have to delete them
+  QLayoutItem* item1 =  ui->taskButtonsLayout->takeAt(idx);  // Top frame
+  QLayoutItem* item2 =  ui->taskButtonsLayout->takeAt(idx);  // Add button after it
+  delete item1->widget();
+  delete item2->widget();
+  delete item1;
+  delete item2;
+
+  // Check whether the add button is not single again
+  adjustAddTpText();
+}
+
 void TaskDeclPanel::newTurnpointButton(int index) {
   // Check the index argument
   if (index > ui->taskButtonsLayout->count() - 2) {  // 2 for the spacers
@@ -74,6 +107,8 @@ void TaskDeclPanel::newTurnpointButton(int index) {
     new QPushButton(QIcon(":/taskdeclpanel/icons/delete_tp_icon.png"), "");
   quitButton->setFlat(true);
   quitButton->setIconSize(QSize(8, 8));
+  // Connect the quit button to a slot
+  connect(quitButton, SIGNAL(clicked()), this, SLOT(removeTpButtonPushed()));
 
   closeFrameLayout->addWidget(quitButton);
   closeFrameLayout->addStretch();
