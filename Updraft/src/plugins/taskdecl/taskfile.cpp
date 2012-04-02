@@ -21,6 +21,7 @@ TaskFile::TaskFile(const QString &filePath_)
 
   // Parses xml. In case of success updates storageState.
   if (dataHistory.getCurrent()->fromXml(serialized)) {
+    filePath = filePath_;
     storageState = STORED_SYNCHRONIZED;
   }
 }
