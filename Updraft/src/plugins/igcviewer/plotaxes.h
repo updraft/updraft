@@ -167,7 +167,7 @@ class TimeLabel : public QLayoutItem {
   static const int MIN_WIDTH = 100;
   static const int MIN_HEIGHT = 10;
   static const int OFFSET_Y = 3;
-  static const int TEXT_WIDTH_HEIGHT_RATIO = 2;
+  static const int TEXT_WIDTH_HEIGHT_RATIO = 4;
   static const int TEXT_MIN_WIDTH = 20;
 
   static const QPen LABEL_PEN;

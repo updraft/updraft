@@ -52,69 +52,45 @@ void VerticalSpeedPlotPainter::flushBuffer() {
   int y = buffer[0].y();
   int newX = x;
   int newY = y;
-  int base = axes->getBase();
-  QVector<QPolygon> positivePolygons;
-  QVector<QPolygon> negativePolygons;
+  int base = axes->placeY(0);
+  int b = axes->getBase();
+  qDebug() << base << b;
+  QPolygon polygon;
+
+  polygon << QPoint(x, base) << QPoint(x, y);
 
   for (int i = 1; i < buffer.size(); i++) {
     newX = buffer[i].x();
     newY = buffer[i].y();
 
-    if ((newY > base) && (y > base)) {  // both are positive
-      QPolygon polygon;
-      polygon << QPoint(x, y) << QPoint(newX, newY)
-        << QPoint(newX, base) << QPoint(x, base);
-      positivePolygons.append(polygon);
+    if (((newY > base) && (y > base)) ||
+      ((newY < base) && (y < base)) ||
+      ((newY == base) && (y == base))) {  // both are at the same side
+      polygon << QPoint(newX, newY);  // just append the new point
     } else {
-      if ((newY < base) && (y < base)) {  // both are negative
-        QPolygon polygon;
-        polygon << QPoint(newX, newY) << QPoint(x, y)
-          << QPoint(x, base) << QPoint(newX, base);
-        negativePolygons.append(polygon);
-      } else {
-        if ((newY <= base) && (y >= base)) {
-          qreal ratio1 = y - base;
-          qreal ratio2 = base - newY;
-          if (ratio1 + ratio2 == 0) {
-            // if both points lie on the base axis
-            x = newX;
-            y = newY;
-            continue;
-          }
-          int baseX = x + ratio1 * (((qreal)(newX - x)) / (ratio1 + ratio2));
-          QPolygon polygon1;
-          polygon1 << QPoint(x, y) << QPoint(baseX, base) << QPoint(x, base);
-          QPolygon polygon2;
-          polygon2 << QPoint(baseX, base) << QPoint(newX, base)
-            << QPoint(newX, newY);
-          positivePolygons.append(polygon1);
-          negativePolygons.append(polygon2);
-        } else {
-          qreal ratio1 = base - y;
-          qreal ratio2 = newY - base;
-          int baseX = x + ratio1 * (((qreal)(newX - x)) / (ratio1 + ratio2));
-          QPolygon polygon1;
-          polygon1 << QPoint(x, base) << QPoint(baseX, base) << QPoint(x, y);
-          QPolygon polygon2;
-          polygon2 << QPoint(baseX, base) << QPoint(newX, newY)
-            << QPoint(newX, base);
-          negativePolygons.append(polygon1);
-          positivePolygons.append(polygon2);
-        }
+      int ratio1 = qAbs(y-base);
+      int ratio2 = qAbs(newY-base);
+      int baseIsecX = x + ratio1*((qreal)(newX-x) / (ratio1+ratio2));
+      if ((y <= base) && (newY >= base)) {  // we ended the negative part
+        polygon << QPoint(baseIsecX, base);
+        painter->setBrush(NEGATIVE_BRUSH);
+        painter->setPen(NEGATIVE_PEN);
+        painter->drawPolygon(polygon);
+          // clear the polygon, and start a new one
+        polygon.clear();
+        polygon << QPoint(baseIsecX+1, base) << QPoint(newX, newY);
+      } else {  // we ended the positive part
+        polygon << QPoint(baseIsecX, base);
+        painter->setBrush(POSITIVE_BRUSH);
+        painter->setPen(POSITIVE_PEN);
+        painter->drawPolygon(polygon);
+          // clear the polygon, and start a new one
+        polygon.clear();
+        polygon << QPoint(baseIsecX+1, base) << QPoint(newX, newY);
       }
     }
     x = newX;
     y = newY;
-  }
-  painter->setPen(POSITIVE_PEN);
-  painter->setBrush(POSITIVE_BRUSH);
-  for (int i = 0; i < positivePolygons.size(); i++) {
-    painter->drawConvexPolygon(positivePolygons[i]);
-  }
-  painter->setPen(NEGATIVE_PEN);
-  painter->setBrush(NEGATIVE_BRUSH);
-  for (int i = 0; i < negativePolygons.size(); i++) {
-    painter->drawConvexPolygon(negativePolygons[i]);
   }
   // painter->drawPolyline(buffer);
 }
