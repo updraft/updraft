@@ -3,50 +3,47 @@
 
 namespace Updraft {
 
-DataHistory::DataHistory()
-  : currentItem(dataContainer.end()), markedItem(dataContainer.end()) {
+DataHistory::DataHistory() {
+  dataContainer.append(new TaskData());
+  currentItem = dataContainer.begin();
+  markedItem = dataContainer.end();
 }
 
 DataHistory::~DataHistory() {
-  clear();
+  foreach(TaskData *data, dataContainer) {
+    delete data;
+  }
 }
 
 TaskData* DataHistory::getCurrent() {
-  if (isEmpty())
-    add();
-
   return *currentItem;
 }
 
-bool DataHistory::isEmpty() const {
-  return dataContainer.empty();
-}
-
 bool DataHistory::isFirst() const {
-  return !isEmpty() && currentItem == dataContainer.begin();
+  return currentItem == dataContainer.begin();
 }
 
 bool DataHistory::isLast() const {
-  return !isEmpty() && currentItem == --(dataContainer.end());
+  return currentItem == --(dataContainer.end());
 }
 
 bool DataHistory::isMarked() const {
-  return !isEmpty() && markedItem == currentItem;
+  return markedItem == currentItem;
 }
 
 void DataHistory::moveForward() {
-  if (!isEmpty() && !isLast())
+  if (!isLast())
     ++currentItem;
 }
 
 void DataHistory::moveBack() {
-  if (!isEmpty() && !isFirst())
+  if (!isFirst())
     --currentItem;
 }
 
-void DataHistory::add() {
-  // Erase all newer item than current.
-  if (!isEmpty() && !isLast()) {
+void DataHistory::storeState() {
+  // Erase all newer items than current.
+  if (!isLast()) {
     DataIterator nextItem = currentItem;
     dataContainer.erase(++nextItem, dataContainer.end());
   }
@@ -59,20 +56,7 @@ void DataHistory::add() {
 }
 
 void DataHistory::setMark() {
-  if (!isEmpty())
-    markedItem = currentItem;
-}
-
-void DataHistory::clear() {
-  for (DataIterator it = dataContainer.begin();
-    it != dataContainer.end(); ++it) {
-    delete *it;
-    *it = NULL;
-  }
-
-  dataContainer.clear();
-  currentItem = dataContainer.end();
-  markedItem = dataContainer.end();
+  markedItem = currentItem;
 }
 
 }  // End namespace Updraft

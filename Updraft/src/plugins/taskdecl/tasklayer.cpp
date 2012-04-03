@@ -10,9 +10,9 @@ namespace Updraft {
 TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   TaskFile *file_,
   int _newTaskIndex)
-  : group(new osg::Group()),
-  plugin(plugin_),
+  : plugin(plugin_),
   mapLayer(NULL),
+  group(new osg::Group()),
   file(file_),
   displayed(displayed_),
   newTaskIndex(_newTaskIndex) {
