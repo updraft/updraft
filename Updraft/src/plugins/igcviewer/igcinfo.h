@@ -51,6 +51,16 @@ class IgcInfo {
   /// Return relative time of the last item.
   qreal maxTime() const { return time(count() - 1); }
 
+  //// Get the absolute time of item i.
+  //// \pre i >= 0 && i < this->count()
+  qreal absoluteTime(int i);
+
+  /// Return absolute time of the last item.
+  qreal absoluteMaxTime();
+
+  /// Return absolute time of the first item.
+  qreal absoluteMinTime();
+
   /// Forget any values previously associated with the global scale.
   virtual void resetGlobalScale();
 

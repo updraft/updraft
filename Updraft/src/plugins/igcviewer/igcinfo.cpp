@@ -49,6 +49,37 @@ qreal IgcInfo::time(int i) const {
   }
 }
 
+qreal IgcInfo::absoluteMinTime() {
+  int hrs = fixList->at(0).timestamp.hour();
+  int mins = fixList->at(0).timestamp.minute();
+  int secs = fixList->at(0).timestamp.second();
+
+  int time = hrs*3600 + mins*60 + secs;
+  return time;
+}
+
+qreal IgcInfo::absoluteTime(int i) {
+  if ((i < 0) || (i >= count())) {
+    return -1;
+  }
+
+  int hrs = fixList->at(i).timestamp.hour();
+  int mins = fixList->at(i).timestamp.minute();
+  int secs = fixList->at(i).timestamp.second();
+
+  qreal time = hrs*3600 + mins*60 + secs;
+
+  if (time < absoluteMinTime()) {
+    return time + 24 * 3600;
+  } else {
+    return time;
+  }
+}
+
+qreal IgcInfo::absoluteMaxTime() {
+  return absoluteTime(count()-1);
+}
+
 void IgcInfo::resetGlobalScale() {
   globalMin_ = min_;
   globalMax_ = max_;
