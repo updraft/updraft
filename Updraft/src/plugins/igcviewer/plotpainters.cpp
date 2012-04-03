@@ -1,4 +1,5 @@
 #include "plotpainters.h"
+#include <QDebug>
 
 namespace Updraft {
 namespace IgcViewer {
@@ -12,13 +13,19 @@ void PlotPainter::init(QPainter *painter, PlotAxes *axes, IgcInfo *info) {
 void PlotPainter::draw() {
   painter->fillRect(axes->geometry(), bg);
   int count = 1;
-  int x = qFloor(axes->placeX(info->time(0)));
+  int x = qFloor(axes->placeX(info->absoluteTime(0)));
   qreal sum = axes->placeY(info->value(0));
+
+  if (x < 0) {
+    qDebug() << "WTF? mensi nez 0: " << x <<
+      "absolute time: " << info->absoluteTime(0)
+      << "minimum: " << info->absoluteMinTime();
+  }
 
   axes->draw(painter);
 
   for (int i = 1; i < info->count(); ++i) {
-    int newX = qFloor(axes->placeX(info->time(i)));
+    int newX = qFloor(axes->placeX(info->absoluteTime(i)));
 
     if (newX != x) {
       buffer.append(QPointF(x + 0.5, sum / count));
