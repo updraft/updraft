@@ -169,7 +169,9 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
   labColSetA = core->addSetting("Turnpoints:labelColourA",
     "Colour of the turnpoint labels - ALPHA", 1.0);
   labMaxScaleSet = core->addSetting("Turnpoints:labelMaxScale",
-    "Maximum scale for label to be visible", 20.0, true);
+    "Maximum scale for label", 30.0, true);
+  labMinScaleSet = core->addSetting("Turnpoints:labelMinScale",
+    "Minimum scale for label", 20.0, true);
   // get stored values
   labelColour   = osg::Vec4(
     labColSetR->get().toFloat(),
@@ -177,6 +179,7 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     labColSetB->get().toFloat(),
     labColSetA->get().toFloat());
   labelMaxScale = labMaxScaleSet->get().toFloat();
+  labelMinScale = labMinScaleSet->get().toFloat();
 
   // Create node for one turn-point.
   // It will be shared among Autotransform nodes.
@@ -224,8 +227,8 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
       matrix.getTrans(),
       20.0,
       itPoint->name,
-      0.0,
-      20.0));
+      labelMinScale,
+      labelMaxScale));
   }
 }
 
