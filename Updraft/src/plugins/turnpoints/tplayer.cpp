@@ -112,6 +112,11 @@ osg::Node* TPLayer::createAutoScale(
   // set the osgText
   osgText::Text* text = new osgText::Text;
   text->setCharacterSize(static_cast<float>(characterSize));
+  // if contains the white char
+  // QString mess(message.simplified());
+  // while (mess.indexOf(' ') != -1) {
+    // mess.replace(mess.indexOf(' '), 1, "_");
+  // }
   text->setText(message.toStdString());
   text->setFont(fontPath.toStdString());
   text->setAlignment(osgText::Text::LEFT_BASE_LINE);
@@ -121,6 +126,13 @@ osg::Node* TPLayer::createAutoScale(
   osg::Geode* geode = new osg::Geode;
   geode->addDrawable(text);
   geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+  /* Create billboard
+  osg::Billboard* nameBill = new osg::Billboard();
+  nameBill->addDrawable(text);
+  nameBill->setMode(osg::Billboard::AXIAL_ROT);
+  nameBill->setAxis(osg::Vec3(0.0, -1.0, 0.0f));
+  nameBill->setNormal(osg::Vec3(0.0, -1.0, 0.0f)); */
 
   // Create the autotransform
   osg::AutoTransform* at = new osg::AutoTransform;
@@ -157,7 +169,9 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
   labColSetA = core->addSetting("Turnpoints:labelColourA",
     "Colour of the turnpoint labels - ALPHA", 1.0);
   labMaxScaleSet = core->addSetting("Turnpoints:labelMaxScale",
-    "Maximum scale for label to be visible", 20.0, true);
+    "Maximum scale for label", 30.0, true);
+  labMinScaleSet = core->addSetting("Turnpoints:labelMinScale",
+    "Minimum scale for label", 20.0, true);
   // get stored values
   labelColour   = osg::Vec4(
     labColSetR->get().toFloat(),
@@ -165,6 +179,7 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     labColSetB->get().toFloat(),
     labColSetA->get().toFloat());
   labelMaxScale = labMaxScaleSet->get().toFloat();
+  labelMinScale = labMinScaleSet->get().toFloat();
 
   // Create node for one turn-point.
   // It will be shared among Autotransform nodes.
@@ -212,8 +227,8 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
       matrix.getTrans(),
       20.0,
       itPoint->name,
-      0.0,
-      20.0));
+      labelMinScale,
+      labelMaxScale));
   }
 }
 

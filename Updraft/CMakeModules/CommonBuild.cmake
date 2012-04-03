@@ -124,7 +124,7 @@ MACRO(PLUGIN_BUILD name)
   PROJECT(${name})
 
   FIND_PACKAGE(Qt4 REQUIRED)
-  FIND_PACKAGE(OpenSceneGraph REQUIRED osgUtil osgDB osgGA osgViewer osgText)
+  FIND_PACKAGE(OpenSceneGraph REQUIRED osgUtil osgDB osgGA osgViewer)
   FIND_PACKAGE(OsgEarth REQUIRED)
 
   INCLUDE(${QT_USE_FILE})

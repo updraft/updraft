@@ -103,7 +103,8 @@ class TPLayer {
   /// Colour of the label setting
   osg::Vec4 labelColour;
 
-  /// Min zoom to display the label
+  /// Text min/max visibility setting
+  qreal labelMinScale;
   qreal labelMaxScale;
 
   /// Settings
@@ -112,6 +113,7 @@ class TPLayer {
   SettingInterface* labColSetB;
   SettingInterface* labColSetA;
   SettingInterface* labMaxScaleSet;
+  SettingInterface* labMinScaleSet;
 };
 
 }  // End namespace Updraft
