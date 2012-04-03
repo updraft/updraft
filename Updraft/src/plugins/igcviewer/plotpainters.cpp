@@ -4,6 +4,11 @@
 namespace Updraft {
 namespace IgcViewer {
 
+const QBrush VerticalSpeedPlotPainter::POSITIVE_BRUSH = QBrush(Qt::red);
+const QPen VerticalSpeedPlotPainter::POSITIVE_PEN = QPen(Qt::red);
+const QBrush VerticalSpeedPlotPainter::NEGATIVE_BRUSH = QBrush(Qt::blue);
+const QPen VerticalSpeedPlotPainter::NEGATIVE_PEN = QPen(Qt::blue);
+
 void PlotPainter::init(QPainter *painter, PlotAxes *axes, IgcInfo *info) {
   this->painter = painter;
   this->axes = axes;
@@ -11,16 +16,9 @@ void PlotPainter::init(QPainter *painter, PlotAxes *axes, IgcInfo *info) {
 }
 
 void PlotPainter::draw() {
-  painter->fillRect(axes->geometry(), bg);
   int count = 1;
   int x = qFloor(axes->placeX(info->absoluteTime(0)));
   qreal sum = axes->placeY(info->value(0));
-
-  if (x < 0) {
-    qDebug() << "WTF? mensi nez 0: " << x <<
-      "absolute time: " << info->absoluteTime(0)
-      << "minimum: " << info->absoluteMinTime();
-  }
 
   axes->draw(painter);
 
@@ -49,8 +47,76 @@ void AltitudePlotPainter::flushBuffer() {
 }
 
 void VerticalSpeedPlotPainter::flushBuffer() {
-  painter->setPen(QPen(Qt::blue));
-  painter->drawPolyline(buffer);
+  if (buffer.empty()) return;
+  int x = buffer[0].x();
+  int y = buffer[0].y();
+  int newX = x;
+  int newY = y;
+  int base = axes->getBase();
+  QVector<QPolygon> positivePolygons;
+  QVector<QPolygon> negativePolygons;
+
+  for (int i = 1; i < buffer.size(); i++) {
+    newX = buffer[i].x();
+    newY = buffer[i].y();
+
+    if ((newY > base) && (y > base)) {  // both are positive
+      QPolygon polygon;
+      polygon << QPoint(x, y) << QPoint(newX, newY)
+        << QPoint(newX, base) << QPoint(x, base);
+      positivePolygons.append(polygon);
+    } else {
+      if ((newY < base) && (y < base)) {  // both are negative
+        QPolygon polygon;
+        polygon << QPoint(newX, newY) << QPoint(x, y)
+          << QPoint(x, base) << QPoint(newX, base);
+        negativePolygons.append(polygon);
+      } else {
+        if ((newY <= base) && (y >= base)) {
+          qreal ratio1 = y - base;
+          qreal ratio2 = base - newY;
+          if (ratio1 + ratio2 == 0) {
+            // if both points lie on the base axis
+            x = newX;
+            y = newY;
+            continue;
+          }
+          int baseX = x + ratio1 * (((qreal)(newX - x)) / (ratio1 + ratio2));
+          QPolygon polygon1;
+          polygon1 << QPoint(x, y) << QPoint(baseX, base) << QPoint(x, base);
+          QPolygon polygon2;
+          polygon2 << QPoint(baseX, base) << QPoint(newX, base)
+            << QPoint(newX, newY);
+          positivePolygons.append(polygon1);
+          negativePolygons.append(polygon2);
+        } else {
+          qreal ratio1 = base - y;
+          qreal ratio2 = newY - base;
+          int baseX = x + ratio1 * (((qreal)(newX - x)) / (ratio1 + ratio2));
+          QPolygon polygon1;
+          polygon1 << QPoint(x, base) << QPoint(baseX, base) << QPoint(x, y);
+          QPolygon polygon2;
+          polygon2 << QPoint(baseX, base) << QPoint(newX, newY)
+            << QPoint(newX, base);
+          negativePolygons.append(polygon1);
+          positivePolygons.append(polygon2);
+        }
+      }
+    }
+    x = newX;
+    y = newY;
+  }
+  painter->setPen(POSITIVE_PEN);
+  painter->setBrush(POSITIVE_BRUSH);
+  for (int i = 0; i < positivePolygons.size(); i++) {
+    painter->drawConvexPolygon(positivePolygons[i]);
+  }
+  painter->setPen(NEGATIVE_PEN);
+  painter->setBrush(NEGATIVE_BRUSH);
+  for (int i = 0; i < negativePolygons.size(); i++) {
+    painter->drawConvexPolygon(negativePolygons[i]);
+  }
+  // painter->drawPolyline(buffer);
 }
 
 void GroundSpeedPlotPainter::flushBuffer() {

@@ -61,7 +61,8 @@ void TaskDeclPanel::removeTpButtonPushed() {
   int idx = ui->taskButtonsLayout->indexOf(topFrame);
   // The ownership of the QLayoutItems returns to us -> we have to delete them
   QLayoutItem* item1 =  ui->taskButtonsLayout->takeAt(idx);  // Top frame
-  QLayoutItem* item2 =  ui->taskButtonsLayout->takeAt(idx);  // Add button after it
+  // Add button after it
+  QLayoutItem* item2 =  ui->taskButtonsLayout->takeAt(idx);
   delete item1->widget();
   delete item2->widget();
   delete item1;

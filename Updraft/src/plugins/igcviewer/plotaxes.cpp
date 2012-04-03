@@ -10,8 +10,8 @@ namespace IgcViewer {
 const QPen PlotAxes::AXES_PEN = QPen(QBrush(Qt::gray), 2);
 const QPen PlotAxes::TICKS_PEN = QPen(QBrush(Qt::gray), 0, Qt::DotLine);
 const QPen PlotAxes::TIME_TICKS_PEN = QPen(QBrush(Qt::gray), 1);
-const QPen AxisLabel::LABEL_PEN = QPen(Qt::gray);
-const QPen TimeLabel::LABEL_PEN = QPen(Qt::gray);
+const QPen AxisLabel::LABEL_PEN = QPen(Qt::white);
+const QPen TimeLabel::LABEL_PEN = QPen(Qt::white);
 
 static const qreal LN10 = qLn(10);
 
@@ -178,6 +178,10 @@ void PlotAxes::draw(QPainter *painter) {
   painter->drawLine(QPointF(rect.left(), base), QPointF(rect.right(), base));
 }
 
+qreal PlotAxes::getBase() {
+  return base;
+}
+
 qreal PlotAxes::getStep() {
   return step;
 }
@@ -241,7 +245,6 @@ AxisLabel::AxisLabel(PlotAxes* axis_) {
 }
 
 void AxisLabel::draw(QPainter *painter) {
-  painter->fillRect(rect, bg);
   painter->setPen(LABEL_PEN);
   qreal step = axis->getStep();
   qreal first = axis->getFirst();
@@ -251,8 +254,8 @@ void AxisLabel::draw(QPainter *painter) {
 
     QString text;
     text.setNum(first+step*i, 3, 0);
-    QRect labelRect(0, pixelY-TEXT_HEIGHT/2,
-      rect.right(), pixelY+TEXT_HEIGHT/2);
+    QRect labelRect(QPoint(0, pixelY-TEXT_HEIGHT/2),
+      QPoint(rect.right(), pixelY+TEXT_HEIGHT/2));
     painter->drawText(labelRect, Qt::AlignRight, text);
   }
 }
@@ -292,10 +295,11 @@ TimeLabel::TimeLabel(PlotAxes* axis_) {
 }
 
 void TimeLabel::draw(QPainter* painter) {
-  painter->fillRect(rect, bg);
   painter->setPen(LABEL_PEN);
   int height = rect.height();
-  int width = qMax(20, height * TEXT_WIDTH_HEIGHT_RATIO);
+  int width = height * TEXT_WIDTH_HEIGHT_RATIO;
+    // don't draw the labels if there is no space
+  if (width < TEXT_MIN_WIDTH) return;
 
   int firstHour = axis->getFirstHour();
   int lastHour = axis->getLastHour();
@@ -307,11 +311,11 @@ void TimeLabel::draw(QPainter* painter) {
 
     QString hrsText;
     hrsText.setNum(hour);
-    QRect labelRect(pixelX - width/2, rect.top(),
-      pixelX - 1, rect.bottom());
-    painter->drawText(labelRect, hrsText);
-    QRect zerosRect(pixelX-1, rect.top(),
-      pixelX + width/2, rect.bottom());
+    QRect labelRect(QPoint(pixelX - width/2, rect.top()),
+      QPoint(pixelX - 2, rect.bottom()));
+    painter->drawText(labelRect, Qt::AlignRight, hrsText);
+    QRect zerosRect(QPoint(pixelX-1, rect.top()),
+      QPoint(pixelX + width/2, rect.bottom()));
     painter->drawText(zerosRect, Qt::AlignLeft, zeros);
   }
 
@@ -320,12 +324,12 @@ void TimeLabel::draw(QPainter* painter) {
     qreal pixelX = axis->placeX(hour * 3600);
 
     QString hrsText;
-    hrsText.setNum(hour-24);
-    QRect labelRect(pixelX - width/2, rect.top(),
-      pixelX - 1, rect.bottom());
+    hrsText.setNum(hour - 24);
+    QRect labelRect(QPoint(pixelX - width/2, rect.top()),
+      QPoint(pixelX - 2, rect.bottom()));
     painter->drawText(labelRect, Qt::AlignRight, hrsText);
-    QRect zerosRect(pixelX-1, rect.top(),
-      pixelX + width/2, rect.bottom());
+    QRect zerosRect(QPoint(pixelX-1, rect.top()),
+      QPoint(pixelX + width/2, rect.bottom()));
     painter->drawText(zerosRect, Qt::AlignLeft, zeros);
   }
 }

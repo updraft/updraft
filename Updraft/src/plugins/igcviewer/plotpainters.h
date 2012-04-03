@@ -17,8 +17,6 @@ class PlotPainter {
 
   virtual void draw();
 
-  QColor bg;
-
  protected:
   /// Draw points from the buffer.
   /// This method is called every time the graph crosses zero,
@@ -40,6 +38,11 @@ class AltitudePlotPainter: public PlotPainter {
 class VerticalSpeedPlotPainter: public PlotPainter {
  protected:
   void flushBuffer();
+ private:
+  static const QBrush POSITIVE_BRUSH;
+  static const QBrush NEGATIVE_BRUSH;
+  static const QPen POSITIVE_PEN;
+  static const QPen NEGATIVE_PEN;
 };
 
 class GroundSpeedPlotPainter: public PlotPainter {

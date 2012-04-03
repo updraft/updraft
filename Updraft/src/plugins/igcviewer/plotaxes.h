@@ -38,6 +38,9 @@ class PlotAxes : public QLayoutItem {
   /// Draw the axes to the painter
   void draw(QPainter *painter);
 
+  /// Returns the Y coordinate of base axis: the Y coordinate of value 0.
+  qreal getBase();
+
   /// Returns the value of the vertical step.
   qreal getStep();
 
@@ -126,7 +129,6 @@ class AxisLabel : public QLayoutItem {
   void draw(QPainter *painter);
 
   explicit AxisLabel(PlotAxes* axis);
-  QColor bg;
 
  private:
   QRect rect;
@@ -157,7 +159,6 @@ class TimeLabel : public QLayoutItem {
   void draw(QPainter *painter);
 
   explicit TimeLabel(PlotAxes* axis);
-  QColor bg;
 
  private:
   QRect rect;
@@ -167,6 +168,7 @@ class TimeLabel : public QLayoutItem {
   static const int MIN_HEIGHT = 10;
   static const int OFFSET_Y = 3;
   static const int TEXT_WIDTH_HEIGHT_RATIO = 2;
+  static const int TEXT_MIN_WIDTH = 20;
 
   static const QPen LABEL_PEN;
 };
