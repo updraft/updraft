@@ -39,7 +39,11 @@ TaskFile::StorageState TaskFile::getStorageState() const {
 }
 
 void TaskFile::save() {
-  QFile file(filePath);
+  saveAs(filePath);
+}
+
+void TaskFile::saveAs(const QString &filePath_) {
+  QFile file(filePath_);
   if (!file.open(QIODevice::WriteOnly))
     return;
 
@@ -59,12 +63,8 @@ void TaskFile::save() {
   if (saved) {
     dataHistory.setMark();
     storageState = STORED_SYNCHRONIZED;
+    filePath = filePath_;
   }
-}
-
-void TaskFile::saveAs(const QString &filePath_) {
-  filePath = filePath_;
-  save();
 }
 
 TaskData* TaskFile::beginEdit() {

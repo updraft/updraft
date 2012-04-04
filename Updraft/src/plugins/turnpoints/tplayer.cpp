@@ -1,11 +1,11 @@
 #include <QtGui>
-#include <osg/Geometry>
 #include <osg/Billboard>
 #include <osg/AutoTransform>
 #include <osg/Texture2D>
 #include <osg/BlendFunc>
 #include <osgDB/ReadFile>
 #include <osgEarthUtil/ObjectPlacer>
+#include <osgText/Text>
 #include "tplayer.h"
 #include "coreinterface.h"
 #include "turnpoints.h"
@@ -99,21 +99,94 @@ osg::AutoTransform* TPLayer::createAutoTransform(const osg::Matrix& matrix,
   return at;
 }
 
+osg::Node* TPLayer::createAutoScale(
+  const osg::Vec3& position,
+  qreal characterSize,
+  const QString& message,
+  qreal minScale,
+  qreal maxScale) {
+  // Creates the autoscale transform node
+  QString fontName = "AmphionExtrabold Regular.ttf";
+  QString fontPath = dataDir + "/" + fontName;
+
+  // set the osgText
+  osgText::Text* text = new osgText::Text;
+  text->setCharacterSize(static_cast<float>(characterSize));
+  // if contains the white char
+  // QString mess(message.simplified());
+  // while (mess.indexOf(' ') != -1) {
+    // mess.replace(mess.indexOf(' '), 1, "_");
+  // }
+  text->setText(message.toStdString());
+  text->setFont(fontPath.toStdString());
+  text->setAlignment(osgText::Text::LEFT_BASE_LINE);
+  text->setColor(labelColour);
+
+  // define the geode
+  osg::Geode* geode = new osg::Geode;
+  geode->addDrawable(text);
+  geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+  /* Create billboard
+  osg::Billboard* nameBill = new osg::Billboard();
+  nameBill->addDrawable(text);
+  nameBill->setMode(osg::Billboard::AXIAL_ROT);
+  nameBill->setAxis(osg::Vec3(0.0, -1.0, 0.0f));
+  nameBill->setNormal(osg::Vec3(0.0, -1.0, 0.0f)); */
+
+  // Create the autotransform
+  osg::AutoTransform* at = new osg::AutoTransform;
+  at->addChild(geode);
+
+  at->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_SCREEN);
+  at->setAutoScaleToScreen(true);
+  at->setMinimumScale(static_cast<double>(minScale));
+  at->setMaximumScale(static_cast<double>(maxScale));
+  at->setPosition(position);
+
+  return at;
+}
+
 TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
-  const TPFile *file_, const QString &dataDir_, TurnPoints* parent_)
+  const TPFile *file_, const QString &dataDir_, TurnPoints* parent_,
+  CoreInterface* core)
   : group(new osg::Group()), objectPlacer(objectPlacer_),
   file(file_), displayed(displayed_), dataDir(dataDir_), parent(parent_) {
   if (group == NULL || objectPlacer == NULL || file == NULL) {
     return;
   }
 
+  // Settings
+  // set defaults
+  core->addSettingsGroup(
+    "Turnpoints", "Turnpoints Plugin Settings");
+  labColSetR = core->addSetting("Turnpoints:labelColourR",
+    "Colour of the turnpoint labels - RED", 1.0);
+  labColSetG = core->addSetting("Turnpoints:labelColourG",
+    "Colour of the turnpoint labels - GREEN", 1.0);
+  labColSetB = core->addSetting("Turnpoints:labelColourB",
+    "Colour of the turnpoint labels - BLUE", 1.0);
+  labColSetA = core->addSetting("Turnpoints:labelColourA",
+    "Colour of the turnpoint labels - ALPHA", 1.0);
+  labMaxScaleSet = core->addSetting("Turnpoints:labelMaxScale",
+    "Maximum scale for label", 30.0, true);
+  labMinScaleSet = core->addSetting("Turnpoints:labelMinScale",
+    "Minimum scale for label", 20.0, true);
+  // get stored values
+  labelColour   = osg::Vec4(
+    labColSetR->get().toFloat(),
+    labColSetG->get().toFloat(),
+    labColSetB->get().toFloat(),
+    labColSetA->get().toFloat());
+  labelMaxScale = labMaxScaleSet->get().toFloat();
+  labelMinScale = labMinScaleSet->get().toFloat();
+
   // Create node for one turn-point.
   // It will be shared among Autotransform nodes.
   osg::Geode *geodeTp = createGeode(25.0, 0);
   osg::Geode *geodeAf = createGeode(25.0, 1);
 
-  TTPList points = file->getTurnPoints();
-
+  const TTPList& points = file->getTurnPoints();
 
   for (TTPList::const_iterator itPoint = points.begin();
     itPoint != points.end(); ++itPoint) {
@@ -133,35 +206,28 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
 
     // Create new Autotransform node.
     osg::AutoTransform* tpNode = NULL;
-
     if (itPoint->type >= 2 && itPoint->type <= 5) {
       qreal afAngle = itPoint->rwyHeading * 3.14 / 180;
       matrix = osg::Matrixd::identity().rotate
         (afAngle, osg::Vec3f(0.0f, 0.0f, -1.0f)) * matrix;
-      // group->addChild(createAutoTransform(matrix, geodeAf));
       tpNode = createAutoTransform(matrix, geodeAf);
     } else {
-      // group->addChild(createAutoTransform(matrix, geode));
       tpNode = createAutoTransform(matrix, geodeTp);
     }
-    // osg::AutoTransform* tpNode = createAutoTransform(matrix, geode);
 
     // Make the autotransform node pickable
-    TPMapObject* mapObject = new TPMapObject(itPoint->name);
+    TPMapObject* mapObject = new TPMapObject(&(*itPoint));
     mapObjects.push_back(mapObject);
     parent->getCoreInterface()->registerOsgNode(tpNode, mapObject);
 
     group->addChild(tpNode);
 
-    // Add new Autotransform node.
-    /* if (itPoint->type >= 2 && itPoint->type <= 5) {
-      qreal afAngle = itPoint->rwyHeading * 3.14 / 180;
-      matrix = osg::Matrixd::identity().rotate
-        (afAngle, osg::Vec3f(0.0f, 0.0f, -1.0f)) * matrix;
-      group->addChild(createAutoTransform(matrix, geodeAf));
-    } else {
-      group->addChild(createAutoTransform(matrix, geode));
-    }*/
+    group->addChild(createAutoScale(
+      matrix.getTrans(),
+      20.0,
+      itPoint->name,
+      labelMinScale,
+      labelMaxScale));
   }
 }
 

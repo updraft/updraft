@@ -1,4 +1,6 @@
 #include "taskdeclaration.h"
+#include "taskdeclpanel.h"
+#include "../turnpoints/tpmapobject.h"
 
 namespace Updraft {
 
@@ -46,6 +48,27 @@ void TaskDeclaration::deinitialize() {
   qDebug("taskdecl unloaded");
 }
 
+bool TaskDeclaration::wantsToHandleClick(MapObject* obj) {
+  TPMapObject* mObj = qobject_cast<TPMapObject*>(obj->asQObject());
+  if (mObj == NULL) return false;
+
+  TaskLayer* layer = getActiveLayer();
+  if (!layer) return false;
+
+  return layer->getTaskDeclPanel()->hasToggledButton();
+}
+
+void TaskDeclaration::handleClick(MapObject* obj, const EventInfo* evt) {
+  TaskLayer* layer = getActiveLayer();
+  if (!layer) return;
+
+  TPMapObject* mObj = qobject_cast<TPMapObject*>(obj->asQObject());
+  if (mObj == NULL) return;
+
+  layer->newTaskPoint(mObj->turnPoint);
+  return;
+}
+
 bool TaskDeclaration::fileOpen(const QString &filename, int roleId) {
   TaskFile *file = NULL;
 
@@ -70,6 +93,15 @@ void TaskDeclaration::fileIdentification(QStringList *roles,
 
 void TaskDeclaration::createTask() {
   addLayer(new TaskFile());
+}
+
+TaskLayer* TaskDeclaration::getActiveLayer() {
+  foreach(TaskLayer *layer, layers) {
+    if (layer->isTabSelected()) {
+      return layer;
+    }
+  }
+  return NULL;
 }
 
 void TaskDeclaration::unloadFiles() {

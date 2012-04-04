@@ -1,9 +1,11 @@
 #ifndef UPDRAFT_SRC_PLUGINS_TURNPOINTS_TPLAYER_H_
 #define UPDRAFT_SRC_PLUGINS_TURNPOINTS_TPLAYER_H_
 
+#include <osg/Geometry>
 #include <osg/Matrix>
 #include "tpfile.h"
-#include "mapobject.h"
+#include "tpmapobject.h"
+#include "../../pluginbase.h"
 
 namespace osg {
   class Geometry;
@@ -21,23 +23,14 @@ namespace Util {
 
 namespace Updraft {
 
-// TODO(cestmir): This is just a temporary class to test mouse picking
-// Remove it as soon as real turnpoint map objects are implemented
-class TPMapObject: public QObject, public MapObject {
-  Q_OBJECT
-
- public:
-  explicit TPMapObject(const QString& name): QObject(NULL), MapObject(name) {}
-  QObject* asQObject() { return this; }
-};
-
 class TurnPoints;
 
 /// Class storing a turn-points layer.
 class TPLayer {
  public:
   TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
-    const TPFile *file_, const QString &dataDir, TurnPoints* parent_);
+    const TPFile *file_, const QString &dataDir, TurnPoints* parent_,
+    CoreInterface* core);
 
   virtual ~TPLayer();
 
@@ -71,6 +64,14 @@ class TPLayer {
     const osg::Matrix& matrix,
     osg::Geode* geode);
 
+  /// Autoscale creates the osg::Node Label
+  osg::Node* createAutoScale(
+    const osg::Vec3& position,
+    qreal characterSize,
+    const QString& message,
+    qreal minScale = 0.0,
+    qreal maxScale = FLT_MAX);
+
   /// osg Node representing this turn-points layer
   osg::Group* group;
 
@@ -88,6 +89,21 @@ class TPLayer {
   // TODO(cestmir): Serves for destructor purposes. Remove in future
   // when real turnpoint MapObjects are implemented
   QList<TPMapObject*> mapObjects;
+
+  /// Colour of the label setting
+  osg::Vec4 labelColour;
+
+  /// Text min/max visibility setting
+  qreal labelMinScale;
+  qreal labelMaxScale;
+
+  /// Settings
+  SettingInterface* labColSetR;
+  SettingInterface* labColSetG;
+  SettingInterface* labColSetB;
+  SettingInterface* labColSetA;
+  SettingInterface* labMaxScaleSet;
+  SettingInterface* labMinScaleSet;
 };
 
 }  // End namespace Updraft

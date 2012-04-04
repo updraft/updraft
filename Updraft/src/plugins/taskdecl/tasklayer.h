@@ -20,6 +20,8 @@ namespace Updraft {
 class MapLayerInterface;
 class TabInterface;
 class TaskDeclaration;
+class TaskDeclPanel;
+struct TurnPoint;
 
 /// Class storing a task layer.
 class TaskLayer : public QObject {
@@ -52,11 +54,31 @@ class TaskLayer : public QObject {
   /// \return Index displayed in new task title
   int getNewTaskIndex() const;
 
+  /// \return TaskFile object for this task
+  TaskFile* getTaskFile();
+
+  /// \return Task declaration GUI panel.
+  TaskDeclPanel* getTaskDeclPanel();
+
+  /// \return Whether this layer's tab is selected.
+  bool isTabSelected();
+
+  /// Creates a new task point.
+  void newTaskPoint(const TurnPoint* tp);
+
+  void saveAs(const QString& filePath);
+
  public slots:
   void mapLayerDisplayed(bool value, MapLayerInterface* sender);
 
   /// Slot that gets called when the layer is about to close.
   void tryCloseLayer();
+
+  /// Slot that should be called when the layer's tab is selected
+  void tabSelected();
+
+  /// Slot that should be called when the layer's tab is selected
+  void tabDeselected();
 
  private:
   /// TaskDeclaration plugin
@@ -74,8 +96,14 @@ class TaskLayer : public QObject {
   /// Task data object
   TaskFile *file;
 
+  /// Task GUI panel
+  TaskDeclPanel* panel;
+
   /// Display state of task graphics
   bool displayed;
+
+  /// Selection state of the task's GUI tab
+  bool tabSelectedState;
 
   /// Number which is displayed in title of new task
   int newTaskIndex;
