@@ -14,7 +14,7 @@ QString TPFileCupAdapter::getFilePath() const {
   return cupFile->getFileName();
 }
 
-TTPList TPFileCupAdapter::getTurnPoints() const {
+const TTPList& TPFileCupAdapter::getTurnPoints() const {
   return tpList;
 }
 

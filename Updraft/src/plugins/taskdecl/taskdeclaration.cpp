@@ -1,5 +1,6 @@
 #include "taskdeclaration.h"
 #include "taskdeclpanel.h"
+#include "../turnpoints/tpmapobject.h"
 
 namespace Updraft {
 
@@ -48,7 +49,9 @@ void TaskDeclaration::deinitialize() {
 }
 
 bool TaskDeclaration::wantsToHandleClick(MapObject* obj) {
-  // TODO(cestmir): Check the map object type
+  TPMapObject* mObj = qobject_cast<TPMapObject*>(obj->asQObject());
+  if (mObj == NULL) return false;
+
   TaskLayer* layer = getActiveLayer();
   if (!layer) return false;
 

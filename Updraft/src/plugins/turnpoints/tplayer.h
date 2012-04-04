@@ -4,7 +4,7 @@
 #include <osg/Geometry>
 #include <osg/Matrix>
 #include "tpfile.h"
-#include "mapobject.h"
+#include "tpmapobject.h"
 #include "../../pluginbase.h"
 
 namespace osg {
@@ -22,16 +22,6 @@ namespace Util {
 }
 
 namespace Updraft {
-
-// TODO(cestmir): This is just a temporary class to test mouse picking
-// Remove it as soon as real turnpoint map objects are implemented
-class TPMapObject: public QObject, public MapObject {
-  Q_OBJECT
-
- public:
-  explicit TPMapObject(const QString& name): QObject(NULL), MapObject(name) {}
-  QObject* asQObject() { return this; }
-};
 
 class TurnPoints;
 
@@ -75,7 +65,7 @@ class TPLayer {
     osg::Geode* geode);
 
   /// Autoscale creates the osg::Node Label
-  osg::Node* TPLayer::createAutoScale(
+  osg::Node* createAutoScale(
     const osg::Vec3& position,
     qreal characterSize,
     const QString& message,
