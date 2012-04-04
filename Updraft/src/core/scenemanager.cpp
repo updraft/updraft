@@ -9,11 +9,6 @@
 #include "mapmanipulator.h"
 #include "pickhandler.h"
 
-#include "updraft.h"
-#include "ui/mainwindow.h"
-#include "ui/menu.h"
-#include "../menuinterface.h"
-
 namespace Updraft {
 namespace Core {
 
@@ -35,9 +30,6 @@ SceneManager::SceneManager(QString baseEarthFile,
   camera->setClearMask
     (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   viewer->setCamera(camera);
-
-  is2dEnabled = 0;
-  setPerspectiveCamera(camera);
 
   // create map manager
   mapManager = new MapManager(baseEarthFile);
@@ -72,14 +64,7 @@ SceneManager::SceneManager(QString baseEarthFile,
     // osg::Vec3d(0, 0, 0), osg::Vec3d(0, 1, 0));
 
   // Create a picking handler
-  // TODO(cestmir): No memory leak here? Is pickhandler refcounted or what?
   viewer->addEventHandler(new PickHandler());
-
-  // insert menu item for switching 2d/3d
-  QAction* toggleViewAction = new QAction("Toggle 2D/3D view", this);
-  connect(toggleViewAction, SIGNAL(triggered()), this, SLOT(toggleView()));
-  Menu* toolsMenu = updraft->mainWindow->getSystemMenu(MENU_TOOLS);
-  toolsMenu->insertAction(1, toggleViewAction);
 
   // start drawing
   timer = new QTimer(this);
@@ -104,23 +89,7 @@ QWidget* SceneManager::getWidget() {
 }
 
 void SceneManager::redrawScene() {
-  if (is2dEnabled) {
-    updateOrthographicCamera(camera);
-  }
   viewer->frame();
-}
-
-void SceneManager::toggleView() {
-  is2dEnabled = !is2dEnabled;
-
-  if (is2dEnabled) {
-    // TODO(Bohdan): untilt before switching to orthographic view
-    setOrthographicCamera(camera);
-    qDebug("Switched to 2D");
-  } else {
-    setPerspectiveCamera(camera);
-    qDebug("Switched to 3D");
-  }
 }
 
 osg::Group* SceneManager::newGroup() {
@@ -166,7 +135,6 @@ osg::GraphicsContext::Traits* SceneManager::createGraphicsTraits
     (int x, int y, int w, int h, const std::string& name,
     bool windowDecoration) {
   osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
-  ds->setMinimumNumStencilBits(8);
   osg::GraphicsContext::Traits* traits = new osg::GraphicsContext::Traits();
   traits->windowName = name;
   traits->windowDecoration = windowDecoration;
@@ -193,36 +161,11 @@ osg::Camera* SceneManager::createCamera(osg::GraphicsContext::Traits* traits) {
 
   camera->setClearColor(osg::Vec4(0.2, 0.2, 0.6, 1.0));
   camera->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
-  setOrthographicCamera(camera);
-  return camera;
-}
-
-double SceneManager::getAspectRatio() {
-  const osg::GraphicsContext::Traits *traits = graphicsWindow->getTraits();
-  double aspectRatio = static_cast<double>(traits->width)/
-    static_cast<double>(traits->height);
-  return aspectRatio;
-}
-
-void SceneManager::updateOrthographicCamera(osg::Camera* camera) {
-  osg::Vec3d eye, center, up;
-  camera->getViewMatrixAsLookAt(eye, center, up);
-
-  double distance =  eye.length() - 6365000.f;
-  double fovy = 30.f;
-  double hy = distance * fovy/90.0f;
-  double hx = hy * getAspectRatio();
-  camera->setProjectionMatrixAsOrtho2D(-hx, hx, -hy, hy);
-}
-
-void SceneManager::setOrthographicCamera(osg::Camera* camera) {
-  updateOrthographicCamera(camera);
-}
-
-void SceneManager::setPerspectiveCamera(osg::Camera* camera) {
   camera->setProjectionMatrixAsPerspective(
-    30.0f, getAspectRatio(),
+    30.0f, static_cast<double>(traits->width)/
+    static_cast<double>(traits->height),
     1.0f, 10000.0f);
+  return camera;
 }
 
 }  // end namespace Core
