@@ -194,6 +194,7 @@ void TaskDeclPanel::initFromFile(TaskFile* file) {
     newAddTpButton(position);
 
     position++;
+    tp = fileData->getTaskPoint(position);
   }
 
   file->endEdit(false);
