@@ -1,6 +1,7 @@
 #ifndef UPDRAFT_SRC_PLUGINS_TASKDECL_TASKPOINT_H_
 #define UPDRAFT_SRC_PLUGINS_TASKDECL_TASKPOINT_H_
 
+#include <QDomElement>
 #include "assignedarea.h"
 #include "util/location.h"
 

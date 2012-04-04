@@ -39,12 +39,11 @@ TaskFile::StorageState TaskFile::getStorageState() const {
 }
 
 void TaskFile::save() {
-  save(filePath);
+  saveAs(filePath);
 }
 
 void TaskFile::saveAs(const QString &filePath_) {
-
-  QFile file(filePath);
+  QFile file(filePath_);
   if (!file.open(QIODevice::WriteOnly))
     return;
 

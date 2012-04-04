@@ -18,7 +18,7 @@ class TPFileCupAdapter : public TPFile {
   // Implementation of TPFile interface.
   QString getFileName() const;
   QString getFilePath() const;
-  TTPList getTurnPoints() const;
+  const TTPList& getTurnPoints() const;
 
   /// Loads turn-points from specified cup file.
   /// Use this method for creating TPFileCupAdapter instances.

@@ -64,6 +64,7 @@ class SceneManager: public QObject {
 
  public slots:
   void redrawScene();
+  void toggleView();
 
  private:
   osgViewer::Viewer* viewer;
@@ -90,6 +91,12 @@ class SceneManager: public QObject {
 
   /// Map of osg nodes registered for mouse picking
   QHash<osg::Node*, MapObject*> pickingMap;
+
+  bool is2dEnabled;
+  double getAspectRatio();
+  void setPerspectiveCamera(osg::Camera* camera);
+  void setOrthographicCamera(osg::Camera* camera);
+  void updateOrthographicCamera(osg::Camera* camera);
 };
 
 }  // end namespace Core

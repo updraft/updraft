@@ -7,6 +7,9 @@
 #include "taskdeclpanel.h"
 #include "ui_taskdeclpanel.h"
 #include "tasklayer.h"
+#include "taskfile.h"
+#include "taskdata.h"
+#include "taskpoint.h"
 
 namespace Updraft {
 
@@ -183,6 +186,22 @@ void TaskDeclPanel::newAddTpButton(int index, bool checked) {
   butt->setChecked(checked);
 
   adjustAddTpText();
+}
+
+void TaskDeclPanel::initFromFile(TaskFile* file) {
+  TaskData* fileData = file->beginEdit();
+  
+  // Iterate over task points in the task file
+  int position = 0;
+  TaskPoint* tp = fileData->getTaskPoint(position);
+  while (tp) {
+    newTurnpointButton(position, tp->getName());
+    newAddTpButton(position);
+
+    position++;
+  }
+
+  file->endEdit(false);
 }
 
 void TaskDeclPanel::adjustAddTpText() {

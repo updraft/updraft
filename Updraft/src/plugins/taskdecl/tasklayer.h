@@ -21,6 +21,7 @@ class MapLayerInterface;
 class TabInterface;
 class TaskDeclaration;
 class TaskDeclPanel;
+struct TurnPoint;
 
 /// Class storing a task layer.
 class TaskLayer : public QObject {
@@ -62,10 +63,8 @@ class TaskLayer : public QObject {
   /// \return Whether this layer's tab is selected.
   bool isTabSelected();
 
-  /// Creates a new task point with the given name.
-  // TODO(cestmir): Has to contain more data from turnpoints (position, etc.)
-  //                The argument should probably be MapObject*
-  void newTaskPoint(const QString& name);
+  /// Creates a new task point.
+  void newTaskPoint(const TurnPoint* tp);
 
   void saveAs(const QString& filePath);
 

@@ -186,8 +186,7 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
   osg::Geode *geodeTp = createGeode(25.0, 0);
   osg::Geode *geodeAf = createGeode(25.0, 1);
 
-  TTPList points = file->getTurnPoints();
-
+  const TTPList& points = file->getTurnPoints();
 
   for (TTPList::const_iterator itPoint = points.begin();
     itPoint != points.end(); ++itPoint) {
@@ -217,7 +216,7 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     }
 
     // Make the autotransform node pickable
-    TPMapObject* mapObject = new TPMapObject(itPoint->name);
+    TPMapObject* mapObject = new TPMapObject(&(*itPoint));
     mapObjects.push_back(mapObject);
     parent->getCoreInterface()->registerOsgNode(tpNode, mapObject);
 
