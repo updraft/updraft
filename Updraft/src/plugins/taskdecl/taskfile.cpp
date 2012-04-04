@@ -39,7 +39,7 @@ TaskFile::StorageState TaskFile::getStorageState() const {
 }
 
 void TaskFile::save() {
-  save(filePath);
+  saveAs(filePath);
 }
 
 void TaskFile::saveAs(const QString &filePath_) {
