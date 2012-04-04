@@ -21,7 +21,7 @@ class MapLayerInterface;
 class TabInterface;
 class TaskDeclaration;
 class TaskDeclPanel;
-class TurnPoint;
+struct TurnPoint;
 
 /// Class storing a task layer.
 class TaskLayer : public QObject {

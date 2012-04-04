@@ -7,11 +7,17 @@
 
 #include "tplayer.h"
 
+#ifdef turnpoints_EXPORTS
+# define TPS_EXPORT Q_DECL_EXPORT
+#else
+# define TPS_EXPORT Q_DECL_IMPORT
+#endif
+
 namespace Updraft {
 
 typedef QMap<MapLayerInterface*, TPLayer*> TTPLayerMap;
 
-class Q_DECL_EXPORT TurnPoints : public QObject, public PluginBase {
+class TPS_EXPORT TurnPoints : public QObject, public PluginBase {
   Q_OBJECT
   Q_INTERFACES(Updraft::PluginBase)
 

@@ -43,8 +43,7 @@ void TaskFile::save() {
 }
 
 void TaskFile::saveAs(const QString &filePath_) {
-
-  QFile file(filePath);
+  QFile file(filePath_);
   if (!file.open(QIODevice::WriteOnly))
     return;
 
