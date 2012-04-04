@@ -25,6 +25,8 @@ void Menu::insertAction(int position, QAction* action) {
 }
 
 void Menu::appendAction(QAction* action) {
+  actions.insert(actions.size(), action);
+
   menu->addAction(action);
 }
 
