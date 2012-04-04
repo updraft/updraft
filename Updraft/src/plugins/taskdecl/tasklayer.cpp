@@ -29,6 +29,9 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   tab->connectSignalSelected(this, SLOT(tabSelected()));
   tab->connectSignalDeselected(this, SLOT(tabDeselected()));
 
+  // Initialize the gui from the file if needed
+  if (file) panel->initFromFile(file);
+
   // Create new mapLayer in mapLayerGroup, assign osgNode and title.
   mapLayer = plugin->mapLayerGroup->insertMapLayer(getNode(), getTitle(), -1);
 

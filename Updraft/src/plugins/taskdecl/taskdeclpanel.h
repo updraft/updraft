@@ -14,6 +14,7 @@ namespace Ui { class TaskDeclPanel; }
 namespace Updraft {
 
 class TaskLayer;
+class TaskFile;
 
 class TaskDeclPanel : public QWidget {
   Q_OBJECT
@@ -35,6 +36,9 @@ class TaskDeclPanel : public QWidget {
 
   /// Create and insert into GUI a new add turnpoint button
   void newAddTpButton(int index, bool checked = false);
+
+  /// Initializes the task from a file
+  void initFromFile(TaskFile* file);
 
  private slots:
   void addTpButtonPushed();
