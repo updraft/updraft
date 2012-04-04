@@ -100,12 +100,7 @@ void TaskDeclPanel::removeTpButtonPushed() {
 }
 
 void TaskDeclPanel::saveButtonPushed() {
-  QString filePath = QFileDialog::getSaveFileName(this, "Save Task",
-    QString(), QString("Task Files (*.tsk)"));
-
-  if (filePath.length() > 0) {
-    taskLayer->saveAs(filePath);
-  }
+  taskLayer->save();
 }
 
 void TaskDeclPanel::newTurnpointButton(int index, const QString& name) {
@@ -190,7 +185,7 @@ void TaskDeclPanel::newAddTpButton(int index, bool checked) {
 
 void TaskDeclPanel::initFromFile(TaskFile* file) {
   TaskData* fileData = file->beginEdit();
-  
+
   // Iterate over task points in the task file
   int position = 0;
   TaskPoint* tp = fileData->getTaskPoint(position);

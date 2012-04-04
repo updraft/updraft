@@ -5,7 +5,7 @@
 namespace Updraft {
 
 TaskDeclaration::TaskDeclaration()
-  : createTaskAction(NULL), mapLayerGroup(NULL) {
+  : mapLayerGroup(NULL) {
 }
 
 TaskDeclaration::~TaskDeclaration() {
@@ -23,10 +23,26 @@ unsigned TaskDeclaration::getPriority() {
 void TaskDeclaration::initialize() {
   mapLayerGroup = core->createMapLayerGroup(tr("Tasks"));
 
-  createTaskAction = new QAction("New Task", this);
+  // Menu - New Task
+
+  QAction* createTaskAction = new QAction("New Task", this);
   connect(createTaskAction, SIGNAL(triggered()), this, SLOT(createTask()));
 
-  core->getSystemMenu(MENU_FILE)->insertAction(1, createTaskAction);
+  core->getSystemMenu(MENU_FILE)->appendAction(createTaskAction);
+
+  // Menu - Save
+
+  QAction* saveTaskAction = new QAction("Save Task", this);
+  connect(saveTaskAction, SIGNAL(triggered()), this, SLOT(saveTask()));
+
+  core->getSystemMenu(MENU_FILE)->appendAction(saveTaskAction);
+
+  // Menu - Save As
+
+  QAction* saveAsTaskAction = new QAction("Save Task As...", this);
+  connect(saveAsTaskAction, SIGNAL(triggered()), this, SLOT(saveTaskAs()));
+
+  core->getSystemMenu(MENU_FILE)->appendAction(saveAsTaskAction);
 
   // File type registration
 
@@ -93,6 +109,24 @@ void TaskDeclaration::fileIdentification(QStringList *roles,
 
 void TaskDeclaration::createTask() {
   addLayer(new TaskFile());
+}
+
+void TaskDeclaration::saveTask() {
+  TaskLayer *activeLayer = getActiveLayer();
+  if (activeLayer == NULL) {
+    return;
+  }
+
+  activeLayer->save();
+}
+
+void TaskDeclaration::saveTaskAs() {
+  TaskLayer *activeLayer = getActiveLayer();
+  if (activeLayer == NULL) {
+    return;
+  }
+
+  activeLayer->saveAs();
 }
 
 TaskLayer* TaskDeclaration::getActiveLayer() {

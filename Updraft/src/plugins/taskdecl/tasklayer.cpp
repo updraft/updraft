@@ -114,8 +114,27 @@ void TaskLayer::newTaskPoint(const TurnPoint* tp) {
   panel->newAddTpButton(tpIndex + 1, true);
 }
 
-void TaskLayer::saveAs(const QString& filePath) {
-  file->saveAs(filePath);
+void TaskLayer::save() {
+  switch (file->getStorageState()) {
+    case TaskFile::UNSTORED_EMPTY:
+    case TaskFile::UNSTORED_EDITED:
+      saveAs();
+      break;
+
+    case TaskFile::STORED_DIRTY:
+    case TaskFile::STORED_SYNCHRONIZED:
+      file->save();
+      break;
+  }
+}
+
+void TaskLayer::saveAs() {
+  QString filePath = QFileDialog::getSaveFileName(panel, "Save Task As",
+    QString(), QString("Task File (*.tsk)"));
+
+  if (filePath.length() > 0) {
+    file->saveAs(filePath);
+  }
 }
 
 void TaskLayer::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
