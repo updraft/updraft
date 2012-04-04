@@ -18,6 +18,8 @@ class UTIL_EXPORT Location {
   qreal lon;
   qreal alt;
 
+  Location();
+
   /// Latitude in radians.
   qreal lat_radians() const {
     return M_PI * lat / 180.0;
@@ -35,6 +37,14 @@ class UTIL_EXPORT Location {
   /// Set latitude from degrees, minutes and seconds.
   /// \param sign 'E' for east or 'W' for west.
   void lonFromDMS(qreal d, qreal m, qreal s, char sign);
+
+  /// Retrieves degrees, minutes and seconds from latitude
+  /// \param sign 'N' for north or 'S' for south
+  void latToDMS(int *d, int *m, qreal *s, char *sign) const;
+
+  /// Retrieves degrees, minutes and seconds from longitude
+  /// \param sign 'E' for east or 'W' for west.
+  void lonToDMS(int *d, int *m, qreal *s, char *sign) const;
 };
 
 }  // End namespace Util

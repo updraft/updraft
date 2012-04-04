@@ -121,7 +121,12 @@ void CupLoader::parseElevation(TPEntry &tp, const QString &elevation) {
 void CupLoader::parseTP(const QString &strLine) {
   TPEntry tp;
 
-  tp.name = strLine.section(QChar(','), 0, 0);
+  // mod to allow comma in between the double quotes:
+  QString tpName = strLine.section(QChar('"'), 1, 1);
+  QString cpyLine(strLine.section(QChar('"'), 2, 10));
+  // cpyLine = cpyLine.right(cpyLine.size() - 1);
+
+  tp.name = tpName;  // strLine.section(QChar(','), 0, 0);
   tp.code = strLine.section(QChar(','), 1, 1);
   tp.country = strLine.section(QChar(','), 2, 2);
   parseLatitude(tp, strLine.section(QChar(','), 3, 3));

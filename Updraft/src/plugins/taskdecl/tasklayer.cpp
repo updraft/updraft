@@ -15,9 +15,16 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   group(new osg::Group()),
   file(file_),
   displayed(displayed_),
+  tabSelectedState(true),
   newTaskIndex(_newTaskIndex) {
   // Create new tab in bottom pane.
-  tab = plugin->core->createTab(new TaskDeclPanel(), getTitle());
+  panel = new TaskDeclPanel();
+  panel->setTaskLayer(this);
+  tab = plugin->core->createTab(panel, getTitle());
+
+  // Connect tab's signals onto the taskLayer
+  tab->connectSignalSelected(this, SLOT(tabSelected()));
+  tab->connectSignalDeselected(this, SLOT(tabDeselected()));
 
   // Create new mapLayer in mapLayerGroup, assign osgNode and title.
   mapLayer = plugin->mapLayerGroup->insertMapLayer(getNode(), getTitle(), -1);
@@ -73,6 +80,30 @@ int TaskLayer::getNewTaskIndex() const {
   return newTaskIndex;
 }
 
+TaskFile* TaskLayer::getTaskFile() {
+  return file;
+}
+
+TaskDeclPanel* TaskLayer::getTaskDeclPanel() {
+  return panel;
+}
+
+bool TaskLayer::isTabSelected() {
+  return tabSelectedState;
+}
+
+void TaskLayer::newTaskPoint(const QString& name) {
+  int tpIndex = panel->getToggledButtonIndex();
+  if (tpIndex < 0) return;
+
+  panel->newTurnpointButton(tpIndex, name);
+  panel->newAddTpButton(tpIndex + 1, true);
+}
+
+void TaskLayer::saveAs(const QString& filePath) {
+  file->saveAs(filePath);
+}
+
 void TaskLayer::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
   if (sender != mapLayer) {
     return;
@@ -98,6 +129,14 @@ void TaskLayer::tryCloseLayer() {
     plugin->layers.erase(itLayer);
 
   delete this;
+}
+
+void TaskLayer::tabSelected() {
+  tabSelectedState = true;
+}
+
+void TaskLayer::tabDeselected() {
+  tabSelectedState = false;
 }
 
 }  // End namespace Updraft

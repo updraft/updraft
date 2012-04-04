@@ -1,4 +1,5 @@
 #include "taskdeclaration.h"
+#include "taskdeclpanel.h"
 
 namespace Updraft {
 
@@ -26,6 +27,18 @@ void TaskDeclaration::initialize() {
 
   core->getSystemMenu(MENU_FILE)->insertAction(1, createTaskAction);
 
+  // File type registration
+
+  FileRegistration fileReg;
+  fileReg.category = CATEGORY_TEMPORARY;
+  fileReg.extension = ".tsk";
+  fileReg.typeDescription = tr("Task file");
+  fileReg.roleDescription = tr("Open task");
+  fileReg.roleId = OPEN_TASK_FILE;
+  fileReg.plugin = this;
+
+  core->registerFiletype(fileReg);
+
   qDebug("taskdecl loaded");
 }
 
@@ -34,13 +47,28 @@ void TaskDeclaration::deinitialize() {
   qDebug("taskdecl unloaded");
 }
 
+bool TaskDeclaration::wantsToHandleClick(MapObject* obj) {
+  // TODO(cestmir): Check the map object type
+  TaskLayer* layer = getActiveLayer();
+  if (!layer) return false;
+
+  return layer->getTaskDeclPanel()->hasToggledButton();
+}
+
+void TaskDeclaration::handleClick(MapObject* obj, const EventInfo* evt) {
+  TaskLayer* layer = getActiveLayer();
+  if (!layer) return;
+
+  layer->newTaskPoint(obj->name);
+  return;
+}
+
 bool TaskDeclaration::fileOpen(const QString &filename, int roleId) {
   TaskFile *file = NULL;
 
   switch (roleId) {
     case OPEN_TASK_FILE:
-      // TODO(Tom): Implement file loading.
-      // file = TPFileCupAdapter::load(filename);
+      file = new TaskFile(filename);
       break;
   }
 
@@ -59,6 +87,15 @@ void TaskDeclaration::fileIdentification(QStringList *roles,
 
 void TaskDeclaration::createTask() {
   addLayer(new TaskFile());
+}
+
+TaskLayer* TaskDeclaration::getActiveLayer() {
+  foreach(TaskLayer *layer, layers) {
+    if (layer->isTabSelected()) {
+      return layer;
+    }
+  }
+  return NULL;
 }
 
 void TaskDeclaration::unloadFiles() {
