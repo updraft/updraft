@@ -5,6 +5,9 @@
 
 #include "taskdeclpanel.h"
 #include "ui_taskdeclpanel.h"
+#include "tasklayer.h"
+
+namespace Updraft {
 
 TaskDeclPanel::TaskDeclPanel(QWidget *parent, Qt::WFlags flags)
   : QWidget(parent, flags),
@@ -12,11 +15,27 @@ TaskDeclPanel::TaskDeclPanel(QWidget *parent, Qt::WFlags flags)
   ui(new Ui::TaskDeclPanel) {
   // Create the UI
   ui->setupUi(this);
+  addButtons = new QButtonGroup(this);
 
   newAddTpButton(0);
 }
 
 TaskDeclPanel::~TaskDeclPanel() {
+}
+
+bool TaskDeclPanel::hasToggledButton() {
+  return addButtons->checkedButton() != 0;
+}
+
+int TaskDeclPanel::getToggledButtonIndex() {
+  if (addButtons->checkedButton() == NULL) {
+    qDebug() << "TaskDeclPanel: There was no toggled button!";
+    return -1;
+  }
+
+  int layoutIdx = ui->taskButtonsLayout->indexOf(addButtons->checkedButton());
+  int buttIndex = (layoutIdx - 1) / 2;
+  return buttIndex;
 }
 
 void TaskDeclPanel::addTpButtonPushed() {
@@ -25,6 +44,7 @@ void TaskDeclPanel::addTpButtonPushed() {
     return;
   }
 
+  /*
   // Find the index of the pushed button
   QPushButton* butt = qobject_cast<QPushButton*>(sender());
   int layoutIndex = ui->taskButtonsLayout->indexOf(butt);
@@ -36,6 +56,7 @@ void TaskDeclPanel::addTpButtonPushed() {
 
   // Hide/unhide the add button text
   adjustAddTpText();
+  */
 }
 
 void TaskDeclPanel::removeTpButtonPushed() {
@@ -72,7 +93,7 @@ void TaskDeclPanel::removeTpButtonPushed() {
   adjustAddTpText();
 }
 
-void TaskDeclPanel::newTurnpointButton(int index) {
+void TaskDeclPanel::newTurnpointButton(int index, const QString& name) {
   // Check the index argument
   if (index > ui->taskButtonsLayout->count() - 2) {  // 2 for the spacers
     qDebug() << "Wrong index parameter in TaskDeclPanel::newTurnpointButton: "
@@ -92,12 +113,12 @@ void TaskDeclPanel::newTurnpointButton(int index) {
   topFrame->setLayout(topFrameLayout);
 
   // number
-  QLabel* number = new QLabel("1. ");  // TODO(cestmir): use real data
+  QLabel* number = new QLabel(QString("%1. ").arg(index+1));
   topFrameLayout->addWidget(number);
 
   // name
-  QLabel* name   = new QLabel("TextLabel");
-  topFrameLayout->addWidget(name);
+  QLabel* nameWidget = new QLabel(name);
+  topFrameLayout->addWidget(nameWidget);
 
   // closeFrame
   QFrame* closeFrame = new QFrame();
@@ -121,7 +142,7 @@ void TaskDeclPanel::newTurnpointButton(int index) {
   ui->taskButtonsLayout->insertWidget(layoutIndex, topFrame);
 }
 
-void TaskDeclPanel::newAddTpButton(int index) {
+void TaskDeclPanel::newAddTpButton(int index, bool checked) {
   // Check the index argument
   if (index > ui->taskButtonsLayout->count() - 2) {  // 2 for the spacers
     qDebug() << "Wrong index parameter in TaskDeclPanel::newAddTaskButton: "
@@ -134,6 +155,10 @@ void TaskDeclPanel::newAddTpButton(int index) {
     QIcon(":/taskdeclpanel/icons/add_tp_icon.png"), addTpText, NULL);
   butt->setFlat(true);
   butt->setIconSize(QSize(32, 32));
+  butt->setCheckable(true);
+
+  // Insert the button into the button group
+  addButtons->addButton(butt);
 
   // Insert the button into the GUI
   int layoutIndex = 2*index + 1;  // +1 for spacer in the layout
@@ -141,6 +166,11 @@ void TaskDeclPanel::newAddTpButton(int index) {
 
   // Connect the button to a slot
   connect(butt, SIGNAL(clicked()), this, SLOT(addTpButtonPushed()));
+
+  // Check the new button
+  butt->setChecked(checked);
+
+  adjustAddTpText();
 }
 
 void TaskDeclPanel::adjustAddTpText() {
@@ -167,4 +197,6 @@ void TaskDeclPanel::adjustAddTpText() {
     }
   }
 }
+
+}  // End namespace Updraft
 
