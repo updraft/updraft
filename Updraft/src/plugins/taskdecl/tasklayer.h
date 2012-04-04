@@ -67,6 +67,8 @@ class TaskLayer : public QObject {
   //                The argument should probably be MapObject*
   void newTaskPoint(const QString& name);
 
+  void saveAs(const QString& filePath);
+
  public slots:
   void mapLayerDisplayed(bool value, MapLayerInterface* sender);
 

@@ -100,6 +100,10 @@ void TaskLayer::newTaskPoint(const QString& name) {
   panel->newAddTpButton(tpIndex + 1, true);
 }
 
+void TaskLayer::saveAs(const QString& filePath) {
+  file->saveAs(filePath);
+}
+
 void TaskLayer::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
   if (sender != mapLayer) {
     return;
