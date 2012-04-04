@@ -4,6 +4,9 @@
 #include "tabinterface.h"
 #include "taskdeclpanel.h"
 #include "taskdeclaration.h"
+#include "taskdata.h"
+#include "taskpoint.h"
+#include "../turnpoints/turnpoint.h"
 
 namespace Updraft {
 
@@ -92,11 +95,19 @@ bool TaskLayer::isTabSelected() {
   return tabSelectedState;
 }
 
-void TaskLayer::newTaskPoint(const QString& name) {
+void TaskLayer::newTaskPoint(const TurnPoint* tp) {
   int tpIndex = panel->getToggledButtonIndex();
   if (tpIndex < 0) return;
 
-  panel->newTurnpointButton(tpIndex, name);
+  // Modify the file data
+  TaskData* tData = file->beginEdit();
+  TaskPoint* newPoint = new TaskPoint();
+  newPoint->setTP(tp);
+  tData->insertTaskPoint(newPoint, tpIndex);
+  file->endEdit(false);  // TODO(cestmir): Create redo/undo
+
+  // Modify GUI
+  panel->newTurnpointButton(tpIndex, tp->name);
   panel->newAddTpButton(tpIndex + 1, true);
 }
 
