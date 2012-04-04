@@ -66,6 +66,8 @@ class TaskLayer : public QObject {
   /// Creates a new task point.
   void newTaskPoint(const TurnPoint* tp);
 
+  void saveAs(const QString& filePath);
+
  public slots:
   void mapLayerDisplayed(bool value, MapLayerInterface* sender);
 

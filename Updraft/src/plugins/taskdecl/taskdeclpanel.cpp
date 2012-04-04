@@ -2,6 +2,7 @@
 #include <QPushButton>
 #include <QSize>
 #include <QLayoutItem>
+#include <QFileDialog>
 
 #include "taskdeclpanel.h"
 #include "ui_taskdeclpanel.h"
@@ -16,6 +17,8 @@ TaskDeclPanel::TaskDeclPanel(QWidget *parent, Qt::WFlags flags)
   // Create the UI
   ui->setupUi(this);
   addButtons = new QButtonGroup(this);
+
+  connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(saveButtonPushed()));
 
   newAddTpButton(0);
 }
@@ -91,6 +94,15 @@ void TaskDeclPanel::removeTpButtonPushed() {
 
   // Check whether the add button is not single again
   adjustAddTpText();
+}
+
+void TaskDeclPanel::saveButtonPushed() {
+  QString filePath = QFileDialog::getSaveFileName(this, "Save Task",
+    QString(), QString("Task Files (*.tsk)"));
+
+  if (filePath.length() > 0) {
+    taskLayer->saveAs(filePath);
+  }
 }
 
 void TaskDeclPanel::newTurnpointButton(int index, const QString& name) {
