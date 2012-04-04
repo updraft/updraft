@@ -4,10 +4,11 @@
 namespace Updraft {
 namespace IgcViewer {
 
-const QBrush VerticalSpeedPlotPainter::POSITIVE_BRUSH = QBrush(Qt::red);
-const QPen VerticalSpeedPlotPainter::POSITIVE_PEN = QPen(Qt::red);
-const QBrush VerticalSpeedPlotPainter::NEGATIVE_BRUSH = QBrush(Qt::blue);
-const QPen VerticalSpeedPlotPainter::NEGATIVE_PEN = QPen(Qt::blue);
+const QBrush VerticalSpeedPlotPainter::POSITIVE_BRUSH =
+  QBrush(QColor(100, 100, 255));
+const QPen VerticalSpeedPlotPainter::POSITIVE_PEN = QPen(QColor(100, 100, 255));
+const QBrush VerticalSpeedPlotPainter::NEGATIVE_BRUSH = QBrush(Qt::red);
+const QPen VerticalSpeedPlotPainter::NEGATIVE_PEN = QPen(Qt::red);
 
 void PlotPainter::init(QPainter *painter, PlotAxes *axes, IgcInfo *info) {
   this->painter = painter;
