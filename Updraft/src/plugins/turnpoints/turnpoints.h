@@ -41,6 +41,8 @@ class TPS_EXPORT TurnPoints : public QObject, public PluginBase {
 
   bool wantsToHandleClick(MapObject* obj);
   void handleClick(MapObject* obj, const EventInfo* evt);
+
+  bool isTPMapObject(MapObject* obj);
  public slots:
   void mapLayerDisplayed(bool value, MapLayerInterface* sender);
 

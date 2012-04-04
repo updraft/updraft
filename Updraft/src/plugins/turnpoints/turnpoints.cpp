@@ -65,14 +65,18 @@ void TurnPoints::fileIdentification(QStringList *roles,
 }
 
 bool TurnPoints::wantsToHandleClick(MapObject* obj) {
-  QObject* qObj = obj->asQObject();
-  if (qObj && qobject_cast<TPMapObject*>(qObj)) return true;
-  return false;
+  return isTPMapObject(obj);
 }
 
 void TurnPoints::handleClick(MapObject* obj, const EventInfo* evt) {
   qDebug(QString("Clicked a map object named %1")
     .arg(obj->name).toAscii().data());
+}
+
+bool TurnPoints::isTPMapObject(MapObject* obj) {
+  QObject* qObj = obj->asQObject();
+  if (qObj && qobject_cast<TPMapObject*>(qObj)) return true;
+  return false;
 }
 
 void TurnPoints::mapLayerDisplayed(bool value, MapLayerInterface* sender) {

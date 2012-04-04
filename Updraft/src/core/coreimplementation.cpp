@@ -79,6 +79,10 @@ void CoreImplementation::registerOsgNode(osg::Node* node,
   updraft->sceneManager->registerOsgNode(node, mapObject);
 }
 
+PluginBase* CoreImplementation::getPluginByName(const QString& pluginName) {
+  return updraft->pluginManager->getPlugin(pluginName);
+}
+
 }  // End namespace Core
 }  // End namespace Updraft
 

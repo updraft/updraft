@@ -107,6 +107,9 @@ class CoreInterface {
   /// \param mapObject The map object that this node represents when clicked
   //TODO(cestmir): We will probably need unregistering as well
   virtual void registerOsgNode(osg::Node* node, MapObject* mapObject) = 0;
+
+  /// Returns a loaded plugin by its name
+  virtual PluginBase* getPluginByName(const QString& pluginName) = 0;
 };
 
 }  // End namespace Updraft

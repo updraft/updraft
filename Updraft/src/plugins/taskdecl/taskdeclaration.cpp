@@ -1,6 +1,9 @@
 #include "taskdeclaration.h"
 #include "taskdeclpanel.h"
 #include "../turnpoints/tpmapobject.h"
+#include "../turnpoints/turnpoint.h"
+#define turnpoints_EXPORTS
+#include "../turnpoints/turnpoints.h"
 
 namespace Updraft {
 
@@ -49,11 +52,12 @@ void TaskDeclaration::deinitialize() {
 }
 
 bool TaskDeclaration::wantsToHandleClick(MapObject* obj) {
-  TPMapObject* mObj = qobject_cast<TPMapObject*>(obj->asQObject());
-  if (mObj == NULL) return false;
-
   TaskLayer* layer = getActiveLayer();
   if (!layer) return false;
+
+  // Ask the turnpoint plugin whether the map object is of correct type
+  TurnPoints* turnPoints = static_cast<TurnPoints*>(core->getPluginByName("turnpoints"));
+  if (!turnPoints->isTPMapObject(obj)) return false;
 
   return layer->getTaskDeclPanel()->hasToggledButton();
 }
@@ -62,8 +66,8 @@ void TaskDeclaration::handleClick(MapObject* obj, const EventInfo* evt) {
   TaskLayer* layer = getActiveLayer();
   if (!layer) return;
 
-  TPMapObject* mObj = qobject_cast<TPMapObject*>(obj->asQObject());
-  if (mObj == NULL) return;
+  // We can static cast now, because of check in wantsToHandleClick
+  TPMapObject* mObj = static_cast<TPMapObject*>(obj);
 
   layer->newTaskPoint(mObj->turnPoint);
   return;

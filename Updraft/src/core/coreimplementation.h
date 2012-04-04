@@ -46,6 +46,7 @@ class CoreImplementation : public CoreInterface {
 
   void registerOsgNode(osg::Node* node, MapObject* mapObject);
 
+  PluginBase* getPluginByName(const QString& pluginName);
  private:
   PluginBase* plugin;
 };
