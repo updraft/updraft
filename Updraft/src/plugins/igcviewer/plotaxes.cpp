@@ -113,7 +113,11 @@ qreal PlotAxes::findTickIncrement(qreal range, qreal size,
   qreal logIncrement = qCeil(qLn(tmp) / LN10);
   qreal increment = qExp(logIncrement * LN10);
 
-  if (increment * size / range > 2 * minTickSpacing) {
+  qreal pxPerTick = increment * size / range;
+
+  if (pxPerTick > 5 * minTickSpacing) {
+    return increment / 5;
+  } else if (pxPerTick > 2 * minTickSpacing) {
     return increment / 2;
   } else {
     return increment;
