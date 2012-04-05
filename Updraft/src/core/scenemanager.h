@@ -64,6 +64,7 @@ class SceneManager: public QObject {
 
  public slots:
   void redrawScene();
+  void toggleView();
 
  private:
   osgViewer::Viewer* viewer;
