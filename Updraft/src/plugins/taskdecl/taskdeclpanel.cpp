@@ -191,7 +191,7 @@ void TaskDeclPanel::initFromFile(TaskFile* file) {
   TaskPoint* tp = fileData->getTaskPoint(position);
   while (tp) {
     newTurnpointButton(position, tp->getName());
-    newAddTpButton(position);
+    newAddTpButton(position+1);
 
     position++;
     tp = fileData->getTaskPoint(position);
