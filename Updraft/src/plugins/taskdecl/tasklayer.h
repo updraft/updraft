@@ -66,7 +66,11 @@ class TaskLayer : public QObject {
   /// Creates a new task point.
   void newTaskPoint(const TurnPoint* tp);
 
-  void saveAs(const QString& filePath);
+  /// Saves file. If the path is not set, file dialog is invoked.
+  void save();
+
+  /// Invokes save as dialog and saves file.
+  void saveAs();
 
  public slots:
   void mapLayerDisplayed(bool value, MapLayerInterface* sender);

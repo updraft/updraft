@@ -29,7 +29,7 @@ void Location::latToDMS(int *d, int *m, qreal *s, char *sign) const {
   qreal latAbs = qAbs(lat);
   *d = qFloor(latAbs);
   *m = qFloor((latAbs - (qreal)*d)*60.0);
-  *s = qFloor(((latAbs - (qreal)*d)*60.0 - (qreal)*m)*60.0);
+  *s = ((latAbs - (qreal)*d)*60.0 - (qreal)*m)*60.0;
 }
 
 void Location::lonToDMS(int *d, int *m, qreal *s, char *sign) const {
@@ -38,9 +38,8 @@ void Location::lonToDMS(int *d, int *m, qreal *s, char *sign) const {
   qreal lonAbs = qAbs(lon);
   *d = qFloor(lonAbs);
   *m = qFloor((lonAbs - (qreal)*d)*60.0);
-  *s = qFloor(((lonAbs - (qreal)*d)*60.0 - (qreal)*m)*60.0);
+  *s = ((lonAbs - (qreal)*d)*60.0 - (qreal)*m)*60.0;
 }
 
 }  // End namespace Util
 }  // End namespace Updraft
-

@@ -39,13 +39,13 @@ class Q_DECL_EXPORT TaskDeclaration: public QObject, public PluginBase {
  public slots:
   /// Creates empty task.
   void createTask();
+  void saveTask();
+  void saveTaskAs();
 
  private:
   enum FileRoles {
     OPEN_TASK_FILE = 1
   };
-
-  QAction* createTaskAction;
 
   /// List of opened files
   TTaskLayerList layers;

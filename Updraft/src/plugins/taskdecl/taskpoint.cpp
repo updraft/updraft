@@ -131,14 +131,14 @@ void TaskPoint::toDom(QDomDocument *doc, QDomElement *taskPointElem) const {
   // Creates xml element for code.
   if (code.length() > 0) {
     QDomElement codeElem = doc->createElement("Code");
-    codeElem.setNodeValue(code);
+    codeElem.appendChild(doc->createTextNode(code));
     taskPointElem->appendChild(codeElem);
   }
 
   // Creates xml element for name.
   if (name.length() > 0) {
     QDomElement nameElem = doc->createElement("Name");
-    nameElem.setNodeValue(name);
+    nameElem.appendChild(doc->createTextNode(name));
     taskPointElem->appendChild(nameElem);
   }
 

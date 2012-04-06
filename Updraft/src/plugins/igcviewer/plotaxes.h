@@ -51,7 +51,7 @@ class PlotAxes : public QLayoutItem {
   int getTimeInterval();
 
   /// Returns the value of the time start in seconds.
-  int getStartTimeTick();
+  qreal getStartTimeTick();
 
   /// Returns the number of the vertical ticks.
   int getVerticalTicks();
@@ -64,10 +64,10 @@ class PlotAxes : public QLayoutItem {
 
  private:
   /// Return tick value increment in vertical axis.
-  int findTickIncrement(qreal range, qreal width, qreal minTickSpacing);
+  qreal findTickIncrement(qreal range, qreal width, qreal minTickSpacing);
 
   /// Return tick value increment in vertical axis.
-  int findTimeTickIncrement(qreal range, qreal width, qreal minTickSpacing);
+  qreal findTimeTickIncrement(qreal range, qreal width, qreal minTickSpacing);
 
   /// Linear functions for placing points.
   Util::LinearFunc linX, linY;

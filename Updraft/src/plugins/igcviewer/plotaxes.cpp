@@ -107,20 +107,25 @@ void PlotAxes::setLimits(qreal min, qreal max, qreal minTime, qreal maxTime) {
   setGeometry(rect);
 }
 
-int PlotAxes::findTickIncrement(qreal range, qreal size, qreal minTickSpacing) {
+qreal PlotAxes::findTickIncrement(qreal range, qreal size,
+  qreal minTickSpacing) {
   qreal tmp = minTickSpacing * range / size;
 
   qreal logIncrement = qCeil(qLn(tmp) / LN10);
   qreal increment = qExp(logIncrement * LN10);
 
-  if (increment * size / range > 2 * minTickSpacing) {
+  qreal pxPerTick = increment * size / range;
+
+  if (pxPerTick > 5 * minTickSpacing) {
+    return increment / 5;
+  } else if (pxPerTick > 2 * minTickSpacing) {
     return increment / 2;
   } else {
     return increment;
   }
 }
 
-int PlotAxes::findTimeTickIncrement
+qreal PlotAxes::findTimeTickIncrement
 (qreal range, qreal size, qreal minTickSpacing) {
     // this is when the rectangle is not initiated yet
   if (size == 0) return 0;
@@ -197,7 +202,7 @@ int PlotAxes::getTimeInterval() {
   return timeInterval;
 }
 
-int PlotAxes::getStartTimeTick() {
+qreal PlotAxes::getStartTimeTick() {
   return startTimeTick;
 }
 
@@ -257,7 +262,7 @@ void AxisLabel::draw(QPainter *painter) {
     qreal pixelY = axis->placeY(first+step*i);
 
     QString text;
-    text.setNum(first+step*i, 3, 0);
+    text.setNum(first+step*i);
     QRect labelRect(QPoint(0, pixelY-TEXT_HEIGHT/2),
       QPoint(rect.right(), pixelY+TEXT_HEIGHT/2));
     painter->drawText(labelRect, Qt::AlignRight, text);

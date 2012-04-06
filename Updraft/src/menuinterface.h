@@ -29,7 +29,7 @@ class MenuInterface {
 
   /// Append action to the last place of this menu.
   /// \param action The action to be appended
-  void appendAction(QAction* action);
+  virtual void appendAction(QAction* action) = 0;
 };
 
 }  // End namespace Updraft
