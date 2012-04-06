@@ -190,7 +190,7 @@ void TaskDeclPanel::newAddTpButton(int index, bool checked) {
 
 void TaskDeclPanel::initFromFile(TaskFile* file) {
   TaskData* fileData = file->beginEdit();
-  
+
   // Iterate over task points in the task file
   int position = 0;
   TaskPoint* tp = fileData->getTaskPoint(position);
