@@ -112,14 +112,15 @@ osg::Node* TPLayer::createAutoScale(
   // set the osgText
   osgText::Text* text = new osgText::Text;
   text->setCharacterSize(static_cast<float>(characterSize));
-  // if contains the white char
-  // QString mess(message.simplified());
-  // while (mess.indexOf(' ') != -1) {
-    // mess.replace(mess.indexOf(' '), 1, "_");
-  // }
   text->setText(message.toStdString());
   text->setFont(fontPath.toStdString());
-  text->setAlignment(osgText::Text::LEFT_BASE_LINE);
+  text->setFontResolution(20, 20);
+  // text->setAutoRotateToScreen(true);
+  text->setAlignment(osgText::Text::LEFT_BOTTOM);
+  /* text->setCharacterSizeMode(
+osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
+  osgText::Text::SCREEN_COORDS); */
+  // text->setDrawMode
   text->setColor(labelColour);
 
   // define the geode
@@ -127,12 +128,12 @@ osg::Node* TPLayer::createAutoScale(
   geode->addDrawable(text);
   geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
-  /* Create billboard
+  // Create billboard
   osg::Billboard* nameBill = new osg::Billboard();
   nameBill->addDrawable(text);
   nameBill->setMode(osg::Billboard::AXIAL_ROT);
   nameBill->setAxis(osg::Vec3(0.0, -1.0, 0.0f));
-  nameBill->setNormal(osg::Vec3(0.0, -1.0, 0.0f)); */
+  nameBill->setNormal(osg::Vec3(0.0, -1.0, 0.0f));
 
   // Create the autotransform
   osg::AutoTransform* at = new osg::AutoTransform;
@@ -169,9 +170,9 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
   labColSetA = core->addSetting("Turnpoints:labelColourA",
     "Colour of the turnpoint labels - ALPHA", 1.0);
   labMaxScaleSet = core->addSetting("Turnpoints:labelMaxScale",
-    "Maximum scale for label", 30.0, true);
+    "Maximum scale for label", 100.0, true);
   labMinScaleSet = core->addSetting("Turnpoints:labelMinScale",
-    "Minimum scale for label", 20.0, true);
+    "Minimum scale for label", 0.0, true);
   // get stored values
   labelColour   = osg::Vec4(
     labColSetR->get().toFloat(),
