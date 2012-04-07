@@ -21,6 +21,8 @@ SceneManager::SceneManager(QString baseEarthFile,
     osgViewer::ViewerBase::ThreadingModel threadingModel) {
   osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
+  manipulator = new MapManipulator();
+
   viewer = new osgViewer::Viewer();
   viewer->setThreadingModel(threadingModel);
 
@@ -35,9 +37,6 @@ SceneManager::SceneManager(QString baseEarthFile,
   camera->setClearMask
     (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   viewer->setCamera(camera);
-
-  is2dEnabled = 0;
-  setPerspectiveCamera(camera);
 
   // create map manager
   mapManager = new MapManager(baseEarthFile);
@@ -62,23 +61,18 @@ SceneManager::SceneManager(QString baseEarthFile,
     0, 0.0, -90.0, 12e6 /*6e7*/);
   // osgEarth::Util::EarthManipulator* manipulator =
     // new osgEarth::Util::EarthManipulator();
-  MapManipulator* manipulator = new MapManipulator();
+
   manipulator->setNode(mapManager->getMapNode());
   manipulator->setHomeViewpoint(start);
 
   viewer->setCameraManipulator(manipulator);
+
   // or set one specific view:
   // camera->setViewMatrixAsLookAt(osg::Vec3d(0, 0, -6e7),
     // osg::Vec3d(0, 0, 0), osg::Vec3d(0, 1, 0));
 
   // Create a picking handler
   viewer->addEventHandler(new PickHandler());
-
-  // insert menu item for switching 2d/3d
-  QAction* toggleViewAction = new QAction("Toggle 2D/3D view", this);
-  connect(toggleViewAction, SIGNAL(triggered()), this, SLOT(toggleView()));
-  Menu* toolsMenu = updraft->mainWindow->getSystemMenu(MENU_TOOLS);
-  toolsMenu->insertAction(1, toggleViewAction);
 
   // start drawing
   timer = new QTimer(this);
@@ -103,23 +97,15 @@ QWidget* SceneManager::getWidget() {
 }
 
 void SceneManager::redrawScene() {
-  if (is2dEnabled) {
+  osgEarth::Util::Viewpoint viewpoint = manipulator->getViewpoint();
+  bool isTilted = (viewpoint.getPitch() > -88);
+  bool isFar = (manipulator->getDistance() > 7e6);
+  if (isTilted || isFar) {
+    setPerspectiveCamera(camera);
+  } else {
     updateOrthographicCamera(camera);
   }
   viewer->frame();
-}
-
-void SceneManager::toggleView() {
-  is2dEnabled = !is2dEnabled;
-
-  if (is2dEnabled) {
-    // TODO(Bohdan): untilt before switching to orthographic view
-    setOrthographicCamera(camera);
-    qDebug("Switched to 2D");
-  } else {
-    setPerspectiveCamera(camera);
-    qDebug("Switched to 3D");
-  }
 }
 
 osg::Group* SceneManager::newGroup() {
@@ -203,12 +189,8 @@ double SceneManager::getAspectRatio() {
 }
 
 void SceneManager::updateOrthographicCamera(osg::Camera* camera) {
-  osg::Vec3d eye, center, up;
-  camera->getViewMatrixAsLookAt(eye, center, up);
-
-  double distance =  eye.length() - 6365000.f;
-  double fovy = 30.f;
-  double hy = distance * fovy/90.0f;
+  double distance = manipulator->getDistance();
+  double hy = distance * 0.2679;  // tan(fovy/2)
   double hx = hy * getAspectRatio();
   camera->setProjectionMatrixAsOrtho2D(-hx, hx, -hy, hy);
 }

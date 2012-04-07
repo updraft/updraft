@@ -8,6 +8,7 @@
 #include <QHash>
 #include <string>
 #include "mapmanager.h"
+#include "mapmanipulator.h"
 #include "../mapobject.h"
 
 namespace Updraft {
@@ -64,7 +65,6 @@ class SceneManager: public QObject {
 
  public slots:
   void redrawScene();
-  void toggleView();
 
  private:
   osgViewer::Viewer* viewer;
@@ -77,6 +77,7 @@ class SceneManager: public QObject {
 
   MapManager* mapManager;
   osg::Camera* camera;
+  MapManipulator* manipulator;
   osgQt::GraphicsWindowQt* graphicsWindow;
 
   /// Timer that triggers the drawing procedure.
@@ -92,7 +93,6 @@ class SceneManager: public QObject {
   /// Map of osg nodes registered for mouse picking
   QHash<osg::Node*, MapObject*> pickingMap;
 
-  bool is2dEnabled;
   double getAspectRatio();
   void setPerspectiveCamera(osg::Camera* camera);
   void setOrthographicCamera(osg::Camera* camera);
