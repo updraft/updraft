@@ -4,6 +4,7 @@
 #include <QtGui/QWidget>
 #include <osgQt/GraphicsWindowQt>
 #include <osgViewer/Viewer>
+#include <osgEarthUtil/Viewpoint>
 #include <QTimer>
 #include <QHash>
 #include <string>
@@ -94,6 +95,10 @@ class SceneManager: public QObject {
 
   /// Map of osg nodes registered for mouse picking
   QHash<osg::Node*, MapObject*> pickingMap;
+
+  osgEarth::Util::Viewpoint getHomePosition();
+  osgEarth::Util::Viewpoint getInitialPosition();
+  void startInitialAnimation();
 
   void insertMenuItems();
 

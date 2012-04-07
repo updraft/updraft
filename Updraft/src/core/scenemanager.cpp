@@ -56,20 +56,10 @@ SceneManager::SceneManager(QString baseEarthFile,
 
   viewer->setSceneData(sceneRoot);
 
-  // set manipulator
-  osgEarth::Util::Viewpoint start(14.42046, 50.087811,
-    0, 0.0, -90.0, 12e6 /*6e7*/);
-  // osgEarth::Util::EarthManipulator* manipulator =
-    // new osgEarth::Util::EarthManipulator();
-
   manipulator->setNode(mapManager->getMapNode());
-  manipulator->setHomeViewpoint(start);
+  manipulator->setHomeViewpoint(getInitialPosition());
 
   viewer->setCameraManipulator(manipulator);
-
-  // or set one specific view:
-  // camera->setViewMatrixAsLookAt(osg::Vec3d(0, 0, -6e7),
-    // osg::Vec3d(0, 0, 0), osg::Vec3d(0, 1, 0));
 
   // Create a picking handler
   viewer->addEventHandler(new PickHandler());
@@ -80,6 +70,17 @@ SceneManager::SceneManager(QString baseEarthFile,
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(redrawScene()));
   timer->start(10);
+}
+
+osgEarth::Util::Viewpoint SceneManager::getHomePosition() {
+  return osgEarth::Util::Viewpoint(14.42046, 50.087811,
+    0, 0.0, -90.0, 15e5);
+}
+
+osgEarth::Util::Viewpoint SceneManager::getInitialPosition() {
+  osgEarth::Util::Viewpoint start = getHomePosition();
+  start.setRange(start.getRange() * 1.3);
+  return start;
 }
 
 void SceneManager::insertMenuItems() {
@@ -110,9 +111,21 @@ QWidget* SceneManager::getWidget() {
   }
 }
 
+void SceneManager::startInitialAnimation() {
+  osgEarth::Util::Viewpoint home = getHomePosition();
+  // set home position for ACTION_HOME
+  manipulator->setHomeViewpoint(home, 1.0);
+  // go to home position now
+  manipulator->setViewpoint(home, 2.0);
+}
+
 void SceneManager::redrawScene() {
-  osgEarth::Util::Viewpoint viewpoint = manipulator->getViewpoint();
-  bool isTilted = (viewpoint.getPitch() > -88);
+  // start initial animation in second frame to prevent jerks
+  static int i = 0;
+  if (i == 1) startInitialAnimation();
+  if (i < 2) ++i;
+
+  bool isTilted = (manipulator->getViewpoint().getPitch() > -88);
   bool isFar = (manipulator->getDistance() > 7e6);
   if (isTilted || isFar) {
     setPerspectiveCamera(camera);
