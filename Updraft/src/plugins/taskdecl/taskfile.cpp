@@ -64,6 +64,9 @@ void TaskFile::saveAs(const QString &filePath_) {
     dataHistory.setMark();
     storageState = STORED_SYNCHRONIZED;
     filePath = filePath_;
+
+    // Emits signal announcing state changes.
+    emit storageStateChanged();
   }
 }
 
@@ -85,6 +88,57 @@ void TaskFile::endEdit(bool storeState) {
 
   // Unlock for next editing session.
   editing = false;
+
+  // Emits signal announcing data change.
+  emit dataChanged();
+}
+
+void TaskFile::undo() {
+  if (dataHistory.moveBack()) {
+    updateOnUndoRedo();
+  }
+}
+
+void TaskFile::redo() {
+  if (dataHistory.moveForward()) {
+    updateOnUndoRedo();
+  }
+}
+
+void TaskFile::updateOnUndoRedo() {
+  // Emits signal announcing data change.
+  emit dataChanged();
+
+  // Updates storage state and emits signal announcing state changes.
+  switch (storageState) {
+    case UNSTORED_EMPTY:
+      if (!dataHistory.isFirst()) {
+        storageState = UNSTORED_EDITED;
+        emit storageStateChanged();
+      }
+      break;
+
+    case UNSTORED_EDITED:
+      if (dataHistory.isFirst()) {
+        storageState = UNSTORED_EMPTY;
+        emit storageStateChanged();
+      }
+      break;
+
+    case STORED_DIRTY:
+      if (dataHistory.isMarked()) {
+        storageState = STORED_SYNCHRONIZED;
+        emit storageStateChanged();
+      }
+      break;
+
+    case STORED_SYNCHRONIZED:
+      if (!dataHistory.isMarked()) {
+        storageState = STORED_DIRTY;
+        emit storageStateChanged();
+      }
+      break;
+  }
 }
 
 }  // End namespace Updraft
