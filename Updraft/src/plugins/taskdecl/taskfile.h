@@ -1,12 +1,15 @@
 #ifndef UPDRAFT_SRC_PLUGINS_TASKDECL_TASKFILE_H_
 #define UPDRAFT_SRC_PLUGINS_TASKDECL_TASKFILE_H_
 
+#include <QObject>
 #include <QString>
 #include "datahistory.h"
 
 namespace Updraft {
 
-class TaskFile {
+class TaskFile : public QObject {
+  Q_OBJECT
+
  public:
   /// State of task storage (on disk)
   enum StorageState {
@@ -51,10 +54,22 @@ class TaskFile {
   /// \param storeState If it is true, current state is saved to history.
   void endEdit(bool storeState);
 
+  /// Steps back in file history.
+  void undo();
+
+  /// Steps forward in file history.
+  void redo();
+
+ signals:
+  /// Signal which is emitted when the content of the file has been changed.
+  void dataChanged();
+
+  /// Signal which is emitted when the storage state has been changed.
+  void storageStateChanged();
+
  private:
-  /// Tries to load data from disk.
-  /// \param filePath_ full path to a disk file
-  bool load(const QString &filePath_);
+  /// Proceeds update actions on either undo or redo.
+  void updateOnUndoRedo();
 
   /// Full path to file in filesystem. Could be empty, if task is not saved.
   QString filePath;

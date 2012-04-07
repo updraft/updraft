@@ -31,10 +31,12 @@ class DataHistory {
   bool isMarked() const;
 
   /// Ascends to the next item in the DataHistory.
-  void moveForward();
+  /// \return true if the current iterator has been moved.
+  bool moveForward();
 
-  /// Step back to the previous item in the DataHistory.
-  void moveBack();
+  /// Steps back to the previous item in the DataHistory.
+  /// \return true if the current iterator has been moved.
+  bool moveBack();
 
   /// Removes all newer items than current.
   /// Creates copy of the current item, appends it to the DataHistory

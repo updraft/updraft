@@ -31,14 +31,22 @@ bool DataHistory::isMarked() const {
   return markedItem == currentItem;
 }
 
-void DataHistory::moveForward() {
-  if (!isLast())
+bool DataHistory::moveForward() {
+  if (!isLast()) {
     ++currentItem;
+    return true;
+  }
+
+  return false;
 }
 
-void DataHistory::moveBack() {
-  if (!isFirst())
+bool DataHistory::moveBack() {
+  if (!isFirst()) {
     --currentItem;
+    return true;
+  }
+
+  return false;
 }
 
 void DataHistory::storeState() {
