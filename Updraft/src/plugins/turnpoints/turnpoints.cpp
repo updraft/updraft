@@ -41,6 +41,8 @@ void TurnPoints::initialize() {
     "Maximum scale for label", 100.0, true));
   settings.push_back(core->addSetting("Turnpoints:labelMinScale",
     "Minimum scale for label", 0.0, true));
+  settings.push_back(core->addSetting("Turnpoints:labelDrawDist",
+    "Minimum distance from camera for label to draw.", 4000.0, true));
 
   mapLayerGroup = core->createMapLayerGroup(tr("Turn-points"));
 
@@ -145,11 +147,16 @@ void TurnPoints::addLayer(TPFile *file) {
   Updraft::MapLayerInterface* mapLayer =
     mapLayerGroup->insertMapLayer(turnPointsLayer->getNode(),
       file->getFileName(), -1);
+  /*Updraft::MapLayerInterface* mapLayerLbls =
+    mapLayerGroup->insertMapLayer(turnPointsLayer->getLblNode(),
+      file->getFileName(), -1);*/
 
   layers.insert(mapLayer, turnPointsLayer);
+  // layers.insert(mapLayerLbls, turnPointsLayer);
 
   mapLayer->connectSignalDisplayed(this,
     SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
+  // mapLayerLbls->connectSignalDisplayed(this,
 }
 
 Q_EXPORT_PLUGIN2(turnpoints, TurnPoints)

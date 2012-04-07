@@ -36,6 +36,7 @@ class TPLayer {
 
   /// \return osgNode associated with the layer.
   osg::Node* getNode() const;
+  osg::Node* getLblNode() const;
 
   /// \return Display state
   bool isDisplayed();
@@ -74,6 +75,7 @@ class TPLayer {
 
   /// osg Node representing this turn-points layer
   osg::Group* group;
+  osg::LOD* lblLOD;
 
   /// osgEarth placer for placing objects to specific geo.coordinates
   osgEarth::Util::ObjectPlacer* objectPlacer;
@@ -96,6 +98,12 @@ class TPLayer {
   /// Text min/max visibility setting
   qreal labelMinScale;
   qreal labelMaxScale;
+
+  /// Labels display distance from camera.
+  /// This value is the distance that LOD starts
+  /// to display the labels.
+  /// Reasonable value : 4000 (default)
+  qreal labelDrawDist;
 };
 
 }  // End namespace Updraft
