@@ -27,13 +27,28 @@ unsigned TurnPoints::getPriority() {
 }
 
 void TurnPoints::initialize() {
-  qDebug("turnpoints loaded");
+  core->addSettingsGroup(
+    "Turnpoints", "Turnpoints Plugin Settings");
+  settings.push_back(core->addSetting("Turnpoints:labelColourR",
+    "Colour of the turnpoint labels - RED", 1.0));
+  settings.push_back(core->addSetting("Turnpoints:labelColourG",
+    "Colour of the turnpoint labels - GREEN", 1.0));
+  settings.push_back(core->addSetting("Turnpoints:labelColourB",
+    "Colour of the turnpoint labels - BLUE", 1.0));
+  settings.push_back(core->addSetting("Turnpoints:labelColourA",
+    "Colour of the turnpoint labels - ALPHA", 1.0));
+  settings.push_back(core->addSetting("Turnpoints:labelMaxScale",
+    "Maximum scale for label", 100.0, true));
+  settings.push_back(core->addSetting("Turnpoints:labelMinScale",
+    "Minimum scale for label", 0.0, true));
 
   mapLayerGroup = core->createMapLayerGroup(tr("Turn-points"));
 
   core->registerFiletype(cupTPsReg);
 
   loadImportedFiles();
+
+  qDebug("turnpoints loaded");
 }
 
 void TurnPoints::deinitialize() {
@@ -124,7 +139,7 @@ void TurnPoints::addLayer(TPFile *file) {
   // Create new layer item, build scene.
   TPLayer *turnPointsLayer = new TPLayer(true,
     mapLayerGroup->getObjectPlacer(), file,
-    core->getDataDirectory(), this, core);
+    core->getDataDirectory(), this, settings);
 
   // Create new mapLayer in mapLayerGroup, assign osgNode and file name.
   Updraft::MapLayerInterface* mapLayer =

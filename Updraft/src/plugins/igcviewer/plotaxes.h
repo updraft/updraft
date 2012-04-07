@@ -24,7 +24,7 @@ class PlotAxes : public QLayoutItem {
   void setGeometry(const QRect& rect);
   /// \}
 
-  explicit PlotAxes(bool drawTimeTicks = true);
+  explicit PlotAxes(bool drawTimeTicks = true, bool drawAxisX = true);
 
   /// Get the X coordinate for drawing.
   qreal placeX(qreal x);
@@ -81,6 +81,9 @@ class PlotAxes : public QLayoutItem {
   /// Draw time ticks.
   bool drawTimeTicks;
 
+  /// Whether to draw the X axis.
+  bool drawAxisX;
+
   /// Position (in drawing cordinates) of the X base.
   qreal base;
 
@@ -112,6 +115,12 @@ class PlotAxes : public QLayoutItem {
   QVector<int> timeIntervalValues;
 };
 
+class VerticalSpeedAxes : PlotAxes {
+ public:
+  /// Draw the axes to the painter
+  void draw(QPainter *painter);
+};
+
 class AxisLabel : public QLayoutItem {
  public:
   /// Overridden from QLayoutItem
@@ -128,11 +137,12 @@ class AxisLabel : public QLayoutItem {
   /// Draw the labels to the painter.
   void draw(QPainter *painter);
 
-  explicit AxisLabel(PlotAxes* axis);
+  explicit AxisLabel(PlotAxes* axis, QString unitsDescription);
 
  private:
   QRect rect;
   PlotAxes* axis;
+  QString unitsDescription;
 
   static const int MIN_WIDTH = 20;
   static const int MIN_HEIGHT = 20;

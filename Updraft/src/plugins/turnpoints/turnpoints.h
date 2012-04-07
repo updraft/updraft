@@ -67,6 +67,9 @@ class TPS_EXPORT TurnPoints : public QObject, public PluginBase {
   /// Creates new layer item, adds item to the left pane
   /// \param file associated data file (is deleted on layer destruction)
   void addLayer(TPFile *file);
+
+  /// TP settings to be stored in settings array.
+  QVector<SettingInterface*> settings;
 };
 
 }  // End namespace Updraft

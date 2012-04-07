@@ -15,8 +15,9 @@ const QPen TimeLabel::LABEL_PEN = QPen(Qt::white);
 
 static const qreal LN10 = qLn(10);
 
-PlotAxes::PlotAxes(bool drawTimeTicks_) {
+PlotAxes::PlotAxes(bool drawTimeTicks_, bool drawAxisX_) {
   this->drawTimeTicks = drawTimeTicks_;
+  this->drawAxisX = drawAxisX_;
   // fill the predefined time interval values
   // the values are in seconds
   timeIntervalValues.append(30);
@@ -165,7 +166,6 @@ void PlotAxes::draw(QPainter *painter) {
 
       painter->drawLine(QPointF(pixelX, rect.bottom()),
         QPointF(pixelX, rect.top()));
-      qDebug() << "lines: " << hour;
     }
   }
 
@@ -180,7 +180,10 @@ void PlotAxes::draw(QPainter *painter) {
   painter->setPen(AXES_PEN);
 
   painter->drawLine(QPointF(rect.topLeft()), QPointF(rect.bottomLeft()));
-  painter->drawLine(QPointF(rect.left(), base), QPointF(rect.right(), base));
+
+  if (drawAxisX) {
+    painter->drawLine(QPointF(rect.left(), base), QPointF(rect.right(), base));
+  }
 }
 
 qreal PlotAxes::getBase() {
@@ -230,7 +233,7 @@ bool AxisLabel::isEmpty() const {
 }
 
 QSize AxisLabel::maximumSize() const {
-  return QSize(65536, 65536);
+  return QSize(50, 65536);
 }
 
 QSize AxisLabel::minimumSize() const {
@@ -245,7 +248,8 @@ void AxisLabel::setGeometry(const QRect& rect_) {
   this->rect = rect_;
 }
 
-AxisLabel::AxisLabel(PlotAxes* axis_) {
+AxisLabel::AxisLabel(PlotAxes* axis_, QString unitsDescription_) {
+  unitsDescription = unitsDescription_;
   axis = axis_;
 }
 
@@ -263,6 +267,16 @@ void AxisLabel::draw(QPainter *painter) {
       QPoint(rect.right(), pixelY+TEXT_HEIGHT/2));
     painter->drawText(labelRect, Qt::AlignRight, text);
   }
+
+  // draw the units desription at the position
+  // of the last label:
+  qreal lastTick = nLabels-1;
+  qreal pixelY = axis->placeY(first+step*lastTick);
+
+  QString text(unitsDescription);
+  QRect labelRect(QPoint(2, pixelY-TEXT_HEIGHT/2),
+    QPoint(rect.right(), pixelY+TEXT_HEIGHT/2));
+  // painter->drawText(labelRect, Qt::AlignLeft, text);
 }
 
 // Time Labels:

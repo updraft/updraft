@@ -29,6 +29,10 @@ void IgcInfo::init(const QList<TrackFix> *fixList) {
 
   min_ = values[0];
   max_ = values[values.count() - 1];
+
+  qDebug() << values[values.count() - 1] << " " << values[values.count() - 2]
+    << " " << values[values.count() - 3] << " " << values[values.count() - 4];
+
   robustMin_ = values[skipCount];
   robustMax_ = values[values.count() - 1 - skipCount];
 
@@ -113,6 +117,10 @@ qreal SpeedIgcInfo::value(int i) const {
   }
 }
 
+qreal GroundSpeedIgcInfo::value(int i) const {
+  return SpeedIgcInfo::value(i) * 3.6;
+}
+
 qreal SpeedIgcInfo::speedBefore(int i) const {
   int seconds = fixList->at(i - 1).timestamp.secsTo(fixList->at(i).timestamp);
 
@@ -121,8 +129,8 @@ qreal SpeedIgcInfo::speedBefore(int i) const {
     // midnight and get negative value here. Improbable, though.
     seconds += 24 * 3600;
   }
-
-  return this->distanceBefore(i) / seconds;
+    // The speed in m/s:
+  return (this->distanceBefore(i) / seconds);
 }
 
 qreal GroundSpeedIgcInfo::distanceBefore(int i) const {
