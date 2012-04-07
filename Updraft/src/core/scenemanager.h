@@ -102,10 +102,11 @@ class SceneManager: public QObject {
 
   void insertMenuItems();
 
+  bool isCameraPerspective;
+
   double getAspectRatio();
-  void setPerspectiveCamera(osg::Camera* camera);
-  void setOrthographicCamera(osg::Camera* camera);
-  void updateOrthographicCamera(osg::Camera* camera);
+  void updateCameraOrtho(osg::Camera* camera);
+  void updateCameraPerspective(osg::Camera* camera);
 };
 
 }  // end namespace Core

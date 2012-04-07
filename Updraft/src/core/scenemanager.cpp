@@ -128,9 +128,9 @@ void SceneManager::redrawScene() {
   bool isTilted = (manipulator->getViewpoint().getPitch() > -88);
   bool isFar = (manipulator->getDistance() > 7e6);
   if (isTilted || isFar) {
-    setPerspectiveCamera(camera);
+    updateCameraPerspective(camera);
   } else {
-    updateOrthographicCamera(camera);
+    updateCameraOrtho(camera);
   }
   viewer->frame();
 }
@@ -204,7 +204,8 @@ osg::Camera* SceneManager::createCamera(osg::GraphicsContext::Traits* traits) {
 
   camera->setClearColor(osg::Vec4(0.2, 0.2, 0.6, 1.0));
   camera->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
-  setOrthographicCamera(camera);
+  isCameraPerspective = FALSE;
+  updateCameraPerspective(camera);
   return camera;
 }
 
@@ -215,21 +216,31 @@ double SceneManager::getAspectRatio() {
   return aspectRatio;
 }
 
-void SceneManager::updateOrthographicCamera(osg::Camera* camera) {
+void SceneManager::updateCameraOrtho(osg::Camera* camera) {
+  static double lastDistance = 0;
   double distance = manipulator->getDistance();
+  bool hasDistanceChanged = (distance != lastDistance);
+  // no need to update projection matrix
+  if (!hasDistanceChanged && !isCameraPerspective) {
+    return;
+  }
+  lastDistance = distance;
+
   double hy = distance * 0.2679;  // tan(fovy/2)
   double hx = hy * getAspectRatio();
   camera->setProjectionMatrixAsOrtho2D(-hx, hx, -hy, hy);
+  isCameraPerspective = FALSE;
 }
 
-void SceneManager::setOrthographicCamera(osg::Camera* camera) {
-  updateOrthographicCamera(camera);
-}
-
-void SceneManager::setPerspectiveCamera(osg::Camera* camera) {
+void SceneManager::updateCameraPerspective(osg::Camera* camera) {
+  // no need to update projection matrix
+  if (isCameraPerspective) {
+    return;
+  }
   camera->setProjectionMatrixAsPerspective(
     30.0f, getAspectRatio(),
     1.0f, 10000.0f);
+  isCameraPerspective = TRUE;
 }
 
 void SceneManager::resetNorth() {
