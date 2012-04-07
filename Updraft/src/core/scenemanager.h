@@ -65,6 +65,8 @@ class SceneManager: public QObject {
 
  public slots:
   void redrawScene();
+  void resetNorth();
+  void untilt();
 
  private:
   osgViewer::Viewer* viewer;
@@ -92,6 +94,8 @@ class SceneManager: public QObject {
 
   /// Map of osg nodes registered for mouse picking
   QHash<osg::Node*, MapObject*> pickingMap;
+
+  void insertMenuItems();
 
   double getAspectRatio();
   void setPerspectiveCamera(osg::Camera* camera);

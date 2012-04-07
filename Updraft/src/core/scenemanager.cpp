@@ -74,10 +74,24 @@ SceneManager::SceneManager(QString baseEarthFile,
   // Create a picking handler
   viewer->addEventHandler(new PickHandler());
 
+  insertMenuItems();
+
   // start drawing
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(redrawScene()));
   timer->start(10);
+}
+
+void SceneManager::insertMenuItems() {
+  Menu* toolsMenu = updraft->mainWindow->getSystemMenu(MENU_TOOLS);
+
+  QAction* resetNorthAction = new QAction("Reset to north", this);
+  connect(resetNorthAction, SIGNAL(triggered()), this, SLOT(resetNorth()));
+  toolsMenu->insertAction(200, resetNorthAction);
+
+  QAction* untiltAction = new QAction("Untilt", this);
+  connect(untiltAction, SIGNAL(triggered()), this, SLOT(untilt()));
+  toolsMenu->insertAction(300, untiltAction);
 }
 
 SceneManager::~SceneManager() {
@@ -203,6 +217,14 @@ void SceneManager::setPerspectiveCamera(osg::Camera* camera) {
   camera->setProjectionMatrixAsPerspective(
     30.0f, getAspectRatio(),
     1.0f, 10000.0f);
+}
+
+void SceneManager::resetNorth() {
+  manipulator->resetNorth(1);
+}
+
+void SceneManager::untilt() {
+  manipulator->untilt(1);
 }
 
 }  // end namespace Core
