@@ -30,7 +30,7 @@ class TPLayer {
  public:
   TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     const TPFile *file_, const QString &dataDir, TurnPoints* parent_,
-    CoreInterface* core);
+    const QVector<SettingInterface*>& settings);
 
   virtual ~TPLayer();
 
@@ -96,14 +96,6 @@ class TPLayer {
   /// Text min/max visibility setting
   qreal labelMinScale;
   qreal labelMaxScale;
-
-  /// Settings
-  SettingInterface* labColSetR;
-  SettingInterface* labColSetG;
-  SettingInterface* labColSetB;
-  SettingInterface* labColSetA;
-  SettingInterface* labMaxScaleSet;
-  SettingInterface* labMinScaleSet;
 };
 
 }  // End namespace Updraft

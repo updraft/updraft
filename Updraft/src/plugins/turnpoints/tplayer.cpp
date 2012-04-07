@@ -150,7 +150,7 @@ osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
 
 TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
   const TPFile *file_, const QString &dataDir_, TurnPoints* parent_,
-  CoreInterface* core)
+  const QVector<SettingInterface*>& settings)
   : group(new osg::Group()), objectPlacer(objectPlacer_),
   file(file_), displayed(displayed_), dataDir(dataDir_), parent(parent_) {
   if (group == NULL || objectPlacer == NULL || file == NULL) {
@@ -159,7 +159,7 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
 
   // Settings
   // set defaults
-  core->addSettingsGroup(
+  /* core->addSettingsGroup(
     "Turnpoints", "Turnpoints Plugin Settings");
   labColSetR = core->addSetting("Turnpoints:labelColourR",
     "Colour of the turnpoint labels - RED", 1.0);
@@ -172,15 +172,20 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
   labMaxScaleSet = core->addSetting("Turnpoints:labelMaxScale",
     "Maximum scale for label", 100.0, true);
   labMinScaleSet = core->addSetting("Turnpoints:labelMinScale",
-    "Minimum scale for label", 0.0, true);
+    "Minimum scale for label", 0.0, true);*/
   // get stored values
+  if (settings.size() < 6) {
+    qDebug("Not enough settings params.");
+    return;
+  }
   labelColour   = osg::Vec4(
-    labColSetR->get().toFloat(),
-    labColSetG->get().toFloat(),
-    labColSetB->get().toFloat(),
-    labColSetA->get().toFloat());
-  labelMaxScale = labMaxScaleSet->get().toFloat();
-  labelMinScale = labMinScaleSet->get().toFloat();
+    settings[0]->get().toFloat(),
+    settings[1]->get().toFloat(),
+    settings[2]->get().toFloat(),
+    settings[3]->get().toFloat());
+  labelMaxScale = settings[4]->get().toFloat();
+  labelMinScale = settings[5]->get().toFloat();
+
 
   // Create node for one turn-point.
   // It will be shared among Autotransform nodes.
