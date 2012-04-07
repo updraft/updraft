@@ -36,6 +36,7 @@ class TPLayer {
 
   /// \return osgNode associated with the layer.
   osg::Node* getNode() const;
+  osg::Node* getLblNode() const;
 
   /// \return Display state
   bool isDisplayed();
@@ -74,6 +75,7 @@ class TPLayer {
 
   /// osg Node representing this turn-points layer
   osg::Group* group;
+  osg::LOD* lblLOD;
 
   /// osgEarth placer for placing objects to specific geo.coordinates
   osgEarth::Util::ObjectPlacer* objectPlacer;

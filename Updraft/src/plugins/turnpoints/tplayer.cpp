@@ -136,9 +136,16 @@ osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
   nameBill->setNormal(osg::Vec3(0.0, 0.0, 1.0f));
   nameBill->getOrCreateStateSet()->
     setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+  // nameBill->setPosition(0, position);
+
+  /* Create LOD
+  osg::LOD* lblLOD = new osg::LOD();
+  lblLOD->addChild(nameBill, 0, 100);
+  // lblLOD->setRange(0, 0, 100);
+  lblLOD->setCenter(position);*/
 
   // Create the autotransform
-  osg::AutoTransform* at = new osg::AutoTransform;
+  osg::AutoTransform* at = new osg::AutoTransform();
   at->addChild(nameBill);
 
   at->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_SCREEN);
@@ -146,8 +153,22 @@ osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
   at->setMinimumScale(static_cast<double>(minScale));
   at->setMaximumScale(static_cast<double>(maxScale));
   at->setPosition(position);
+  // at->setCullingActive(true);
 
-  return at;
+  osgText::Text* textFake = new osgText::Text(text);
+  textFake->
+  osg::Billboard* fake = new osg::Billboard();
+  fake->addDrawable(textFake);
+  osg::AutoTransform* atFake = new osg::AutoTransform();
+  atFake->addChild(fake);
+
+  // Create LOD
+  osg::LOD* lblLOD = new osg::LOD();
+  lblLOD->addChild(at, 0, 7e6);
+  lblLOD->addChild(atFake, 7e6, FLT_MAX);
+  // lblLOD->setRange(0, 0, 100);
+
+  return lblLOD;
 }
 
 TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
@@ -218,8 +239,9 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     mapObjects.push_back(mapObject);
     parent->getCoreInterface()->registerOsgNode(tpNode, mapObject);
 
-    group->addChild(tpNode);
+    // group->addChild(tpNode);
 
+    lblLOD = new osg::LOD();
     group->addChild(createAutoScale(
       labelMatrix.getTrans(),
       20.0,
@@ -238,6 +260,10 @@ TPLayer::~TPLayer() {
 
 osg::Node* TPLayer::getNode() const {
   return group;
+}
+
+osg::Node* TPLayer::getLblNode() const {
+  return lblLOD;
 }
 
 bool TPLayer::isDisplayed() {
