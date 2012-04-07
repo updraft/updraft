@@ -138,37 +138,21 @@ osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
     setMode(GL_LIGHTING, osg::StateAttribute::OFF);
   // nameBill->setPosition(0, position);
 
-  /* Create LOD
+  // Create LOD
   osg::LOD* lblLOD = new osg::LOD();
-  lblLOD->addChild(nameBill, 0, 100);
-  // lblLOD->setRange(0, 0, 100);
-  lblLOD->setCenter(position);*/
+  lblLOD->addChild(nameBill, 0, labelDrawDist);
 
   // Create the autotransform
   osg::AutoTransform* at = new osg::AutoTransform();
-  at->addChild(nameBill);
+  at->addChild(lblLOD);
 
   at->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_SCREEN);
   at->setAutoScaleToScreen(true);
   at->setMinimumScale(static_cast<double>(minScale));
   at->setMaximumScale(static_cast<double>(maxScale));
   at->setPosition(position);
-  // at->setCullingActive(true);
 
-  osgText::Text* textFake = new osgText::Text(text);
-  textFake->
-  osg::Billboard* fake = new osg::Billboard();
-  fake->addDrawable(textFake);
-  osg::AutoTransform* atFake = new osg::AutoTransform();
-  atFake->addChild(fake);
-
-  // Create LOD
-  osg::LOD* lblLOD = new osg::LOD();
-  lblLOD->addChild(at, 0, 7e6);
-  lblLOD->addChild(atFake, 7e6, FLT_MAX);
-  // lblLOD->setRange(0, 0, 100);
-
-  return lblLOD;
+  return at;
 }
 
 TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
@@ -182,7 +166,7 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
 
   // Settings
   // get stored values
-  if (settings.size() < 6) {
+  if (settings.size() < 7) {
     qDebug("Not enough settings params.");
     return;
   }
@@ -193,6 +177,7 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     settings[3]->get().toFloat());
   labelMaxScale = settings[4]->get().toFloat();
   labelMinScale = settings[5]->get().toFloat();
+  labelDrawDist = settings[6]->get().toFloat();
 
 
   // Create node for one turn-point.
@@ -239,7 +224,7 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     mapObjects.push_back(mapObject);
     parent->getCoreInterface()->registerOsgNode(tpNode, mapObject);
 
-    // group->addChild(tpNode);
+    group->addChild(tpNode);
 
     lblLOD = new osg::LOD();
     group->addChild(createAutoScale(

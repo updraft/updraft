@@ -98,6 +98,12 @@ class TPLayer {
   /// Text min/max visibility setting
   qreal labelMinScale;
   qreal labelMaxScale;
+
+  /// Labels display distance from camera.
+  /// This value is the distance that LOD starts
+  /// to display the labels.
+  /// Reasonable value : 4000 (default)
+  qreal labelDrawDist;
 };
 
 }  // End namespace Updraft
