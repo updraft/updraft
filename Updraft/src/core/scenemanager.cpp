@@ -69,7 +69,7 @@ SceneManager::SceneManager(QString baseEarthFile,
   // start drawing
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(redrawScene()));
-  timer->start(10);
+  timer->start(20);
 }
 
 osgEarth::Util::Viewpoint SceneManager::getHomePosition() {
