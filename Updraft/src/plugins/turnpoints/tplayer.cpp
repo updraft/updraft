@@ -124,20 +124,22 @@ osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
   text->setColor(labelColour);
 
   // define the geode
-  osg::Geode* geode = new osg::Geode;
+  /* osg::Geode* geode = new osg::Geode;
   geode->addDrawable(text);
   geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-
+*/
   // Create billboard
   osg::Billboard* nameBill = new osg::Billboard();
   nameBill->addDrawable(text);
   nameBill->setMode(osg::Billboard::AXIAL_ROT);
-  nameBill->setAxis(osg::Vec3(0.0, -1.0, 0.0f));
-  nameBill->setNormal(osg::Vec3(0.0, -1.0, 0.0f));
+  nameBill->setAxis(osg::Vec3(0.0, 1.0, 0.0f));
+  nameBill->setNormal(osg::Vec3(0.0, 0.0, 1.0f));
+  nameBill->getOrCreateStateSet()->
+    setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
   // Create the autotransform
   osg::AutoTransform* at = new osg::AutoTransform;
-  at->addChild(geode);
+  at->addChild(nameBill);
 
   at->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_SCREEN);
   at->setAutoScaleToScreen(true);
@@ -158,21 +160,6 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
   }
 
   // Settings
-  // set defaults
-  /* core->addSettingsGroup(
-    "Turnpoints", "Turnpoints Plugin Settings");
-  labColSetR = core->addSetting("Turnpoints:labelColourR",
-    "Colour of the turnpoint labels - RED", 1.0);
-  labColSetG = core->addSetting("Turnpoints:labelColourG",
-    "Colour of the turnpoint labels - GREEN", 1.0);
-  labColSetB = core->addSetting("Turnpoints:labelColourB",
-    "Colour of the turnpoint labels - BLUE", 1.0);
-  labColSetA = core->addSetting("Turnpoints:labelColourA",
-    "Colour of the turnpoint labels - ALPHA", 1.0);
-  labMaxScaleSet = core->addSetting("Turnpoints:labelMaxScale",
-    "Maximum scale for label", 100.0, true);
-  labMinScaleSet = core->addSetting("Turnpoints:labelMinScale",
-    "Minimum scale for label", 0.0, true);*/
   // get stored values
   if (settings.size() < 6) {
     qDebug("Not enough settings params.");
@@ -197,6 +184,7 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
   for (TTPList::const_iterator itPoint = points.begin();
     itPoint != points.end(); ++itPoint) {
     osg::Matrixd matrix;
+    osg::Matrixd labelMatrix;
 
     // Add little random displacement to altitude.
     // Reason: If two overlapping objects are in the same height,
@@ -207,6 +195,10 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     // Turn-point is placed 100 meters above it's position (terrain).
     if (!objectPlacer->createPlacerMatrix(itPoint->location.lat,
       itPoint->location.lon, itPoint->location.alt + 100.0 + d, matrix)) {
+      continue;
+    }
+    if (!objectPlacer->createPlacerMatrix(itPoint->location.lat,
+      itPoint->location.lon, itPoint->location.alt + 1000.0 + d, labelMatrix)) {
       continue;
     }
 
@@ -229,7 +221,7 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     group->addChild(tpNode);
 
     group->addChild(createAutoScale(
-      matrix.getTrans(),
+      labelMatrix.getTrans(),
       20.0,
       itPoint->name,
       labelMinScale,
