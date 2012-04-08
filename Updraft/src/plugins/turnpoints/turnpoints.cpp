@@ -147,16 +147,11 @@ void TurnPoints::addLayer(TPFile *file) {
   Updraft::MapLayerInterface* mapLayer =
     mapLayerGroup->insertMapLayer(turnPointsLayer->getNode(),
       file->getFileName(), -1);
-  /*Updraft::MapLayerInterface* mapLayerLbls =
-    mapLayerGroup->insertMapLayer(turnPointsLayer->getLblNode(),
-      file->getFileName(), -1);*/
 
   layers.insert(mapLayer, turnPointsLayer);
-  // layers.insert(mapLayerLbls, turnPointsLayer);
 
   mapLayer->connectSignalDisplayed(this,
     SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
-  // mapLayerLbls->connectSignalDisplayed(this,
 }
 
 Q_EXPORT_PLUGIN2(turnpoints, TurnPoints)

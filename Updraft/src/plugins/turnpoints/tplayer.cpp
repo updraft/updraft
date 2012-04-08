@@ -115,12 +115,7 @@ osg::Node* TPLayer::createAutoScale(
   text->setText(message.toStdString());
   text->setFont(fontPath.toStdString());
   text->setFontResolution(20, 20);
-  // text->setAutoRotateToScreen(true);
   text->setAlignment(osgText::Text::LEFT_BOTTOM);
-  /* text->setCharacterSizeMode(
-osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
-  osgText::Text::SCREEN_COORDS); */
-  // text->setDrawMode
   text->setColor(labelColour);
 
   // define the geode
@@ -136,7 +131,6 @@ osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
   nameBill->setNormal(osg::Vec3(0.0, 0.0, 1.0f));
   nameBill->getOrCreateStateSet()->
     setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-  // nameBill->setPosition(0, position);
 
   // Create LOD
   osg::LOD* lblLOD = new osg::LOD();
