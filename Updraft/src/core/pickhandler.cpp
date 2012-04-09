@@ -38,8 +38,15 @@ bool PickHandler::handle(
         if (mapObjects.empty())
           return false;
 
-        raiseLeftClick(mapObjects);
-        return true;
+	switch (ea.getButton()) {
+          case osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON:
+            raiseLeftClick(mapObjects);
+	  return true;
+          case osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON:
+            raiseRightClick(mapObjects);
+	  return true;
+	}
+        return false;
       }
       return false;
     default:
@@ -93,6 +100,60 @@ void PickHandler::raiseLeftClick(QVector<MapObject*> mapObjects) {
 
 void PickHandler::raiseRightClick(QVector<MapObject*> mapObjects) {
   qDebug("--- Right click event ---");
+
+  // Clear the previous menu
+  Menu* moMenu = updraft->mainWindow->getSystemMenu(MENU_MAPOBJECT);
+  moMenu->clear();
+
+  // Delete all the old actions
+  foreach(QAction* action, ownedActions) {
+    delete action;
+  }
+
+  // Submenu actions for individual map objects
+  QList<QAction*> submenuActions;
+
+  // Check for duplicate map objects
+  QSet<MapObject*> alreadyAdded;
+  foreach(MapObject* mapObject, mapObjects) {
+    if (!mapObject) continue;
+
+    if (alreadyAdded.contains(mapObject)) continue;
+    alreadyAdded.insert(mapObject);
+
+    // Tell the plugins to fill the map object menu
+    foreach(PluginBase* plugin, updraft->pluginManager->getAllPlugins()) {
+      plugin->fillContextMenu(mapObject, moMenu);
+    }
+
+    // If there was at least one action added, create a submenu
+    if (!moMenu->getQMenu()->isEmpty()) {
+      QMenu* submenu = moMenu->giveQMenu();
+      QAction* action = new QAction(mapObject->name, NULL);
+      action->setMenu(submenu);
+      submenuActions.push_back(action);
+
+      moMenu->clear();
+    }
+  }
+
+  // If there were no actions at all, don't do anything
+  if (submenuActions.empty()) return;
+
+  // Insert the submenus into the top-level menu
+  foreach(QAction* action, submenuActions) {
+    moMenu->appendAction(action);
+
+    // Remember the action for deletion later
+    ownedActions.push_back(action);
+  }
+
+  // Show the menu
+  QWidget* mapWidget = updraft->mainWindow->getMapWidget();
+  int mh = mapWidget->height();
+
+  // The coordinates have to be Y-inverted and mapped to screen
+  moMenu->getQMenu()->exec(mapWidget->mapToGlobal(QPoint(mX, mh - mY)));
 }
 
 MapObject* PickHandler::getMapObject(osg::Node* node) {

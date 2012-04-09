@@ -31,6 +31,10 @@ class Menu : public MenuInterface {
 
   QMenu* getQMenu() { return menu; }
 
+  /// Returns the contained QMenu and creates a new empty one.
+  /// The ownership of the menu is transferred to the caller.
+  QMenu* giveQMenu();
+
  private:
   QMenu* menu;
   bool ownsMenu;

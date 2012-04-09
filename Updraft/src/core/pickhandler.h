@@ -28,6 +28,9 @@ class PickHandler: public osgGA::GUIEventHandler {
     const double x,
     const double y,
     osgViewer::Viewer* viewer);
+
+  // List of all owned QActions that is used for destruction of these actions.
+  QList<QAction*> ownedActions;
 };
 
 }  // End namespace Core

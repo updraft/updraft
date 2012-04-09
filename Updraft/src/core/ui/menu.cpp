@@ -30,6 +30,15 @@ void Menu::appendAction(QAction* action) {
   menu->addAction(action);
 }
 
+QMenu* Menu::giveQMenu() {
+  QMenu* ret = menu;
+
+  menu = new QMenu();
+  actions.clear();
+
+  return ret;
+}
+
 void Menu::reorganizeMenu() {
   menu->clear();
 
