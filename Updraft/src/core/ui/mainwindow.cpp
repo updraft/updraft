@@ -127,6 +127,13 @@ MapLayerGroupInterface* MainWindow::createMapLayerGroup(const QString &title,
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
+  QWidget* map = getMapWidget();
+  if (map->geometry().contains(map->mapFrom(this, event->pos()))) {
+    // Quell the event if it falls inside the map widget
+    event->ignore();
+    return;
+  }
+
   menuContext->getQMenu()->popup(event->globalPos());
 }
 
