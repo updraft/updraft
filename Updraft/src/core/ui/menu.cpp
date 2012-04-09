@@ -8,24 +8,45 @@ Menu::~Menu() {
   if (ownsMenu) {
     delete menu;
   }
+
+  foreach(QAction* action, ownedActions) {
+    delete action;
+  }
+}
+
+void Menu::lightClear() {
+  menu->clear();
+  actions.clear();
 }
 
 void Menu::clear() {
-  menu->clear();
-  actions.clear();
+  lightClear();
+
+  foreach(QAction* action, ownedActions) {
+    delete action;
+  }
+  ownedActions.clear();
 }
 
 /// Insert action into this menu.
 /// \param position Priority of this action. Actions with
 ///   lower value are closer to the top.
-void Menu::insertAction(int position, QAction* action) {
+void Menu::insertAction(int position, QAction* action, bool own) {
   actions.insert(position, action);
+
+  if (own) {
+    ownedActions.push_back(action);
+  }
 
   reorganizeMenu();
 }
 
-void Menu::appendAction(QAction* action) {
+void Menu::appendAction(QAction* action, bool own) {
   actions.insert(actions.size(), action);
+
+  if (own) {
+    ownedActions.push_back(action);
+  }
 
   menu->addAction(action);
 }

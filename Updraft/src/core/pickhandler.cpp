@@ -109,6 +109,7 @@ void PickHandler::raiseRightClick(QVector<MapObject*> mapObjects) {
   foreach(QAction* action, ownedActions) {
     delete action;
   }
+  ownedActions.clear();
 
   // Submenu actions for individual map objects
   QList<QAction*> submenuActions;
@@ -133,7 +134,8 @@ void PickHandler::raiseRightClick(QVector<MapObject*> mapObjects) {
       action->setMenu(submenu);
       submenuActions.push_back(action);
 
-      moMenu->clear();
+      // Use only light clear here, so that the menu's actions are not deleted
+      moMenu->lightClear();
     }
   }
 

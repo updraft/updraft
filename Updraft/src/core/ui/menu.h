@@ -24,10 +24,15 @@ class Menu : public MenuInterface {
 
   ~Menu();
 
+  /// Clears the actions from the menu, but does not destroy the
+  /// owned actions.
+  void lightClear();
+
+  /// Clears the whole menu and destroys the owned actions
   void clear();
 
-  void insertAction(int position, QAction* action);
-  void appendAction(QAction* action);
+  void insertAction(int position, QAction* action, bool own = false);
+  void appendAction(QAction* action, bool own = false);
 
   QMenu* getQMenu() { return menu; }
 
@@ -41,6 +46,9 @@ class Menu : public MenuInterface {
 
   /// All the actions sorted by priority. Used for inserting a new action
   QMultiMap<int, QAction*> actions;
+
+  /// Actions that this menu owns and should be erased when the menu is erased.
+  QList<QAction*> ownedActions;
 
   /// Called upon insertion or removal of an action
   void reorganizeMenu();

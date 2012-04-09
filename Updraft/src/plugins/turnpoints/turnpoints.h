@@ -39,6 +39,7 @@ class TPS_EXPORT TurnPoints : public QObject, public PluginBase {
   void fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename);
 
+  void fillContextMenu(MapObject* obj, MenuInterface* menu);
   bool wantsToHandleClick(MapObject* obj);
   void handleClick(MapObject* obj, const EventInfo* evt);
  public slots:
