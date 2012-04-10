@@ -105,7 +105,7 @@ void TestPlugin::initialize() {
   regHtml.plugin = this;
 
   core->registerFiletype(regHtml);
-  osg::Group* simpleGroup = core->getSimpleGroup();
+  // osg::Group* simpleGroup = core->getSimpleGroup();
 
   // Create map layers items in the left pane.
   mapLayerGroup = core->createMapLayerGroup("Test group");
@@ -160,10 +160,9 @@ void TestPlugin::initialize() {
       osg::StateAttribute::ON);
 
     // move the center of the node to Prague
-    osg::Node* randomLines = objectPlacer->placeNode(geode,
+    /*osg::Node* randomLines = objectPlacer->placeNode(geode,
       50.087811, 14.42046, 1000);
-
-    /*
+    
     Updraft::MapLayerInterface* layer1 =
       mapLayerGroup->insertMapLayer(randomLines, "Relative Lines", 0);
     layer1->connectSignalDisplayed
