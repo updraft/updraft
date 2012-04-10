@@ -100,8 +100,8 @@ bool TurnPoints::wantsToHandleClick(MapObject* obj) {
 }
 
 void TurnPoints::handleClick(MapObject* obj, const EventInfo* evt) {
-  qDebug(QString("Clicked a map object named %1")
-    .arg(obj->name).toAscii().data());
+  const char* format = "Clicked a map object named %1";
+  qDebug(format, obj->name.toAscii().data());
 }
 
 void TurnPoints::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
