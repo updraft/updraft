@@ -75,7 +75,6 @@ class TPLayer {
 
   /// osg Node representing this turn-points layer
   osg::Group* group;
-  osg::LOD* lblLOD;
 
   /// osgEarth placer for placing objects to specific geo.coordinates
   osgEarth::Util::ObjectPlacer* objectPlacer;

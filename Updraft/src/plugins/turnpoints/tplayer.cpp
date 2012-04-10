@@ -119,22 +119,22 @@ osg::Node* TPLayer::createAutoScale(
   text->setColor(labelColour);
 
   // define the geode
-  /* osg::Geode* geode = new osg::Geode;
+  osg::Geode* geode = new osg::Geode;
   geode->addDrawable(text);
   geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-*/
-  // Create billboard
+
+  /* Create billboard
   osg::Billboard* nameBill = new osg::Billboard();
   nameBill->addDrawable(text);
   nameBill->setMode(osg::Billboard::AXIAL_ROT);
   nameBill->setAxis(osg::Vec3(0.0, 1.0, 0.0f));
   nameBill->setNormal(osg::Vec3(0.0, 0.0, 1.0f));
   nameBill->getOrCreateStateSet()->
-    setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    setMode(GL_LIGHTING, osg::StateAttribute::OFF);*/
 
   // Create LOD
   osg::LOD* lblLOD = new osg::LOD();
-  lblLOD->addChild(nameBill, 0, labelDrawDist);
+  lblLOD->addChild(geode, 0, labelDrawDist);
 
   // Create the autotransform
   osg::AutoTransform* at = new osg::AutoTransform();
@@ -198,7 +198,7 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
       continue;
     }
     if (!objectPlacer->createPlacerMatrix(itPoint->location.lat,
-      itPoint->location.lon, itPoint->location.alt + 1000.0 + d, labelMatrix)) {
+      itPoint->location.lon, itPoint->location.alt + 500.0 + d, labelMatrix)) {
       continue;
     }
 
@@ -220,7 +220,6 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
 
     group->addChild(tpNode);
 
-    lblLOD = new osg::LOD();
     group->addChild(createAutoScale(
       labelMatrix.getTrans(),
       20.0,
@@ -239,10 +238,6 @@ TPLayer::~TPLayer() {
 
 osg::Node* TPLayer::getNode() const {
   return group;
-}
-
-osg::Node* TPLayer::getLblNode() const {
-  return lblLOD;
 }
 
 bool TPLayer::isDisplayed() {
