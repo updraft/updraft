@@ -38,14 +38,14 @@ bool PickHandler::handle(
         if (mapObjects.empty())
           return false;
 
-	switch (ea.getButton()) {
+        switch (ea.getButton()) {
           case osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON:
             raiseLeftClick(mapObjects);
-	  return true;
+          return true;
           case osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON:
             raiseRightClick(mapObjects);
-	  return true;
-	}
+          return true;
+        }
         return false;
       }
       return false;
