@@ -1,4 +1,7 @@
 #include <osg/Group>
+#include <osg/Geode>
+#include <osg/Geometry>
+#include <osgEarthUtil/ObjectPlacer>
 #include "tasklayer.h"
 #include "coreinterface.h"
 #include "tabinterface.h"
@@ -20,6 +23,9 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   displayed(displayed_),
   tabSelectedState(true),
   newTaskIndex(_newTaskIndex) {
+  // Connect file dataChanged signal.
+  connect(file, SIGNAL(dataChanged()), this, SLOT(taskDataChanged()));
+
   // Create new tab in bottom pane.
   panel = new TaskDeclPanel();
   panel->setTaskLayer(this);
@@ -170,6 +176,58 @@ void TaskLayer::tabSelected() {
 
 void TaskLayer::tabDeselected() {
   tabSelectedState = false;
+}
+
+void TaskLayer::taskDataChanged() {
+  // Clears content of group node. (Erases old scene)
+  group->removeChildren(0, group->getNumChildren());
+
+  // Draws lines, adds them to group.
+  osg::Geode *geodeLines = new osg::Geode();
+  DrawLines(geodeLines);
+  group->addChild(geodeLines);
+}
+
+void TaskLayer::DrawLines(osg::Geode *geode) {
+  // Creates geometry object and draw array.
+  osg::Geometry* geom = new osg::Geometry();
+  geode->addDrawable(geom);
+
+  osg::DrawArrays* drawArrayLines =
+    new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP);
+
+  geom->addPrimitiveSet(drawArrayLines);
+
+  osg::Vec3Array* vertexData = new osg::Vec3Array();
+  geom->setVertexArray(vertexData);
+
+  // Loads TaskData.
+  const TaskData *taskData = file->beginRead();
+  if (taskData == NULL) {
+    return;
+  }
+
+  osgEarth::Util::ObjectPlacer *objectPlacer =
+    plugin->mapLayerGroup->getObjectPlacer();
+
+  // Reads all task points and fills draw array.
+  int pointIndex = 0;
+  const TaskPoint *point = NULL;
+  while (point = taskData->getTaskPoint(pointIndex)) {
+    osg::Matrixd matrix;
+
+    // TODO(Tom): correct altitude
+    objectPlacer->createPlacerMatrix(point->getLocation().lat,
+      point->getLocation().lon, 6000, matrix);
+
+    vertexData->push_back(osg::Vec3(0.0, 0.0, 0.0) * matrix);
+    ++pointIndex;
+  }
+
+  file->endRead();
+
+  drawArrayLines->setFirst(0);
+  drawArrayLines->setCount(vertexData->size());
 }
 
 }  // End namespace Updraft
