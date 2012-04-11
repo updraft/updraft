@@ -239,7 +239,7 @@ void TaskLayer::DrawLines(osg::Geode *geode) {
 
   // Sets line width.
   osg::LineWidth* linewidth = new osg::LineWidth();
-  linewidth->setWidth(2000.0f);
+  linewidth->setWidth(4.0);
   stateSet->setAttributeAndModes(linewidth, osg::StateAttribute::ON);
 }
 
