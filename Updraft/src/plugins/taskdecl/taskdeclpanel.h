@@ -15,6 +15,7 @@ namespace Updraft {
 
 class TaskLayer;
 class TaskFile;
+class TaskPoint;
 
 class TaskDeclPanel : public QWidget {
   Q_OBJECT
@@ -48,7 +49,26 @@ class TaskDeclPanel : public QWidget {
   void redoButtonPushed();
   void dataChanged();
 
+  /// Called when the buttons should be updated due to changes in the file
+  void updateButtons();
+
  private:
+  /// Says whether the turnpoint button exists for the given position.
+  bool tpButtonExists(int pos);
+  /// Says, whether the taskpoint button is a correct representation of
+  /// the given TaskPoint.
+  bool tpButtonCorrect(int pos, const TaskPoint* point);
+  /// Updates the taskpoint button to represent the given TurnPoint.
+  void updateTpButton(int pos, const TaskPoint* point);
+
+  /// Removes TaskPoint buttons for the given position.
+  void removeTpButtons(int pos);
+
+  int tpIndexToLayoutPos(int index);
+  int tpLayoutPosToIndex(int pos);
+  int addIndexToLayoutPos(int index);
+  int addLayoutPosToIndex(int pos);
+
   QString addTpText;  // This is here because of translations
   /// Hides or shows the add turnpoint button text according to button number
   void adjustAddTpText();

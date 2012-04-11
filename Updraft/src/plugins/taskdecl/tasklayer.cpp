@@ -24,9 +24,6 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   displayed(displayed_),
   tabSelectedState(true),
   newTaskIndex(_newTaskIndex) {
-  // Connect file dataChanged signal.
-  connect(file, SIGNAL(dataChanged()), this, SLOT(taskDataChanged()));
-
   // Create new tab in bottom pane.
   panel = new TaskDeclPanel();
   panel->setTaskLayer(this);
@@ -42,10 +39,15 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   // Create new mapLayer in mapLayerGroup, assign osgNode and title.
   mapLayer = plugin->mapLayerGroup->insertMapLayer(getNode(), getTitle(), -1);
 
+  // Connect display and close signals
   mapLayer->connectSignalDisplayed(this,
     SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
-
   tab->connectSignalCloseRequested(this, SLOT(tryCloseLayer()));
+
+  // Connect the dataChanged signal
+  connect(this->file, SIGNAL(dataChanged()), this->panel, SLOT(updateButtons()));
+  connect(file, SIGNAL(dataChanged()), this, SLOT(taskDataChanged()));
+
 }
 
 TaskLayer::~TaskLayer() {
@@ -114,11 +116,7 @@ void TaskLayer::newTaskPoint(const TurnPoint* tp) {
   TaskPoint* newPoint = new TaskPoint();
   newPoint->setTP(tp);
   tData->insertTaskPoint(newPoint, tpIndex);
-  file->endEdit(false);  // TODO(cestmir): Create redo/undo
-
-  // Modify GUI
-  panel->newTurnpointButton(tpIndex, tp->name);
-  panel->newAddTpButton(tpIndex + 1, true);
+  file->endEdit(true);
 }
 
 void TaskLayer::save() {
