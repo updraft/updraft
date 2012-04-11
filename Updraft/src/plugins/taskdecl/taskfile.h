@@ -54,6 +54,13 @@ class TaskFile : public QObject {
   /// \param storeState If it is true, current state is saved to history.
   void endEdit(bool storeState);
 
+  /// Initializes reading session for current data.
+  /// \return Current TaskData
+  const TaskData* beginRead() const;
+
+  /// Ends reading session.
+  void endRead() const;
+
   /// Steps back in file history.
   void undo();
 
@@ -81,9 +88,9 @@ class TaskFile : public QObject {
   /// DataHistory holds task editing history and also current data.
   DataHistory dataHistory;
 
-  /// Flag indicating editing process.
-  /// Set in beginEdit(), freed in endEdit().
-  bool editing;
+  /// Flag indicating reading/editing process.
+  /// Set in beginEdit(),beginRead(), freed in endEdit(),endRead().
+  mutable bool locked;
 };
 
 }  // End namespace Updraft

@@ -25,6 +25,9 @@ class TaskData {
   /// If position is out of range, it returns NULL.
   TaskPoint* getTaskPoint(int position);
 
+  /// Same as non-const getTaskPoint()
+  const TaskPoint* getTaskPoint(int position) const;
+
   /// Tries to parse xml file. If it fails, TaskData is empty.
   /// \param serialized string with xml file content
   /// \return True on success, otherwise false.

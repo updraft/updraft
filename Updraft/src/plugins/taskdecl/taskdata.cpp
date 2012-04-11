@@ -41,6 +41,14 @@ TaskPoint* TaskData::getTaskPoint(int position) {
   return taskPoints[position];
 }
 
+const TaskPoint* TaskData::getTaskPoint(int position) const {
+  if (position >= taskPoints.size()) {
+    return NULL;
+  }
+
+  return taskPoints[position];
+}
+
 bool TaskData::fromXml(const QString &serialized) {
   QDomDocument doc;
   if (!doc.setContent(serialized)) {

@@ -21,6 +21,9 @@ class DataHistory {
   /// \return Current item
   TaskData* getCurrent();
 
+  /// Same as non-const getCurrent()
+  const TaskData* getCurrent() const;
+
   /// \return true if the current item is the first in the DataHistory
   bool isFirst() const;
 
