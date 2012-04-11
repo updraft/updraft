@@ -86,7 +86,7 @@ void TaskDeclPanel::updateButtons() {
   if (!file) return;
 
   // Iterate over the task data
-  const TaskData* data = file->getData();
+  const TaskData* data = file->beginRead();
   int pos = 0;
   while (const TaskPoint* point = data->getTaskPoint(pos)) {
     if (!tpButtonExists(pos)) {
@@ -97,6 +97,7 @@ void TaskDeclPanel::updateButtons() {
     }
     pos++;
   }
+  file->endRead();
 
   // Iterate over any remaining task buttons
   while (tpButtonExists(pos)) {
