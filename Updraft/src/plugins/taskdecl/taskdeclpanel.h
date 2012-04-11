@@ -45,6 +45,7 @@ class TaskDeclPanel : public QWidget {
   void addTpButtonPushed();
   void removeTpButtonPushed();
   void saveButtonPushed();
+  void dataChanged();
 
   /// Called when the buttons should be updated due to changes in the file
   void updateButtons();

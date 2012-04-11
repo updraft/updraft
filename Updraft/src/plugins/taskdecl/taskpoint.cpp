@@ -77,6 +77,12 @@ TaskPoint::TaskPoint(const QDomElement &elem) {
       location.lonFromDMS(d, m, s,
         sign.length() > 0 ? sign[0].toAscii() : 'E');
     }
+
+    QDomElement altElem = locationElem.firstChildElement("Altitude");
+
+    if (!altElem.isNull()) {
+      location.alt = lonElem.attribute("value", "0").toDouble();
+    }
   }
 }
 
@@ -170,6 +176,12 @@ void TaskPoint::toDom(QDomDocument *doc, QDomElement *taskPointElem) const {
   lonElem.setAttribute("degrees", QString("%1").arg(degs));
   lonElem.setAttribute("minutes", QString("%1").arg(mins));
   lonElem.setAttribute("seconds", QString("%1").arg(secs));
+
+  // Creates xml element for altitude.
+  QDomElement altElem = doc->createElement("Altitude");
+  locElem.appendChild(altElem);
+
+  altElem.setAttribute("value", QString("%1").arg(location.alt));
 }
 
 QString TaskPoint::getCode() const {

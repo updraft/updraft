@@ -90,7 +90,7 @@ bool TaskDeclaration::fileOpen(const QString &filename, int roleId) {
 
   switch (roleId) {
     case OPEN_TASK_FILE:
-      file = new TaskFile(filename);
+      file = new TaskFile(filename, core->getEllipsoidModel());
       break;
   }
 
@@ -108,7 +108,7 @@ void TaskDeclaration::fileIdentification(QStringList *roles,
 }
 
 void TaskDeclaration::createTask() {
-  addLayer(new TaskFile());
+  addLayer(new TaskFile(core->getEllipsoidModel()));
 }
 
 void TaskDeclaration::saveTask() {

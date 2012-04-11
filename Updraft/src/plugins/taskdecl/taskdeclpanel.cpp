@@ -104,6 +104,26 @@ void TaskDeclPanel::updateButtons() {
   }
 }
 
+void TaskDeclPanel::dataChanged() {
+  const TaskData* data = taskLayer->getTaskFile()->beginRead();
+
+  QString text;
+
+  if (data->isTriangle()) {
+    text = tr("Triangle");
+  } else if (data->isFAITriangle()) {
+    text = tr("FAI Triangle");
+  } else {
+    text = tr("%1 task points").arg(data->size());
+  }
+  text.append(" - ");
+  text.append(tr("%1 km").arg(data->totalLength() / 1000));
+
+  ui->taskSummaryLabel->setText(text);
+
+  taskLayer->getTaskFile()->endRead();
+}
+
 void TaskDeclPanel::newTurnpointButton(int index, const QString& name) {
   // Check the index argument
   if (index > ui->taskButtonsLayout->count() - 2) {  // 2 for the spacers
@@ -165,6 +185,9 @@ void TaskDeclPanel::initFromFile(TaskFile* file) {
   }
 
   file->endEdit(false);
+
+  connect(file, SIGNAL(dataChanged()), this, SLOT(dataChanged()));
+  dataChanged();
 }
 
 void TaskDeclPanel::adjustAddTpText() {
