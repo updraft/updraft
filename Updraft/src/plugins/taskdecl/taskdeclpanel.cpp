@@ -22,6 +22,8 @@ TaskDeclPanel::TaskDeclPanel(QWidget *parent, Qt::WFlags flags)
   addButtons = new QButtonGroup(this);
 
   connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(saveButtonPushed()));
+  connect(ui->undoButton, SIGNAL(clicked()), this, SLOT(undoButtonPushed()));
+  connect(ui->redoButton, SIGNAL(clicked()), this, SLOT(redoButtonPushed()));
 
   newAddTpButton(0);
 }
@@ -101,6 +103,14 @@ void TaskDeclPanel::removeTpButtonPushed() {
 
 void TaskDeclPanel::saveButtonPushed() {
   taskLayer->save();
+}
+
+void TaskDeclPanel::undoButtonPushed() {
+  taskLayer->undo();
+}
+
+void TaskDeclPanel::redoButtonPushed() {
+  taskLayer->redo();
 }
 
 void TaskDeclPanel::dataChanged() {

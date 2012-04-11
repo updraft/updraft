@@ -135,6 +135,14 @@ void TaskLayer::save() {
   }
 }
 
+void TaskLayer::undo() {
+  file->undo();
+}
+
+void TaskLayer::redo() {
+  file->redo();
+}
+
 void TaskLayer::saveAs() {
   QString filePath = QFileDialog::getSaveFileName(panel, "Save Task As",
     QString(), QString("Task File (*.tsk)"));

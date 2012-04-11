@@ -70,6 +70,12 @@ class TaskLayer : public QObject {
   /// Saves file. If the path is not set, file dialog is invoked.
   void save();
 
+  /// Moves forward in file history.
+  void undo();
+
+  /// Moves back in file history.
+  void redo();
+
   /// Invokes save as dialog and saves file.
   void saveAs();
 

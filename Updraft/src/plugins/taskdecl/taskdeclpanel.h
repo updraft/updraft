@@ -44,6 +44,8 @@ class TaskDeclPanel : public QWidget {
   void addTpButtonPushed();
   void removeTpButtonPushed();
   void saveButtonPushed();
+  void undoButtonPushed();
+  void redoButtonPushed();
   void dataChanged();
 
  private:
