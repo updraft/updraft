@@ -24,6 +24,7 @@ PluginManager::PluginManager() {
   QStringList dllsMask;
   dllsMask.push_back(QString("*.so"));
   dllsMask.push_back(QString("*.dll"));
+  dllsMask.push_back(QString("*.dylib"));
 
   foreach(QString pluginDir, pluginDirs) {
     plugins.cd(pluginDir);
