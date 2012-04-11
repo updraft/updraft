@@ -116,7 +116,12 @@ TaskData::TaskData(const osg::EllipsoidModel* ellipsoid)
   : ellipsoid(ellipsoid) { }
 
 TaskData::TaskData(const TaskData& taskData)
-  : taskPoints(taskData.taskPoints), ellipsoid(taskData.ellipsoid) { }
+  : ellipsoid(taskData.ellipsoid) {
+  // Deep copy of taskPoints container
+  foreach(TaskPoint *point, taskData.taskPoints) {
+    taskPoints.push_back(new TaskPoint(*point));
+  }
+}
 
 qreal TaskData::distanceFrom(int i) const {
   // TODO(Kuba): What is a correct way to calculate distance between TPs?
