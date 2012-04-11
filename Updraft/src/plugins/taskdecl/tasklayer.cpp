@@ -1,6 +1,7 @@
 #include <osg/Group>
 #include <osg/Geode>
 #include <osg/Geometry>
+#include <osg/LineWidth>
 #include <osgEarthUtil/ObjectPlacer>
 #include "tasklayer.h"
 #include "coreinterface.h"
@@ -218,7 +219,7 @@ void TaskLayer::DrawLines(osg::Geode *geode) {
 
     // TODO(Tom): correct altitude
     objectPlacer->createPlacerMatrix(point->getLocation().lat,
-      point->getLocation().lon, 6000, matrix);
+      point->getLocation().lon, point->getLocation().alt + 1000.0, matrix);
 
     vertexData->push_back(osg::Vec3(0.0, 0.0, 0.0) * matrix);
     ++pointIndex;
@@ -228,6 +229,18 @@ void TaskLayer::DrawLines(osg::Geode *geode) {
 
   drawArrayLines->setFirst(0);
   drawArrayLines->setCount(vertexData->size());
+
+  // Sets lines appearance.
+
+  osg::StateSet* stateSet = geode->getOrCreateStateSet();
+
+  // Turns off lighting.
+  stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+  // Sets line width.
+  osg::LineWidth* linewidth = new osg::LineWidth();
+  linewidth->setWidth(2000.0f);
+  stateSet->setAttributeAndModes(linewidth, osg::StateAttribute::ON);
 }
 
 }  // End namespace Updraft
