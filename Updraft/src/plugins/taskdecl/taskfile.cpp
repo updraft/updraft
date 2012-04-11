@@ -4,12 +4,14 @@
 
 namespace Updraft {
 
-TaskFile::TaskFile()
-  : storageState(UNSTORED_EMPTY), locked(false) {
-}
+TaskFile::TaskFile(const osg::EllipsoidModel* ellipsoid)
+  : storageState(UNSTORED_EMPTY),
+  dataHistory(ellipsoid), locked(false) { }
 
-TaskFile::TaskFile(const QString &filePath_)
-  : storageState(UNSTORED_EMPTY), locked(false) {
+TaskFile::TaskFile(const QString &filePath_,
+  const osg::EllipsoidModel* ellipsoid)
+  : storageState(UNSTORED_EMPTY),
+  dataHistory(ellipsoid), locked(false) {
   // Tries to open a file.
   QFile file(filePath_);
   if (!file.open(QIODevice::ReadOnly))

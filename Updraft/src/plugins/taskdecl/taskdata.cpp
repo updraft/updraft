@@ -1,4 +1,8 @@
+#include <math.h>
+
 #include <QtXml/QDomDocument>
+#include <osg/CoordinateSystemNode>
+
 #include "taskdata.h"
 #include "taskpoint.h"
 
@@ -108,11 +112,38 @@ void TaskData::deleteTaskPoint(int position) {
   taskPoints.erase(taskPoints.begin() + position);
 }
 
-TaskData::TaskData() {
-}
+TaskData::TaskData(const osg::EllipsoidModel* ellipsoid)
+  : ellipsoid(ellipsoid) { }
 
 TaskData::TaskData(const TaskData& taskData)
-  : taskPoints(taskData.taskPoints) {
+  : taskPoints(taskData.taskPoints), ellipsoid(taskData.ellipsoid) { }
+
+qreal TaskData::distanceFrom(int i) const {
+  // TODO(Kuba): What is a correct way to calculate distance between TPs?
+
+  Util::Location loc1 = taskPoints[i]->getLocation();
+  double x1, y1, z1;
+  ellipsoid->convertLatLongHeightToXYZ(
+    loc1.lat_radians(), loc1.lon_radians(), loc1.alt,
+    x1, y1, z1);
+
+  Util::Location loc2 = taskPoints[i + 1]->getLocation();
+  double x2, y2, z2;
+  ellipsoid->convertLatLongHeightToXYZ(
+    loc2.lat_radians(), loc2.lon_radians(), loc2.alt,
+    x2, y2, z2);
+
+  return sqrt(
+    (x2 - x1) * (x2 - x1) +
+    (y2 - y1) * (y2 - y1) +
+    (z2 - z1) * (z2 - z1));
 }
 
+qreal TaskData::totalLength() const {
+  qreal sum = 0;
+  for (int i = 0; i < taskPoints.size() - 1; ++i) {
+    sum += distanceFrom(i);
+  }
+  return sum;
+}
 }  // End namespace Updraft

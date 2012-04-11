@@ -3,6 +3,10 @@
 
 #include <QList>
 
+namespace osg {
+  class EllipsoidModel;
+}
+
 namespace Updraft {
 
 class TaskData;
@@ -14,7 +18,7 @@ class TaskData;
 class DataHistory {
  public:
   /// Creates DataHistory object with one default data entry.
-  DataHistory();
+  explicit DataHistory(const osg::EllipsoidModel* ellipsoid);
 
   virtual ~DataHistory();
 

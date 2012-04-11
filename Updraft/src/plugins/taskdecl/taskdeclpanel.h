@@ -44,6 +44,7 @@ class TaskDeclPanel : public QWidget {
   void addTpButtonPushed();
   void removeTpButtonPushed();
   void saveButtonPushed();
+  void dataChanged();
 
  private:
   QString addTpText;  // This is here because of translations
