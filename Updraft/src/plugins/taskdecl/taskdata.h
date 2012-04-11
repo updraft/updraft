@@ -25,6 +25,12 @@ class TaskData {
   /// If position is out of range, it returns NULL.
   TaskPoint* getTaskPoint(int position);
 
+  /// Read-only version of the TaskPoint retrieval method.
+  /// \param position position of TaskPoint in sequence
+  /// \return Pointer to a task point on desired position
+  /// If position is out of range, it returns NULL.
+  const TaskPoint* getTaskPoint(int position) const;
+
   /// Tries to parse xml file. If it fails, TaskData is empty.
   /// \param serialized string with xml file content
   /// \return True on success, otherwise false.

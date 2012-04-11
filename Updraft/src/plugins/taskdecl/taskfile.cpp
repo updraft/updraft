@@ -93,6 +93,10 @@ void TaskFile::endEdit(bool storeState) {
   emit dataChanged();
 }
 
+const TaskData* TaskFile::getData() const {
+  return dataHistory.getCurrent();
+}
+
 void TaskFile::undo() {
   if (dataHistory.moveBack()) {
     updateOnUndoRedo();

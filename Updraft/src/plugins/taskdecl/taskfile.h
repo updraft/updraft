@@ -54,6 +54,11 @@ class TaskFile : public QObject {
   /// \param storeState If it is true, current state is saved to history.
   void endEdit(bool storeState);
 
+  /// Returns the TaskData for reading.
+  /// No call to endEdit is necessary.
+  /// \return Current TaskData
+  const TaskData* getData() const;
+
   /// Steps back in file history.
   void undo();
 

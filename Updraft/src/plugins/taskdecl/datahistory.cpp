@@ -19,6 +19,10 @@ TaskData* DataHistory::getCurrent() {
   return *currentItem;
 }
 
+const TaskData* DataHistory::getCurrent() const {
+  return *currentItem;
+}
+
 bool DataHistory::isFirst() const {
   return currentItem == dataContainer.begin();
 }
