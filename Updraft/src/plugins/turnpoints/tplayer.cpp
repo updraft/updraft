@@ -106,7 +106,7 @@ osg::Node* TPLayer::createAutoScale(
   qreal minScale,
   qreal maxScale) {
   // Creates the autoscale transform node
-  QString fontName = "AmphionExtrabold Regular.ttf";
+  QString fontName = "LiberationSans-Regular.ttf";
   QString fontPath = dataDir + "/" + fontName;
 
   // set the osgText
@@ -160,7 +160,7 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
 
   // Settings
   // get stored values
-  if (settings.size() < 7) {
+  if (settings.size() < 8) {
     qDebug("Not enough settings params.");
     return;
   }
@@ -172,7 +172,7 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
   labelMaxScale = settings[4]->get().toFloat();
   labelMinScale = settings[5]->get().toFloat();
   labelDrawDist = settings[6]->get().toFloat();
-
+  lblSize       = settings[7]->get().toFloat();
 
   // Create node for one turn-point.
   // It will be shared among Autotransform nodes.
@@ -222,7 +222,7 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
 
     group->addChild(createAutoScale(
       labelMatrix.getTrans(),
-      20.0,
+      lblSize,
       itPoint->name,
       labelMinScale,
       labelMaxScale));

@@ -103,6 +103,9 @@ class TPLayer {
   /// to display the labels.
   /// Reasonable value : 4000 (default)
   qreal labelDrawDist;
+
+  /// Label font size
+  qreal lblSize;
 };
 
 }  // End namespace Updraft
