@@ -45,9 +45,9 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   tab->connectSignalCloseRequested(this, SLOT(tryCloseLayer()));
 
   // Connect the dataChanged signal
-  connect(this->file, SIGNAL(dataChanged()), this->panel, SLOT(updateButtons()));
+  connect(this->file, SIGNAL(dataChanged()),
+    this->panel, SLOT(updateButtons()));
   connect(file, SIGNAL(dataChanged()), this, SLOT(taskDataChanged()));
-
 }
 
 TaskLayer::~TaskLayer() {

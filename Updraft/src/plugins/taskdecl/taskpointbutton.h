@@ -10,14 +10,15 @@ class QPushButton;
 
 namespace Updraft {
 
-class TaskPointButton: public QFrame {
- Q_OBJECT
+class TaskPointButton : public QFrame {
+  Q_OBJECT
 
  public:
   TaskPointButton(int pos, const QString& name);
 
   void setName(const QString& newName);
   QString getName();
+
  private:
   /// Position of the TaskPoint
   int taskPointPos;
@@ -39,5 +40,4 @@ class TaskPointButton: public QFrame {
 
 }  // End namespace Updraft
 
-#endif
-
+#endif  // UPDRAFT_SRC_PLUGINS_TASKDECL_TASKPOINTBUTTON_H_

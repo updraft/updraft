@@ -8,8 +8,8 @@
 
 namespace Updraft {
 
-TaskPointButton::TaskPointButton(int pos, const QString& name):
-  QFrame(NULL) {
+TaskPointButton::TaskPointButton(int pos, const QString& name)
+  : QFrame(NULL) {
   topFrameLayout = new QHBoxLayout();
   this->setLayout(topFrameLayout);
 
