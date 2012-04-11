@@ -1,7 +1,7 @@
 #ifndef UPDRAFT_SRC_PLUGINS_TASKDECL_DATAHISTORY_H_
 #define UPDRAFT_SRC_PLUGINS_TASKDECL_DATAHISTORY_H_
 
-#include <QList>
+#include <QLinkedList>
 
 namespace osg {
   class EllipsoidModel;
@@ -54,7 +54,7 @@ class DataHistory {
   void setMark();
 
  private:
-  typedef QList<TaskData*> DataContainer;
+  typedef QLinkedList<TaskData*> DataContainer;
   typedef DataContainer::iterator DataIterator;
 
   /// Container storing data history.
