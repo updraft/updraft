@@ -2,7 +2,6 @@
 #define UPDRAFT_SRC_CORE_SCENEMANAGER_H_
 
 #include <QtGui/QWidget>
-#include <osgQt/GraphicsWindowQt>
 #include <osgViewer/Viewer>
 #include <QTimer>
 #include <QHash>
@@ -12,6 +11,8 @@
 
 namespace Updraft {
 namespace Core {
+
+class GraphicsWindow;
 
 /// SceneManager class is a wrapper of the scene, and the scene graph.
 class SceneManager: public QObject {
@@ -77,17 +78,12 @@ class SceneManager: public QObject {
 
   MapManager* mapManager;
   osg::Camera* camera;
-  osgQt::GraphicsWindowQt* graphicsWindow;
+  GraphicsWindow* graphicsWindow;
 
   /// Timer that triggers the drawing procedure.
   QTimer* timer;
 
-  osg::GraphicsContext::Traits* createGraphicsTraits
-    (int x, int y, int w, int h, const std::string& name = "",
-    bool windowDecoration = false);
-  osgQt::GraphicsWindowQt* createGraphicsWindow
-    (osg::GraphicsContext::Traits* traits);
-  osg::Camera* createCamera(osg::GraphicsContext::Traits* traits);
+  osg::Camera* createCamera();
 
   /// Map of osg nodes registered for mouse picking
   QHash<osg::Node*, MapObject*> pickingMap;
