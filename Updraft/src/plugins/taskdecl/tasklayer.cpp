@@ -48,6 +48,8 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   connect(this->file, SIGNAL(dataChanged()),
     this->panel, SLOT(updateButtons()));
   connect(file, SIGNAL(dataChanged()), this, SLOT(taskDataChanged()));
+
+  taskDataChanged();
 }
 
 TaskLayer::~TaskLayer() {
@@ -112,11 +114,11 @@ void TaskLayer::newTaskPoint(const TurnPoint* tp) {
   if (tpIndex < 0) return;
 
   // Modify the file data
-  TaskData* tData = file->beginEdit();
+  TaskData* tData = file->beginEdit(true);
   TaskPoint* newPoint = new TaskPoint();
   newPoint->setTP(tp);
   tData->insertTaskPoint(newPoint, tpIndex);
-  file->endEdit(true);
+  file->endEdit();
 }
 
 void TaskLayer::save() {
