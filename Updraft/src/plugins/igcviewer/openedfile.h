@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QFileInfo>
 #include <QList>
+#include <QTextEdit>
 
 #include <osg/Geometry>
 
@@ -67,6 +68,7 @@ class OpenedFile: public QObject {
   QFileInfo fileInfo;
 
   QComboBox *colorsCombo;
+  QTextEdit* textBox;
 
   TabInterface *tab;
   MapLayerInterface* track;

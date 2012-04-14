@@ -2,6 +2,7 @@
 
 #include <QComboBox>
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QDebug>
 
 #include <osg/Geode>
@@ -81,6 +82,9 @@ bool OpenedFile::init(IgcViewer* viewer,
   }
 
   colorsCombo = new QComboBox();
+  textBox = new QTextEdit();
+  textBox->setReadOnly(true);
+  textBox->setFixedSize(100, 100);
 
   gradient = Util::Gradient(Qt::blue, Qt::red, true);
 
@@ -116,14 +120,20 @@ bool OpenedFile::init(IgcViewer* viewer,
 
   QWidget* tabWidget = new QWidget();
   QHBoxLayout* layout = new QHBoxLayout();
+  QVBoxLayout* verticalLayout = new QVBoxLayout();
 
   layout->setContentsMargins(0, 0, 0, 0);
 
   PlotWidget* plot = new PlotWidget(
     altitudeInfo, verticalSpeedInfo, groundSpeedInfo);
 
+  connect(plot, SIGNAL(updateInfo(const QString&)),
+    textBox, SLOT(setText(const QString&)));
+
   tabWidget->setLayout(layout);
-  layout->addWidget(colorsCombo, 0, Qt::AlignTop);
+  verticalLayout->addWidget(colorsCombo, 0, Qt::AlignTop);
+  verticalLayout->addWidget(textBox, 1, Qt::AlignTop);
+  layout->addLayout(verticalLayout, 0);
   layout->addWidget(plot, 1.0);
 
   tab = viewer->core->createTab(tabWidget, fileInfo.fileName());

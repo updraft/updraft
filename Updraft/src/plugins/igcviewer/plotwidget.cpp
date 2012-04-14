@@ -2,10 +2,8 @@
 
 #include <QDebug>
 #include <QPainter>
-// #include <QVBoxLayout>
 #include <QGridLayout>
-
-#include "plotpainters.h"
+#include <QMouseEvent>
 
 namespace Updraft {
 namespace IgcViewer {
@@ -14,6 +12,7 @@ const QColor PlotWidget::BG_COLOR = QColor(Qt::black);
 const QPen PlotWidget::ALTITUDE_PEN = QPen(Qt::red);
 const QPen PlotWidget::VERTICAL_SPEED_PEN = QPen(Qt::blue);
 const QPen PlotWidget::GROUND_SPEED_PEN= QPen(Qt::yellow);
+const QPen PlotWidget::MOUSE_LINE_PEN = QPen(QColor(100, 100, 100));
 
 static const qreal LN10 = qLn(10);
 
@@ -21,7 +20,11 @@ PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
   IgcInfo *groundSpeedInfo)
   : altitudeInfo(altitudeInfo), verticalSpeedInfo(verticalSpeedInfo),
     groundSpeedInfo(groundSpeedInfo) {
-  // QVBoxLayout* layout = new QVBoxLayout();
+    // set mouse tracking
+  setMouseTracking(true);
+  xLine = -1;
+  mouseOver = false;
+
   QGridLayout* layout = new QGridLayout();
   layout->setColumnStretch(0, 1);
   layout->setColumnStretch(1, 20);
@@ -40,6 +43,9 @@ PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
     altitudeInfo->min(), altitudeInfo->max(), minTime, maxTime);
   layout->addItem(altitudeAxes, 0, 1);
 
+  altitudePlotPainter = new AltitudePlotPainter();
+  altitudePlotPainter->init(altitudeAxes, altitudeInfo);
+
   altitudeLabel = new AxisLabel(altitudeAxes, "m:");
   layout->addItem(altitudeLabel, 0, 0);
 
@@ -51,6 +57,9 @@ PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
     verticalSpeedInfo->min(), verticalSpeedInfo->max(), minTime, maxTime);
   layout->addItem(verticalSpeedAxes, 2, 1);
 
+  verticalSpeedPlotPainter = new VerticalSpeedPlotPainter();
+  verticalSpeedPlotPainter->init(verticalSpeedAxes, verticalSpeedInfo);
+
   verticalSpeedLabel = new AxisLabel(verticalSpeedAxes, "m/s:");
   layout->addItem(verticalSpeedLabel, 2, 0);
 
@@ -58,6 +67,9 @@ PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
   groundSpeedAxes->setLimits(
     groundSpeedInfo->min(), groundSpeedInfo->max(), minTime, maxTime);
   layout->addItem(groundSpeedAxes, 3, 1);
+
+  groundSpeedPlotPainter = new GroundSpeedPlotPainter();
+  groundSpeedPlotPainter->init(groundSpeedAxes, groundSpeedInfo);
 
   groundSpeedLabel = new AxisLabel(groundSpeedAxes, "km/h");
   layout->addItem(groundSpeedLabel, 3, 0);
@@ -72,21 +84,51 @@ void PlotWidget::paintEvent(QPaintEvent* paintEvent) {
 
   painter.fillRect(rect(), BG_COLOR);
 
-  AltitudePlotPainter altitudePainter;
-  altitudePainter.init(&painter, altitudeAxes, altitudeInfo);
-  altitudePainter.draw();
+  altitudePlotPainter->draw(&painter);
   altitudeLabel->draw(&painter);
   altitudeTimeLabel->draw(&painter);
 
-  VerticalSpeedPlotPainter verticalSpeedPainter;
-  verticalSpeedPainter.init(&painter, verticalSpeedAxes, verticalSpeedInfo);
-  verticalSpeedPainter.draw();
+  verticalSpeedPlotPainter->draw(&painter);
   verticalSpeedLabel->draw(&painter);
 
-  GroundSpeedPlotPainter groundSpeedPainter;
-  groundSpeedPainter.init(&painter, groundSpeedAxes, groundSpeedInfo);
-  groundSpeedPainter.draw();
+  groundSpeedPlotPainter->draw(&painter);
   groundSpeedLabel->draw(&painter);
+
+  if (mouseOver) {
+    painter.setPen(MOUSE_LINE_PEN);
+    painter.drawLine(QPoint(xLine, 0), QPoint(xLine, height()));
+  }
+}
+
+void PlotWidget::mouseMoveEvent(QMouseEvent* mouseEvent) {
+  int x = mouseEvent->x();
+  QString info;
+  if ((x >= altitudePlotPainter->getMinX()) &&
+    (x <= altitudePlotPainter->getMaxX())) {
+    xLine = x;
+    mouseOver = true;
+    QString altitude;
+    altitude.setNum(altitudePlotPainter->getValueAtPixelX(x), 5, 2);
+    QString vspeed;
+    vspeed.setNum(verticalSpeedPlotPainter->getValueAtPixelX(x), 5, 2);
+    QString gspeed;
+    gspeed.setNum(groundSpeedPlotPainter->getValueAtPixelX(x), 5, 2);
+    info = "Altitude:\n" + altitude + " m.\n"
+      + "Vertical Speed:\n" + vspeed + " m/s.\n"
+      + "Ground Speed:\n" + gspeed + " km/h.";
+  } else {
+    mouseOver = false;
+  }
+
+  emit updateInfo(info);
+  update();
+}
+
+void PlotWidget::leaveEvent(QEvent *e) {
+  mouseOver = false;
+  QString empty;
+  emit updateInfo(empty);
+  update();
 }
 
 }  // End namespace IgcViewer

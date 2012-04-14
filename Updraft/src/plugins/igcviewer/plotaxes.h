@@ -11,7 +11,9 @@ namespace Updraft {
 namespace IgcViewer {
 
 /// X and Y axis for graph plotting.
-class PlotAxes : public QLayoutItem {
+class PlotAxes : public QObject, public QLayoutItem {
+  Q_OBJECT
+
  public:
   /// Overridden from QLayoutItem
   /// \{
@@ -62,7 +64,13 @@ class PlotAxes : public QLayoutItem {
   /// Returns the number of the vertical ticks.
   int getLastHour();
 
+ signals:
+  void geometryChanged();
+
  private:
+  /// Signal change of geometry.
+  void emitGeometryChanged();
+
   /// Return tick value increment in vertical axis.
   qreal findTickIncrement(qreal range, qreal width, qreal minTickSpacing);
 

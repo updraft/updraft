@@ -27,10 +27,6 @@ PlotAxes::PlotAxes(bool drawTimeTicks_, bool drawAxisX_) {
   timeIntervalValues.append(900);
   timeIntervalValues.append(1800);
   timeIntervalValues.append(3600);
-  timeIntervalValues.append(2*3600);
-  timeIntervalValues.append(4*3600);
-  timeIntervalValues.append(8*3600);
-  timeIntervalValues.append(16*3600);
 }
 
 Qt::Orientations PlotAxes::expandingDirections() const {
@@ -86,6 +82,12 @@ void PlotAxes::setGeometry(const QRect& rect) {
   } else {
     base = linY.get(0);
   }
+
+  emitGeometryChanged();
+}
+
+void PlotAxes::emitGeometryChanged() {
+  emit geometryChanged();
 }
 
 qreal PlotAxes::placeX(qreal x) {
@@ -139,8 +141,8 @@ qreal PlotAxes::findTimeTickIncrement
   }
 
   if (index == timeIntervalValues.size()) {
-    qDebug() << "No value" << tmp;
-    interval = 0;
+    // set the intervals to whole hours
+    interval = 3600;
   } else {
     interval = timeIntervalValues[index];
   }

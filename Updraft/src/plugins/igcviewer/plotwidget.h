@@ -7,6 +7,7 @@
 
 #include "igcinfo.h"
 #include "plotaxes.h"
+#include "plotpainters.h"
 
 namespace Updraft {
 namespace IgcViewer {
@@ -18,12 +19,21 @@ class PlotWidget : public QWidget {
   PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
     IgcInfo *groundSpeedInfo);
 
+ signals:
+  void updateInfo(const QString& text);
+
  private:
   void paintEvent(QPaintEvent* paintEvent);
+  void mouseMoveEvent(QMouseEvent* mouseEvent);
+  void leaveEvent(QEvent* e);
 
   PlotAxes *altitudeAxes;
   PlotAxes *verticalSpeedAxes;
   PlotAxes *groundSpeedAxes;
+
+  AltitudePlotPainter* altitudePlotPainter;
+  VerticalSpeedPlotPainter* verticalSpeedPlotPainter;
+  GroundSpeedPlotPainter* groundSpeedPlotPainter;
 
   TimeLabel* altitudeTimeLabel;
 
@@ -35,6 +45,12 @@ class PlotWidget : public QWidget {
   IgcInfo* verticalSpeedInfo;
   IgcInfo *groundSpeedInfo;
 
+  /// The coordinate to draw the vertical line where the mouse points.
+  int xLine;
+
+  /// Whether the mouse if over the graph(!) - not widget.
+  bool mouseOver;
+
   /// Offset from the window border
   static const int OFFSET_X = 15;
   static const int OFFSET_Y = 10;
@@ -43,6 +59,8 @@ class PlotWidget : public QWidget {
   static const QPen ALTITUDE_PEN;
   static const QPen VERTICAL_SPEED_PEN;
   static const QPen GROUND_SPEED_PEN;
+
+  static const QPen MOUSE_LINE_PEN;
 };
 
 }  // End namespace Updraft
