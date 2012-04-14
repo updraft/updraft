@@ -120,15 +120,20 @@ void TaskDeclPanel::dataChanged() {
 
   QString text;
 
-  if (data->isTriangle()) {
-    text = tr("Triangle");
-  } else if (data->isFAITriangle()) {
+  if (data->isFaiTriangle()) {
     text = tr("FAI Triangle");
   } else {
     text = tr("%1 task points").arg(data->size());
   }
   text.append(" - ");
-  text.append(tr("%1 km").arg(data->totalLength() / 1000));
+
+  qreal officialDistance = data->officialDistance();
+  text.append(tr("%1 km").arg(officialDistance / 1000));
+
+  qreal totalDistance = data->totalDistance();
+  if (totalDistance != officialDistance) {
+    text.append(tr(" (total %1 km)").arg(totalDistance / 1000));
+  }
 
   ui->taskSummaryLabel->setText(text);
 
