@@ -42,6 +42,12 @@ class TaskFile : public QObject {
   /// \return State of file storage
   StorageState getStorageState() const;
 
+  /// \return True if the current item is the first one in file history.
+  bool isFirstInHistory() const;
+
+  /// \return True if the current item is the last one in file history.
+  bool isLastInHistory() const;
+
   /// Save to current location.
   /// To obtain used path call getFilePath().
   void save();
@@ -52,13 +58,13 @@ class TaskFile : public QObject {
   void saveAs(const QString &filePath_);
 
   /// Initialize editing session of current data.
+  /// \param createNewState If it is true, current state is saved to history.
   /// \return Current TaskData
   /// If other editing session is started, it returns NULL.
-  TaskData* beginEdit();
+  TaskData* beginEdit(bool createNewState);
 
-  /// Ends session and optionally stores current state to history.
-  /// \param storeState If it is true, current state is saved to history.
-  void endEdit(bool storeState);
+  /// Ends editing session.
+  void endEdit();
 
   /// Initializes reading session for current data.
   /// \return Current TaskData

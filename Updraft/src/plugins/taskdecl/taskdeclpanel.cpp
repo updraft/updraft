@@ -137,6 +137,10 @@ void TaskDeclPanel::dataChanged() {
 
   ui->taskSummaryLabel->setText(text);
 
+  // Enables/disables undo,redo buttons.
+  ui->undoButton->setEnabled(!taskLayer->getTaskFile()->isFirstInHistory());
+  ui->redoButton->setEnabled(!taskLayer->getTaskFile()->isLastInHistory());
+
   taskLayer->getTaskFile()->endRead();
 }
 
@@ -187,7 +191,7 @@ void TaskDeclPanel::newAddTpButton(int index, bool checked) {
 }
 
 void TaskDeclPanel::initFromFile(TaskFile* file) {
-  TaskData* fileData = file->beginEdit();
+  TaskData* fileData = file->beginEdit(false);
 
   // Iterate over task points in the task file
   int position = 0;
@@ -200,7 +204,7 @@ void TaskDeclPanel::initFromFile(TaskFile* file) {
     tp = fileData->getTaskPoint(position);
   }
 
-  file->endEdit(false);
+  file->endEdit();
 
   connect(file, SIGNAL(dataChanged()), this, SLOT(dataChanged()));
   dataChanged();
