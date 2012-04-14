@@ -63,6 +63,7 @@ SceneManager::SceneManager(QString baseEarthFile,
 
   // Create a picking handler
   viewer->addEventHandler(new PickHandler());
+  viewer->addEventHandler(new osgViewer::StatsHandler);
 
   insertMenuItems();
 

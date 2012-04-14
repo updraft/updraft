@@ -1,7 +1,11 @@
 #ifndef UPDRAFT_SRC_PLUGINS_TASKDECL_DATAHISTORY_H_
 #define UPDRAFT_SRC_PLUGINS_TASKDECL_DATAHISTORY_H_
 
-#include <QList>
+#include <QLinkedList>
+
+namespace osg {
+  class EllipsoidModel;
+}
 
 namespace Updraft {
 
@@ -14,12 +18,15 @@ class TaskData;
 class DataHistory {
  public:
   /// Creates DataHistory object with one default data entry.
-  DataHistory();
+  explicit DataHistory(const osg::EllipsoidModel* ellipsoid);
 
   virtual ~DataHistory();
 
   /// \return Current item
   TaskData* getCurrent();
+
+  /// Same as non-const getCurrent()
+  const TaskData* getCurrent() const;
 
   /// \return true if the current item is the first in the DataHistory
   bool isFirst() const;
@@ -47,7 +54,7 @@ class DataHistory {
   void setMark();
 
  private:
-  typedef QList<TaskData*> DataContainer;
+  typedef QLinkedList<TaskData*> DataContainer;
   typedef DataContainer::iterator DataIterator;
 
   /// Container storing data history.

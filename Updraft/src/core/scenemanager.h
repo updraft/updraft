@@ -4,6 +4,7 @@
 #include <QtGui/QWidget>
 #include <osgQt/GraphicsWindowQt>
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 #include <osgEarthUtil/Viewpoint>
 #include <QTimer>
 #include <QHash>

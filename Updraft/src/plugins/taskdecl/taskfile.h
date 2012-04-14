@@ -5,6 +5,10 @@
 #include <QString>
 #include "datahistory.h"
 
+namespace osg {
+  class EllipsoidModel;
+}
+
 namespace Updraft {
 
 class TaskFile : public QObject {
@@ -20,12 +24,14 @@ class TaskFile : public QObject {
   };
 
   /// Creates a new empty TaskFile.
-  TaskFile();
+  /// \param ellipsoid Ellipsoid model for distance calculations.
+  explicit TaskFile(const osg::EllipsoidModel* ellipsoid);
 
   /// Creates a new TaskFile from specified file on a disk.
   /// If the file couldn't be loaded, empty task is created.
   /// \param filePath_ full path to a disk file
-  explicit TaskFile(const QString &filePath_);
+  /// \param ellipsoid Ellipsoid model for distance calculations.
+  TaskFile(const QString &filePath_, const osg::EllipsoidModel* ellipsoid);
 
   /// \return File name
   QString getFileName() const;
@@ -35,6 +41,12 @@ class TaskFile : public QObject {
 
   /// \return State of file storage
   StorageState getStorageState() const;
+
+  /// \return True if the current item is the first one in file history.
+  bool isFirstInHistory() const;
+
+  /// \return True if the current item is the last one in file history.
+  bool isLastInHistory() const;
 
   /// Save to current location.
   /// To obtain used path call getFilePath().
@@ -46,13 +58,20 @@ class TaskFile : public QObject {
   void saveAs(const QString &filePath_);
 
   /// Initialize editing session of current data.
+  /// \param createNewState If it is true, current state is saved to history.
   /// \return Current TaskData
   /// If other editing session is started, it returns NULL.
-  TaskData* beginEdit();
+  TaskData* beginEdit(bool createNewState);
 
-  /// Ends session and optionally stores current state to history.
-  /// \param storeState If it is true, current state is saved to history.
-  void endEdit(bool storeState);
+  /// Ends editing session.
+  void endEdit();
+
+  /// Initializes reading session for current data.
+  /// \return Current TaskData
+  const TaskData* beginRead() const;
+
+  /// Ends reading session.
+  void endRead() const;
 
   /// Steps back in file history.
   void undo();
@@ -81,9 +100,9 @@ class TaskFile : public QObject {
   /// DataHistory holds task editing history and also current data.
   DataHistory dataHistory;
 
-  /// Flag indicating editing process.
-  /// Set in beginEdit(), freed in endEdit().
-  bool editing;
+  /// Flag indicating reading/editing process.
+  /// Set in beginEdit(),beginRead(), freed in endEdit(),endRead().
+  mutable bool locked;
 };
 
 }  // End namespace Updraft

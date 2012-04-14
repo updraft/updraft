@@ -7,6 +7,7 @@
 namespace osg {
   class Node;
   class Group;
+  class Geode;
 }
 
 namespace osgEarth {
@@ -69,6 +70,12 @@ class TaskLayer : public QObject {
   /// Saves file. If the path is not set, file dialog is invoked.
   void save();
 
+  /// Moves forward in file history.
+  void undo();
+
+  /// Moves back in file history.
+  void redo();
+
   /// Invokes save as dialog and saves file.
   void saveAs();
 
@@ -84,7 +91,15 @@ class TaskLayer : public QObject {
   /// Slot that should be called when the layer's tab is selected
   void tabDeselected();
 
+  /// Slot catching signal on task update. It updates osg scene.
+  void taskDataChanged();
+
  private:
+  /// Draws task lines.
+  /// \param geode target geode object.
+  /// Lines are added as drawables into geode.
+  void DrawLines(osg::Geode *geode);
+
   /// TaskDeclaration plugin
   TaskDeclaration *plugin;
 

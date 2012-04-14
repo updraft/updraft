@@ -4,12 +4,14 @@
 
 namespace Updraft {
 
-TaskFile::TaskFile()
-  : storageState(UNSTORED_EMPTY), editing(false) {
-}
+TaskFile::TaskFile(const osg::EllipsoidModel* ellipsoid)
+  : storageState(UNSTORED_EMPTY),
+  dataHistory(ellipsoid), locked(false) { }
 
-TaskFile::TaskFile(const QString &filePath_)
-  : storageState(UNSTORED_EMPTY), editing(false) {
+TaskFile::TaskFile(const QString &filePath_,
+  const osg::EllipsoidModel* ellipsoid)
+  : storageState(UNSTORED_EMPTY),
+  dataHistory(ellipsoid), locked(false) {
   // Tries to open a file.
   QFile file(filePath_);
   if (!file.open(QIODevice::ReadOnly))
@@ -36,6 +38,14 @@ QString TaskFile::getFilePath() const {
 
 TaskFile::StorageState TaskFile::getStorageState() const {
   return storageState;
+}
+
+bool TaskFile::isFirstInHistory() const {
+  return dataHistory.isFirst();
+}
+
+bool TaskFile::isLastInHistory() const {
+  return dataHistory.isLast();
 }
 
 void TaskFile::save() {
@@ -70,27 +80,45 @@ void TaskFile::saveAs(const QString &filePath_) {
   }
 }
 
-TaskData* TaskFile::beginEdit() {
-  if (editing) {
+TaskData* TaskFile::beginEdit(bool createNewState) {
+  if (locked) {
     return NULL;
   }
 
-  // Lock. This prevents next call of beginEdit() before endEdit().
-  editing = true;
+  if (createNewState) {
+    dataHistory.storeState();
+  }
+
+  // Lock. This prevents next call of beginEdit()/beginRead
+  // before endEdit().
+  locked = true;
 
   return dataHistory.getCurrent();
 }
 
-void TaskFile::endEdit(bool storeState) {
-  if (storeState) {
-    dataHistory.storeState();
-  }
-
-  // Unlock for next editing session.
-  editing = false;
+void TaskFile::endEdit() {
+  // Unlock for next session.
+  locked = false;
 
   // Emits signal announcing data change.
   emit dataChanged();
+}
+
+const TaskData* TaskFile::beginRead() const {
+  if (locked) {
+    return NULL;
+  }
+
+  // Lock. This prevents next call of beginEdit()/beginRead
+  // before endEdit().
+  locked = true;
+
+  return dataHistory.getCurrent();
+}
+
+void TaskFile::endRead() const {
+  // Unlock for next session.
+  locked = false;
 }
 
 void TaskFile::undo() {

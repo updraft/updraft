@@ -40,9 +40,11 @@ void TurnPoints::initialize() {
   settings.push_back(core->addSetting("Turnpoints:labelMaxScale",
     "Maximum scale for label", 100.0, true));
   settings.push_back(core->addSetting("Turnpoints:labelMinScale",
-    "Minimum scale for label", 0.0, true));
+    "Minimum scale for label", 10.0, true));
   settings.push_back(core->addSetting("Turnpoints:labelDrawDist",
     "Minimum distance from camera for label to draw.", 4000.0, true));
+  settings.push_back(core->addSetting("Turnpoints:labelSize",
+    "Labels font size", 20.0, true));
 
   mapLayerGroup = core->createMapLayerGroup(tr("Turn-points"));
 
