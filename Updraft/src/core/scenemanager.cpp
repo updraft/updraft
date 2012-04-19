@@ -1,4 +1,5 @@
 #include <osgQt/GraphicsWindowQt>
+#include <osgViewer/Viewer>
 #include <osgEarthUtil/Viewpoint>
 #include <osgEarthUtil/ObjectPlacer>
 #include <osgEarth/Map>
@@ -22,14 +23,16 @@ class GraphicsWindow;
 /// Wrapper around osgQt::GLWidget to support on demand rendering.
 class GraphicsWidget: public osgQt::GLWidget {
  public:
-  GraphicsWidget(QWidget* parent = NULL,
+  GraphicsWidget(
+    SceneManager* sceneManager,
+    QWidget* parent = NULL,
     const QGLWidget* shareWidget = NULL,
     Qt::WindowFlags f = 0,
     bool forwardKeyEvents = false)
     : osgQt::GLWidget(parent, shareWidget, f, forwardKeyEvents),
-    gw(NULL) {}
+    sceneManager(sceneManager) {}
 
-  GraphicsWindow* gw;
+  SceneManager* sceneManager;
 
  protected:
   /// Process event imediately after it is registered.
@@ -39,55 +42,59 @@ class GraphicsWidget: public osgQt::GLWidget {
 /// Wrapper around osgQt::GraphicsWindowQt to support on demand rendering.
 class GraphicsWindow: public osgQt::GraphicsWindowQt {
  public:
-  explicit GraphicsWindow(osgQt::GLWidget* widget)
-    : osgQt::GraphicsWindowQt(widget), needEventTraversal(false),
-    needRedraw(false) {}
+  explicit GraphicsWindow(SceneManager* sceneManager, osgQt::GLWidget* widget)
+    : osgQt::GraphicsWindowQt(widget), sceneManager(sceneManager) {}
 
-  void requestRedraw();
-  void requestContinuousUpdate(bool needed);
-
-  /// Reset the needRedraw flags after doing a frame.
-  void loopFinished() {
-    needEventTraversal = false;
-    needRedraw = false;
+  void requestRedraw() {
+    qDebug() << "graphics window request redraw";
+    sceneManager->requestRedraw = true;
   }
 
-  /// If set then there were some events that will probably need processing.
-  bool needEventTraversal;
+  void requestContinuousUpdate(bool needed) {
+    qDebug() << "graphics window request continuous update " << needed;
+    sceneManager->requestContinuousUpdate = needed;
+  }
 
-  /// If set then we should render a frame soon.
-  bool needRedraw;
+ private:
+  SceneManager* sceneManager;
+};
+
+class Viewer: public osgViewer::Viewer {
+ public:
+  explicit Viewer(SceneManager* sceneManager)
+  : sceneManager(sceneManager) {}
+
+  void requestRedraw() {
+    qDebug() << "viewer request redraw";
+    sceneManager->requestRedraw = true;
+  }
+
+  void requestContinuousUpdate(bool needed) {
+    qDebug() << "viewer request continuous update " << needed;
+    sceneManager->requestContinuousUpdate = needed;
+  }
+
+ private:
+  SceneManager* sceneManager;
 };
 
 bool GraphicsWidget::event(QEvent* ev) {
-  bool ret = osgQt::GLWidget::event(ev);
-  qDebug() << "event detected";
-  if (gw) {
-    gw->needEventTraversal = true;
-  }
-  return ret;
+  int t = ev->type();
+  qDebug() << "event detected " << t;
+  sceneManager->eventDetected = true;
+  return osgQt::GLWidget::event(ev);
 }
 
-void GraphicsWindow::requestRedraw() {
-  needRedraw = true;
-  qDebug() << "request Redraw";
-}
-
-void GraphicsWindow::requestContinuousUpdate(bool needed) {
-  qDebug() << "request continuous update";
-}
-
-SceneManager::SceneManager(QString baseEarthFile,
-    osgViewer::ViewerBase::ThreadingModel threadingModel) {
+SceneManager::SceneManager(QString baseEarthFile)
+  : requestRedraw(false), requestContinuousUpdate(false), eventDetected(false) {
   osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
-  viewer = new osgViewer::Viewer();
-  viewer->setThreadingModel(threadingModel);
+  viewer = new Viewer(this);
+  viewer->setThreadingModel(osgViewer::ViewerBase::ThreadPerContext);
 
-  GraphicsWidget *widget = new GraphicsWidget();
-  // osgQt::GLWidget *widget = new osgQt::GLWidget();
-  graphicsWindow = new GraphicsWindow(widget);
-  widget->gw = graphicsWindow;
+  GraphicsWidget *widget = new GraphicsWidget(this);
+  graphicsWindow = new GraphicsWindow(this, widget);
+  widget->setMouseTracking(false);
 
   // create camera
   camera = createCamera();
@@ -143,7 +150,7 @@ SceneManager::SceneManager(QString baseEarthFile,
 
   // start drawing
   timer = new QTimer(this);
-  connect(timer, SIGNAL(timeout()), this, SLOT(redrawScene()));
+  connect(timer, SIGNAL(timeout()), this, SLOT(tick()));
   timer->start(20);
 }
 
@@ -163,25 +170,33 @@ QWidget* SceneManager::getWidget() {
   }
 }
 
-// TODO(Kuba): Rename this function
-void SceneManager::redrawScene() {
-  // viewer->frame() also does event traversal, there's no need to do it twice.
-  if (graphicsWindow->needEventTraversal && !graphicsWindow->needRedraw) {
+void SceneManager::tick() {
+  bool needRedraw = requestRedraw || requestContinuousUpdate ||
+    viewer->getDatabasePager()->requiresUpdateSceneGraph() ||
+    viewer->getDatabasePager()->getRequestsInProgress() ||
+    viewer->getCamera()->getUpdateCallback() ||
+    viewer->getSceneData()->getNumChildrenRequiringUpdateTraversal() > 0;
+
+  if (eventDetected && !needRedraw) {
     qDebug() << "event processing";
     viewer->eventTraversal();
-    qDebug() << "done";
+    needRedraw = requestRedraw || requestContinuousUpdate;
   }
 
-  if (graphicsWindow->needRedraw) {
-    if (is2dEnabled) {
-      updateOrthographicCamera(camera);
-    }
+  if (needRedraw) {
     qDebug() << "frame";
-    viewer->frame();
-    qDebug() << "done";
+    redrawScene();
   }
 
-  graphicsWindow->loopFinished();
+  requestRedraw = false;
+  eventDetected = false;
+}
+
+void SceneManager::redrawScene() {
+  if (is2dEnabled) {
+    updateOrthographicCamera(camera);
+  }
+  viewer->frame();
 }
 
 void SceneManager::toggleView() {

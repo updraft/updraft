@@ -2,7 +2,6 @@
 #define UPDRAFT_SRC_CORE_SCENEMANAGER_H_
 
 #include <QtGui/QWidget>
-#include <osgViewer/Viewer>
 #include <QTimer>
 #include <QHash>
 #include <string>
@@ -13,15 +12,15 @@ namespace Updraft {
 namespace Core {
 
 class GraphicsWindow;
+class GraphicsWidget;
+class Viewer;
 
 /// SceneManager class is a wrapper of the scene, and the scene graph.
 class SceneManager: public QObject {
   Q_OBJECT
 
  public:
-  SceneManager(QString baseEarthFile,
-      osgViewer::ViewerBase::ThreadingModel threadingModel =
-      osgViewer::ViewerBase::SingleThreaded);
+  explicit SceneManager(QString baseEarthFile);
   ~SceneManager();
 
   /// Returns the drawing widget.
@@ -64,11 +63,13 @@ class SceneManager: public QObject {
   MapObject* getNodeMapObject(osg::Node* node);
 
  public slots:
-  void redrawScene();
   void toggleView();
 
+ private slots:
+  void tick();
+
  private:
-  osgViewer::Viewer* viewer;
+  Viewer* viewer;
   osg::Group* sceneRoot;
 
   /// Node with the background.
@@ -80,9 +81,19 @@ class SceneManager: public QObject {
   osg::Camera* camera;
   GraphicsWindow* graphicsWindow;
 
+  /// If set then we should render a frame soon.
+  bool requestRedraw;
+
+  /// If set then we should render a frame soon.
+  bool requestContinuousUpdate;
+
+  /// If set then there were some events that will probably need processing.
+  bool eventDetected;
+
   /// Timer that triggers the drawing procedure.
   QTimer* timer;
 
+  void redrawScene();
   osg::Camera* createCamera();
 
   /// Map of osg nodes registered for mouse picking
@@ -93,6 +104,10 @@ class SceneManager: public QObject {
   void setPerspectiveCamera(osg::Camera* camera);
   void setOrthographicCamera(osg::Camera* camera);
   void updateOrthographicCamera(osg::Camera* camera);
+
+  friend class GraphicsWindow;
+  friend class GraphicsWidget;
+  friend class Viewer;
 };
 
 }  // end namespace Core
