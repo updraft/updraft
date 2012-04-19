@@ -10,6 +10,7 @@
 #include "taskfile.h"
 #include "taskdata.h"
 #include "taskpoint.h"
+#include "taskpointbutton.h"
 
 namespace Updraft {
 
@@ -22,6 +23,8 @@ TaskDeclPanel::TaskDeclPanel(QWidget *parent, Qt::WFlags flags)
   addButtons = new QButtonGroup(this);
 
   connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(saveButtonPushed()));
+  connect(ui->undoButton, SIGNAL(clicked()), this, SLOT(undoButtonPushed()));
+  connect(ui->redoButton, SIGNAL(clicked()), this, SLOT(redoButtonPushed()));
 
   newAddTpButton(0);
 }
@@ -40,7 +43,7 @@ int TaskDeclPanel::getToggledButtonIndex() {
   }
 
   int layoutIdx = ui->taskButtonsLayout->indexOf(addButtons->checkedButton());
-  int buttIndex = (layoutIdx - 1) / 2;
+  int buttIndex = addLayoutPosToIndex(layoutIdx);
   return buttIndex;
 }
 
@@ -49,20 +52,6 @@ void TaskDeclPanel::addTpButtonPushed() {
     qDebug() << "sender() was NULL in a slot. See Qt documentation for info";
     return;
   }
-
-  /*
-  // Find the index of the pushed button
-  QPushButton* butt = qobject_cast<QPushButton*>(sender());
-  int layoutIndex = ui->taskButtonsLayout->indexOf(butt);
-  int buttIndex = (layoutIndex - 1) / 2;
-
-  // Create new buttons
-  newTurnpointButton(buttIndex);
-  newAddTpButton(buttIndex + 1);
-
-  // Hide/unhide the add button text
-  adjustAddTpText();
-  */
 }
 
 void TaskDeclPanel::removeTpButtonPushed() {
@@ -85,22 +74,45 @@ void TaskDeclPanel::removeTpButtonPushed() {
   }
 
   // Let's remove the top frame and the plus button now
-  int idx = ui->taskButtonsLayout->indexOf(topFrame);
-  // The ownership of the QLayoutItems returns to us -> we have to delete them
-  QLayoutItem* item1 =  ui->taskButtonsLayout->takeAt(idx);  // Top frame
-  // Add button after it
-  QLayoutItem* item2 =  ui->taskButtonsLayout->takeAt(idx);
-  delete item1->widget();
-  delete item2->widget();
-  delete item1;
-  delete item2;
-
-  // Check whether the add button is not single again
-  adjustAddTpText();
+  int pos = ui->taskButtonsLayout->indexOf(topFrame);
+  removeTpButtons(tpLayoutPosToIndex(pos));
 }
 
 void TaskDeclPanel::saveButtonPushed() {
   taskLayer->save();
+}
+
+void TaskDeclPanel::undoButtonPushed() {
+  taskLayer->undo();
+}
+
+void TaskDeclPanel::redoButtonPushed() {
+  taskLayer->redo();
+}
+
+void TaskDeclPanel::updateButtons() {
+  TaskFile* file = taskLayer->getTaskFile();
+
+  if (!file) return;
+
+  // Iterate over the task data
+  const TaskData* data = file->beginRead();
+  int pos = 0;
+  while (const TaskPoint* point = data->getTaskPoint(pos)) {
+    if (!tpButtonExists(pos)) {
+      newTurnpointButton(pos, point->getName());
+      newAddTpButton(pos+1, false);
+    } else if (!tpButtonCorrect(pos, point)) {
+      updateTpButton(pos, point);
+    }
+    pos++;
+  }
+  file->endRead();
+
+  // Iterate over any remaining task buttons
+  while (tpButtonExists(pos)) {
+    removeTpButtons(pos);
+  }
 }
 
 void TaskDeclPanel::dataChanged() {
@@ -108,17 +120,26 @@ void TaskDeclPanel::dataChanged() {
 
   QString text;
 
-  if (data->isTriangle()) {
-    text = tr("Triangle");
-  } else if (data->isFAITriangle()) {
+  if (data->isFaiTriangle()) {
     text = tr("FAI Triangle");
   } else {
     text = tr("%1 task points").arg(data->size());
   }
   text.append(" - ");
-  text.append(tr("%1 km").arg(data->totalLength() / 1000));
+
+  qreal officialDistance = data->officialDistance();
+  text.append(tr("%1 km").arg(officialDistance / 1000));
+
+  qreal totalDistance = data->totalDistance();
+  if (totalDistance != officialDistance) {
+    text.append(tr(" (total %1 km)").arg(totalDistance / 1000));
+  }
 
   ui->taskSummaryLabel->setText(text);
+
+  // Enables/disables undo,redo buttons.
+  ui->undoButton->setEnabled(!taskLayer->getTaskFile()->isFirstInHistory());
+  ui->redoButton->setEnabled(!taskLayer->getTaskFile()->isLastInHistory());
 
   taskLayer->getTaskFile()->endRead();
 }
@@ -131,45 +152,11 @@ void TaskDeclPanel::newTurnpointButton(int index, const QString& name) {
     return;
   }
 
-  // Create the GUI:
-  // +-------- topFrame -------------------+
-  // | number     name     +- closeFrame -+|
-  // |                     |  quitButton  ||
-  // |  "1."  "TextLabel"  |      [X]     ||
-  // |                     +--------------+|
-  // +-------------------------------------+
-  QFrame* topFrame = new QFrame();
-  QHBoxLayout* topFrameLayout  = new QHBoxLayout();
-  topFrame->setLayout(topFrameLayout);
-
-  // number
-  QLabel* number = new QLabel(QString("%1. ").arg(index+1));
-  topFrameLayout->addWidget(number);
-
-  // name
-  QLabel* nameWidget = new QLabel(name);
-  topFrameLayout->addWidget(nameWidget);
-
-  // closeFrame
-  QFrame* closeFrame = new QFrame();
-  QVBoxLayout* closeFrameLayout = new QVBoxLayout();
-  closeFrame->setLayout(closeFrameLayout);
-
-  QPushButton* quitButton =
-    new QPushButton(QIcon(":/taskdeclpanel/icons/delete_tp_icon.png"), "");
-  quitButton->setFlat(true);
-  quitButton->setIconSize(QSize(8, 8));
-  // Connect the quit button to a slot
-  connect(quitButton, SIGNAL(clicked()), this, SLOT(removeTpButtonPushed()));
-
-  closeFrameLayout->addWidget(quitButton);
-  closeFrameLayout->addStretch();
-
-  topFrameLayout->addWidget(closeFrame);
+  TaskPointButton* button = new TaskPointButton(index, name);
 
   // Insert the GUI into the panel GUI
-  int layoutIndex = 2*index + 2;  // +2 for spacer and first add task button
-  ui->taskButtonsLayout->insertWidget(layoutIndex, topFrame);
+  int layoutPos = tpIndexToLayoutPos(index);
+  ui->taskButtonsLayout->insertWidget(layoutPos, button);
 }
 
 void TaskDeclPanel::newAddTpButton(int index, bool checked) {
@@ -191,8 +178,8 @@ void TaskDeclPanel::newAddTpButton(int index, bool checked) {
   addButtons->addButton(butt);
 
   // Insert the button into the GUI
-  int layoutIndex = 2*index + 1;  // +1 for spacer in the layout
-  ui->taskButtonsLayout->insertWidget(layoutIndex, butt);
+  int layoutPos = addIndexToLayoutPos(index);  // +1 for spacer in the layout
+  ui->taskButtonsLayout->insertWidget(layoutPos, butt);
 
   // Connect the button to a slot
   connect(butt, SIGNAL(clicked()), this, SLOT(addTpButtonPushed()));
@@ -204,7 +191,7 @@ void TaskDeclPanel::newAddTpButton(int index, bool checked) {
 }
 
 void TaskDeclPanel::initFromFile(TaskFile* file) {
-  TaskData* fileData = file->beginEdit();
+  TaskData* fileData = file->beginEdit(false);
 
   // Iterate over task points in the task file
   int position = 0;
@@ -217,7 +204,7 @@ void TaskDeclPanel::initFromFile(TaskFile* file) {
     tp = fileData->getTaskPoint(position);
   }
 
-  file->endEdit(false);
+  file->endEdit();
 
   connect(file, SIGNAL(dataChanged()), this, SLOT(dataChanged()));
   dataChanged();
@@ -246,6 +233,78 @@ void TaskDeclPanel::adjustAddTpText() {
       addButton->setText("");
     }
   }
+}
+
+bool TaskDeclPanel::tpButtonExists(int pos) {
+  int layoutPos = tpIndexToLayoutPos(pos);
+  QLayoutItem* item = ui->taskButtonsLayout->itemAt(layoutPos);
+  if (!item) return false;
+  QWidget* widget = item->widget();
+  if (!widget) return false;
+  TaskPointButton* button = qobject_cast<TaskPointButton*>(widget);
+  if (!button) return false;
+  return true;
+}
+
+bool TaskDeclPanel::tpButtonCorrect(int pos, const TaskPoint* point) {
+  int layoutPos = tpIndexToLayoutPos(pos);
+  QLayoutItem* item = ui->taskButtonsLayout->itemAt(layoutPos);
+  if (!item) return false;
+  QWidget* widget = item->widget();
+  if (!widget) return false;
+  TaskPointButton* button = qobject_cast<TaskPointButton*>(widget);
+  if (!button) {
+    qDebug() << "unable to cast in tpButtonCorrect method";
+    return false;
+  }
+
+  if (button->getName() == point->getName()) return true;
+  else
+    return false;
+}
+
+void TaskDeclPanel::updateTpButton(int pos, const TaskPoint* point) {
+  int layoutPos = tpIndexToLayoutPos(pos);
+  QLayoutItem* item = ui->taskButtonsLayout->itemAt(layoutPos);
+  QWidget* widget = item->widget();
+  TaskPointButton* button = qobject_cast<TaskPointButton*>(widget);
+  if (!button) {
+    qDebug() << "unable to cast in updateTpButton method";
+    return;
+  }
+
+  button->setName(point->getName());
+}
+
+void TaskDeclPanel::removeTpButtons(int pos) {
+  int layoutPos = tpIndexToLayoutPos(pos);
+  // The ownership of the QLayoutItems returns to us -> we have to delete them
+  QLayoutItem* item1 =  ui->taskButtonsLayout->takeAt(layoutPos);  // Top frame
+  // Add button after it
+  QLayoutItem* item2 =  ui->taskButtonsLayout->takeAt(layoutPos);
+  // delete item1->widget();
+  delete item2->widget();
+  delete item1;
+  delete item2;
+
+  // Check whether the add button is not single again
+  adjustAddTpText();
+}
+
+int TaskDeclPanel::tpIndexToLayoutPos(int index) {
+  return 2*index + 2;  // +2 for spacer and the first add button
+}
+
+int TaskDeclPanel::tpLayoutPosToIndex(int pos) {
+  return (pos-2) / 2;
+}
+
+int TaskDeclPanel::addIndexToLayoutPos(int index) {
+  return 2*index + 1;  // +1 for the spacer
+}
+
+int TaskDeclPanel::addLayoutPosToIndex(int pos) {
+  return (pos-1) / 2;
 }
 
 }  // End namespace Updraft

@@ -8,6 +8,15 @@ namespace Updraft {
 /// A structure defining area shape
 /// Shape styles are same as in SeeYou 4.2 by NavIter
 struct AssignedArea {
+  /// Return true if area is an FAI triangle.
+  bool isCylinder() {
+    return
+      areaShape == SECTOR &&
+      minRadius == 0 &&
+      innerAngle == 0 &&
+      outerAngle == 180;
+  }
+
   /// Assigned area shapes.
   /// Other shapes like cylinder or FAI cylinder are special
   /// cases of SECTOR shape.

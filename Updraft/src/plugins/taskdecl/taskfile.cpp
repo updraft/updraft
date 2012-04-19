@@ -40,6 +40,14 @@ TaskFile::StorageState TaskFile::getStorageState() const {
   return storageState;
 }
 
+bool TaskFile::isFirstInHistory() const {
+  return dataHistory.isFirst();
+}
+
+bool TaskFile::isLastInHistory() const {
+  return dataHistory.isLast();
+}
+
 void TaskFile::save() {
   saveAs(filePath);
 }
@@ -72,9 +80,13 @@ void TaskFile::saveAs(const QString &filePath_) {
   }
 }
 
-TaskData* TaskFile::beginEdit() {
+TaskData* TaskFile::beginEdit(bool createNewState) {
   if (locked) {
     return NULL;
+  }
+
+  if (createNewState) {
+    dataHistory.storeState();
   }
 
   // Lock. This prevents next call of beginEdit()/beginRead
@@ -84,11 +96,7 @@ TaskData* TaskFile::beginEdit() {
   return dataHistory.getCurrent();
 }
 
-void TaskFile::endEdit(bool storeState) {
-  if (storeState) {
-    dataHistory.storeState();
-  }
-
+void TaskFile::endEdit() {
   // Unlock for next session.
   locked = false;
 

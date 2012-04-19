@@ -58,23 +58,37 @@ class TaskData {
   }
 
   /// Return length between all turn points in meters.
-  qreal totalLength() const;
+  qreal totalDistance() const;
 
-  /// Return true if the task is a valid triangle.
-  // TODO(Kuba): Implement triangle detection.
-  bool isTriangle() const { return false; }
+  /// Return the FAI official length of the track.
+  qreal officialDistance() const;
+
+  /// Return true if the task is a closed course.
+  /// This function accepts a endpoints located at most 500 m from start points.
+  /// This is a bit broader definition than FAI rules has,
+  /// but shouldn't be too much trouble.
+  bool isClosed() const;
 
   /// Return true if the task is a valid FAI triangle.
-  // TODO(Kuba): Implement FAI triangle detection.
-  bool isFAITriangle() const { return false; }
+  bool isFaiTriangle() const;
 
  private:
   /// Only DataHistory objects can create TaskData.
   explicit TaskData(const osg::EllipsoidModel* ellipsoid);
 
-  /// Return distance from turn point i to i+1.
+  /// Return distance from turn point i to turn point j
   /// Doesn't do any checks on the value of i.
-  qreal distanceFrom(int i) const;
+  qreal distance(int i, int j) const;
+
+  /// Return the distance reduction of this task point caused by
+  /// the use of FAI cylinders.
+  /// This reduction must be used twice for task points inside the track
+  /// (that are entered and left).
+  qreal distanceReduction(int i) const;
+
+  /// Calculate official distance, or -1 if the task
+  /// is not a FAI triangle
+  float faiTriangleDistance() const;
 
   /// Only DataHistory objects can make copies of TaskData.
   TaskData(const TaskData& taskData);
