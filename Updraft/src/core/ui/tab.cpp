@@ -26,6 +26,10 @@ void Tab::select() {
   tabWidget->setCurrentIndex(id);
 }
 
+void Tab::setTitle(const QString &title) {
+  tabWidget->setTabText(tabWidget->indexOf(this), title);
+}
+
 /// Close this tab.
 /// This method deletes the tab and its widget.
 void Tab::close() {

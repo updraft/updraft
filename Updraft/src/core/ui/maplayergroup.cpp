@@ -183,6 +183,16 @@ void MapLayerGroup::removeMapLayer(MapLayerInterface* layer) {
   }
 }
 
+void MapLayerGroup::setMapLayerTitle(MapLayerInterface* layer,
+  const QString &title) {
+  TMapLayers::iterator it = mapLayers.find(layer);
+  if (it == mapLayers.end()) {
+    return;
+  }
+
+  it.value()->setText(0, title);
+}
+
 QTreeWidgetItem* MapLayerGroup::createTreeItem
   (const QString& title, int pos) {
   QTreeWidgetItem* item = new QTreeWidgetItem();

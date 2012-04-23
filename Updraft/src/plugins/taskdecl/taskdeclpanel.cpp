@@ -191,11 +191,11 @@ void TaskDeclPanel::newAddTpButton(int index, bool checked) {
 }
 
 void TaskDeclPanel::initFromFile(TaskFile* file) {
-  TaskData* fileData = file->beginEdit(false);
+  const TaskData* fileData = file->beginRead();
 
   // Iterate over task points in the task file
   int position = 0;
-  TaskPoint* tp = fileData->getTaskPoint(position);
+  const TaskPoint* tp = fileData->getTaskPoint(position);
   while (tp) {
     newTurnpointButton(position, tp->getName());
     newAddTpButton(position+1);
@@ -204,7 +204,7 @@ void TaskDeclPanel::initFromFile(TaskFile* file) {
     tp = fileData->getTaskPoint(position);
   }
 
-  file->endEdit();
+  file->endRead();
 
   connect(file, SIGNAL(dataChanged()), this, SLOT(dataChanged()));
   dataChanged();

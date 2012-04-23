@@ -49,6 +49,10 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
     this->panel, SLOT(updateButtons()));
   connect(file, SIGNAL(dataChanged()), this, SLOT(taskDataChanged()));
 
+  // Connect the storageStateChanged signal
+  connect(file, SIGNAL(storageStateChanged()),
+    this, SLOT(taskStorageStateChanged()));
+
   taskDataChanged();
 }
 
@@ -195,6 +199,11 @@ void TaskLayer::taskDataChanged() {
   osg::Geode *geodeLines = new osg::Geode();
   DrawLines(geodeLines);
   group->addChild(geodeLines);
+}
+
+void TaskLayer::taskStorageStateChanged() {
+  tab->setTitle(getTitle());
+  plugin->mapLayerGroup->setMapLayerTitle(mapLayer, getTitle());
 }
 
 void TaskLayer::DrawLines(osg::Geode *geode) {
