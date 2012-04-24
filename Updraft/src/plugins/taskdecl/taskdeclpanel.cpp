@@ -120,15 +120,20 @@ void TaskDeclPanel::dataChanged() {
 
   QString text;
 
-  if (data->isTriangle()) {
-    text = tr("Triangle");
-  } else if (data->isFAITriangle()) {
+  if (data->isFaiTriangle()) {
     text = tr("FAI Triangle");
   } else {
     text = tr("%1 task points").arg(data->size());
   }
   text.append(" - ");
-  text.append(tr("%1 km").arg(data->totalLength() / 1000));
+
+  qreal officialDistance = data->officialDistance();
+  text.append(tr("%1 km").arg(officialDistance / 1000));
+
+  qreal totalDistance = data->totalDistance();
+  if (totalDistance != officialDistance) {
+    text.append(tr(" (total %1 km)").arg(totalDistance / 1000));
+  }
 
   ui->taskSummaryLabel->setText(text);
 
@@ -186,11 +191,11 @@ void TaskDeclPanel::newAddTpButton(int index, bool checked) {
 }
 
 void TaskDeclPanel::initFromFile(TaskFile* file) {
-  TaskData* fileData = file->beginEdit(false);
+  const TaskData* fileData = file->beginRead();
 
   // Iterate over task points in the task file
   int position = 0;
-  TaskPoint* tp = fileData->getTaskPoint(position);
+  const TaskPoint* tp = fileData->getTaskPoint(position);
   while (tp) {
     newTurnpointButton(position, tp->getName());
     newAddTpButton(position+1);
@@ -199,7 +204,7 @@ void TaskDeclPanel::initFromFile(TaskFile* file) {
     tp = fileData->getTaskPoint(position);
   }
 
-  file->endEdit();
+  file->endRead();
 
   connect(file, SIGNAL(dataChanged()), this, SLOT(dataChanged()));
   dataChanged();

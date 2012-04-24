@@ -100,8 +100,7 @@ void TaskFile::endEdit() {
   // Unlock for next session.
   locked = false;
 
-  // Emits signal announcing data change.
-  emit dataChanged();
+  updateOnUndoRedo();
 }
 
 const TaskData* TaskFile::beginRead() const {

@@ -3,6 +3,7 @@
 #include <osg/Geometry>
 #include <osg/LineWidth>
 #include <osgEarthUtil/ObjectPlacer>
+#include <osgEarthSymbology/MeshSubdivider>
 #include "tasklayer.h"
 #include "coreinterface.h"
 #include "tabinterface.h"
@@ -48,6 +49,10 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   connect(this->file, SIGNAL(dataChanged()),
     this->panel, SLOT(updateButtons()));
   connect(file, SIGNAL(dataChanged()), this, SLOT(taskDataChanged()));
+
+  // Connect the storageStateChanged signal
+  connect(file, SIGNAL(storageStateChanged()),
+    this, SLOT(taskStorageStateChanged()));
 
   taskDataChanged();
 }
@@ -197,6 +202,11 @@ void TaskLayer::taskDataChanged() {
   group->addChild(geodeLines);
 }
 
+void TaskLayer::taskStorageStateChanged() {
+  tab->setTitle(getTitle());
+  plugin->mapLayerGroup->setMapLayerTitle(mapLayer, getTitle());
+}
+
 void TaskLayer::DrawLines(osg::Geode *geode) {
   // Creates geometry object and draw array.
   osg::Geometry* geom = new osg::Geometry();
@@ -238,6 +248,10 @@ void TaskLayer::DrawLines(osg::Geode *geode) {
   drawArrayLines->setFirst(0);
   drawArrayLines->setCount(vertexData->size());
 
+  // Subdivides lines
+  osgEarth::Symbology::MeshSubdivider meshSubdivider;
+  meshSubdivider.run(*geom, 0.01, osgEarth::GEOINTERP_GREAT_CIRCLE);
+
   // Sets lines appearance.
 
   osg::StateSet* stateSet = geode->getOrCreateStateSet();
@@ -249,6 +263,12 @@ void TaskLayer::DrawLines(osg::Geode *geode) {
   osg::LineWidth* linewidth = new osg::LineWidth();
   linewidth->setWidth(4.0);
   stateSet->setAttributeAndModes(linewidth, osg::StateAttribute::ON);
+
+  // Sets line color.
+  osg::Vec4Array* colors = new osg::Vec4Array;
+  colors->push_back(osg::Vec4(1.0, 1.0, 0.5, 1.0));
+  geom->setColorArray(colors);
+  geom->setColorBinding(osg::Geometry::BIND_OVERALL);
 }
 
 }  // End namespace Updraft
