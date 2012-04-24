@@ -74,7 +74,6 @@ qreal PlotPainter::getValueAtPixelX(int x) {
     // deal with extreme cases:
   if (dataValues.empty()) return 0;
   if (x < dataValues.first().pixel) return 0;
-  qDebug() << dataValues.last().pixel;
   if (x > dataValues.last().pixel) return 0;
 
     // guess the position: this should be most of the times
@@ -87,53 +86,23 @@ qreal PlotPainter::getValueAtPixelX(int x) {
   } else {
     position = dataValues.size()/2;
   }
-
-  bool found = (dataValues[position].pixel == x);
-  if (found) {
+  if (x == dataValues[position].pixel) {
     return dataValues[position].value;
   } else {
-    // do binary search for the data with the value of the pixel
-    // we are looking for
-    int leftIndex = 0;
-    int rightIndex = dataValues.size();
-    while (true) {
-      if (leftIndex == rightIndex) {
-        found = false;
-        break;
-      }
-      if (x == dataValues[position].pixel) {
-        found = true;
-        break;
-      }
-      if (x < dataValues[position].pixel) {
-        rightIndex = position - 1;
-      }
-      if (x > dataValues[position].pixel) {
-        leftIndex = position + 1;
-      }
-      position = leftIndex + (rightIndex - leftIndex) / 2;
-    }
-    if (found) {
-      return dataValues[position].value;
-    } else {
-      // interpolate from the neighbours:
-      if ((position == 0) || (position == (dataValues.size() - 1)))
-        return dataValues[position].value;
-      if (x < dataValues[position].pixel) {
-        return (dataValues[position-1].value +
-          ((x-dataValues[position-1].pixel) /
-            (dataValues[position].pixel - dataValues[position-1].pixel))
-          * dataValues[position-1].value);
-      }
-      if (x > dataValues[position].pixel) {
-        return (dataValues[position].value +
-          ((x-dataValues[position].pixel) /
-            (dataValues[position+1].pixel - dataValues[position].pixel))
-          * dataValues[position].value);
-      }
+    if (x < dataValues[position].pixel) {
+      while (x < dataValues[position].pixel) position--;
+      return (dataValues[position].value +
+        ((x-dataValues[position].pixel) /
+          (dataValues[position+1].pixel - dataValues[position].pixel))
+        * dataValues[position].value);
+    } else {  // x > dataValues[position].pixel
+      while (x > dataValues[position].pixel) position++;
+      return (dataValues[position-1].value +
+        ((x-dataValues[position-1].pixel) /
+          (dataValues[position].pixel - dataValues[position-1].pixel))
+        * dataValues[position-1].value);
     }
   }
-  return 0;
 }
 
 void PlotPainter::computeDrawingData() {

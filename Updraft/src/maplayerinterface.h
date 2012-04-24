@@ -62,6 +62,8 @@ class MapLayerInterface {
   /// Sets visibility to the layer.
   virtual void setVisible(bool value) = 0;
 
+  virtual bool isVisible() = 0;
+
   virtual Layer getLayer() = 0;
   virtual void setLayer(Layer l) = 0;
 

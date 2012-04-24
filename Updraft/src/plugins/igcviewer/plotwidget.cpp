@@ -24,6 +24,7 @@ PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
   setMouseTracking(true);
   xLine = -1;
   mouseOver = false;
+  graphPicture = new QImage();
 
   QGridLayout* layout = new QGridLayout();
   layout->setColumnStretch(0, 1);
@@ -80,20 +81,8 @@ PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
 
 void PlotWidget::paintEvent(QPaintEvent* paintEvent) {
   QPainter painter(this);
+  painter.drawImage(0, 0, *graphPicture);
   painter.setRenderHint(QPainter::Antialiasing);
-
-  painter.fillRect(rect(), BG_COLOR);
-
-  altitudePlotPainter->draw(&painter);
-  altitudeLabel->draw(&painter);
-  altitudeTimeLabel->draw(&painter);
-
-  verticalSpeedPlotPainter->draw(&painter);
-  verticalSpeedLabel->draw(&painter);
-
-  groundSpeedPlotPainter->draw(&painter);
-  groundSpeedLabel->draw(&painter);
-
   if (mouseOver) {
     painter.setPen(MOUSE_LINE_PEN);
     painter.drawLine(QPoint(xLine, 0), QPoint(xLine, height()));
@@ -124,11 +113,30 @@ void PlotWidget::mouseMoveEvent(QMouseEvent* mouseEvent) {
   update();
 }
 
-void PlotWidget::leaveEvent(QEvent *e) {
+void PlotWidget::leaveEvent(QEvent* leaveEvent) {
   mouseOver = false;
-  QString empty;
-  emit updateInfo(empty);
   update();
+}
+
+void PlotWidget::resizeEvent(QResizeEvent* resizeEvent) {
+  delete(graphPicture);  // delete the old pixel map
+  graphPicture = new QImage(width(), height(), QImage::Format_RGB32);
+
+    // draw the graph into the pixel map:
+  QPainter painter(graphPicture);
+  painter.setRenderHint(QPainter::Antialiasing);
+
+  painter.fillRect(rect(), BG_COLOR);
+
+  altitudePlotPainter->draw(&painter);
+  altitudeLabel->draw(&painter);
+  altitudeTimeLabel->draw(&painter);
+
+  verticalSpeedPlotPainter->draw(&painter);
+  verticalSpeedLabel->draw(&painter);
+
+  groundSpeedPlotPainter->draw(&painter);
+  groundSpeedLabel->draw(&painter);
 }
 
 }  // End namespace IgcViewer

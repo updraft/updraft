@@ -4,6 +4,7 @@
 #include <QColor>
 #include <QPen>
 #include <QWidget>
+#include <QPixMap>
 
 #include "igcinfo.h"
 #include "plotaxes.h"
@@ -25,7 +26,10 @@ class PlotWidget : public QWidget {
  private:
   void paintEvent(QPaintEvent* paintEvent);
   void mouseMoveEvent(QMouseEvent* mouseEvent);
-  void leaveEvent(QEvent* e);
+  void leaveEvent(QEvent* leaveEvent);
+  void resizeEvent(QResizeEvent* resizeEvent);
+
+  QImage* graphPicture;
 
   PlotAxes *altitudeAxes;
   PlotAxes *verticalSpeedAxes;
