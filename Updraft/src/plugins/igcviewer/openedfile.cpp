@@ -82,9 +82,9 @@ bool OpenedFile::init(IgcViewer* viewer,
   }
 
   colorsCombo = new QComboBox();
-  textBox = new QTextEdit();
+  textBox = new IGCTextWidget();
   textBox->setReadOnly(true);
-  textBox->setFixedSize(100, 100);
+  textBox->setFixedSize(100, 300);
 
   gradient = Util::Gradient(Qt::blue, Qt::red, true);
 
@@ -127,8 +127,10 @@ bool OpenedFile::init(IgcViewer* viewer,
   PlotWidget* plot = new PlotWidget(
     altitudeInfo, verticalSpeedInfo, groundSpeedInfo);
 
-  connect(plot, SIGNAL(updateInfo(const QString&)),
-    textBox, SLOT(setText(const QString&)));
+  connect(plot, SIGNAL(updateCurrentInfo(const QString&)),
+    textBox, SLOT(setMouseOverText(const QString&)));
+  connect(plot, SIGNAL(updatePickedInfo(const QString&)),
+    textBox, SLOT(setPickedText(const QString&)));
 
   tabWidget->setLayout(layout);
   verticalLayout->addWidget(colorsCombo, 0, Qt::AlignTop);

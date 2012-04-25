@@ -11,6 +11,7 @@
 #include "colorings.h"
 #include "igcinfo.h"
 #include "igcviewer.h"
+#include "plotwidget.h"
 
 namespace Updraft {
 namespace IgcViewer {
@@ -68,7 +69,7 @@ class OpenedFile: public QObject {
   QFileInfo fileInfo;
 
   QComboBox *colorsCombo;
-  QTextEdit* textBox;
+  IGCTextWidget* textBox;
 
   TabInterface *tab;
   MapLayerInterface* track;

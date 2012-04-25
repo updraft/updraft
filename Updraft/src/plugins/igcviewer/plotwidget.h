@@ -4,7 +4,7 @@
 #include <QColor>
 #include <QPen>
 #include <QWidget>
-#include <QPixMap>
+#include <QTextEdit>
 
 #include "igcinfo.h"
 #include "plotaxes.h"
@@ -21,11 +21,13 @@ class PlotWidget : public QWidget {
     IgcInfo *groundSpeedInfo);
 
  signals:
-  void updateInfo(const QString& text);
+  void updateCurrentInfo(const QString& text);
+  void updatePickedInfo(const QString& text);
 
  private:
   void paintEvent(QPaintEvent* paintEvent);
   void mouseMoveEvent(QMouseEvent* mouseEvent);
+  void mousePressEvent(QMouseEvent* mouseEvent);
   void leaveEvent(QEvent* leaveEvent);
   void resizeEvent(QResizeEvent* resizeEvent);
 
@@ -52,6 +54,10 @@ class PlotWidget : public QWidget {
   /// The coordinate to draw the vertical line where the mouse points.
   int xLine;
 
+  /// The coordinate to draw the vertical line at a picked location
+  /// - when user clicked on the graph.
+  int xLinePicked;
+
   /// Whether the mouse if over the graph(!) - not widget.
   bool mouseOver;
 
@@ -65,6 +71,19 @@ class PlotWidget : public QWidget {
   static const QPen GROUND_SPEED_PEN;
 
   static const QPen MOUSE_LINE_PEN;
+  static const QPen MOUSE_LINE_PICKED_PEN;
+};
+
+class IGCTextWidget : public QTextEdit {
+  Q_OBJECT
+
+ public slots:
+  void setPickedText(const QString& text);
+  void setMouseOverText(const QString& text);
+
+ private:
+  QString pickedText;
+  QString mouseOverText;
 };
 
 }  // End namespace Updraft
