@@ -102,5 +102,30 @@ void MapLayer::setVisible(bool value) {
   }
 }
 
+bool MapLayer::isVisible() {
+  switch (layerType) {
+    case OSG_NODE_LAYER: {
+      if (layer.osgNode->getNodeMask() == 0x0) {
+        return false;
+      } else {
+        return true;
+      }
+      break;
+    }
+    case IMAGE_LAYER: {
+      return layer.imageLayer->getEnabled();
+      break;
+    }
+    case ELEVATION_LAYER: {
+      return layer.elevationLayer->getEnabled();
+      break;
+    }
+    case MODEL_LAYER: {
+      return layer.modelLayer->getEnabled();
+      break;
+    }
+  }
+}
+
 }  // End namespace Core
 }  // End namespace Updraft

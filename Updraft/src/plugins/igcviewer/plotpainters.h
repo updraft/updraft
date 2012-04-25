@@ -10,24 +10,41 @@
 namespace Updraft {
 namespace IgcViewer {
 
-class PlotPainter {
+struct Data {
+  int pixel;
+  qreal value;
+};
+
+class PlotPainter : public QObject {
+  Q_OBJECT
+
  public:
   virtual ~PlotPainter() {}
-  void init(QPainter *painter, PlotAxes *axes, IgcInfo *info);
+  void init(PlotAxes *axes, IgcInfo *info);
 
-  virtual void draw();
+  virtual void draw(QPainter* painter);
+  virtual qreal getValueAtPixelX(int x);
+
+  int getMinX();
+  int getMaxX();
+
+ public slots:
+  void updateBuffer();
 
  protected:
   /// Draw points from the buffer.
   /// This method is called every time the graph crosses zero,
   /// at the end of the plot and maybe sometimes more.
   virtual void flushBuffer() = 0;
+  virtual void computePoints();
+  virtual void computeDrawingData();
 
   QPainter *painter;
   PlotAxes *axes;
   IgcInfo *info;
 
   QPolygonF buffer;
+  QVector<Data> dataValues;
 };
 
 class AltitudePlotPainter: public PlotPainter {
@@ -38,7 +55,11 @@ class AltitudePlotPainter: public PlotPainter {
 class VerticalSpeedPlotPainter: public PlotPainter {
  protected:
   void flushBuffer();
+  void computeDrawingData();
  private:
+  QVector<QPolygon> positivePolygons;
+  QVector<QPolygon> negativePolygons;
+
   static const QBrush POSITIVE_BRUSH;
   static const QBrush NEGATIVE_BRUSH;
   static const QPen POSITIVE_PEN;

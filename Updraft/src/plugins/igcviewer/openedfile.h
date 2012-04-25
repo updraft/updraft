@@ -4,12 +4,14 @@
 #include <QObject>
 #include <QFileInfo>
 #include <QList>
+#include <QTextEdit>
 
 #include <osg/Geometry>
 
 #include "colorings.h"
 #include "igcinfo.h"
 #include "igcviewer.h"
+#include "plotwidget.h"
 
 namespace Updraft {
 namespace IgcViewer {
@@ -67,6 +69,7 @@ class OpenedFile: public QObject {
   QFileInfo fileInfo;
 
   QComboBox *colorsCombo;
+  IGCTextWidget* textBox;
 
   TabInterface *tab;
   MapLayerInterface* track;

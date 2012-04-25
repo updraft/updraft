@@ -127,14 +127,14 @@ osg::Node* TPLayer::createAutoScale(
   geode->getOrCreateStateSet()->setMode(GL_DEPTH_TEST,
     osg::StateAttribute::OFF);
 
-  /* Create billboard
+  // Create billboard
   osg::Billboard* nameBill = new osg::Billboard();
   nameBill->addDrawable(text);
   nameBill->setMode(osg::Billboard::AXIAL_ROT);
   nameBill->setAxis(osg::Vec3(0.0, 1.0, 0.0f));
   nameBill->setNormal(osg::Vec3(0.0, 0.0, 1.0f));
   nameBill->getOrCreateStateSet()->
-    setMode(GL_LIGHTING, osg::StateAttribute::OFF);*/
+    setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
   // Create LOD
   osg::LOD* lblLOD = new osg::LOD();

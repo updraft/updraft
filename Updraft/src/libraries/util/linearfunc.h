@@ -45,6 +45,11 @@ class UTIL_EXPORT LinearFunc {
     return a * x + b;
   }
 
+  /// Return the value of x when the function has the value y
+  qreal inverse(qreal y) const {
+    return (y - b) / a;
+  }
+
  protected:
   qreal a, b;
 };
