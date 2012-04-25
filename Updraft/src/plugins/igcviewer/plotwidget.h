@@ -31,6 +31,8 @@ class PlotWidget : public QWidget {
   void leaveEvent(QEvent* leaveEvent);
   void resizeEvent(QResizeEvent* resizeEvent);
 
+  QString getInfoText(int x);
+
   QImage* graphPicture;
 
   PlotAxes *altitudeAxes;
@@ -84,6 +86,7 @@ class IGCTextWidget : public QTextEdit {
  private:
   QString pickedText;
   QString mouseOverText;
+  void updateText();
 };
 
 }  // End namespace Updraft

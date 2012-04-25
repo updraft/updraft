@@ -278,7 +278,7 @@ void AxisLabel::draw(QPainter *painter) {
   QString text(unitsDescription);
   QRect labelRect(QPoint(2, pixelY-TEXT_HEIGHT/2),
     QPoint(rect.right(), pixelY+TEXT_HEIGHT/2));
-  // painter->drawText(labelRect, Qt::AlignLeft, text);
+  painter->drawText(labelRect, Qt::AlignLeft, text);
 }
 
 // Time Labels:
