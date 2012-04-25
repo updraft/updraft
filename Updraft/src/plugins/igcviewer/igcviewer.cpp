@@ -2,8 +2,6 @@
 
 #include <QDebug>
 
-#include "openedfile.h"
-
 namespace Updraft {
 namespace IgcViewer {
 
@@ -140,6 +138,19 @@ void IgcViewer::freeAutomaticColor(QColor c) {
     }
   }
 }
+
+/// Tells whether this plugin wants to handle a mouse click event.
+bool wantsToHandleClick(MapObject* obj) {
+  IGCMapObject* iObj = qobject_cast<IGCMapObject*>(obj->asQObject());
+  if (iObj != NULL) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/// Handles the left mouse click event on the IGC in the map.
+void handleClick(MapObject* obj, const EventInfo* evt);
 
 /*void IgcViewer::fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename) {
