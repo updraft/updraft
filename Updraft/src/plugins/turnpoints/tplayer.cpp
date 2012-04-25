@@ -123,6 +123,10 @@ osg::Node* TPLayer::createAutoScale(
   geode->addDrawable(text);
   geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
+  // Disables depth test.
+  geode->getOrCreateStateSet()->setMode(GL_DEPTH_TEST,
+    osg::StateAttribute::OFF);
+
   /* Create billboard
   osg::Billboard* nameBill = new osg::Billboard();
   nameBill->addDrawable(text);
