@@ -5,10 +5,6 @@ namespace Airspaces {
 
 oaEngine::oaEngine(MapLayerGroupInterface* LG) {
   this->mapLayerGroup = LG;
-  // set the defeault line width
-  this->width = 1.0f;
-  // set the default line colour
-  col = osg::Vec4f(0.0f, 0.5f, 1.0f, DEFAULT_TRANSPARENCY);
 
   // some defaults
   USE_POINTWISE_ELEVATION = false;
@@ -63,10 +59,16 @@ QVector<MapLayerInterface*>* oaEngine::Draw(const QString& fileName) {
     if (!AirspaceSet.size()) return NULL;
 
     // reset const
-    // check for mem leak
     heightRefPoint = NULL;
     mapLayers = NULL;
     OAGeode = NULL;
+
+    // set the defeault line width
+    this->width = 1.0f;
+
+    // set the default line colour
+    col = osg::Vec4f(0.0f, 0.5f, 1.0f, DEFAULT_TRANSPARENCY);
+
 
     // get name to display
     QString displayName = fileName.left(fileName.indexOf('.'));
