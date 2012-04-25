@@ -49,6 +49,7 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
       if (!mapLayers) return false;
       for (int i = 0; i < mapLayers->size(); ++i) {
         MapLayerInterface* layer1 = mapLayers->at(i);
+        layer1->setVisible(false);
         layer1->connectSignalDisplayed
           (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
         // layer1->emitDisplayed(false);
