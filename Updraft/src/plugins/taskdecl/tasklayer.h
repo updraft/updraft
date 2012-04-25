@@ -94,6 +94,10 @@ class TaskLayer : public QObject {
   /// Slot catching signal on task update. It updates osg scene.
   void taskDataChanged();
 
+  /// Slot catching signal on task storage state change.
+  /// It updates label in both bottom tab and left pane.
+  void taskStorageStateChanged();
+
  private:
   /// Draws task lines.
   /// \param geode target geode object.

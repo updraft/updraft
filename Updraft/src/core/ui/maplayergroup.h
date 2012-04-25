@@ -43,6 +43,8 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
 
   void removeMapLayer(MapLayerInterface* layer);
 
+  void setMapLayerTitle(MapLayerInterface* layer, const QString &title);
+
   QTreeWidgetItem* createTreeItem(const QString& title, int pos = -1);
   void removeTreeItem(QTreeWidgetItem* item);
 

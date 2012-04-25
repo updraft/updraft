@@ -45,6 +45,7 @@ class MapLayer : public QObject, public MapLayerInterface {
   void emitDisplayed(bool value);
 
   void setVisible(bool value);
+  bool isVisible();
 
   MapLayerType getType();
   Layer getLayer();

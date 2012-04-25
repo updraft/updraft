@@ -57,6 +57,9 @@ class MapLayerGroupInterface {
   /// Removes map layer.
   virtual void removeMapLayer(MapLayerInterface* layer) = 0;
 
+  /// Sets title of the map layer (displayed in the left pane).
+  virtual void setMapLayerTitle(MapLayerInterface* layer, const QString &title) = 0;
+
   /// Creates the treeItem, without any map layer dependency.
   virtual QTreeWidgetItem* createTreeItem
     (const QString& title, int pos = -1) = 0;

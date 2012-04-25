@@ -4,9 +4,11 @@
 #include <QColor>
 #include <QPen>
 #include <QWidget>
+#include <QTextEdit>
 
 #include "igcinfo.h"
 #include "plotaxes.h"
+#include "plotpainters.h"
 
 namespace Updraft {
 namespace IgcViewer {
@@ -18,12 +20,26 @@ class PlotWidget : public QWidget {
   PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
     IgcInfo *groundSpeedInfo);
 
+ signals:
+  void updateCurrentInfo(const QString& text);
+  void updatePickedInfo(const QString& text);
+
  private:
   void paintEvent(QPaintEvent* paintEvent);
+  void mouseMoveEvent(QMouseEvent* mouseEvent);
+  void mousePressEvent(QMouseEvent* mouseEvent);
+  void leaveEvent(QEvent* leaveEvent);
+  void resizeEvent(QResizeEvent* resizeEvent);
+
+  QImage* graphPicture;
 
   PlotAxes *altitudeAxes;
   PlotAxes *verticalSpeedAxes;
   PlotAxes *groundSpeedAxes;
+
+  AltitudePlotPainter* altitudePlotPainter;
+  VerticalSpeedPlotPainter* verticalSpeedPlotPainter;
+  GroundSpeedPlotPainter* groundSpeedPlotPainter;
 
   TimeLabel* altitudeTimeLabel;
 
@@ -35,6 +51,16 @@ class PlotWidget : public QWidget {
   IgcInfo* verticalSpeedInfo;
   IgcInfo *groundSpeedInfo;
 
+  /// The coordinate to draw the vertical line where the mouse points.
+  int xLine;
+
+  /// The coordinate to draw the vertical line at a picked location
+  /// - when user clicked on the graph.
+  int xLinePicked;
+
+  /// Whether the mouse if over the graph(!) - not widget.
+  bool mouseOver;
+
   /// Offset from the window border
   static const int OFFSET_X = 15;
   static const int OFFSET_Y = 10;
@@ -43,6 +69,21 @@ class PlotWidget : public QWidget {
   static const QPen ALTITUDE_PEN;
   static const QPen VERTICAL_SPEED_PEN;
   static const QPen GROUND_SPEED_PEN;
+
+  static const QPen MOUSE_LINE_PEN;
+  static const QPen MOUSE_LINE_PICKED_PEN;
+};
+
+class IGCTextWidget : public QTextEdit {
+  Q_OBJECT
+
+ public slots:
+  void setPickedText(const QString& text);
+  void setMouseOverText(const QString& text);
+
+ private:
+  QString pickedText;
+  QString mouseOverText;
 };
 
 }  // End namespace Updraft

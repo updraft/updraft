@@ -79,7 +79,13 @@ MapLayerInterface* MapLayerGroup::insertMapLayer
   QTreeWidgetItem *newItem = new QTreeWidgetItem();
   newItem->setText(0, title);
   newItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-  newItem->setCheckState(0, Qt::Checked);
+  Qt::CheckState state;
+  if (layer->isVisible()) {
+    state = Qt::Checked;
+  } else {
+    state = Qt::Unchecked;
+  }
+  newItem->setCheckState(0, state);
 
   // add the item into the menu list and maplist
   addIntoList(newItem, pos);
@@ -120,7 +126,13 @@ MapLayerInterface* MapLayerGroup::insertExistingMapLayer
   QTreeWidgetItem *newItem = new QTreeWidgetItem();
   newItem->setText(0, title);
   newItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-  newItem->setCheckState(0, Qt::Checked);
+  Qt::CheckState state;
+  if (layer->isVisible()) {
+    state = Qt::Checked;
+  } else {
+    state = Qt::Unchecked;
+  }
+  newItem->setCheckState(0, state);
 
   // add the item into the menu list and maplist
   addIntoList(newItem, pos);
@@ -181,6 +193,16 @@ void MapLayerGroup::removeMapLayer(MapLayerInterface* layer) {
   if (mapLayers.empty()) {
     hideTree();
   }
+}
+
+void MapLayerGroup::setMapLayerTitle(MapLayerInterface* layer,
+  const QString &title) {
+  TMapLayers::iterator it = mapLayers.find(layer);
+  if (it == mapLayers.end()) {
+    return;
+  }
+
+  it.value()->setText(0, title);
 }
 
 QTreeWidgetItem* MapLayerGroup::createTreeItem
