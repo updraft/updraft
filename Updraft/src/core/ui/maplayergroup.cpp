@@ -75,7 +75,8 @@ MapLayerInterface* MapLayerGroup::insertMapLayer
 }
 
 MapLayerInterface* MapLayerGroup::insertMapLayer
-  (MapLayerInterface* layer, const QString &title, int pos) {
+  (MapLayerInterface* layer, const QString &title,
+  int pos, QTreeWidgetItem* toTree) {
   QTreeWidgetItem *newItem = new QTreeWidgetItem();
   newItem->setText(0, title);
   newItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
@@ -88,7 +89,7 @@ MapLayerInterface* MapLayerGroup::insertMapLayer
   newItem->setCheckState(0, state);
 
   // add the item into the menu list and maplist
-  addIntoList(newItem, pos);
+  addIntoList(newItem, pos, toTree);
   mapLayers.insert(layer, newItem);
 
   // insert the node into the scene
@@ -97,6 +98,89 @@ MapLayerInterface* MapLayerGroup::insertMapLayer
   return layer;
 }
 
+QVector<MapLayerInterface*>* MapLayerGroup::insertMapLayerGroup
+  (QVector<QPair<osg::Node*, QString >> * mapLayerGroup,
+  const QString& title, int pos) {
+  // Check the array
+  if (mapLayerGroup == NULL)
+    return NULL;
+  QVector<MapLayerInterface*>* layers = new QVector<MapLayerInterface*>();
+
+  // Add subtree
+  QTreeWidgetItem *newItem = new QTreeWidgetItem();
+  newItem->setText(0, title);
+  newItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+  // Qt::CheckState state;
+  // if (layer->isVisible()) {
+    // state = Qt::Checked;
+  // } else {
+    // state = Qt::Unchecked;
+  // }
+  newItem->setCheckState(0, Qt::Checked);
+
+  // Add all the layers int he array
+  for (int i = 0; i < mapLayerGroup->size(); ++i) {
+    MapLayerInterface* layer =
+      new MapLayer(mapLayerGroup->at(i).first);
+    QString subtitle(mapLayerGroup->at(i).second);
+    layers->push_back(insertMapLayer(layer, subtitle, -1, newItem));
+  }
+
+  addIntoList(newItem, pos);
+  mapLayers.insert(NULL, newItem);
+
+  return layers;
+}
+
+/*MapLayerInterface* MapLayerGroup::insertMapLayerGroup
+  (osgEarth::ElevationLayer* mapLayer, const QString& title, int pos) {
+  MapLayerInterface* layer = new MapLayer(mapLayer);
+  return insertMapLayer(layer, title, pos);
+}
+*/
+/*MapLayerInterface* MapLayerGroup::insertMapLayerGroup
+  (QVector<osgEarth::ModelLayer*>* mapLayer,
+  const QString& title, int pos) {
+  // QVector<MapLayerInterface*>* layers =
+    // new QVector<MapLayerInterface*>();
+  MapLayerInterface* layer;
+  for (int i = 0; i < mapLayer->size(); ++i) {
+    layers->push_back(new MapLayer(mapLayer.at(i)));
+  }
+
+  return layer; //insertMapLayerGroup(layers, title, pos);
+}
+*/
+/*MapLayerInterface* MapLayerGroup::insertMapLayerGroup
+  (QVector<MapLayerInterface*>* layerGroup,
+  const QString &title, int pos) {
+  MapLayerInterface* layer = new MapLayer();
+  QTreeWidgetItem *newItem = new QTreeWidgetItem();
+  newItem->setText(0, title);
+  newItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+  Qt::CheckState state;
+  if (layer->isVisible()) {
+    state = Qt::Checked;
+  } else {
+    state = Qt::Unchecked;
+  }
+  newItem->setCheckState(0, state);
+
+  // Add all the layers in the array
+  // for (int i = 0; i < layerGroup->size(); ++i) {
+    // insertMapLayer(
+  // }
+
+  // add the item into the menu list and maplist
+  addIntoList(newItem, pos);
+  mapLayers.insert(layer, newItem);
+
+  // insert the node into the scene
+  addIntoScene(layer);
+
+  return layer;
+}
+*/
 MapLayerInterface* MapLayerGroup::insertExistingMapLayer
   (osg::Node* mapLayer, const QString& title, int pos) {
   MapLayerInterface* layer = new MapLayer(mapLayer);
@@ -238,6 +322,12 @@ void MapLayerGroup::itemChanged(QTreeWidgetItem *item, int column) {
   for (TMapLayers::iterator it = mapLayers.begin();
       it != mapLayers.end(); ++it) {
     if (it.value() == item) {
+      for (int i = 0; i < item->childCount(); i++) {
+        QTreeWidgetItem* child = item->child(i);
+        child->setCheckState(column, item->checkState(column));
+      }
+      if (it.key() == NULL)
+        return;
       if (item->checkState(column) == Qt::Checked) {
         emit it.key()->emitDisplayed(true);
       } else if (item->checkState(column) == Qt::Unchecked) {
@@ -248,20 +338,23 @@ void MapLayerGroup::itemChanged(QTreeWidgetItem *item, int column) {
   }
 }
 
-void MapLayerGroup::addIntoList(QTreeWidgetItem *item, int pos) {
+void MapLayerGroup::addIntoList(QTreeWidgetItem *item,
+  int pos, QTreeWidgetItem* toTree) {
   // if this is the first item, create the tree:
   if (mapLayers.empty()) {
     displayTree();
   }
 
+  QTreeWidgetItem* branch = (toTree) ? toTree : treeItem;
+
   int position = 0;
-  if ((pos > treeItem->childCount()) || (pos < 0)) {
-    position = treeItem->childCount();
+  if ((pos > branch->childCount()) || (pos < 0)) {
+    position = branch->childCount();
   } else {
     position = pos;
   }
 
-  treeItem->insertChild(position, item);
+  branch->insertChild(position, item);
 }
 
 }  // End namespace Core

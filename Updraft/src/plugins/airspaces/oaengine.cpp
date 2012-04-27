@@ -1,4 +1,5 @@
 #include "oaengine.h"
+#include "../../core/maplayer.h"
 
 namespace Updraft {
 namespace Airspaces {
@@ -51,7 +52,20 @@ oaEngine::oaEngine(MapLayerGroupInterface* LG) {
   elevationMan = new osgEarth::Util::ElevationManager(map);
 }
 
-QVector<MapLayerInterface*>* oaEngine::Draw(const QString& fileName) {
+QVector<MapLayerInterface*>* oaEngine::DrawII(const QString& fileName) {
+  if (!Draw(fileName))
+    return NULL;
+
+  QVector<MapLayerInterface*>* layers = new QVector<MapLayerInterface*>();
+  for (int i = 0; i < mapLayers->size(); ++i) {
+    layers->push_back(mapLayerGroup->insertMapLayer(
+      mapLayers->at(i).first, mapLayers->at(i).second));
+  }
+
+  return layers;
+}
+
+QVector<QPair<osg::Node*, QString >> * oaEngine::Draw(const QString& fileName) {
   // if valid maplayer proceed
   if (mapLayerGroup != NULL) {
     // Parse the file
@@ -90,7 +104,7 @@ QVector<MapLayerInterface*>* oaEngine::Draw(const QString& fileName) {
         // if there is a geode initialized
         // insert into the array of layers
         if (OAGeode)
-          PushLayer(OAGeode, displayName + nameSuffix);
+          PushLayer(OAGeode, nameSuffix);
 
         // change the suffix to current one
         nameSuffix = A->GetClassName();
@@ -187,7 +201,8 @@ QVector<MapLayerInterface*>* oaEngine::Draw(const QString& fileName) {
 
     if (OAGeode && OAGeode->getNumDrawables()) {
       // insert the created layer
-      PushLayer(OAGeode, displayName + nameSuffix);
+      // PushLayer(OAGeode, displayName + nameSuffix);
+      PushLayer(OAGeode, nameSuffix);
     }
     // return mapLayerGroup->insertMapLayer(OAGeode, displayName);
     return mapLayers;
@@ -346,9 +361,11 @@ void oaEngine::PushLayer(osg::Geode* OAGeode, const QString& displayName) {
 
   // result in new map layer
   if (!mapLayers)
-    mapLayers = new QVector<MapLayerInterface*>();
-  mapLayers->push_back(
-    mapLayerGroup->insertMapLayer(OAGeode, displayName));
+    mapLayers = new QVector<QPair<osg::Node*, QString >> ();
+  // MapLayerInterface* newLayer = new Core::MapLayer((osg::Node*)OAGeode);
+  // newLayer->setVisible(false);
+  // QPair<osg::Node*, QString> toPush
+  mapLayers->push_back(QPair<osg::Node*, QString>(OAGeode, displayName));
 }
 
 osg::Geometry* oaEngine::DrawPolygon(
