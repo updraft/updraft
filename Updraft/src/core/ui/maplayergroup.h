@@ -76,7 +76,7 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   QTreeWidget* listWidget;
   /// top level item
   QTreeWidgetItem *treeItem;
-  typedef QMap<MapLayerInterface*, QTreeWidgetItem*> TMapLayers;
+  typedef QMultiMap<MapLayerInterface*, QTreeWidgetItem*> TMapLayers;
   TMapLayers mapLayers;
 
   /// Pointer to the subtree of the scene associated with this layer.

@@ -60,17 +60,20 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
       }
       delete mapLayers;*/
 
+      QString displayName = fileName.left(fileName.indexOf('.'));
+      int cuntSlashes = displayName.count('/');
+      displayName = displayName.section('/', cuntSlashes, cuntSlashes);
+
       mapNodes = engine->Draw(fileName);
       if (!mapNodes) return false;
 
       QVector<MapLayerInterface*>* layers =
-        mapLayerGroup->insertMapLayerGroup(mapNodes, fileName);
+        mapLayerGroup->insertMapLayerGroup(mapNodes, displayName);
       if (!layers) return false;
 
       for (int i = 0; i < layers->size(); ++i) {
         layers->at(i)->connectSignalDisplayed
           (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
-        layers->at(i)->emitDisplayed(false);
       }
 
       delete mapNodes;

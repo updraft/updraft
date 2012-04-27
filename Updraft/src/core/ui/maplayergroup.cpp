@@ -123,10 +123,11 @@ QVector<MapLayerInterface*>* MapLayerGroup::insertMapLayerGroup
     MapLayerInterface* layer =
       new MapLayer(mapLayerGroup->at(i).first);
     QString subtitle(mapLayerGroup->at(i).second);
-    layers->push_back(insertMapLayer(layer, subtitle, pos, newItem));
+    layers->push_back(insertMapLayer(layer, subtitle, -1, newItem));
   }
 
   addIntoList(newItem, pos);
+  mapLayers.insert(NULL, newItem);
 
   return layers;
 }
@@ -321,6 +322,12 @@ void MapLayerGroup::itemChanged(QTreeWidgetItem *item, int column) {
   for (TMapLayers::iterator it = mapLayers.begin();
       it != mapLayers.end(); ++it) {
     if (it.value() == item) {
+      for (int i = 0; i < item->childCount(); i++) {
+        QTreeWidgetItem* child = item->child(i);
+        child->setCheckState(column, item->checkState(column));
+      }
+      if (it.key() == NULL)
+        return;
       if (item->checkState(column) == Qt::Checked) {
         emit it.key()->emitDisplayed(true);
       } else if (item->checkState(column) == Qt::Unchecked) {
@@ -338,18 +345,16 @@ void MapLayerGroup::addIntoList(QTreeWidgetItem *item,
     displayTree();
   }
 
+  QTreeWidgetItem* branch = (toTree) ? toTree : treeItem;
+
   int position = 0;
-  if ((pos > treeItem->childCount()) || (pos < 0)) {
-    position = treeItem->childCount();
+  if ((pos > branch->childCount()) || (pos < 0)) {
+    position = branch->childCount();
   } else {
     position = pos;
   }
 
-  if (toTree == NULL) {
-    treeItem->insertChild(position, item);
-  } else {
-    toTree->insertChild(position, item);
-  }
+  branch->insertChild(position, item);
 }
 
 }  // End namespace Core

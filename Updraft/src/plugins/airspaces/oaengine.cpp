@@ -104,7 +104,7 @@ QVector<QPair<osg::Node*, QString >> * oaEngine::Draw(const QString& fileName) {
         // if there is a geode initialized
         // insert into the array of layers
         if (OAGeode)
-          PushLayer(OAGeode, displayName + nameSuffix);
+          PushLayer(OAGeode, nameSuffix);
 
         // change the suffix to current one
         nameSuffix = A->GetClassName();
