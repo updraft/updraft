@@ -29,8 +29,8 @@ namespace OpenAirspace {
 
     this->allAirspaces = new QVector<Airspace*>();
     while (!ts.atEnd()) {
-      if (!ts.atEnd())
-        ts.seek(ts.pos() -3);
+      // if (!ts.atEnd())
+        ts.seek(ts.pos() -2);
       Airspace* nextairspace = new Airspace(&ts);
       this->allAirspaces->push_back(nextairspace);
     }

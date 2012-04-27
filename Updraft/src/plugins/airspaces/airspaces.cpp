@@ -26,7 +26,8 @@ void Airspaces::initialize() {
   core->registerFiletype(OAirspaceFileReg);
 
   // Create map layers items in the left pane.
-  engine = new oaEngine(core->createMapLayerGroup("Airspaces"));
+  mapLayerGroup = core->createMapLayerGroup("Airspaces");
+  engine = new oaEngine(mapLayerGroup);
 
   loadImportedFiles();
 
@@ -38,6 +39,9 @@ void Airspaces::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
 }
 
 void Airspaces::deinitialize() {
+  delete engine;
+  engine = NULL;
+
   qDebug("airspaces unloaded");
 }
 
@@ -45,14 +49,34 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
   switch (role) {
     case IMPORT_OPENAIRSPACE_FILE:
       // draw openairspace file
-      mapLayers = engine->Draw(fileName);
+      /* mapLayers = engine->Draw(fileName);
       if (!mapLayers) return false;
       for (int i = 0; i < mapLayers->size(); ++i) {
         MapLayerInterface* layer1 = mapLayers->at(i);
+        // layer1->setVisible(false);
         layer1->connectSignalDisplayed
           (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
+        layer1->emitDisplayed(false);
       }
-      delete mapLayers;
+      delete mapLayers;*/
+
+      QString displayName = fileName.left(fileName.indexOf('.'));
+      int cuntSlashes = displayName.count('/');
+      displayName = displayName.section('/', cuntSlashes, cuntSlashes);
+
+      mapNodes = engine->Draw(fileName);
+      if (!mapNodes) return false;
+
+      QVector<MapLayerInterface*>* layers =
+        mapLayerGroup->insertMapLayerGroup(mapNodes, displayName);
+      if (!layers) return false;
+
+      for (int i = 0; i < layers->size(); ++i) {
+        layers->at(i)->connectSignalDisplayed
+          (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
+      }
+
+      delete mapNodes;
       return true;
       break;
   }
