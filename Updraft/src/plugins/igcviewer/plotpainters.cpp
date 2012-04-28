@@ -105,6 +105,10 @@ qreal PlotPainter::getValueAtPixelX(int x) {
   }
 }
 
+qreal PlotPainter::getTimeAtPixelX(int x) {
+  return axes->getInverseX(x);
+}
+
 void PlotPainter::computeDrawingData() {
   // do nothing, everything is already in the buffer.
 }

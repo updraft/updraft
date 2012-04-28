@@ -6,14 +6,13 @@
 #include <QPair>
 #include "../../pluginbase.h"
 #include "../../mapobject.h"
-#include "openedfile.h"
 
 namespace Updraft {
 namespace IgcViewer {
 
 class OpenedFile;
 
-class IGCMapObject: public MapObject {
+class IGCMapObject: public QObject, public MapObject {
   Q_OBJECT
  private:
   OpenedFile* file;

@@ -13,6 +13,8 @@
 #include "igcviewer.h"
 #include "plotwidget.h"
 
+class IGCViewer;
+
 namespace Updraft {
 namespace IgcViewer {
 

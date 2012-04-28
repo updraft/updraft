@@ -35,6 +35,8 @@ class PlotWidget : public QWidget {
 
   QImage* graphPicture;
 
+  QVector<Label*> labels;
+
   PlotAxes *altitudeAxes;
   PlotAxes *verticalSpeedAxes;
   PlotAxes *groundSpeedAxes;
@@ -42,12 +44,6 @@ class PlotWidget : public QWidget {
   AltitudePlotPainter* altitudePlotPainter;
   VerticalSpeedPlotPainter* verticalSpeedPlotPainter;
   GroundSpeedPlotPainter* groundSpeedPlotPainter;
-
-  TimeLabel* altitudeTimeLabel;
-
-  AxisLabel* altitudeLabel;
-  AxisLabel* verticalSpeedLabel;
-  AxisLabel* groundSpeedLabel;
 
   IgcInfo* altitudeInfo;
   IgcInfo* verticalSpeedInfo;
