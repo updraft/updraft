@@ -204,7 +204,7 @@ void OpenedFile::createTrack() {
   //   new osg::LineWidth(viewer->lineWidthSetting->get().toFloat()));
 
   track = viewer->mapLayerGroup->insertMapLayer(geode, fileInfo.fileName());
-  track->connectDisplayedToVisibility();
+  track->connectCheckedToVisibility();
 }
 
 void OpenedFile::setColors(Coloring *coloring) {

@@ -46,13 +46,13 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
     (QVector<QPair<osg::Node*, QString> >* mapLayerGroup,
     const QString& title, int pos = -1);
   MapLayerInterface* insertMapLayerGroup
-    (QVector<osgEarth::ImageLayer*>* layerGroup,
+    (QVector<QPair<osgEarth::ImageLayer*, QString> >* layerGroup,
     const QString& title, int pos = -1);
   MapLayerInterface* insertMapLayerGroup
-    (QVector<osgEarth::ElevationLayer*>* layerGroup,
+    (QVector<QPair<osgEarth::ElevationLayer*, QString> >* layerGroup,
     const QString& title, int pos = -1);
   MapLayerInterface* insertMapLayerGroup
-    (QVector<osgEarth::ModelLayer*>* layerGroup,
+    (QVector<QPair<osgEarth::ModelLayer*, QString> >* layerGroup,
     const QString& title, int pos = -1);
 
   void removeMapLayer(MapLayerInterface* layer);
@@ -80,7 +80,7 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   QTreeWidget* listWidget;
   /// top level item
   QTreeWidgetItem *treeItem;
-  typedef QMultiMap<MapLayerInterface*, QTreeWidgetItem*> TMapLayers;
+  typedef QMap<QTreeWidgetItem*, MapLayerInterface*> TMapLayers;
   TMapLayers mapLayers;
 
   /// Pointer to the subtree of the scene associated with this layer.
@@ -97,6 +97,7 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   MapLayerInterface* insertMapLayer
     (MapLayerInterface* layer, const QString& title,
     int pos = -1, QTreeWidgetItem* toTree = NULL);
+
   /// Inserts the group of layers into the tree
   MapLayerInterface* insertMapLayerGroup
     (QVector<MapLayerInterface*>* layerGroup,
