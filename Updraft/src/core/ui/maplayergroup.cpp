@@ -88,6 +88,9 @@ MapLayerInterface* MapLayerGroup::insertMapLayer
   }
   newItem->setCheckState(0, state);
 
+  layer->connectSignalDisplayed
+      (this, SLOT(mapLayerVisibilityChanged(bool, MapLayerInterface*)));
+
   // add the item into the menu list and maplist
   addIntoList(newItem, pos, toTree);
   mapLayers.insert(layer, newItem);
@@ -355,6 +358,21 @@ void MapLayerGroup::addIntoList(QTreeWidgetItem *item,
   }
 
   branch->insertChild(position, item);
+}
+
+void MapLayerGroup::mapLayerVisibilityChanged(bool value,
+  MapLayerInterface* layer) {
+  TMapLayers::iterator it = mapLayers.find(layer);
+  if (it == mapLayers.end()) {
+    return;
+  }
+  Qt::CheckState state;
+  if (value) {
+    state = Qt::Checked;
+  } else {
+    state = Qt::Unchecked;
+  }
+  it.value()->setCheckState(0, state);
 }
 
 }  // End namespace Core

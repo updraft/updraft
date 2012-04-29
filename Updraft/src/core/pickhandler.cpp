@@ -1,6 +1,7 @@
 #include "pickhandler.h"
 
 #include <QSet>
+#include <QPair>
 #include "scenemanager.h"
 #include "updraft.h"
 #include "pickaction.h"
@@ -32,8 +33,9 @@ bool PickHandler::handle(
       // manipulator will handle it.)
       if (mX == ea.getX() && mY == ea.getY()) {
         // click event
-        QVector<MapObject*> mapObjects = getIntersectedMapObjects(
-          ea.getXnormalized(), ea.getYnormalized(), viewer);
+        QVector<Pair> mapObjects =
+          getIntersectedMapObjects(ea.getXnormalized(), ea.getYnormalized(),
+          viewer);
 
         if (mapObjects.empty())
           return false;
@@ -54,26 +56,29 @@ bool PickHandler::handle(
   }
 }
 
-void PickHandler::raiseLeftClick(QVector<MapObject*> mapObjects) {
+void PickHandler::raiseLeftClick(
+  QVector<Pair> mapObjects) {
   qDebug("--- Left click event ---");
 
   Menu* moMenu = updraft->mainWindow->getSystemMenu(MENU_MAPOBJECT);
   moMenu->clear();
 
-  EventInfo eventInfo(LEFT_CLICK);
-
   // Create the PickActions and prevent double adding of objects
   QSet<MapObject*> alreadyAdded;
-  foreach(MapObject* mapObject, mapObjects) {
-    if (!mapObject) continue;
+  for (int i = 0; i < mapObjects.size(); i++) {
+    Pair mapObjectPair = mapObjects[i];
+    if (!mapObjectPair.first) continue;
 
-    if (alreadyAdded.contains(mapObject)) continue;
-    alreadyAdded.insert(mapObject);
+    if (alreadyAdded.contains(mapObjectPair.first)) continue;
+    alreadyAdded.insert(mapObjectPair.first);
 
     // Insert the plugins into PickAction only if they want to handle the event
-    PickAction* action = new PickAction(mapObject, &eventInfo);
+    PickAction* action = new PickAction(mapObjectPair.first,
+      new EventInfo(LEFT_CLICK, mapObjectPair.second));
+    qDebug() << mapObjectPair.second.x() << mapObjectPair.second.y() <<
+      mapObjectPair.second.z();
     foreach(PluginBase* plugin, updraft->pluginManager->getAllPlugins()) {
-      if (plugin->wantsToHandleClick(mapObject)) {
+      if (plugin->wantsToHandleClick(mapObjectPair.first)) {
         action->pushPlugin(plugin);
       }
     }
@@ -87,7 +92,7 @@ void PickHandler::raiseLeftClick(QVector<MapObject*> mapObjects) {
   }
 
   // Show the menu if more than one action was inserted
-  if (moMenu->getQMenu()->actions().size() > 1) {
+  if (moMenu->getQMenu()->actions().size()> 1) {
     QWidget* mapWidget = updraft->mainWindow->getMapWidget();
     int mh = mapWidget->height();
 
@@ -98,7 +103,8 @@ void PickHandler::raiseLeftClick(QVector<MapObject*> mapObjects) {
   }
 }
 
-void PickHandler::raiseRightClick(QVector<MapObject*> mapObjects) {
+void PickHandler::raiseRightClick(
+  QVector<Pair> mapObjects) {
   qDebug("--- Right click event ---");
 
   // Clear the previous menu
@@ -116,21 +122,22 @@ void PickHandler::raiseRightClick(QVector<MapObject*> mapObjects) {
 
   // Check for duplicate map objects
   QSet<MapObject*> alreadyAdded;
-  foreach(MapObject* mapObject, mapObjects) {
-    if (!mapObject) continue;
+  for (int i = 0; i < mapObjects.size(); i++) {
+    Pair mapObjectPair = mapObjects[i];
+    if (!mapObjectPair.first) continue;
 
-    if (alreadyAdded.contains(mapObject)) continue;
-    alreadyAdded.insert(mapObject);
+    if (alreadyAdded.contains(mapObjectPair.first)) continue;
+    alreadyAdded.insert(mapObjectPair.first);
 
     // Tell the plugins to fill the map object menu
     foreach(PluginBase* plugin, updraft->pluginManager->getAllPlugins()) {
-      plugin->fillContextMenu(mapObject, moMenu);
+      plugin->fillContextMenu(mapObjectPair.first, moMenu);
     }
 
     // If there was at least one action added, create a submenu
     if (!moMenu->getQMenu()->isEmpty()) {
       QMenu* submenu = moMenu->giveQMenu();
-      QAction* action = new QAction(mapObject->name, NULL);
+      QAction* action = new QAction(mapObjectPair.first->name, NULL);
       action->setMenu(submenu);
       submenuActions.push_back(action);
 
@@ -162,7 +169,7 @@ MapObject* PickHandler::getMapObject(osg::Node* node) {
   return updraft->sceneManager->getNodeMapObject(node);
 }
 
-QVector<MapObject*> PickHandler::getIntersectedMapObjects(
+QVector<Pair> PickHandler::getIntersectedMapObjects(
   const double x,
   const double y,
   osgViewer::Viewer* viewer ) {
@@ -180,7 +187,7 @@ QVector<MapObject*> PickHandler::getIntersectedMapObjects(
   osgUtil::PolytopeIntersector::Intersections& intersections =
     picker->getIntersections();
 
-  QVector<MapObject*> mapObjects;
+  QVector<Pair> mapObjects;
 
   std::set<osgUtil::PolytopeIntersector::Intersection>::iterator it;
   for (it = intersections.begin(); it != intersections.end(); ++it) {
@@ -189,7 +196,7 @@ QVector<MapObject*> PickHandler::getIntersectedMapObjects(
     while (idx--) {
       MapObject* mapObject = getMapObject(nodePath[idx]);
       if (mapObject != NULL) {
-        mapObjects.append(mapObject);
+        mapObjects.append(Pair(mapObject, it->intersectionPoints[0]));
       }
     }
   }

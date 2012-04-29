@@ -6,6 +6,14 @@
 namespace Updraft {
 namespace IgcViewer {
 
+IGCMapObject::IGCMapObject(QString objectName_, OpenedFile* file_)
+  : QObject(NULL), MapObject(objectName_), file(file_) {
+}
+
+QObject* IGCMapObject::asQObject() {
+  return this;
+}
+
 QString IgcViewer::getName() {
   return QString("igcviewer");
 }
@@ -66,6 +74,10 @@ bool IgcViewer::fileOpen(const QString &filename, int roleId) {
     freeAutomaticColor(c);
     return false;
   }
+
+  IGCMapObject* mapObject = new IGCMapObject(filename, f);
+  getCoreInterface()->registerOsgNode(f->getNode(), mapObject);
+  mapObjects.append(mapObject);
 
   foreach(OpenedFile* other, opened) {
     f->updateScales(other);

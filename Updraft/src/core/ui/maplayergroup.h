@@ -71,6 +71,10 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   /// \param column horizontal position in tree view (not used)
   virtual void itemChanged(QTreeWidgetItem *item, int column);
 
+  /// if any map layer emmited the signal it was changed
+  virtual void mapLayerVisibilityChanged(bool value,
+    MapLayerInterface* layer);
+
  private:
   /// widget to draw the list of the map layers
   QTreeWidget* listWidget;

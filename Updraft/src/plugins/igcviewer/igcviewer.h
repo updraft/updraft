@@ -16,6 +16,11 @@ class IGCMapObject: public QObject, public MapObject {
   Q_OBJECT
  private:
   OpenedFile* file;
+ public:
+  IGCMapObject(QString objectName_, OpenedFile* file_);
+  IGCMapObject() {}
+
+  QObject* asQObject();
 };
 
 class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
@@ -64,6 +69,7 @@ class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
 
   QMap<QString, OpenedFile*> opened;
   MapLayerGroupInterface* mapLayerGroup;
+  QVector<MapObject*> mapObjects;
 
   friend class OpenedFile;
 };
