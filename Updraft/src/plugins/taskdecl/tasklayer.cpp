@@ -233,7 +233,7 @@ void TaskLayer::DrawLines(osg::Geode *geode) {
   // Reads all task points and fills draw array.
   int pointIndex = 0;
   const TaskPoint *point = NULL;
-  while (point = taskData->getTaskPoint(pointIndex)) {
+  while ((point = taskData->getTaskPoint(pointIndex))) {
     osg::Matrixd matrix;
 
     // TODO(Tom): correct altitude

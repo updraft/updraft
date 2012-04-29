@@ -15,6 +15,8 @@
 
 #include "../../pluginbase.h"
 #include "../../libraries/openairspace/openairspace.h"
+#include "../../maplayerinterface.h"
+#include "../../core/maplayer.h"
 
 
 
@@ -57,16 +59,18 @@ static const int ROOF = 80000;
 class oaEngine {
  public:
   explicit oaEngine(MapLayerGroupInterface* LG);
-  QVector<MapLayerInterface*>* Draw(const QString&);
+  QVector<QPair<osg::Node*, QString> > * Draw(const QString&);
+  QVector<MapLayerInterface*>* DrawII(const QString&);
   // bool Draw(const QString&);
 
  private:
   /// Map Layer Interface.
   MapLayerGroupInterface *mapLayerGroup;
   QVector<QTreeWidgetItem*> treeItems;
-  QVector<MapLayerInterface*>* mapLayers;
+  // QVector<MapLayerInterface*>* mapLayers;
   osg::Geode* OAGeode;
   osgEarth::Util::ElevationManager* elevationMan;
+  QVector<QPair<osg::Node*, QString> > * mapLayers;
 
   /// Settings
   SettingInterface* testSetting;

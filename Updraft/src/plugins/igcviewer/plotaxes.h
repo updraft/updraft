@@ -31,8 +31,14 @@ class PlotAxes : public QObject, public QLayoutItem {
   /// Get the X coordinate for drawing.
   qreal placeX(qreal x);
 
+  /// Get the inverse value for "placeX"
+  qreal getInverseX(qreal x);
+
   /// Get the Y coordinate for drawing.
   qreal placeY(qreal y);
+
+  /// Get the inverse value for "placeY"
+  qreal getInverseY(qreal y);
 
   /// Set the limits for drawing and recalculate all cached values.
   void setLimits(qreal min, qreal max, qreal minTime, qreal maxTime);
@@ -129,17 +135,31 @@ class VerticalSpeedAxes : PlotAxes {
   void draw(QPainter *painter);
 };
 
-class AxisLabel : public QLayoutItem {
+class Label : public QLayoutItem {
+ public:
+  /// Overridden from QLayoutItem
+  /// \{
+  virtual Qt::Orientations expandingDirections() const;
+  virtual bool isEmpty() const;
+  virtual QRect geometry() const;
+  virtual QSize maximumSize() const;
+  virtual QSize minimumSize() const;
+  virtual QSize sizeHint() const;
+  virtual void setGeometry(const QRect& rect);
+  /// \}
+  virtual void draw(QPainter* painter);
+ protected:
+  QRect rect;
+};
+
+class AxisLabel : public Label {
  public:
   /// Overridden from QLayoutItem
   /// \{
   Qt::Orientations expandingDirections() const;
-  bool isEmpty() const;
-  QRect geometry() const;
   QSize maximumSize() const;
   QSize minimumSize() const;
   QSize sizeHint() const;
-  void setGeometry(const QRect& rect);
   /// \}
 
   /// Draw the labels to the painter.
@@ -148,7 +168,6 @@ class AxisLabel : public QLayoutItem {
   explicit AxisLabel(PlotAxes* axis, QString unitsDescription);
 
  private:
-  QRect rect;
   PlotAxes* axis;
   QString unitsDescription;
 
@@ -160,17 +179,38 @@ class AxisLabel : public QLayoutItem {
   static const QPen LABEL_PEN;
 };
 
-class TimeLabel : public QLayoutItem {
+class TextLabel : public Label {
  public:
   /// Overridden from QLayoutItem
   /// \{
   Qt::Orientations expandingDirections() const;
-  bool isEmpty() const;
-  QRect geometry() const;
   QSize maximumSize() const;
   QSize minimumSize() const;
   QSize sizeHint() const;
-  void setGeometry(const QRect& rect);
+  /// \}
+
+  /// Draw the labels to the painter.
+  void draw(QPainter *painter);
+
+  explicit TextLabel(QString text_);
+
+ private:
+  QString text;
+
+  static const int MIN_WIDTH = 100;
+  static const int MIN_HEIGHT = 15;
+
+  static const QPen LABEL_PEN;
+};
+
+class TimeLabel : public Label {
+ public:
+  /// Overridden from QLayoutItem
+  /// \{
+  Qt::Orientations expandingDirections() const;
+  QSize maximumSize() const;
+  QSize minimumSize() const;
+  QSize sizeHint() const;
   /// \}
 
   /// Draw the labels to the painter.
@@ -179,12 +219,10 @@ class TimeLabel : public QLayoutItem {
   explicit TimeLabel(PlotAxes* axis);
 
  private:
-  QRect rect;
   PlotAxes* axis;
 
   static const int MIN_WIDTH = 100;
-  static const int MIN_HEIGHT = 10;
-  static const int OFFSET_Y = 3;
+  static const int MIN_HEIGHT = 15;
   static const int TEXT_WIDTH_HEIGHT_RATIO = 4;
   static const int TEXT_MIN_WIDTH = 20;
 

@@ -12,6 +12,7 @@ const QPen PlotAxes::TICKS_PEN = QPen(QBrush(Qt::gray), 0, Qt::DotLine);
 const QPen PlotAxes::TIME_TICKS_PEN = QPen(QBrush(Qt::gray), 1);
 const QPen AxisLabel::LABEL_PEN = QPen(Qt::white);
 const QPen TimeLabel::LABEL_PEN = QPen(Qt::white);
+const QPen TextLabel::LABEL_PEN = QPen(Qt::white);
 
 static const qreal LN10 = qLn(10);
 
@@ -94,8 +95,16 @@ qreal PlotAxes::placeX(qreal x) {
   return linX.get(x);
 }
 
+qreal PlotAxes::getInverseX(qreal x) {
+  return linX.inverse(x);
+}
+
 qreal PlotAxes::placeY(qreal y) {
   return linY.get(y);
+}
+
+qreal PlotAxes::getInverseY(qreal y) {
+  return linY.inverse(y);
 }
 
 void PlotAxes::setLimits(qreal min, qreal max, qreal minTime, qreal maxTime) {
@@ -220,18 +229,43 @@ int PlotAxes::getVerticalTicks() {
   return tickCountY;
 }
 
+// Labels:
+Qt::Orientations Label::expandingDirections() const {
+  return Qt::Vertical | Qt::Horizontal;
+}
+
+QRect Label::geometry() const {
+  return rect;
+}
+
+bool Label::isEmpty() const {
+  return false;
+}
+
+QSize Label::maximumSize() const {
+  return QSize(65536, 65536);
+}
+
+QSize Label::minimumSize() const {
+  return QSize(0, 0);
+}
+
+QSize Label::sizeHint() const {
+  return QSize(100, 100);
+}
+
+void Label::setGeometry(const QRect& rect_) {
+  this->rect = rect_;
+}
+
+void Label::draw(QPainter *painter) {
+  // do nothing.
+}
+
 // Axis Labels:
 
 Qt::Orientations AxisLabel::expandingDirections() const {
   return Qt::Vertical;
-}
-
-QRect AxisLabel::geometry() const {
-  return rect;
-}
-
-bool AxisLabel::isEmpty() const {
-  return false;
 }
 
 QSize AxisLabel::maximumSize() const {
@@ -244,10 +278,6 @@ QSize AxisLabel::minimumSize() const {
 
 QSize AxisLabel::sizeHint() const {
   return QSize(100, 100);
-}
-
-void AxisLabel::setGeometry(const QRect& rect_) {
-  this->rect = rect_;
 }
 
 AxisLabel::AxisLabel(PlotAxes* axis_, QString unitsDescription_) {
@@ -272,27 +302,48 @@ void AxisLabel::draw(QPainter *painter) {
 
   // draw the units desription at the position
   // of the last label:
-  qreal lastTick = nLabels-1;
-  qreal pixelY = axis->placeY(first+step*lastTick);
+  // qreal lastTick = nLabels-1;
+  /*
+  qreal pixelY = axis->placeY(first);
 
   QString text(unitsDescription);
   QRect labelRect(QPoint(2, pixelY-TEXT_HEIGHT/2),
     QPoint(rect.right(), pixelY+TEXT_HEIGHT/2));
-  // painter->drawText(labelRect, Qt::AlignLeft, text);
+  painter->drawText(labelRect, Qt::AlignLeft, text);
+  */
 }
 
-// Time Labels:
+// Text Label:
 
-Qt::Orientations TimeLabel::expandingDirections() const {
+Qt::Orientations TextLabel::expandingDirections() const {
   return Qt::Horizontal;
 }
 
-QRect TimeLabel::geometry() const {
-  return rect;
+QSize TextLabel::maximumSize() const {
+  return QSize(65536, 65536);
 }
 
-bool TimeLabel::isEmpty() const {
-  return false;
+QSize TextLabel::minimumSize() const {
+  return QSize(MIN_WIDTH, MIN_HEIGHT);
+}
+
+QSize TextLabel::sizeHint() const {
+  return QSize(100, 100);
+}
+
+TextLabel::TextLabel(QString text_) {
+  text = text_;
+}
+
+void TextLabel::draw(QPainter* painter) {
+  painter->setPen(LABEL_PEN);
+  painter->drawText(rect, Qt::AlignLeft | Qt::AlignBottom, text);
+}
+
+// Time Label:
+
+Qt::Orientations TimeLabel::expandingDirections() const {
+  return Qt::Horizontal;
 }
 
 QSize TimeLabel::maximumSize() const {
@@ -305,10 +356,6 @@ QSize TimeLabel::minimumSize() const {
 
 QSize TimeLabel::sizeHint() const {
   return QSize(100, 100);
-}
-
-void TimeLabel::setGeometry(const QRect& rect_) {
-  this->rect = rect_;
 }
 
 TimeLabel::TimeLabel(PlotAxes* axis_) {

@@ -13,18 +13,23 @@ namespace Core {
 /// Customized version of file open dialog that displays
 /// preview / selection of roles for file opening,
 /// has pre-filled filters and mode.
+/// \note This class uses dark magic and eats babies.
+///   Also it depends on the implementation of QFileDialog, which may later
+///   change. We are forced to do this because there is no clean way to
+///   add preview in current versions of Qt.There are some checks to avoid
+///   completescrew-ups though.
 class FileOpenDialog : public QFileDialog {
   Q_OBJECT
  public:
-  FileOpenDialog(QWidget* parent, QString caption);
+  FileOpenDialog(QWidget* parent, const QString& caption);
 
-  void openIt();
+  static void openIt(const QString &caption);
 
  private slots:
   void changed(const QString path);
 
  private:
-  QStringList getFilters() const;
+  static QStringList getFilters();
 
   bool havePreview;
   QStandardItemModel model;

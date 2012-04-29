@@ -185,14 +185,8 @@ void FileTypeManager::getOpenOptions(QString path,
 
 /// Display a file open dialog, and open the selected files.
 /// \param caption Title of the file open dialog.
-/// \note This method uses dark magic and eats babies.
-/// Also it depends on the implementation of QFileDialog, which may later
-/// change, because ther is no clean way to do the required functionality
-/// in current versions of Qt. We're doing some checks to avoid total
-/// screw-ups though.
 void FileTypeManager::openFileDialog(const QString &caption) const {
-  FileOpenDialog dialog(updraft->mainWindow, caption);
-  dialog.openIt();
+  FileOpenDialog::openIt(caption);
 }
 
 }  // End namespace Core

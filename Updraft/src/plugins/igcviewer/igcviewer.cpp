@@ -1,7 +1,6 @@
 #include "igcviewer.h"
 
 #include <QDebug>
-
 #include "openedfile.h"
 
 namespace Updraft {
@@ -10,6 +9,14 @@ namespace Updraft {
 CoreInterface *g_core = NULL;
 
 namespace IgcViewer {
+
+IGCMapObject::IGCMapObject(QString objectName_, OpenedFile* file_)
+  : QObject(NULL), MapObject(objectName_), file(file_) {
+}
+
+QObject* IGCMapObject::asQObject() {
+  return this;
+}
 
 QString IgcViewer::getName() {
   return QString("igcviewer");
@@ -73,6 +80,10 @@ bool IgcViewer::fileOpen(const QString &filename, int roleId) {
     freeAutomaticColor(c);
     return false;
   }
+
+  IGCMapObject* mapObject = new IGCMapObject(filename, f);
+  getCoreInterface()->registerOsgNode(f->getNode(), mapObject);
+  mapObjects.append(mapObject);
 
   foreach(OpenedFile* other, opened) {
     f->updateScales(other);
@@ -145,6 +156,20 @@ void IgcViewer::freeAutomaticColor(QColor c) {
       return;
     }
   }
+}
+
+/// Tells whether this plugin wants to handle a mouse click event.
+bool IgcViewer::wantsToHandleClick(MapObject* obj) {
+  IGCMapObject* iObj = qobject_cast<IGCMapObject*>(obj->asQObject());
+  if (iObj != NULL) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/// Handles the left mouse click event on the IGC in the map.
+void IgcViewer::handleClick(MapObject* obj, const EventInfo* evt) {
 }
 
 /*void IgcViewer::fileIdentification(QStringList *roles,

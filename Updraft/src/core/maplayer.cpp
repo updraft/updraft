@@ -125,6 +125,7 @@ bool MapLayer::isVisible() {
       break;
     }
   }
+  return false;
 }
 
 }  // End namespace Core

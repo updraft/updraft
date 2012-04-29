@@ -1,6 +1,8 @@
 #ifndef UPDRAFT_SRC_EVENTINFO_H_
 #define UPDRAFT_SRC_EVENTINFO_H_
 
+#include <osg/Vec3>
+
 namespace Updraft {
 
 enum EventType {
@@ -17,8 +19,13 @@ enum EventType {
 class EventInfo {
  public:
   EventInfo(EventType type_): type(type_) {}
+  EventInfo(EventType type_, osg::Vec3 inter_):
+    type(type_), intersection(inter_) {}
 
   EventType type;
+
+  /// Coordinates of the intersection.
+  osg::Vec3 intersection;
 };
 
 }  // End namespace Updraft
