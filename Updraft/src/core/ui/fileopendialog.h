@@ -23,8 +23,6 @@ class FileOpenDialog : public QFileDialog {
  public:
   FileOpenDialog(QWidget* parent, const QString& caption);
 
-  /// Display a file open dialog, and open the selected files.
-  /// \param caption Title of the file open dialog.
   static void openIt(const QString &caption);
 
  private slots:
