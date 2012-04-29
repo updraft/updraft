@@ -4,6 +4,9 @@
 namespace Updraft {
 namespace Airspaces {
 
+// Definition of global pointer to coreinterface.
+CoreInterface *g_core = NULL;
+
 Airspaces::Airspaces() { }
 
 QString Airspaces::getName() {
@@ -14,7 +17,9 @@ unsigned Airspaces::getPriority() {
   return 0;  // TODO(cestmir): decide on the priority of plugins
 }
 
-void Airspaces::initialize() {
+void Airspaces::initialize(CoreInterface *coreInterface) {
+  g_core = coreInterface;
+
   // File type registration
   OAirspaceFileReg.category = CATEGORY_PERSISTENT;
   OAirspaceFileReg.extension = ".txt";
@@ -23,10 +28,10 @@ void Airspaces::initialize() {
   OAirspaceFileReg.importDirectory = "airspaces";
   OAirspaceFileReg.roleId = IMPORT_OPENAIRSPACE_FILE;
   OAirspaceFileReg.plugin = this;
-  core->registerFiletype(OAirspaceFileReg);
+  g_core->registerFiletype(OAirspaceFileReg);
 
   // Create map layers items in the left pane.
-  engine = new oaEngine(core->createMapLayerGroup("Airspaces"));
+  engine = new oaEngine(g_core->createMapLayerGroup("Airspaces"));
 
   loadImportedFiles();
 
@@ -62,7 +67,7 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
 }
 
 void Airspaces::loadImportedFiles() {
-  QDir dir(core->getDataDirectory() + "/" + OAirspaceFileReg.importDirectory);
+  QDir dir(g_core->getDataDirectory() + "/" + OAirspaceFileReg.importDirectory);
 
   if (!dir.exists()) {
     return;

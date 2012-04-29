@@ -12,6 +12,12 @@
 
 namespace Updraft {
 
+#ifndef UPDRAFT_CORE
+// Pointer to coreinterface, defined in each plugin.
+// To access this pointer from any file of plugin, include pluginbase.h.
+extern CoreInterface *g_core;
+#endif
+
 class EventInfo;
 
 // Forward declarations
@@ -39,7 +45,9 @@ class PluginBase {
   /// \}
 
   /// Called after the plugin is loaded.
-  virtual void initialize() = 0;
+  /// \param coreInterface pointer to assigned CoreInterface
+  /// Plugin should store this value in g_core.
+  virtual void initialize(CoreInterface *coreInterface) = 0;
 
   /// Called before the plugin is unloaded.
   virtual void deinitialize() = 0;
@@ -60,21 +68,9 @@ class PluginBase {
   virtual bool fileOpen(const QString &filename, int roleId) {
     return false; }
 
-  void setCoreInterface(CoreInterface *coreInterface) {
-    core = coreInterface;
-  }
-
-  CoreInterface* getCoreInterface() {
-    return core;
-  }
-
  private:
   /// Disallow copying
   PluginBase(const PluginBase& other) {}
-
- protected:
-  /// This serves for calling CoreInterface methods
-  CoreInterface *core;
 };
 
 }  // namespace Updraft

@@ -12,6 +12,7 @@
 #include "taskdata.h"
 #include "taskpoint.h"
 #include "../turnpoints/turnpoint.h"
+#include "pluginbase.h"
 
 namespace Updraft {
 
@@ -28,7 +29,7 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   // Create new tab in bottom pane.
   panel = new TaskDeclPanel();
   panel->setTaskLayer(this);
-  tab = plugin->core->createTab(panel, getTitle());
+  tab = g_core->createTab(panel, getTitle());
 
   // Connect tab's signals onto the taskLayer
   tab->connectSignalSelected(this, SLOT(tabSelected()));

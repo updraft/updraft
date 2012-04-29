@@ -4,6 +4,9 @@
 
 namespace Updraft {
 
+// Definition of global pointer to coreinterface.
+CoreInterface *g_core = NULL;
+
 TaskDeclaration::TaskDeclaration()
   : mapLayerGroup(NULL) {
 }
@@ -20,29 +23,31 @@ unsigned TaskDeclaration::getPriority() {
   return 0;  // TODO(cestmir): decide on the priority of plugins
 }
 
-void TaskDeclaration::initialize() {
-  mapLayerGroup = core->createMapLayerGroup(tr("Tasks"));
+void TaskDeclaration::initialize(CoreInterface *coreInterface) {
+  g_core = coreInterface;
+
+  mapLayerGroup = g_core->createMapLayerGroup(tr("Tasks"));
 
   // Menu - New Task
 
   QAction* createTaskAction = new QAction("New Task", this);
   connect(createTaskAction, SIGNAL(triggered()), this, SLOT(createTask()));
 
-  core->getSystemMenu(MENU_FILE)->appendAction(createTaskAction);
+  g_core->getSystemMenu(MENU_FILE)->appendAction(createTaskAction);
 
   // Menu - Save
 
   QAction* saveTaskAction = new QAction("Save Task", this);
   connect(saveTaskAction, SIGNAL(triggered()), this, SLOT(saveTask()));
 
-  core->getSystemMenu(MENU_FILE)->appendAction(saveTaskAction);
+  g_core->getSystemMenu(MENU_FILE)->appendAction(saveTaskAction);
 
   // Menu - Save As
 
   QAction* saveAsTaskAction = new QAction("Save Task As...", this);
   connect(saveAsTaskAction, SIGNAL(triggered()), this, SLOT(saveTaskAs()));
 
-  core->getSystemMenu(MENU_FILE)->appendAction(saveAsTaskAction);
+  g_core->getSystemMenu(MENU_FILE)->appendAction(saveAsTaskAction);
 
   // File type registration
 
@@ -54,7 +59,7 @@ void TaskDeclaration::initialize() {
   fileReg.roleId = OPEN_TASK_FILE;
   fileReg.plugin = this;
 
-  core->registerFiletype(fileReg);
+  g_core->registerFiletype(fileReg);
 
   qDebug("taskdecl loaded");
 }
@@ -90,7 +95,7 @@ bool TaskDeclaration::fileOpen(const QString &filename, int roleId) {
 
   switch (roleId) {
     case OPEN_TASK_FILE:
-      file = new TaskFile(filename, core->getEllipsoidModel());
+      file = new TaskFile(filename);
       break;
   }
 
@@ -108,7 +113,7 @@ void TaskDeclaration::fileIdentification(QStringList *roles,
 }
 
 void TaskDeclaration::createTask() {
-  addLayer(new TaskFile(core->getEllipsoidModel()));
+  addLayer(new TaskFile());
 }
 
 void TaskDeclaration::saveTask() {
