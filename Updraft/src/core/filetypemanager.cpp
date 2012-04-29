@@ -58,7 +58,7 @@ bool FileTypeManager::openFile(const QString &path, bool showDialog) const {
     return false;
   }
 
-  if (showDialog) {
+  if (showDialog && model.rowCount() > 1) {
     FileRolesDialog dlg(updraft->mainWindow);
     dlg.setList(&model);
     if (!dlg.exec()) {
