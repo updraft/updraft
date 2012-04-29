@@ -82,7 +82,7 @@ bool IgcViewer::fileOpen(const QString &filename, int roleId) {
   }
 
   IGCMapObject* mapObject = new IGCMapObject(filename, f);
-  getCoreInterface()->registerOsgNode(f->getNode(), mapObject);
+  g_core->registerOsgNode(f->getNode(), mapObject);
   mapObjects.append(mapObject);
 
   foreach(OpenedFile* other, opened) {
