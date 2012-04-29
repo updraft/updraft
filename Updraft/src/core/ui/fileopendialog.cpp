@@ -3,14 +3,7 @@
 namespace Updraft {
 namespace Core {
 
-/// Add the preview list to the dialog.
-/// \note This class uses dark magic and eats babies.
-///   Also it depends on the implementation of QFileDialog, which may later
-///   change. We are forced to do this because there is no clean way to
-///   add preview in current versions of Qt.There are some checks to avoid
-///   completescrew-ups though.
-/// \param caption Title of the dialog window.
-FileOpenDialog::FileOpenDialog(QWidget* parent, QString caption)
+FileOpenDialog::FileOpenDialog(QWidget* parent, const QString& caption)
   : QFileDialog(parent, caption) {
   setFileMode(QFileDialog::ExistingFile);
   setNameFilters(getFilters());
@@ -36,7 +29,7 @@ FileOpenDialog::FileOpenDialog(QWidget* parent, QString caption)
 
 /// Returns a list of file name filters suitable
 /// for QFileDialog::setNameFilters().
-QStringList FileOpenDialog::getFilters() const {
+QStringList FileOpenDialog::getFilters() {
   typedef QMap<QString, QString> TMap;
   TMap mapFilters;
 
@@ -85,20 +78,24 @@ QStringList FileOpenDialog::getFilters() const {
   return ret;
 }
 
-/// Show the dialog and use it to open the files.
-void FileOpenDialog::openIt() {
-  if (!exec()) {
+/// Display a file open dialog, and open the selected files.
+/// \param caption Title of the file open dialog.
+void FileOpenDialog::openIt(const QString& caption) {
+  FileOpenDialog* dialog = new FileOpenDialog(updraft->mainWindow, caption);
+
+  if (!dialog->exec()) {
     return;
   }
 
-  foreach(QString file, selectedFiles()) {
-    qDebug() << file;
-    if (havePreview) {
-      updraft->fileTypeManager->openFileInternal(file, &model);
+  foreach(QString file, dialog->selectedFiles()) {
+    if (dialog->havePreview) {
+      updraft->fileTypeManager->openFileInternal(file, &(dialog->model));
     } else {
       updraft->fileTypeManager->openFile(file, true);
     }
   }
+
+  delete dialog;
 }
 
 /// A file was selectecte in the dialog.
