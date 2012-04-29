@@ -75,8 +75,6 @@ void PickHandler::raiseLeftClick(
     // Insert the plugins into PickAction only if they want to handle the event
     PickAction* action = new PickAction(mapObjectPair.first,
       new EventInfo(LEFT_CLICK, mapObjectPair.second));
-    qDebug() << mapObjectPair.second.x() << mapObjectPair.second.y() <<
-      mapObjectPair.second.z();
     foreach(PluginBase* plugin, updraft->pluginManager->getAllPlugins()) {
       if (plugin->wantsToHandleClick(mapObjectPair.first)) {
         action->pushPlugin(plugin);
