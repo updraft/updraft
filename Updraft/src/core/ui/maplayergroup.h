@@ -43,7 +43,7 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
 
   /// Inserts the group of layers into the tree
   QVector<MapLayerInterface*>* insertMapLayerGroup
-    (QVector<QPair<osg::Node*, QString >> * mapLayerGroup,
+    (QVector<QPair<osg::Node*, QString> >* mapLayerGroup,
     const QString& title, int pos = -1);
   MapLayerInterface* insertMapLayerGroup
     (QVector<osgEarth::ImageLayer*>* layerGroup,

@@ -102,7 +102,7 @@ MapLayerInterface* MapLayerGroup::insertMapLayer
 }
 
 QVector<MapLayerInterface*>* MapLayerGroup::insertMapLayerGroup
-  (QVector<QPair<osg::Node*, QString >> * mapLayerGroup,
+  (QVector<QPair<osg::Node*, QString> >* mapLayerGroup,
   const QString& title, int pos) {
   // Check the array
   if (mapLayerGroup == NULL)

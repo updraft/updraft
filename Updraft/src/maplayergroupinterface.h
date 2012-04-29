@@ -56,7 +56,7 @@ class MapLayerGroupInterface {
   virtual MapLayerInterface* insertMapLayer
     (osgEarth::ModelLayer* layer, const QString& title, int pos = -1) = 0;
   virtual QVector<MapLayerInterface*>* insertMapLayerGroup
-    (QVector<QPair<osg::Node*, QString >> * mapLayerGroup,
+    (QVector<QPair<osg::Node*, QString> > * mapLayerGroup,
     const QString& title, int pos = -1) = 0;
 
   /// Removes map layer.

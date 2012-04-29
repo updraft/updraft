@@ -39,7 +39,7 @@ class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
   FileRegistration OAirspaceFileReg;
 
   QVector<MapLayerInterface*>* mapLayers;
-  QVector<QPair<osg::Node*, QString >> * mapNodes;
+  QVector<QPair<osg::Node*, QString> >* mapNodes;
   oaEngine* engine;
   MapLayerGroupInterface* mapLayerGroup;
 };
