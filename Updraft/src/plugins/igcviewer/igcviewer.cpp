@@ -4,6 +4,10 @@
 #include "openedfile.h"
 
 namespace Updraft {
+
+// Definition of global pointer to coreinterface.
+CoreInterface *g_core = NULL;
+
 namespace IgcViewer {
 
 IGCMapObject::IGCMapObject(QString objectName_, OpenedFile* file_)
@@ -22,7 +26,9 @@ unsigned IgcViewer::getPriority() {
   return 0;  // TODO(cestmir): decide on the priority of plugins
 }
 
-void IgcViewer::initialize() {
+void IgcViewer::initialize(CoreInterface *coreInterface) {
+  g_core = coreInterface;
+
   qDebug("igcviewer loaded");
 
   FileRegistration registration;
@@ -33,9 +39,9 @@ void IgcViewer::initialize() {
   registration.roleId = 1;
   registration.plugin = this;
 
-  core->registerFiletype(registration);
+  g_core->registerFiletype(registration);
 
-  mapLayerGroup = core->createMapLayerGroup(tr("IGC files"));
+  mapLayerGroup = g_core->createMapLayerGroup(tr("IGC files"));
 
   automaticColors.append(QPair<QColor, int>(Qt::red, 0));
   automaticColors.append(QPair<QColor, int>(Qt::green, 0));
@@ -76,7 +82,7 @@ bool IgcViewer::fileOpen(const QString &filename, int roleId) {
   }
 
   IGCMapObject* mapObject = new IGCMapObject(filename, f);
-  getCoreInterface()->registerOsgNode(f->getNode(), mapObject);
+  g_core->registerOsgNode(f->getNode(), mapObject);
   mapObjects.append(mapObject);
 
   foreach(OpenedFile* other, opened) {

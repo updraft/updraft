@@ -1,4 +1,5 @@
 #include "coreimplementation.h"
+#include "util/util.h"
 
 #include "updraft.h"
 
@@ -23,9 +24,9 @@ MenuInterface* CoreImplementation::getSystemMenu(SystemMenu menu) {
   return win->getSystemMenu(menu);
 }
 
-const osg::EllipsoidModel* CoreImplementation::getEllipsoidModel() {
-  return updraft->sceneManager->getMapNode()->getMap()->getProfile()->
-    getSRS()->getEllipsoid();
+const Util::Ellipsoid* CoreImplementation::getEllipsoid() const {
+  // TODO(Tom): Return ellipsoid chosen in settings.
+  return updraft->ellipsoids.first();
 }
 
 MapLayerGroupInterface* CoreImplementation::createMapLayerGroup

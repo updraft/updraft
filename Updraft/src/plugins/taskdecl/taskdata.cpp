@@ -6,6 +6,8 @@
 
 #include "taskdata.h"
 #include "taskpoint.h"
+#include "util/util.h"
+#include "pluginbase.h"
 
 namespace Updraft {
 
@@ -113,11 +115,7 @@ void TaskData::deleteTaskPoint(int position) {
   taskPoints.erase(taskPoints.begin() + position);
 }
 
-TaskData::TaskData(const osg::EllipsoidModel* ellipsoid)
-  : ellipsoid(ellipsoid) { }
-
-TaskData::TaskData(const TaskData& taskData)
-  : ellipsoid(taskData.ellipsoid) {
+TaskData::TaskData(const TaskData& taskData) {
   // Deep copy of taskPoints container
   foreach(TaskPoint *point, taskData.taskPoints) {
     taskPoints.push_back(new TaskPoint(*point));
@@ -129,24 +127,10 @@ bool TaskData::isFaiTriangle() const {
 }
 
 qreal TaskData::distance(int i, int j) const {
-  // TODO(Kuba): What is a correct way to calculate distance between TPs?
-
   Util::Location loc1 = taskPoints[i]->getLocation();
-  double x1, y1, z1;
-  ellipsoid->convertLatLongHeightToXYZ(
-    loc1.lat_radians(), loc1.lon_radians(), loc1.alt,
-    x1, y1, z1);
-
   Util::Location loc2 = taskPoints[j]->getLocation();
-  double x2, y2, z2;
-  ellipsoid->convertLatLongHeightToXYZ(
-    loc2.lat_radians(), loc2.lon_radians(), loc2.alt,
-    x2, y2, z2);
 
-  return sqrt(
-    (x2 - x1) * (x2 - x1) +
-    (y2 - y1) * (y2 - y1) +
-    (z2 - z1) * (z2 - z1));
+  return g_core->getEllipsoid()->distance(loc1, loc2);
 }
 
 qreal TaskData::totalDistance() const {

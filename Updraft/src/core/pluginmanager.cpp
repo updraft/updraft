@@ -114,8 +114,7 @@ PluginBase* PluginManager::finishLoading(QObject* obj) {
 
   lp->plugin = plugin;
 
-  lp->plugin->setCoreInterface(new CoreImplementation(plugin));
-  plugin->initialize();
+  plugin->initialize(new CoreImplementation(plugin));
 
   plugins.insert(plugin->getName(), lp);
 
