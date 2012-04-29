@@ -22,6 +22,10 @@ namespace osg {
 
 namespace Updraft {
 
+namespace Util {
+  class Ellipsoid;
+}
+
 /// Exposes core functionalities to plugins.
 /// A call to methods of this interface automagically contains
 /// a pointer to calling plugin (this is ensured in core/coreimplementation.cpp)
@@ -39,8 +43,8 @@ class CoreInterface {
   /// \param menu which system menu instance to return
   virtual MenuInterface* getSystemMenu(SystemMenu menu) = 0;
 
-  /// Returns the current openscenegraph ellipsoid model used for the planet.
-  virtual const osg::EllipsoidModel* getEllipsoidModel() = 0;
+  /// Returns the current Updraft::Util::Ellipsoid used for measurements.
+  virtual const Util::Ellipsoid* getEllipsoid() const = 0;
 
   /// Creates map layer group and adds it to the tree view in the left pane.
   /// To remove MapLayerGroup use C++ delete.

@@ -3,6 +3,9 @@
 namespace Updraft {
 namespace Core {
 
+// Definition of global pointer to coreinterface.
+CoreInterface *g_core = NULL;
+
 QString Airfields::getName() {
   return QString("airfields");
 }
@@ -11,7 +14,9 @@ unsigned Airfields::getPriority() {
   return 0;  // TODO(cestmir): decide on the priority of plugins
 }
 
-void Airfields::initialize() {
+void Airfields::initialize(CoreInterface *coreInterface) {
+  g_core = coreInterface;
+
 /*  // File type registration
   OAirspaceFileReg.category = CATEGORY_PERSISTENT;
   OAirspaceFileReg.extension = ".cup";

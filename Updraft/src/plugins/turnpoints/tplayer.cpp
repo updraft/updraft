@@ -10,6 +10,7 @@
 #include "coreinterface.h"
 #include "turnpoints.h"
 #include "mapobject.h"
+#include "pluginbase.h"
 
 namespace Updraft {
 
@@ -220,7 +221,7 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     // Make the autotransform node pickable
     TPMapObject* mapObject = new TPMapObject(&(*itPoint));
     mapObjects.push_back(mapObject);
-    parent->getCoreInterface()->registerOsgNode(tpNode, mapObject);
+    g_core->registerOsgNode(tpNode, mapObject);
 
     group->addChild(tpNode);
 

@@ -3,10 +3,6 @@
 
 #include <QVector>
 
-namespace osg {
-  class EllipsoidModel;
-}
-
 namespace Updraft {
 
 class DataHistory;
@@ -74,7 +70,7 @@ class TaskData {
 
  private:
   /// Only DataHistory objects can create TaskData.
-  explicit TaskData(const osg::EllipsoidModel* ellipsoid);
+  TaskData() {}
 
   /// Return distance from turn point i to turn point j
   /// Doesn't do any checks on the value of i.
@@ -97,10 +93,6 @@ class TaskData {
 
   /// Ordered sequence of TaskPoints
   PointsContainer taskPoints;
-
-  /// Ellipsoid model used for distance calculations
-  // TODO(Kuba): Get rid of this annoying ellipsoid model passing.
-  const osg::EllipsoidModel* ellipsoid;
 
   friend class DataHistory;
 };

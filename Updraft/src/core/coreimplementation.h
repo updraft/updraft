@@ -5,6 +5,10 @@
 
 namespace Updraft {
 
+namespace Util {
+  class Ellipsoid;
+}
+
 class PluginBase;
 
 namespace Core {
@@ -20,7 +24,7 @@ class CoreImplementation : public CoreInterface {
   MenuInterface* createMenu(QString title);
   MenuInterface* getSystemMenu(SystemMenu menu);
 
-  const osg::EllipsoidModel* getEllipsoidModel();
+  const Util::Ellipsoid* getEllipsoid() const;
 
   MapLayerGroupInterface* createMapLayerGroup(const QString &title);
 

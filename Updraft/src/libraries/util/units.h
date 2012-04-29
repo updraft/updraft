@@ -19,6 +19,15 @@ class Units {
 
   /// Converts Statute miles to meters
   static qreal statuteMilesToMeters(qreal ml) { return 1609.344 * ml; }
+
+  /// \return Radius of FAI sphere in meters
+  static qreal FAISphereRadius() { return 6371000.0; }
+
+  /// \return Equatorial radius of WGS84 ellipsoid in meters
+  static qreal WGS84EquatRadius() { return 6378137.0; }
+
+  /// \return Flattening of WGS84 ellipsoid
+  static qreal WGS84Flattening() { return 1.0/298.257223563; }
 };
 
 }  // End namespace Util

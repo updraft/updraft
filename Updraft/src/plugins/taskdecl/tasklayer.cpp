@@ -12,6 +12,7 @@
 #include "taskdata.h"
 #include "taskpoint.h"
 #include "../turnpoints/turnpoint.h"
+#include "pluginbase.h"
 
 namespace Updraft {
 
@@ -28,7 +29,7 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   // Create new tab in bottom pane.
   panel = new TaskDeclPanel();
   panel->setTaskLayer(this);
-  tab = plugin->core->createTab(panel, getTitle());
+  tab = g_core->createTab(panel, getTitle());
 
   // Connect tab's signals onto the taskLayer
   tab->connectSignalSelected(this, SLOT(tabSelected()));
@@ -232,7 +233,7 @@ void TaskLayer::DrawLines(osg::Geode *geode) {
   // Reads all task points and fills draw array.
   int pointIndex = 0;
   const TaskPoint *point = NULL;
-  while (point = taskData->getTaskPoint(pointIndex)) {
+  while ((point = taskData->getTaskPoint(pointIndex))) {
     osg::Matrixd matrix;
 
     // TODO(Tom): correct altitude

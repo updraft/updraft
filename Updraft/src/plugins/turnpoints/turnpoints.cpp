@@ -3,6 +3,9 @@
 
 namespace Updraft {
 
+// Definition of global pointer to coreinterface.
+CoreInterface *g_core = NULL;
+
 TurnPoints::TurnPoints()
   : mapLayerGroup(NULL) {
   cupTPsReg.category = CATEGORY_PERSISTENT;
@@ -26,29 +29,31 @@ unsigned TurnPoints::getPriority() {
   return 0;  // TODO(cestmir): decide on the priority of plugins
 }
 
-void TurnPoints::initialize() {
-  core->addSettingsGroup(
+void TurnPoints::initialize(CoreInterface *coreInterface) {
+  g_core = coreInterface;
+
+  g_core->addSettingsGroup(
     "Turnpoints", "Turnpoints Plugin Settings");
-  settings.push_back(core->addSetting("Turnpoints:labelColourR",
+  settings.push_back(g_core->addSetting("Turnpoints:labelColourR",
     "Colour of the turnpoint labels - RED", 1.0));
-  settings.push_back(core->addSetting("Turnpoints:labelColourG",
+  settings.push_back(g_core->addSetting("Turnpoints:labelColourG",
     "Colour of the turnpoint labels - GREEN", 1.0));
-  settings.push_back(core->addSetting("Turnpoints:labelColourB",
+  settings.push_back(g_core->addSetting("Turnpoints:labelColourB",
     "Colour of the turnpoint labels - BLUE", 1.0));
-  settings.push_back(core->addSetting("Turnpoints:labelColourA",
+  settings.push_back(g_core->addSetting("Turnpoints:labelColourA",
     "Colour of the turnpoint labels - ALPHA", 1.0));
-  settings.push_back(core->addSetting("Turnpoints:labelMaxScale",
+  settings.push_back(g_core->addSetting("Turnpoints:labelMaxScale",
     "Maximum scale for label", 100.0, true));
-  settings.push_back(core->addSetting("Turnpoints:labelMinScale",
+  settings.push_back(g_core->addSetting("Turnpoints:labelMinScale",
     "Minimum scale for label", 10.0, true));
-  settings.push_back(core->addSetting("Turnpoints:labelDrawDist",
+  settings.push_back(g_core->addSetting("Turnpoints:labelDrawDist",
     "Minimum distance from camera for label to draw.", 4000.0, true));
-  settings.push_back(core->addSetting("Turnpoints:labelSize",
+  settings.push_back(g_core->addSetting("Turnpoints:labelSize",
     "Labels font size", 20.0, true));
 
-  mapLayerGroup = core->createMapLayerGroup(tr("Turn-points"));
+  mapLayerGroup = g_core->createMapLayerGroup(tr("Turn-points"));
 
-  core->registerFiletype(cupTPsReg);
+  g_core->registerFiletype(cupTPsReg);
 
   loadImportedFiles();
 
@@ -124,7 +129,7 @@ void TurnPoints::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
 }
 
 void TurnPoints::loadImportedFiles() {
-  QDir dir(core->getDataDirectory() + "/" + cupTPsReg.importDirectory);
+  QDir dir(g_core->getDataDirectory() + "/" + cupTPsReg.importDirectory);
 
   if (!dir.exists()) {
     return;
@@ -155,7 +160,7 @@ void TurnPoints::addLayer(TPFile *file) {
   // Create new layer item, build scene.
   TPLayer *turnPointsLayer = new TPLayer(true,
     mapLayerGroup->getObjectPlacer(), file,
-    core->getDataDirectory(), this, settings);
+    g_core->getDataDirectory(), this, settings);
 
   // Create new mapLayer in mapLayerGroup, assign osgNode and file name.
   Updraft::MapLayerInterface* mapLayer =

@@ -8,6 +8,7 @@
 #include <osg/Geode>
 #include <osg/LineWidth>
 
+#include "pluginbase.h"
 #include "igc/igc.h"
 
 #include "plotwidget.h"
@@ -43,7 +44,7 @@ bool OpenedFile::loadIgc(const QString& filename) {
     return false;
   }
 
-  const osg::EllipsoidModel* ellipsoid = viewer->core->getEllipsoidModel();
+  const Util::Ellipsoid* ellipsoid = g_core->getEllipsoid();
 
   fixList.clear();
 
@@ -59,7 +60,7 @@ bool OpenedFile::loadIgc(const QString& filename) {
 
     qreal x, y, z;
 
-    ellipsoid->convertLatLongHeightToXYZ(
+    ellipsoid->getOsgEllipsoidModel()->convertLatLongHeightToXYZ(
       igcFix->gpsLoc.lat_radians(), igcFix->gpsLoc.lon_radians(),
       igcFix->gpsLoc.alt,
       x, y, z);
@@ -138,7 +139,7 @@ bool OpenedFile::init(IgcViewer* viewer,
   layout->addLayout(verticalLayout, 0);
   layout->addWidget(plot, 1.0);
 
-  tab = viewer->core->createTab(tabWidget, fileInfo.fileName());
+  tab = g_core->createTab(tabWidget, fileInfo.fileName());
 
   tab->connectSignalCloseRequested(this, SLOT(close()));
   connect(colorsCombo, SIGNAL(currentIndexChanged(int)),

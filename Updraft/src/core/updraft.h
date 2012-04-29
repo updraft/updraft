@@ -15,6 +15,11 @@
 #define updraft (static_cast<Updraft*>(Updraft::instance()))
 
 namespace Updraft {
+
+namespace Util {
+  class Ellipsoid;
+}
+
 namespace Core {
 
 /// Top level object of updraft project.
@@ -36,6 +41,9 @@ class Updraft : public QApplication {
   PluginManager* pluginManager;
   SceneManager* sceneManager;
   SettingsManager* settingsManager;
+
+  // List of ellipsoid models used in Updraft.
+  QList<Util::Ellipsoid*> ellipsoids;
 
   SplashScreen splash;
 };
