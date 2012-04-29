@@ -65,7 +65,7 @@ QVector<MapLayerInterface*>* oaEngine::DrawII(const QString& fileName) {
   return layers;
 }
 
-QVector<QPair<osg::Node*, QString >> * oaEngine::Draw(const QString& fileName) {
+QVector<QPair<osg::Node*, QString> >* oaEngine::Draw(const QString& fileName) {
   // if valid maplayer proceed
   if (mapLayerGroup != NULL) {
     // Parse the file
@@ -361,7 +361,7 @@ void oaEngine::PushLayer(osg::Geode* OAGeode, const QString& displayName) {
 
   // result in new map layer
   if (!mapLayers)
-    mapLayers = new QVector<QPair<osg::Node*, QString >> ();
+    mapLayers = new QVector<QPair<osg::Node*, QString> >();
   // MapLayerInterface* newLayer = new Core::MapLayer((osg::Node*)OAGeode);
   // newLayer->setVisible(false);
   // QPair<osg::Node*, QString> toPush

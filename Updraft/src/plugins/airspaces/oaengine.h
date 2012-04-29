@@ -59,7 +59,7 @@ static const int ROOF = 80000;
 class oaEngine {
  public:
   explicit oaEngine(MapLayerGroupInterface* LG);
-  QVector<QPair<osg::Node*, QString >> * Draw(const QString&);
+  QVector<QPair<osg::Node*, QString> > * Draw(const QString&);
   QVector<MapLayerInterface*>* DrawII(const QString&);
   // bool Draw(const QString&);
 
@@ -70,7 +70,7 @@ class oaEngine {
   // QVector<MapLayerInterface*>* mapLayers;
   osg::Geode* OAGeode;
   osgEarth::Util::ElevationManager* elevationMan;
-  QVector<QPair<osg::Node*, QString >> * mapLayers;
+  QVector<QPair<osg::Node*, QString> > * mapLayers;
 
   /// Settings
   SettingInterface* testSetting;
