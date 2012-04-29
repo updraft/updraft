@@ -9,8 +9,6 @@ namespace Updraft {
 namespace Util {
 
 /// Class that represents position on (or above) earth.
-/// Latitude, longitude and altitude are specified relative to
-/// WGS84 reference ellipsoid (the same that osgEarth uses by default).
 /// Latitude and longitude are in degrees, altitude in meters.
 class UTIL_EXPORT Location {
  public:
@@ -51,4 +49,3 @@ class UTIL_EXPORT Location {
 }  // End namespace Updraft
 
 #endif  // UPDRAFT_SRC_LIBRARIES_UTIL_LOCATION_H_
-

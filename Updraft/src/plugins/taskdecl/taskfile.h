@@ -5,10 +5,6 @@
 #include <QString>
 #include "datahistory.h"
 
-namespace osg {
-  class EllipsoidModel;
-}
-
 namespace Updraft {
 
 class TaskFile : public QObject {
@@ -24,14 +20,12 @@ class TaskFile : public QObject {
   };
 
   /// Creates a new empty TaskFile.
-  /// \param ellipsoid Ellipsoid model for distance calculations.
-  explicit TaskFile(const osg::EllipsoidModel* ellipsoid);
+  TaskFile();
 
   /// Creates a new TaskFile from specified file on a disk.
   /// If the file couldn't be loaded, empty task is created.
   /// \param filePath_ full path to a disk file
-  /// \param ellipsoid Ellipsoid model for distance calculations.
-  TaskFile(const QString &filePath_, const osg::EllipsoidModel* ellipsoid);
+  explicit TaskFile(const QString &filePath_);
 
   /// \return File name
   QString getFileName() const;

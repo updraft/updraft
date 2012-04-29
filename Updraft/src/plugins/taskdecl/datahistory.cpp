@@ -3,8 +3,8 @@
 
 namespace Updraft {
 
-DataHistory::DataHistory(const osg::EllipsoidModel* ellipsoid) {
-  dataContainer.append(new TaskData(ellipsoid));
+DataHistory::DataHistory() {
+  dataContainer.append(new TaskData());
   currentItem = dataContainer.begin();
   markedItem = currentItem;
 }

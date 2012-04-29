@@ -16,6 +16,7 @@ namespace Updraft {
 class TaskLayer;
 class TaskFile;
 class TaskPoint;
+class TaskAxis;
 
 class TaskDeclPanel : public QWidget {
   Q_OBJECT
@@ -77,6 +78,9 @@ class TaskDeclPanel : public QWidget {
 
   /// Button group that ensures just one checked add tp button
   QButtonGroup* addButtons;
+
+  /// Axis with lengths of task legs
+  TaskAxis *taskAxis;
 
   TaskLayer* taskLayer;
 };
