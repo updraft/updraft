@@ -4,6 +4,7 @@
 #include <QPainter>
 #include <QGridLayout>
 #include <QMouseEvent>
+#include <QLabel>
 
 namespace Updraft {
 namespace IgcViewer {
@@ -12,8 +13,8 @@ const QColor PlotWidget::BG_COLOR = QColor(Qt::black);
 const QPen PlotWidget::ALTITUDE_PEN = QPen(Qt::red);
 const QPen PlotWidget::VERTICAL_SPEED_PEN = QPen(Qt::blue);
 const QPen PlotWidget::GROUND_SPEED_PEN= QPen(Qt::yellow);
-const QPen PlotWidget::MOUSE_LINE_PEN = QPen(QColor(100, 100, 100));
-const QPen PlotWidget::MOUSE_LINE_PICKED_PEN = QPen(QColor(120, 120, 120));
+const QPen PlotWidget::MOUSE_LINE_PEN = QPen(QColor(150, 150, 150));
+const QPen PlotWidget::MOUSE_LINE_PICKED_PEN = QPen(QColor(200, 200, 200));
 
 static const qreal LN10 = qLn(10);
 
@@ -31,51 +32,70 @@ PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
   QGridLayout* layout = new QGridLayout();
   layout->setColumnStretch(0, 1);
   layout->setColumnStretch(1, 20);
-  layout->setRowStretch(0, 7);
-  layout->setRowStretch(1, 1);
-  layout->setRowStretch(2, 7);
-  layout->setRowStretch(3, 7);
+  layout->setRowStretch(0, 1);
+  layout->setRowStretch(1, 10);
+  layout->setRowStretch(2, 1);
+  layout->setRowStretch(3, 1);
+  layout->setRowStretch(4, 10);
+  layout->setRowStretch(5, 1);
+  layout->setRowStretch(6, 10);
 
   setLayout(layout);
 
   qreal minTime = altitudeInfo->absoluteMinTime();
   qreal maxTime = altitudeInfo->absoluteMaxTime();
 
+  TextLabel* altLabel = new TextLabel("Altitude [m]");
+  layout->addItem(altLabel, 0, 1);
+  labels.append(altLabel);
+
   altitudeAxes = new PlotAxes();
   altitudeAxes->setLimits(
     altitudeInfo->min(), altitudeInfo->max(), minTime, maxTime);
-  layout->addItem(altitudeAxes, 0, 1);
+  layout->addItem(altitudeAxes, 1, 1);
 
   altitudePlotPainter = new AltitudePlotPainter();
   altitudePlotPainter->init(altitudeAxes, altitudeInfo);
 
-  altitudeLabel = new AxisLabel(altitudeAxes, "m:");
-  layout->addItem(altitudeLabel, 0, 0);
+  AxisLabel* altitudeLabel = new AxisLabel(altitudeAxes, "[m]");
+  layout->addItem(altitudeLabel, 1, 0);
+  labels.append(altitudeLabel);
 
-  altitudeTimeLabel = new TimeLabel(altitudeAxes);
-  layout->addItem(altitudeTimeLabel, 1, 1);
+  TimeLabel* altitudeTimeLabel = new TimeLabel(altitudeAxes);
+  layout->addItem(altitudeTimeLabel, 2, 1);
+  labels.append(altitudeTimeLabel);
 
-  verticalSpeedAxes = new PlotAxes(false, false);
-  verticalSpeedAxes->setLimits(
-    verticalSpeedInfo->min(), verticalSpeedInfo->max(), minTime, maxTime);
-  layout->addItem(verticalSpeedAxes, 2, 1);
-
-  verticalSpeedPlotPainter = new VerticalSpeedPlotPainter();
-  verticalSpeedPlotPainter->init(verticalSpeedAxes, verticalSpeedInfo);
-
-  verticalSpeedLabel = new AxisLabel(verticalSpeedAxes, "m/s:");
-  layout->addItem(verticalSpeedLabel, 2, 0);
+  TextLabel* gsLabel = new TextLabel("Ground speed [km/h]");
+  layout->addItem(gsLabel, 3, 1);
+  labels.append(gsLabel);
 
   groundSpeedAxes = new PlotAxes(false);
   groundSpeedAxes->setLimits(
     groundSpeedInfo->min(), groundSpeedInfo->max(), minTime, maxTime);
-  layout->addItem(groundSpeedAxes, 3, 1);
+  layout->addItem(groundSpeedAxes, 4, 1);
 
   groundSpeedPlotPainter = new GroundSpeedPlotPainter();
   groundSpeedPlotPainter->init(groundSpeedAxes, groundSpeedInfo);
 
-  groundSpeedLabel = new AxisLabel(groundSpeedAxes, "km/h");
-  layout->addItem(groundSpeedLabel, 3, 0);
+  AxisLabel* groundSpeedLabel = new AxisLabel(groundSpeedAxes, "[km/h]");
+  layout->addItem(groundSpeedLabel, 4, 0);
+  labels.append(groundSpeedLabel);
+
+  TextLabel* vsLabel = new TextLabel("Vertical speed [m/s]");
+  layout->addItem(vsLabel, 5, 1);
+  labels.append(vsLabel);
+
+  verticalSpeedAxes = new PlotAxes(false, false);
+  verticalSpeedAxes->setLimits(
+    verticalSpeedInfo->min(), verticalSpeedInfo->max(), minTime, maxTime);
+  layout->addItem(verticalSpeedAxes, 6, 1);
+
+  verticalSpeedPlotPainter = new VerticalSpeedPlotPainter();
+  verticalSpeedPlotPainter->init(verticalSpeedAxes, verticalSpeedInfo);
+
+  AxisLabel* verticalSpeedLabel = new AxisLabel(verticalSpeedAxes, "[m/s]");
+  layout->addItem(verticalSpeedLabel, 6, 0);
+  labels.append(verticalSpeedLabel);
 
   // ownership of axes is transfered to layout,
   // ownership of layout is transfered to this.
@@ -104,40 +124,58 @@ void PlotWidget::mouseMoveEvent(QMouseEvent* mouseEvent) {
     (x <= altitudePlotPainter->getMaxX())) {
     xLine = x;
     mouseOver = true;
-    QString altitude;
-    altitude.setNum(altitudePlotPainter->getValueAtPixelX(x), 5, 2);
-    QString vspeed;
-    vspeed.setNum(verticalSpeedPlotPainter->getValueAtPixelX(x), 5, 2);
-    QString gspeed;
-    gspeed.setNum(groundSpeedPlotPainter->getValueAtPixelX(x), 5, 2);
-    info = "Altitude:\n" + altitude + " m.\n"
-      + "Vertical Speed:\n" + vspeed + " m/s.\n"
-      + "Ground Speed:\n" + gspeed + " km/h.";
+    info = getInfoText(x);
   } else {
     mouseOver = false;
   }
-
   emit updateCurrentInfo(info);
   update();
 }
 
-void PlotWidget::mousePressEvent(QMouseEvent* mouseEvent) {
-  int x = mouseEvent->x();
+QString PlotWidget::getInfoText(int x) {
   QString info;
-  if ((x >= altitudePlotPainter->getMinX()) &&
-    (x <= altitudePlotPainter->getMaxX())) {
-    xLinePicked = x;
-    QString altitude;
-    altitude.setNum(altitudePlotPainter->getValueAtPixelX(x), 5, 2);
-    QString vspeed;
-    vspeed.setNum(verticalSpeedPlotPainter->getValueAtPixelX(x), 5, 2);
-    QString gspeed;
-    gspeed.setNum(groundSpeedPlotPainter->getValueAtPixelX(x), 5, 2);
-    info = "Altitude:\n" + altitude + " m.\n"
-      + "Vertical Speed:\n" + vspeed + " m/s.\n"
-      + "Ground Speed:\n" + gspeed + " km/h.";
-    emit updatePickedInfo(info);
-    update();
+  QString hrs;
+  QString mins;
+  QString secs;
+  int timeInSecs = altitudePlotPainter->getTimeAtPixelX(x);
+  int timeHrs = timeInSecs / 3600;
+  int timeMins = (timeInSecs - timeHrs*3600) / 60;
+  mins.setNum(timeMins);
+  if (timeMins < 10) mins = "0" + mins;
+  int timeSecs = timeInSecs - timeHrs*3600 - timeMins*60;
+  secs.setNum(timeSecs);
+  if (timeSecs < 10) secs = "0" + secs;
+    // if the flight went over the midnight
+  if (timeHrs >= 24) timeHrs -= 24;
+  hrs.setNum(timeHrs);
+  QString altitude;
+  altitude.setNum(altitudePlotPainter->getValueAtPixelX(x), 5, 0);
+  QString gspeed;
+  gspeed.setNum(groundSpeedPlotPainter->getValueAtPixelX(x), 5, 0);
+  QString vspeed;
+  vspeed.setNum(verticalSpeedPlotPainter->getValueAtPixelX(x), 5, 1);
+  info = "Time " + hrs + ":" + mins + ":" + secs + "\n"
+    + "Alt " + altitude + " m\n"
+    + "GS " + gspeed + " km/h\n"
+    + "Vario " + vspeed + " m/s";
+  return info;
+}
+
+void PlotWidget::mousePressEvent(QMouseEvent* mouseEvent) {
+  if (mouseEvent->button() == Qt::MouseButton::LeftButton) {
+    int x = mouseEvent->x();
+    if ((x >= altitudePlotPainter->getMinX()) &&
+      (x <= altitudePlotPainter->getMaxX())) {
+      xLinePicked = x;
+      emit updatePickedInfo(getInfoText(x));
+      update();
+    }
+  } else {
+    if (mouseEvent->button() == Qt::MouseButton::RightButton) {
+      xLinePicked = -1;
+      emit updatePickedInfo("");
+      update();
+    }
   }
 }
 
@@ -158,14 +196,12 @@ void PlotWidget::resizeEvent(QResizeEvent* resizeEvent) {
   painter.fillRect(rect(), BG_COLOR);
 
   altitudePlotPainter->draw(&painter);
-  altitudeLabel->draw(&painter);
-  altitudeTimeLabel->draw(&painter);
-
   verticalSpeedPlotPainter->draw(&painter);
-  verticalSpeedLabel->draw(&painter);
-
   groundSpeedPlotPainter->draw(&painter);
-  groundSpeedLabel->draw(&painter);
+
+  for (int i = 0; i < labels.size(); i++) {
+    labels[i]->draw(&painter);
+  }
 
   mouseOver = false;
   xLinePicked = -1;
@@ -176,15 +212,25 @@ void PlotWidget::resizeEvent(QResizeEvent* resizeEvent) {
 
 void IGCTextWidget::setMouseOverText(const QString& text) {
   mouseOverText = text;
-  QString string = "Picked:\n" + pickedText + "\n\n" +
-    "Current:\n" + mouseOverText;
-  setText(string);
+  updateText();
 }
 
 void IGCTextWidget::setPickedText(const QString& text) {
   pickedText = text;
-  QString string = "Picked:\n" + pickedText + "\n\n" +
-    "Current:\n" + mouseOverText;
+  updateText();
+}
+
+void IGCTextWidget::updateText() {
+  QString string;
+  if (!pickedText.isEmpty()) {
+    string = pickedText;
+    if (!mouseOverText.isEmpty()) {
+      string += "\n\n-----------\n\n" +
+        mouseOverText;
+    }
+  } else {
+    string = mouseOverText;
+  }
   setText(string);
 }
 

@@ -25,6 +25,9 @@ class PlotPainter : public QObject {
   virtual void draw(QPainter* painter);
   virtual qreal getValueAtPixelX(int x);
 
+  /// returns time at pixel x in seconds
+  virtual qreal getTimeAtPixelX(int x);
+
   int getMinX();
   int getMaxX();
 

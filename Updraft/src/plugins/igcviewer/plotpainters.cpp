@@ -28,15 +28,12 @@ int PlotPainter::getMinX() {
 }
 
 int PlotPainter::getMaxX() {
-  qDebug() << dataValues.last().pixel << " "
-    << buffer.last().x();
   return dataValues.last().pixel;
 }
 
 void PlotPainter::updateBuffer() {
   computePoints();
   computeDrawingData();
-  qDebug() << "Data updated";
 }
 
 void PlotPainter::computePoints() {
@@ -103,6 +100,10 @@ qreal PlotPainter::getValueAtPixelX(int x) {
         * dataValues[position-1].value);
     }
   }
+}
+
+qreal PlotPainter::getTimeAtPixelX(int x) {
+  return axes->getInverseX(x);
 }
 
 void PlotPainter::computeDrawingData() {

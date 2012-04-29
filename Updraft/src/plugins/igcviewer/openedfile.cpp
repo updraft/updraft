@@ -175,7 +175,7 @@ void OpenedFile::coloringChanged() {
 }
 
 void OpenedFile::createTrack() {
-  osg::Geode* geode = new osg::Geode();
+  geode = new osg::Geode();
 
   geom = new osg::Geometry();
   geode->addDrawable(geom);
@@ -239,6 +239,10 @@ void OpenedFile::resetScales() {
 
 QString OpenedFile::fileName() {
   return fileInfo.absoluteFilePath();
+}
+
+osg::Node* OpenedFile::getNode() {
+  return geode;
 }
 
 }  // End namespace IgcViewer

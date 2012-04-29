@@ -5,11 +5,23 @@
 #include <QList>
 #include <QPair>
 #include "../../pluginbase.h"
+#include "../../mapobject.h"
 
 namespace Updraft {
 namespace IgcViewer {
 
 class OpenedFile;
+
+class IGCMapObject: public QObject, public MapObject {
+  Q_OBJECT
+ private:
+  OpenedFile* file;
+ public:
+  IGCMapObject(QString objectName_, OpenedFile* file_);
+  IGCMapObject() {}
+
+  QObject* asQObject();
+};
 
 class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
   Q_OBJECT
@@ -27,6 +39,12 @@ class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
   bool fileOpen(const QString &filename, int roleId);
   void fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename);
+
+  /// Tells whether this plugin wants to handle a mouse click event.
+  bool wantsToHandleClick(MapObject* obj);
+
+  /// Handles the left mouse click event on the IGC in the map.
+  void handleClick(MapObject* obj, const EventInfo* evt);
 
  private slots:
   /// One of the opened files changed its coloring.
@@ -51,6 +69,7 @@ class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
 
   QMap<QString, OpenedFile*> opened;
   MapLayerGroupInterface* mapLayerGroup;
+  QVector<MapObject*> mapObjects;
 
   friend class OpenedFile;
 };

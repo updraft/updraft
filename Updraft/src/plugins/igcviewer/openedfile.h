@@ -13,6 +13,8 @@
 #include "igcviewer.h"
 #include "plotwidget.h"
 
+class IGCViewer;
+
 namespace Updraft {
 namespace IgcViewer {
 
@@ -50,6 +52,8 @@ class OpenedFile: public QObject {
   /// Set colors of the track according to the value selected in the viewer.
   void coloringChanged();
 
+  osg::Node* getNode();
+
  private slots:
   /// Slot that gets called when the tab associated with this file is closed.
   /// Deletes the opened file.
@@ -80,8 +84,9 @@ class OpenedFile: public QObject {
   /// Geometry of the 3D track visualisation.
   /// Used for coloring.
   osg::Geometry* geom;
+  osg::Geode* geode;
 
-  Coloring *currentColoring;
+  Coloring* currentColoring;
 
   /// List of track points.
   QList<TrackFix> fixList;

@@ -31,7 +31,11 @@ class PlotWidget : public QWidget {
   void leaveEvent(QEvent* leaveEvent);
   void resizeEvent(QResizeEvent* resizeEvent);
 
+  QString getInfoText(int x);
+
   QImage* graphPicture;
+
+  QVector<Label*> labels;
 
   PlotAxes *altitudeAxes;
   PlotAxes *verticalSpeedAxes;
@@ -40,12 +44,6 @@ class PlotWidget : public QWidget {
   AltitudePlotPainter* altitudePlotPainter;
   VerticalSpeedPlotPainter* verticalSpeedPlotPainter;
   GroundSpeedPlotPainter* groundSpeedPlotPainter;
-
-  TimeLabel* altitudeTimeLabel;
-
-  AxisLabel* altitudeLabel;
-  AxisLabel* verticalSpeedLabel;
-  AxisLabel* groundSpeedLabel;
 
   IgcInfo* altitudeInfo;
   IgcInfo* verticalSpeedInfo;
@@ -84,6 +82,7 @@ class IGCTextWidget : public QTextEdit {
  private:
   QString pickedText;
   QString mouseOverText;
+  void updateText();
 };
 
 }  // End namespace Updraft
