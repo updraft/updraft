@@ -24,6 +24,7 @@ PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
   setMouseTracking(true);
   xLine = -1;
   xLinePicked = -1;
+  timePicked = -1;
   mouseOver = false;
   graphPicture = new QImage();
 
@@ -165,12 +166,14 @@ void PlotWidget::mousePressEvent(QMouseEvent* mouseEvent) {
     if ((x >= altitudePlotPainter->getMinX()) &&
       (x <= altitudePlotPainter->getMaxX())) {
       xLinePicked = x;
+      timePicked = altitudePlotPainter->getTimeAtPixelX(x);
       emit updatePickedInfo(getInfoText(x));
       update();
     }
   } else {
     if (mouseEvent->button() == Qt::RightButton) {
       xLinePicked = -1;
+      timePicked = -1;
       emit updatePickedInfo("");
       update();
     }
@@ -202,10 +205,13 @@ void PlotWidget::resizeEvent(QResizeEvent* resizeEvent) {
   }
 
   mouseOver = false;
-  xLinePicked = -1;
-  QString empty;
-  emit updateCurrentInfo(empty);
-  emit updatePickedInfo(empty);
+
+  if (timePicked >= 0) {
+    xLinePicked = altitudeAxes->placeX(timePicked);
+    emit updatePickedInfo(getInfoText(xLinePicked));
+  }
+  emit updateCurrentInfo("");
+  update();
 }
 
 void IGCTextWidget::setMouseOverText(const QString& text) {
