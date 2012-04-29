@@ -16,8 +16,6 @@ const QPen PlotWidget::GROUND_SPEED_PEN= QPen(Qt::yellow);
 const QPen PlotWidget::MOUSE_LINE_PEN = QPen(QColor(150, 150, 150));
 const QPen PlotWidget::MOUSE_LINE_PICKED_PEN = QPen(QColor(200, 200, 200));
 
-static const qreal LN10 = qLn(10);
-
 PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
   IgcInfo *groundSpeedInfo)
   : altitudeInfo(altitudeInfo), verticalSpeedInfo(verticalSpeedInfo),
@@ -162,7 +160,7 @@ QString PlotWidget::getInfoText(int x) {
 }
 
 void PlotWidget::mousePressEvent(QMouseEvent* mouseEvent) {
-  if (mouseEvent->button() == Qt::MouseButton::LeftButton) {
+  if (mouseEvent->button() == Qt::LeftButton) {
     int x = mouseEvent->x();
     if ((x >= altitudePlotPainter->getMinX()) &&
       (x <= altitudePlotPainter->getMaxX())) {
@@ -171,7 +169,7 @@ void PlotWidget::mousePressEvent(QMouseEvent* mouseEvent) {
       update();
     }
   } else {
-    if (mouseEvent->button() == Qt::MouseButton::RightButton) {
+    if (mouseEvent->button() == Qt::RightButton) {
       xLinePicked = -1;
       emit updatePickedInfo("");
       update();

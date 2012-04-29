@@ -126,7 +126,6 @@ void VerticalSpeedPlotPainter::computeDrawingData() {
   int newX = x;
   int newY = y;
   int base = axes->placeY(0);
-  int b = axes->getBase();
   QPolygon polygon;
 
   polygon << QPoint(x, base) << QPoint(x, y);
