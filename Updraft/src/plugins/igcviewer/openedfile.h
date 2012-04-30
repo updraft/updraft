@@ -12,6 +12,7 @@
 #include "igcinfo.h"
 #include "igcviewer.h"
 #include "plotwidget.h"
+#include "../../eventinfo.h"
 
 class IGCViewer;
 
@@ -54,6 +55,8 @@ class OpenedFile: public QObject {
 
   osg::Node* getNode();
 
+  void trackClicked(const EventInfo* eventInfo);
+
  private slots:
   /// Slot that gets called when the tab associated with this file is closed.
   /// Deletes the opened file.
@@ -74,6 +77,7 @@ class OpenedFile: public QObject {
 
   QComboBox *colorsCombo;
   IGCTextWidget* textBox;
+  PlotWidget* plotWidget;
 
   TabInterface *tab;
   MapLayerInterface* track;

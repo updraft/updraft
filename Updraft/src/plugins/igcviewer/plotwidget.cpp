@@ -214,6 +214,13 @@ void PlotWidget::resizeEvent(QResizeEvent* resizeEvent) {
   update();
 }
 
+void PlotWidget::setTime(int time) {
+  timePicked = time;
+  xLinePicked = altitudeAxes->placeX(time);
+  emit updatePickedInfo(getInfoText(xLinePicked));
+  update();
+}
+
 void IGCTextWidget::setMouseOverText(const QString& text) {
   mouseOverText = text;
   updateText();

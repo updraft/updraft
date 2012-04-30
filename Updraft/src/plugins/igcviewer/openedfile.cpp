@@ -7,6 +7,7 @@
 
 #include <osg/Geode>
 #include <osg/LineWidth>
+#include <osg/Vec3>
 
 #include "pluginbase.h"
 #include "igc/igc.h"
@@ -125,19 +126,19 @@ bool OpenedFile::init(IgcViewer* viewer,
 
   layout->setContentsMargins(0, 0, 0, 0);
 
-  PlotWidget* plot = new PlotWidget(
+  plotWidget = new PlotWidget(
     altitudeInfo, verticalSpeedInfo, groundSpeedInfo);
 
-  connect(plot, SIGNAL(updateCurrentInfo(const QString&)),
+  connect(plotWidget, SIGNAL(updateCurrentInfo(const QString&)),
     textBox, SLOT(setMouseOverText(const QString&)));
-  connect(plot, SIGNAL(updatePickedInfo(const QString&)),
+  connect(plotWidget, SIGNAL(updatePickedInfo(const QString&)),
     textBox, SLOT(setPickedText(const QString&)));
 
   tabWidget->setLayout(layout);
   verticalLayout->addWidget(colorsCombo, 0, Qt::AlignTop);
   verticalLayout->addWidget(textBox, 1, Qt::AlignTop);
   layout->addLayout(verticalLayout, 0);
-  layout->addWidget(plot, 1.0);
+  layout->addWidget(plotWidget, 1.0);
 
   tab = g_core->createTab(tabWidget, fileInfo.fileName());
 
@@ -244,6 +245,34 @@ QString OpenedFile::fileName() {
 
 osg::Node* OpenedFile::getNode() {
   return geode;
+}
+
+void OpenedFile::trackClicked(const EventInfo* eventInfo) {
+    // find nearest fix:
+  if (fixList.empty()) return;
+    // index of nearest trackFix
+  QList<TrackFix>::iterator nearest = fixList.begin();
+  float dx = nearest->x - eventInfo->intersection.x();
+  float dy = nearest->y - eventInfo->intersection.y();
+  float dz = nearest->z - eventInfo->intersection.z();
+  float distance = dx*dx + dy*dy + dz*dz;
+  float minDistance = distance;
+
+  for (QList<TrackFix>::iterator it = fixList.begin();
+    it != fixList.end(); it++) {
+    dx = it->x - eventInfo->intersection.x();
+    dy = it->y - eventInfo->intersection.y();
+    dz = it->z - eventInfo->intersection.z();
+    distance = dx*dx + dy*dy + dz*dz;
+    if (distance < minDistance) {
+      minDistance = distance;
+      nearest = it;
+    }
+  }
+
+  QTime& time = nearest->timestamp;
+  qreal timeSecs = time.hour()*3600 + time.minute()*60 + time.second();
+  plotWidget->setTime(timeSecs);
 }
 
 }  // End namespace IgcViewer
