@@ -6,18 +6,23 @@
 namespace Updraft {
 
 class TaskFile;
+class TaskDeclPanel;
 
 class TaskAxis : public QWidget {
   Q_OBJECT
 
  public:
-  explicit TaskAxis(const TaskFile *taskFile_);
+  TaskAxis(const TaskDeclPanel *panel, const TaskFile *taskFile_);
 
  public slots:
   void taskDataChanged();
 
  private:
   const TaskFile *taskFile;
+  const TaskDeclPanel *taskDeclPanel;
+
+ protected:
+  void paintEvent(QPaintEvent *e);
 };
 
 }  // End namespace Updraft

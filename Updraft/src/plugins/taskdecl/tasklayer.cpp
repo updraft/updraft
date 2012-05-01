@@ -27,8 +27,7 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   tabSelectedState(true),
   newTaskIndex(_newTaskIndex) {
   // Create new tab in bottom pane.
-  panel = new TaskDeclPanel();
-  panel->setTaskLayer(this);
+  panel = new TaskDeclPanel(this);
   tab = g_core->createTab(panel, getTitle());
 
   // Connect tab's signals onto the taskLayer
