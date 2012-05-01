@@ -1,6 +1,6 @@
 #include <osg/CoordinateSystemNode>
 #include "GeographicLib/Geodesic.hpp"
-#include "Ellipsoid.h"
+#include "ellipsoid.h"
 
 namespace Updraft {
 namespace Util {

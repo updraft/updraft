@@ -59,7 +59,7 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
       for (int i = 0; i < mapLayers->size(); ++i) {
         MapLayerInterface* layer1 = mapLayers->at(i);
         // layer1->setVisible(false);
-        layer1->connectSignalDisplayed
+        layer1->connectSignalChecked
           (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
         layer1->emitDisplayed(false);
       }
@@ -77,7 +77,7 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
       if (!layers) return false;
 
       for (int i = 0; i < layers->size(); ++i) {
-        layers->at(i)->connectSignalDisplayed
+        layers->at(i)->connectSignalChecked
           (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
       }
 

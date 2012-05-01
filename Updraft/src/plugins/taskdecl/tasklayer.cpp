@@ -41,7 +41,7 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   mapLayer = plugin->mapLayerGroup->insertMapLayer(getNode(), getTitle(), -1);
 
   // Connect display and close signals
-  mapLayer->connectSignalDisplayed(this,
+  mapLayer->connectSignalChecked(this,
     SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
   tab->connectSignalCloseRequested(this, SLOT(tryCloseLayer()));
 

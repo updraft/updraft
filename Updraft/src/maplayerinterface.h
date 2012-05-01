@@ -15,6 +15,10 @@ class QObject;
 
 namespace Updraft {
 
+namespace Core {
+  class MapLayerGroup;
+}
+
 /// Type of the map layer.
 enum MapLayerType {
   OSG_NODE_LAYER,
@@ -39,9 +43,15 @@ class MapLayerInterface {
   virtual ~MapLayerInterface() {}
 
   /// Connects to a signal displayed(MapLayerInterface*, bool):
-  /// map layer is selected / diselected in the left panel.
+  /// map layer shown / hidden state in the scene has been changed.
   /// \see QObject::connect()
   virtual void connectSignalDisplayed(const QObject* receiver,
+    const char *method) = 0;
+
+  /// Connects to a signal checked(MapLayerInterface*, bool):
+  /// map layer is selected / diselected in the left panel.
+  /// \see QObject::connect()
+  virtual void connectSignalChecked(const QObject* receiver,
     const char *method) = 0;
 
   /// Connects to a slot setVisibility(bool) -- map layer sets
@@ -54,10 +64,7 @@ class MapLayerInterface {
   /// selected / deselected in the menu to the
   /// setVisibility slot, so that the map enables / disabled it's
   /// visibility.
-  virtual void connectDisplayedToVisibility() = 0;
-
-  /// Emits the displayed(bool) signal.
-  virtual void emitDisplayed(bool value) = 0;
+  virtual void connectCheckedToVisibility() = 0;
 
   /// Sets visibility to the layer.
   virtual void setVisible(bool value) = 0;
@@ -69,6 +76,11 @@ class MapLayerInterface {
 
   virtual MapLayerType getType() = 0;
   virtual void setType(MapLayerType type) = 0;
+
+  friend class Core::MapLayerGroup;
+
+ private:
+  virtual void emitChecked(bool value) = 0;
 };
 
 }  // End namespace Updraft

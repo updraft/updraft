@@ -85,7 +85,7 @@ void MapManager::fillMapLayerGroup(MapLayerGroupInterface* group) {
     QString name = QString::fromStdString(outImageLayers[i]->getName());
     MapLayerInterface* layer =
       mapLayerGroup->insertExistingMapLayer(outImageLayers[i], name);
-    layer->connectDisplayedToVisibility();
+    layer->connectCheckedToVisibility();
     mapLayers.append(layer);
   }
 
@@ -96,7 +96,7 @@ void MapManager::fillMapLayerGroup(MapLayerGroupInterface* group) {
     MapLayerInterface* layer =
       mapLayerGroup->insertExistingMapLayer
       (outElevationLayers[i], name);
-    layer->connectDisplayedToVisibility();
+    layer->connectCheckedToVisibility();
     mapLayers.append(layer);
   }
 
@@ -106,7 +106,7 @@ void MapManager::fillMapLayerGroup(MapLayerGroupInterface* group) {
     QString name = QString::fromStdString(outModelLayers[i]->getName());
     MapLayerInterface* layer =
       mapLayerGroup->insertExistingMapLayer(outModelLayers[i], name);
-    layer->connectDisplayedToVisibility();
+    layer->connectCheckedToVisibility();
     mapLayers.append(layer);
   }
 }

@@ -169,7 +169,7 @@ void TurnPoints::addLayer(TPFile *file) {
 
   layers.insert(mapLayer, turnPointsLayer);
 
-  mapLayer->connectSignalDisplayed(this,
+  mapLayer->connectSignalChecked(this,
     SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
 }
 

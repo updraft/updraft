@@ -3,30 +3,6 @@
 namespace Updraft {
 namespace Core {
 
-FileOpenDialog::FileOpenDialog(QWidget* parent, const QString& caption)
-  : QFileDialog(parent, caption) {
-  setFileMode(QFileDialog::ExistingFile);
-  setNameFilters(getFilters());
-
-  QSplitter* splitter = findChild<QSplitter*>("splitter");
-
-  if (!splitter) {
-    qDebug() << "It looks like QFileDialog changed. This is a bug.";
-    havePreview = false;
-    return;
-  }
-
-  havePreview = true;
-
-  QListView* listView = new QListView(this);
-  listView->setModel(&model);
-
-  splitter->addWidget(listView);
-
-  connect(this, SIGNAL(currentChanged(const QString&)),
-    this, SLOT(changed(const QString)));
-}
-
 /// Returns a list of file name filters suitable
 /// for QFileDialog::setNameFilters().
 QStringList FileOpenDialog::getFilters() {
@@ -81,26 +57,15 @@ QStringList FileOpenDialog::getFilters() {
 /// Display a file open dialog, and open the selected files.
 /// \param caption Title of the file open dialog.
 void FileOpenDialog::openIt(const QString& caption) {
-  FileOpenDialog* dialog = new FileOpenDialog(updraft->mainWindow, caption);
+  QStringList files;
 
-  if (!dialog->exec()) {
-    return;
+  files = QFileDialog::getOpenFileNames(
+    updraft->mainWindow, caption,
+    QString(), getFilters().join(";;"));
+
+  foreach(QString file, files) {
+    updraft->fileTypeManager->openFile(file, true);
   }
-
-  foreach(QString file, dialog->selectedFiles()) {
-    if (dialog->havePreview) {
-      updraft->fileTypeManager->openFileInternal(file, &(dialog->model));
-    } else {
-      updraft->fileTypeManager->openFile(file, true);
-    }
-  }
-
-  delete dialog;
-}
-
-/// A file was selectecte in the dialog.
-void FileOpenDialog::changed(const QString path) {
-  updraft->fileTypeManager->getOpenOptions(path, &model);
 }
 
 }  // End namespace Core

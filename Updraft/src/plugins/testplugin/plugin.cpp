@@ -170,7 +170,7 @@ void TestPlugin::initialize(CoreInterface *coreInterface) {
     
     Updraft::MapLayerInterface* layer1 =
       mapLayerGroup->insertMapLayer(randomLines, "Relative Lines", 0);
-    layer1->connectSignalDisplayed
+    layer1->connectSignalChecked
       (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
     mapLayers.append(layer1);
     */
@@ -221,7 +221,7 @@ void TestPlugin::initialize(CoreInterface *coreInterface) {
       mapLayerGroup->insertMapLayer(BrnoPlzen, "Brno to Plzen");
 
     // simpleGroup->addChild(BrnoPlzen);
-    layer2->connectSignalDisplayed
+    layer2->connectSignalChecked
       (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
     mapLayers.append(layer2);
     */

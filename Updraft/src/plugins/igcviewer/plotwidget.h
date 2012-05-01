@@ -52,6 +52,9 @@ class PlotWidget : public QWidget {
   /// The coordinate to draw the vertical line where the mouse points.
   int xLine;
 
+  /// Time of the picked point.
+  qreal timePicked;
+
   /// The coordinate to draw the vertical line at a picked location
   /// - when user clicked on the graph.
   int xLinePicked;
