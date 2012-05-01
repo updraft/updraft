@@ -133,6 +133,13 @@ qreal TaskData::distance(int i, int j) const {
   return g_core->getEllipsoid()->distance(loc1, loc2);
 }
 
+qreal TaskData::distanceAzimuth(int i, int j, qreal *azimuth) const {
+  Util::Location loc1 = taskPoints[i]->getLocation();
+  Util::Location loc2 = taskPoints[j]->getLocation();
+
+  return g_core->getEllipsoid()->distanceAzimuth(loc1, loc2, azimuth);
+}
+
 qreal TaskData::totalDistance() const {
   qreal sum = 0;
   for (int i = 0; i < size() - 1; ++i) {

@@ -51,22 +51,23 @@ qreal Ellipsoid::countPolarRadius(qreal r, qreal f) {
 }
 
 qreal Ellipsoid::distance(const Location &l1, const Location &l2) const {
-  return distanceAzimuth(l1, l2, NULL, NULL);
+  GeographicLib::Math::real s12;
+
+  // Counts shortest distance, using GeographicLib.
+  geodesic->Inverse(l1.lat, l1.lon, l2.lat, l2.lon, s12);
+  return (qreal)s12;
 }
 
 qreal Ellipsoid::distanceAzimuth(const Location &l1, const Location &l2,
-  qreal *a12, qreal *a21) const {
-  GeographicLib::Math::real s12, azi12, azi21;
+  qreal *azimuth) const {
+  GeographicLib::Math::real s12, azi1, azi2;
 
   // Counts shortest distance and corresponding azimuths, using GeographicLib.
-  geodesic->Inverse(l1.lat, l1.lon, l2.lat, l2.lon, s12, azi12, azi21);
+  geodesic->Inverse(l1.lat, l1.lon, l2.lat, l2.lon, s12, azi1, azi2);
 
-  if (a12 != NULL) {
-    *a12 = (qreal)azi12;
-  }
-
-  if (a21 != NULL) {
-    *a21 = (qreal)azi21;
+  if (azimuth != NULL) {
+    azi1 = azi1 < 0.0 ? azi1 + 360.0 : azi1;
+    *azimuth = (qreal)azi1;
   }
 
   return (qreal)s12;

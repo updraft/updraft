@@ -8,15 +8,18 @@
 #include "ui_taskdeclpanel.h"
 #include "tasklayer.h"
 #include "taskfile.h"
+#include "taskaxis.h"
 #include "taskdata.h"
 #include "taskpoint.h"
 #include "taskpointbutton.h"
 
 namespace Updraft {
 
-TaskDeclPanel::TaskDeclPanel(QWidget *parent, Qt::WFlags flags)
+TaskDeclPanel::TaskDeclPanel(TaskLayer* layer,
+  QWidget *parent, Qt::WFlags flags)
   : QWidget(parent, flags),
   addTpText("Add turnpoint"),
+  taskLayer(layer),
   ui(new Ui::TaskDeclPanel) {
   // Create the UI
   ui->setupUi(this);
@@ -25,6 +28,9 @@ TaskDeclPanel::TaskDeclPanel(QWidget *parent, Qt::WFlags flags)
   connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(saveButtonPushed()));
   connect(ui->undoButton, SIGNAL(clicked()), this, SLOT(undoButtonPushed()));
   connect(ui->redoButton, SIGNAL(clicked()), this, SLOT(redoButtonPushed()));
+
+  taskAxis = new TaskAxis(this, taskLayer->getTaskFile());
+  ui->gridLayout_3->addWidget(taskAxis);
 
   newAddTpButton(0);
 }
@@ -115,6 +121,16 @@ void TaskDeclPanel::updateButtons() {
   }
 }
 
+const QWidget* TaskDeclPanel::getTaskPointWidget(int i) const {
+  int layoutPos = tpIndexToLayoutPos(i);
+  QLayoutItem* item = ui->taskButtonsLayout->itemAt(layoutPos);
+  if (!item) {
+    return NULL;
+  }
+
+  return item->widget();
+}
+
 void TaskDeclPanel::dataChanged() {
   const TaskData* data = taskLayer->getTaskFile()->beginRead();
 
@@ -128,11 +144,11 @@ void TaskDeclPanel::dataChanged() {
   text.append(" - ");
 
   qreal officialDistance = data->officialDistance();
-  text.append(tr("%1 km").arg(officialDistance / 1000));
+  text.append(tr("%1 km").arg(officialDistance / 1000, 0, 'f', 1));
 
   qreal totalDistance = data->totalDistance();
   if (totalDistance != officialDistance) {
-    text.append(tr(" (total %1 km)").arg(totalDistance / 1000));
+    text.append(tr(" (total %1 km)").arg(totalDistance / 1000, 0, 'f', 1));
   }
 
   ui->taskSummaryLabel->setText(text);
@@ -291,19 +307,19 @@ void TaskDeclPanel::removeTpButtons(int pos) {
   adjustAddTpText();
 }
 
-int TaskDeclPanel::tpIndexToLayoutPos(int index) {
+int TaskDeclPanel::tpIndexToLayoutPos(int index) const {
   return 2*index + 2;  // +2 for spacer and the first add button
 }
 
-int TaskDeclPanel::tpLayoutPosToIndex(int pos) {
+int TaskDeclPanel::tpLayoutPosToIndex(int pos) const {
   return (pos-2) / 2;
 }
 
-int TaskDeclPanel::addIndexToLayoutPos(int index) {
+int TaskDeclPanel::addIndexToLayoutPos(int index) const {
   return 2*index + 1;  // +1 for the spacer
 }
 
-int TaskDeclPanel::addLayoutPosToIndex(int pos) {
+int TaskDeclPanel::addLayoutPosToIndex(int pos) const {
   return (pos-1) / 2;
 }
 

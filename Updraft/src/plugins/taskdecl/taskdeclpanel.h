@@ -22,10 +22,8 @@ class TaskDeclPanel : public QWidget {
   Q_OBJECT
 
  public:
-  TaskDeclPanel(QWidget *parent = 0, Qt::WFlags flags = 0);
+  TaskDeclPanel(TaskLayer* layer, QWidget *parent = 0, Qt::WFlags flags = 0);
   ~TaskDeclPanel();
-
-  void setTaskLayer(TaskLayer* layer) { taskLayer = layer; }
 
   /// \return Whether an add turnpoint button is toggled.
   bool hasToggledButton();
@@ -41,6 +39,10 @@ class TaskDeclPanel : public QWidget {
 
   /// Initializes the task from a file
   void initFromFile(TaskFile* file);
+
+  /// \param i index of desired task point
+  /// \return Widget representing taskpoint (NULL if it fails).
+  const QWidget* getTaskPointWidget(int i) const;
 
  private slots:
   void addTpButtonPushed();
@@ -65,10 +67,10 @@ class TaskDeclPanel : public QWidget {
   /// Removes TaskPoint buttons for the given position.
   void removeTpButtons(int pos);
 
-  int tpIndexToLayoutPos(int index);
-  int tpLayoutPosToIndex(int pos);
-  int addIndexToLayoutPos(int index);
-  int addLayoutPosToIndex(int pos);
+  int tpIndexToLayoutPos(int index) const;
+  int tpLayoutPosToIndex(int pos) const;
+  int addIndexToLayoutPos(int index) const;
+  int addLayoutPosToIndex(int pos) const;
 
   QString addTpText;  // This is here because of translations
   /// Hides or shows the add turnpoint button text according to button number

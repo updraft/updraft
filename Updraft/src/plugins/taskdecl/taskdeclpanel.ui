@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>773</width>
-    <height>116</height>
+    <height>136</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -216,7 +216,7 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>70</height>
+       <height>100</height>
       </size>
      </property>
      <property name="maximumSize">
@@ -243,7 +243,7 @@
         <x>0</x>
         <y>0</y>
         <width>773</width>
-        <height>80</height>
+        <height>100</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -253,6 +253,33 @@
        <property name="margin">
         <number>0</number>
        </property>
+       <item>
+        <widget class="QWidget" name="widget" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <property name="margin">
+           <number>0</number>
+          </property>
+          <property name="spacing">
+           <number>0</number>
+          </property>
+         </layout>
+        </widget>
+       </item>
        <item>
         <layout class="QHBoxLayout" name="taskButtonsLayout">
          <item>
