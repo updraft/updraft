@@ -7,6 +7,8 @@
 #include <QTextEdit>
 
 #include <osg/Geometry>
+// #include <osg/PositionAttitudeTransform>
+#include <osg/AutoTransform>
 
 #include "colorings.h"
 #include "igcinfo.h"
@@ -57,6 +59,10 @@ class OpenedFile: public QObject {
 
   void trackClicked(const EventInfo* eventInfo);
 
+ public slots:
+  void timePicked(QTime time);
+  void displayMarker(bool value);
+
  private slots:
   /// Slot that gets called when the tab associated with this file is closed.
   /// Deletes the opened file.
@@ -73,6 +79,8 @@ class OpenedFile: public QObject {
   /// Set coloring of the track.
   void setColors(Coloring* coloring);
 
+  osg::Node* createMarker();
+
   QFileInfo fileInfo;
 
   QComboBox *colorsCombo;
@@ -88,7 +96,11 @@ class OpenedFile: public QObject {
   /// Geometry of the 3D track visualisation.
   /// Used for coloring.
   osg::Geometry* geom;
-  osg::Geode* geode;
+  osg::Group* sceneRoot;
+  osg::Geode* trackGeode;
+  osg::Node* trackPositionMarker;
+  // osg::PositionAttitudeTransform* currentMarkerTransform;
+  osg::AutoTransform* currentMarkerTransform;
 
   Coloring* currentColoring;
 

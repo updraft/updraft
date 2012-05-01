@@ -19,11 +19,18 @@ class PlotWidget : public QWidget {
  public:
   PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
     IgcInfo *groundSpeedInfo);
-  void setTime(int time);
+
+  /// sets the line to the time, and returns the x position of the line
+  int setPickedTime(int time);
+
+  /// sets the line to position x, and returns the time of the pick
+  int setPickedLine(int x);
 
  signals:
   void updateCurrentInfo(const QString& text);
   void updatePickedInfo(const QString& text);
+  void timeWasPicked(QTime time);
+  void displayMarker(bool value);
 
  private:
   void paintEvent(QPaintEvent* paintEvent);

@@ -76,6 +76,9 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
     MapLayerInterface* layer);
 
  private:
+  void changeLayersVisibility(QTreeWidgetItem *item, int column,
+    bool value);
+
   /// widget to draw the list of the map layers
   QTreeWidget* listWidget;
   /// top level item

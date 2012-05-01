@@ -63,18 +63,21 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
     </elevation>
     
     <!--
-    <image name="State borders" driver="agglite">          
+    <image name="Water" driver="agglite">          
         <features name="world" driver="ogr">
-            <url>state_borders_lq.shp</url>
-            <convert type="line"/>
+            <url>waterways.shp</url>
+            <ogr_driver>ESRI Shapefile</ogr_driver>
+            <build_spatial_index>true</build_spatial_index>
         </features>
-        <style type="text/css">
-          world {
-             stroke: #ffff00;
-             stroke-opacity: 0.5;
-             stroke-width: 0.1;
-          }            
-        </style>
+        <styles>
+	            <style type="text/css">
+	                default {
+	                    stroke: #0000ff;
+	                    stroke-width: 0.01;
+	                    stroke-opacity: 0.5;
+	                }           
+	            </style>
+	        </styles>
     </image>
     -->
     
@@ -82,9 +85,13 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
     <model name="State borders" driver="feature_stencil">
         <features name="world" driver="ogr">
             <url>state_borders_lq.shp</url>
+            <url>prague.osm-line.shp</url>
+            <url>state_borders_lq.shp</url>
             <convert type="line"/>
         </features>
         <extrusion_distance>40000</extrusion_distance>
+        
+        
         <styles>
             <style type="text/css">
                 world {
