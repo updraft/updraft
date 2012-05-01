@@ -52,11 +52,10 @@ class UTIL_EXPORT Ellipsoid {
   /// between two geographical points.
   /// \param l1 first point of measured segment
   /// \param l2 second point of measured segment
-  /// \param a12 [out] pointer to azimuth from l1 to l2. Can be NULL.
-  /// \param a21 [out] pointer to azimuth from l2 to l1. Can be NULL.
+  /// \param azimuth [out] pointer to azimuth at l1. Can be NULL.
   /// \return Distance in meters between l1 and l2.
   qreal distanceAzimuth(const Location &l1, const Location &l2,
-    qreal *a12, qreal *a21) const;
+    qreal *azimuth) const;
 
   /// Counts flattening from equatorial radius and polar radius.
   /// \param rE equatorial radius

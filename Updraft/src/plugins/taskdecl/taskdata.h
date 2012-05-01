@@ -68,13 +68,21 @@ class TaskData {
   /// Return true if the task is a valid FAI triangle.
   bool isFaiTriangle() const;
 
+  /// Returns shortest distance from turn point i to turn point j.
+  /// Doesn't do any checks on the values i,j.
+  /// \return Length of shortest path from i-th to j-th turn point
+  qreal distance(int i, int j) const;
+
+  /// Returns shortest distance from turn point i to turn point j
+  /// and optionally azimuths i to j and j to i.
+  /// Doesn't do any checks on the values i,j.
+  /// \param [out] azimuth azimuth from point i to j
+  /// \return Length of shortest path from i-th to j-th turn point
+  qreal distanceAzimuth(int i, int j, qreal *azimuth) const;
+
  private:
   /// Only DataHistory objects can create TaskData.
   TaskData() {}
-
-  /// Return distance from turn point i to turn point j
-  /// Doesn't do any checks on the value of i.
-  qreal distance(int i, int j) const;
 
   /// Return the distance reduction of this task point caused by
   /// the use of FAI cylinders.
