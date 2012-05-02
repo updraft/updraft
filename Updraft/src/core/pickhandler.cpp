@@ -173,7 +173,7 @@ QVector<Pair> PickHandler::getIntersectedMapObjects(
   osgViewer::Viewer* viewer ) {
   // TODO(bohdan): settings? increase in interations?
   // (to improve tolerance without crippling accuracy)
-  double w(.05), h(.05);
+  double w(.005), h(.005);
 
   osgUtil::PolytopeIntersector* picker =
     new osgUtil::PolytopeIntersector(
