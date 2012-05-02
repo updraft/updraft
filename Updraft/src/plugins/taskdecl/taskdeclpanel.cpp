@@ -24,6 +24,7 @@ TaskDeclPanel::TaskDeclPanel(TaskLayer* layer,
   // Create the UI
   ui->setupUi(this);
   addButtons = new QButtonGroup(this);
+  addButtons->setExclusive(false);
 
   connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(saveButtonPushed()));
   connect(ui->undoButton, SIGNAL(clicked()), this, SLOT(undoButtonPushed()));
@@ -57,6 +58,17 @@ void TaskDeclPanel::addTpButtonPushed() {
   if (!sender()) {  // Sender might be NULL in some threaded scenarions...
     qDebug() << "sender() was NULL in a slot. See Qt documentation for info";
     return;
+  }
+
+  // Untoggle all other addTp buttons
+  QAbstractButton* senderButton = qobject_cast<QAbstractButton*>(sender());
+
+  foreach(QAbstractButton* toUntoggle, addButtons->buttons()) {
+    if (toUntoggle == senderButton) {
+      continue;
+    }
+
+    toUntoggle->setChecked(false);
   }
 }
 
