@@ -190,12 +190,13 @@ float TaskData::faiTriangleDistance() const {
     a = distance(0, 1);
     b = distance(1, 2);
     c = distance(2, 3);
-  }
-
-  if (size() == 5) {
+  } else if (size() == 5) {
     a = distance(1, 2);
     b = distance(2, 3);
     c = distance(3, 1);
+  } else {
+    // qDebug() << "Not a triangle";
+    return -1;
   }
 
   qreal officialDist = a + b + c;
