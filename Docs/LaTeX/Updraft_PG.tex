@@ -23,6 +23,25 @@
 %\documentclass[12pt,a4paper]{memoir}
 \listfiles
 
+\usepackage{ifpdf}
+\ifpdf
+\usepackage[pdftex,
+            pagebackref=true,
+            colorlinks=true,
+            linkcolor=blue,
+            unicode
+           ]{hyperref}
+\else
+\usepackage[ps2pdf,
+            pagebackref=true,
+            colorlinks=true,
+            linkcolor=blue,
+            unicode
+           ]{hyperref}
+\usepackage{pspicture}
+\fi
+
+
 %\usepackage{comment}
 %%uncomment this
 %\usepackage{memsty}
@@ -59,7 +78,8 @@
 	%\V{C}estm\'{i}r Hou\v{s}ka \\
 	%Jakub Marek \\
 	%M\'{a}ria V\'{a}mo\v{s}ov\'{a} \\
-	\\
+	Team Supervisor :\\
+	Alexandr Wilkie\\
    Faculty of Mathematics and Physics,\\
    Charles University,\\
    Prague,\\
@@ -67,7 +87,7 @@
    \texttt{sbdy@mff.cuni.cz}}
  \date{\today}
 
-%\maketitle
+\maketitle
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -104,7 +124,9 @@
 
 \section{Introduction}
 
-\subsection{Sample text}
+\subsection{Glidepath visualisation}
+
+\subsection{The Updraft project}
 
 
 
@@ -168,6 +190,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%               Conclusion or smt        					
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
 
 \section{Conclusion}
 BlahBlahblah ..
