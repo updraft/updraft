@@ -3,10 +3,20 @@
 
 #include <QObject>
 #include <QFileInfo>
+#include <QList>
+#include <QTextEdit>
 
-#include "../../libraries/igc/igc.h"
+#include <osg/Geometry>
+// #include <osg/PositionAttitudeTransform>
+#include <osg/AutoTransform>
 
+#include "colorings.h"
+#include "igcinfo.h"
 #include "igcviewer.h"
+#include "plotwidget.h"
+#include "../../eventinfo.h"
+
+class IGCViewer;
 
 namespace Updraft {
 namespace IgcViewer {
@@ -16,33 +26,100 @@ class OpenedFile: public QObject {
   Q_OBJECT
 
  public:
-  /// Don't use delete on this class.
-  /// Use close() instead.
+  /// Destructor. Also removes the file from the list
+  /// of opened files in IgcViewer.
   ~OpenedFile();
 
-  bool init(IgcViewer* viewer, const QString& filename);
+  /// Open the filename.
+  /// \param color Color used for automatic coloring.
+  bool init(IgcViewer* viewer, const QString& filename, QColor color);
+
+  /// Force redraw of everything.
   void redraw();
 
+  /// Reset the global scales.
+  void resetScales();
+
+  /// Update the global scales based on the other opened file.
+  void updateScales(const OpenedFile* other);
+
+  QColor getAutomaticColor() {
+    return automaticColor;
+  }
+
+  void selectTab();
+
+  /// Return the absolute file name.
+  QString fileName();
+
+  /// Set colors of the track according to the value selected in the viewer.
+  void coloringChanged();
+
+  osg::Node* getNode();
+
+  void trackClicked(const EventInfo* eventInfo);
+
  public slots:
-  /// Slot that gets called when the tab associated with this file gets closed.
+  void timePicked(QTime time);
+  void displayMarker(bool value);
+
+ private slots:
+  /// Slot that gets called when the tab associated with this file is closed.
   /// Deletes the opened file.
-  /// This slot is the only way to destroy this class.
   void close();
 
  private:
-  /// Create a tab with the flight recording's graph and controls.
-  void createTab();
+  /// Load the igc file to our own representation and close it.
+  /// Fills fixList.
+  bool loadIgc(const QString& filename);
 
   /// Create the track in map.
   void createTrack();
 
+  /// Set coloring of the track.
+  void setColors(Coloring* coloring);
+
+  osg::Node* createMarker();
+
   QFileInfo fileInfo;
+
+  QComboBox *colorsCombo;
+  IGCTextWidget* textBox;
+  PlotWidget* plotWidget;
 
   TabInterface *tab;
   MapLayerInterface* track;
   IgcViewer *viewer;
 
-  Igc::IgcFile igc;
+  QColor automaticColor;
+
+  /// Geometry of the 3D track visualisation.
+  /// Used for coloring.
+  osg::Geometry* geom;
+  osg::Group* sceneRoot;
+  osg::Geode* trackGeode;
+  osg::Node* trackPositionMarker;
+  // osg::PositionAttitudeTransform* currentMarkerTransform;
+  osg::AutoTransform* currentMarkerTransform;
+
+  Coloring* currentColoring;
+
+  /// List of track points.
+  QList<TrackFix> fixList;
+
+  QList<Coloring*> colorings;
+
+  /// This variable contains all available igc infos accessible for mass
+  /// rescaling / deleting / whatever.
+  /// There are separate variables for named access to specific info classes.
+  QList<IgcInfo*> igcInfo;
+
+  IgcInfo* altitudeInfo;
+  IgcInfo* verticalSpeedInfo;
+  IgcInfo* groundSpeedInfo;
+  IgcInfo* timeInfo;
+
+  Util::Gradient gradient;
 };
 
 }  // End namespace IgcViewer

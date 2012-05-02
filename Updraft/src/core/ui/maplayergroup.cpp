@@ -10,6 +10,9 @@ MapLayerGroup::MapLayerGroup(QTreeWidget *widget, const QString &title,
     osg::Group* group, osgEarth::MapNode* map) {
   treeItem = new QTreeWidgetItem();
   treeItem->setText(0, title);
+  treeItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+  treeItem->setCheckState(0, Qt::Checked);
+  mapLayers.insert(treeItem, NULL);
   listWidget = widget;
   nodeGroup = group;
   mapNode = map;
@@ -21,12 +24,11 @@ MapLayerGroup::MapLayerGroup(QTreeWidget *widget, const QString &title,
 MapLayerGroup::~MapLayerGroup() {
   for (TMapLayers::iterator it = mapLayers.begin();
       it != mapLayers.end(); ++it) {
-    removeFromScene(it.key());
-
+    if (it.value() != NULL) removeFromScene(it.value());
     // TODO(Maria): Do we also want to delete the map layer object?
+
     // Delete the checkbox
-    treeItem->removeChild(it.value());
-    // delete it.value();
+    treeItem->removeChild(it.key());
   }
   mapLayers.clear();
 
@@ -75,20 +77,59 @@ MapLayerInterface* MapLayerGroup::insertMapLayer
 }
 
 MapLayerInterface* MapLayerGroup::insertMapLayer
-  (MapLayerInterface* layer, const QString &title, int pos) {
+  (MapLayerInterface* layer, const QString &title,
+  int pos, QTreeWidgetItem* toTree) {
   QTreeWidgetItem *newItem = new QTreeWidgetItem();
   newItem->setText(0, title);
   newItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-  newItem->setCheckState(0, Qt::Checked);
+  Qt::CheckState state;
+  if (layer->isVisible()) {
+    state = Qt::Checked;
+  } else {
+    state = Qt::Unchecked;
+  }
+  newItem->setCheckState(0, state);
+
+  layer->connectSignalDisplayed
+      (this, SLOT(mapLayerVisibilityChanged(bool, MapLayerInterface*)));
 
   // add the item into the menu list and maplist
-  addIntoList(newItem, pos);
-  mapLayers.insert(layer, newItem);
+  addIntoList(newItem, pos, toTree);
+  mapLayers.insert(newItem, layer);
 
   // insert the node into the scene
   addIntoScene(layer);
 
   return layer;
+}
+
+QVector<MapLayerInterface*>* MapLayerGroup::insertMapLayerGroup
+  (QVector<QPair<osg::Node*, QString> >* mapLayerGroup,
+  const QString& title, int pos) {
+  // Check the array
+  if (mapLayerGroup == NULL)
+    return NULL;
+  QVector<MapLayerInterface*>* layers = new QVector<MapLayerInterface*>();
+
+  // Add subtree
+  QTreeWidgetItem *newItem = new QTreeWidgetItem();
+  newItem->setText(0, title);
+  newItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+
+  newItem->setCheckState(0, Qt::Checked);
+
+  // Add all the layers int he array
+  for (int i = 0; i < mapLayerGroup->size(); ++i) {
+    MapLayerInterface* layer =
+      new MapLayer(mapLayerGroup->at(i).first);
+    QString subtitle(mapLayerGroup->at(i).second);
+    layers->push_back(insertMapLayer(layer, subtitle, -1, newItem));
+  }
+
+  addIntoList(newItem, pos);
+  mapLayers.insert(newItem, NULL);
+
+  return layers;
 }
 
 MapLayerInterface* MapLayerGroup::insertExistingMapLayer
@@ -120,11 +161,17 @@ MapLayerInterface* MapLayerGroup::insertExistingMapLayer
   QTreeWidgetItem *newItem = new QTreeWidgetItem();
   newItem->setText(0, title);
   newItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-  newItem->setCheckState(0, Qt::Checked);
+  Qt::CheckState state;
+  if (layer->isVisible()) {
+    state = Qt::Checked;
+  } else {
+    state = Qt::Unchecked;
+  }
+  newItem->setCheckState(0, state);
 
   // add the item into the menu list and maplist
   addIntoList(newItem, pos);
-  mapLayers.insert(layer, newItem);
+  mapLayers.insert(newItem, layer);
 
   // don't insert the node into the scene!
 
@@ -166,20 +213,35 @@ void MapLayerGroup::removeFromScene(MapLayerInterface* layer) {
 }
 
 void MapLayerGroup::removeMapLayer(MapLayerInterface* layer) {
-  TMapLayers::iterator it = mapLayers.find(layer);
-  if (it != mapLayers.end()) {
-    // remove the node from the scene
-    removeFromScene(layer);
+  for (TMapLayers::iterator it = mapLayers.begin();
+      it != mapLayers.end(); ++it) {
+    if (it.value() == layer) {
+      // remove the node from the scene
+      removeFromScene(layer);
 
-    // TODO(Maria): Do we also want to destroy the layer object?
-    // Or should the plugin destroy it by itself?
-    // Delete the checkbox from the list.
-    treeItem->removeChild(it.value());
-    // delete it.value();
-    mapLayers.erase(it);
+      // TODO(Maria): Do we also want to destroy the layer object?
+      // Or should the plugin destroy it by itself?
+      // Delete the checkbox from the list.
+      treeItem->removeChild(it.key());
+      // delete it.value();
+      mapLayers.erase(it);
+      break;
+    }
   }
+
   if (mapLayers.empty()) {
     hideTree();
+  }
+}
+
+void MapLayerGroup::setMapLayerTitle(MapLayerInterface* layer,
+  const QString &title) {
+  for (TMapLayers::iterator it = mapLayers.begin();
+      it != mapLayers.end(); ++it) {
+    if (it.value() == layer) {
+      it.key()->setText(0, title);
+      break;
+    }
   }
 }
 
@@ -212,34 +274,89 @@ osgEarth::Util::ObjectPlacer* MapLayerGroup::getObjectPlacer() {
 }
 
 void MapLayerGroup::itemChanged(QTreeWidgetItem *item, int column) {
-  // Finds MapLayer object for map layer and emits the display/hide signal.
-  for (TMapLayers::iterator it = mapLayers.begin();
-      it != mapLayers.end(); ++it) {
-    if (it.value() == item) {
-      if (item->checkState(column) == Qt::Checked) {
-        emit it.key()->emitDisplayed(true);
-      } else if (item->checkState(column) == Qt::Unchecked) {
-        emit it.key()->emitDisplayed(false);
-      }
-      break;
-    }
+  if (item->checkState(column) == Qt::Checked) {
+    changeLayersVisibility(item, column, true);
+  } else {
+    changeLayersVisibility(item, column, false);
   }
 }
 
-void MapLayerGroup::addIntoList(QTreeWidgetItem *item, int pos) {
-  // if this is the first item, create the tree:
-  if (mapLayers.empty()) {
+void MapLayerGroup::changeLayersVisibility(QTreeWidgetItem *item, int column,
+  bool value) {
+  // Finds MapLayer object for map layer and emits the display/hide signal.
+  TMapLayers::iterator it = mapLayers.find(item);
+  if (it == mapLayers.end()) return;
+  for (int i = 0; i < item->childCount(); i++) {
+    QTreeWidgetItem* child = item->child(i);
+    TMapLayers::iterator j = mapLayers.find(child);
+    // if (j == mapLayers.end()) continue;
+    if (j.value() == NULL) {
+      child->setDisabled(!value);
+      if (child->checkState(column) == Qt::Checked) {
+        changeLayersVisibility(child, column, true && value);
+      } else {
+        changeLayersVisibility(child, column, false);
+      }
+    } else {
+      if (value) {
+        child->setDisabled(false);
+        if (j.key()->checkState(column) == Qt::Checked) {
+          j.value()->emitChecked(true);
+        }
+        // the ones that are not checked are still not visible
+      } else if (!value) {
+        // hide and disable everything fromthe group
+        child->setDisabled(true);
+        mapLayers.find(child).value()->emitChecked(false);
+      }
+    }
+  }
+  if (it.value() == NULL)
+    return;
+  if (value) {
+    it.value()->emitChecked(true);
+  } else if (!value) {
+    it.value()->emitChecked(false);
+  }
+}
+
+void MapLayerGroup::addIntoList(QTreeWidgetItem *item,
+  int pos, QTreeWidgetItem* toTree) {
+  // if this is the first layer item (there is always one for the group),
+  // create the tree:
+  if (mapLayers.count() == 1) {
     displayTree();
   }
 
+  QTreeWidgetItem* branch = (toTree) ? toTree : treeItem;
+
   int position = 0;
-  if ((pos > treeItem->childCount()) || (pos < 0)) {
-    position = treeItem->childCount();
+  if ((pos > branch->childCount()) || (pos < 0)) {
+    position = branch->childCount();
   } else {
     position = pos;
   }
 
-  treeItem->insertChild(position, item);
+  branch->insertChild(position, item);
+}
+
+void MapLayerGroup::mapLayerVisibilityChanged(bool value,
+  MapLayerInterface* layer) {
+  for (TMapLayers::iterator it = mapLayers.begin();
+    it != mapLayers.end(); it++) {
+    if (it.value() == layer) {
+      Qt::CheckState state;
+      if (value) {
+        state = Qt::Checked;
+      } else {
+        state = Qt::Unchecked;
+      }
+      if (!(it.key()->isDisabled())) {
+        it.key()->setCheckState(0, state);
+      }
+      break;
+    }
+  }
 }
 
 }  // End namespace Core

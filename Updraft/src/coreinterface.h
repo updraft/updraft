@@ -11,6 +11,7 @@
 #include "fileregistration.h"
 #include "maplayergroupinterface.h"
 #include "settinginterface.h"
+#include "mapobject.h"
 
 class QWidget;
 class QMainWindow;
@@ -20,6 +21,10 @@ namespace osg {
 }
 
 namespace Updraft {
+
+namespace Util {
+  class Ellipsoid;
+}
 
 /// Exposes core functionalities to plugins.
 /// A call to methods of this interface automagically contains
@@ -38,8 +43,8 @@ class CoreInterface {
   /// \param menu which system menu instance to return
   virtual MenuInterface* getSystemMenu(SystemMenu menu) = 0;
 
-  /// Returns the current openscenegraph ellipsoid model used for the planet.
-  virtual const osg::EllipsoidModel* getEllipsoidModel() = 0;
+  /// Returns the current Updraft::Util::Ellipsoid used for measurements.
+  virtual const Util::Ellipsoid* getEllipsoid() const = 0;
 
   /// Creates map layer group and adds it to the tree view in the left pane.
   /// To remove MapLayerGroup use C++ delete.
@@ -100,6 +105,12 @@ class CoreInterface {
 
   /// Returns the pointer to the basic node group for drawing.
   virtual osg::Group* getSimpleGroup() = 0;
+
+  /// Registers the osg node into Updraft for mouse picking.
+  /// \param node The node that should be registered
+  /// \param mapObject The map object that this node represents when clicked
+  //TODO(cestmir): We will probably need unregistering as well
+  virtual void registerOsgNode(osg::Node* node, MapObject* mapObject) = 0;
 };
 
 }  // End namespace Updraft

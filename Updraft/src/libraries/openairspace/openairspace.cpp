@@ -8,6 +8,7 @@
 namespace OpenAirspace {
   Parser::Parser(const QString& fileName) {
     // qDebug("Parser ctor");
+    this->allAirspaces = NULL;
     QFile file(fileName);
 
     if (!file.open(QFile::ReadOnly)) {
@@ -26,10 +27,10 @@ namespace OpenAirspace {
     else
       // qDebug("Parsing OpenAirspace file %s", fileName.toAscii().data());
 
-    this->allAirspaces = new QList<Airspace*>();
+    this->allAirspaces = new QVector<Airspace*>();
     while (!ts.atEnd()) {
-      if (!ts.atEnd())
-        ts.seek(ts.pos() -3);
+      // if (!ts.atEnd())
+        ts.seek(ts.pos() -2);
       Airspace* nextairspace = new Airspace(&ts);
       this->allAirspaces->push_back(nextairspace);
     }
@@ -38,11 +39,13 @@ namespace OpenAirspace {
   }
   Parser::~Parser(void) {
     // qDebug("Parser dtor");
-    for (int i = 0; i < allAirspaces->size(); ++i) {
-      Airspace* a = allAirspaces->at(i);
-      delete a;
+    if (this->allAirspaces) {
+      for (int i = 0; i < allAirspaces->size(); ++i) {
+        Airspace* a = allAirspaces->at(i);
+        delete a;
+      }
+      delete allAirspaces;
+      allAirspaces = NULL;
     }
-    delete allAirspaces;
-    allAirspaces = NULL;
   }
 }  // OpenAirspace

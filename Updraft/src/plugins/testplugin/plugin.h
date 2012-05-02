@@ -26,7 +26,7 @@ class Q_DECL_EXPORT TestPlugin: public QObject, public PluginBase {
 
   unsigned getPriority();
 
-  void initialize();
+  void initialize(CoreInterface *coreInterface);
 
   void deinitialize();
 

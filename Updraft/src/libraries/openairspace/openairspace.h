@@ -20,7 +20,8 @@ namespace OpenAirspace {
 
     /// Returns the used airspaces count
     inline size_t size() {
-      return this->allAirspaces->size(); }
+      return (allAirspaces) ?
+        this->allAirspaces->size() : 0;}
 
     /// Returns the class of the AirSpace
     inline const Airspace::ACType& GetClass(int i) {
@@ -36,27 +37,27 @@ namespace OpenAirspace {
 
     /// Returns the tag coordinates of the AirSpace
     inline const
-      QList<OpenAirspace::Position*>& GetTagCoor(int i) {
+      QVector<OpenAirspace::Position*>& GetTagCoor(int i) {
       return this->allAirspaces->at(i)->GetTagCoor(); }
 /* NA
     /// Returns the arcs type I
     inline const
-      QList<Airspace::ArcI*>& GetArcI(int i) {
+      QVector<Airspace::ArcI*>& GetArcI(int i) {
       return this->allAirspaces->at(i)->GetArcI(); }
 
     /// Returns the arcs type I
     inline const
-      QList<Airspace::ArcII*>& GetArcII(int i) {
+      QVector<Airspace::ArcII*>& GetArcII(int i) {
       return this->allAirspaces->at(i)->GetArcII(); }
 
     /// Returns the circles
     inline const
-      QList<Airspace::Circle*>& GetCircle(int i) {
+      QVector<Airspace::Circle*>& GetCircle(int i) {
       return this->allAirspaces->at(i)->GetCircle(); }
 
     /// Returns the AirWay
     inline const
-      QList<OpenAirspace::Position*>& GetAirWay(int i) {
+      QVector<OpenAirspace::Position*>& GetAirWay(int i) {
       return this->allAirspaces->at(i)->GetAirWay(); }
 */
 
@@ -64,7 +65,7 @@ namespace OpenAirspace {
 
  private:
     /// OpenAirspace contains several airspaces.
-    QList<Airspace*>* allAirspaces;
+    QVector<Airspace*>* allAirspaces;
   };  // Parser
 }  // OpenAirspace
 #endif  // UPDRAFT_SRC_LIBRARIES_OPENAIRSPACE_OPENAIRSPACE_H_

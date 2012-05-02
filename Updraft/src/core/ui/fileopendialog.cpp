@@ -3,40 +3,9 @@
 namespace Updraft {
 namespace Core {
 
-/// Add the preview list to the dialog.
-/// \note This class uses dark magic and eats babies.
-///   Also it depends on the implementation of QFileDialog, which may later
-///   change. We are forced to do this because there is no clean way to
-///   add preview in current versions of Qt.There are some checks to avoid
-///   completescrew-ups though.
-/// \param caption Title of the dialog window.
-FileOpenDialog::FileOpenDialog(QWidget* parent, QString caption)
-  : QFileDialog(parent, caption) {
-  setFileMode(QFileDialog::ExistingFile);
-  setNameFilters(getFilters());
-
-  QSplitter* splitter = findChild<QSplitter*>("splitter");
-
-  if (!splitter) {
-    qDebug() << "It looks like QFileDialog changed. This is a bug.";
-    havePreview = false;
-    return;
-  }
-
-  havePreview = true;
-
-  QListView* listView = new QListView(this);
-  listView->setModel(&model);
-
-  splitter->addWidget(listView);
-
-  connect(this, SIGNAL(currentChanged(const QString&)),
-    this, SLOT(changed(const QString)));
-}
-
 /// Returns a list of file name filters suitable
 /// for QFileDialog::setNameFilters().
-QStringList FileOpenDialog::getFilters() const {
+QStringList FileOpenDialog::getFilters() {
   typedef QMap<QString, QString> TMap;
   TMap mapFilters;
 
@@ -85,25 +54,18 @@ QStringList FileOpenDialog::getFilters() const {
   return ret;
 }
 
-/// Show the dialog and use it to open the files.
-void FileOpenDialog::openIt() {
-  if (!exec()) {
-    return;
-  }
+/// Display a file open dialog, and open the selected files.
+/// \param caption Title of the file open dialog.
+void FileOpenDialog::openIt(const QString& caption) {
+  QStringList files;
 
-  foreach(QString file, selectedFiles()) {
-    qDebug() << file;
-    if (havePreview) {
-      updraft->fileTypeManager->openFileInternal(file, &model);
-    } else {
-      updraft->fileTypeManager->openFile(file, true);
-    }
-  }
-}
+  files = QFileDialog::getOpenFileNames(
+    updraft->mainWindow, caption,
+    QString(), getFilters().join(";;"));
 
-/// A file was selectecte in the dialog.
-void FileOpenDialog::changed(const QString path) {
-  updraft->fileTypeManager->getOpenOptions(path, &model);
+  foreach(QString file, files) {
+    updraft->fileTypeManager->openFile(file, true);
+  }
 }
 
 }  // End namespace Core

@@ -10,24 +10,15 @@
 namespace Updraft {
 namespace Core {
 
-/// Customized version of file open dialog that displays
-/// preview / selection of roles for file opening,
+/// Customized version of file open dialog that
 /// has pre-filled filters and mode.
 class FileOpenDialog : public QFileDialog {
   Q_OBJECT
  public:
-  FileOpenDialog(QWidget* parent, QString caption);
-
-  void openIt();
-
- private slots:
-  void changed(const QString path);
+  static void openIt(const QString &caption);
 
  private:
-  QStringList getFilters() const;
-
-  bool havePreview;
-  QStandardItemModel model;
+  static QStringList getFilters();
 };
 
 }  // End namespace Core

@@ -4,9 +4,14 @@
 #include <QtGui/QWidget>
 #include <osgQt/GraphicsWindowQt>
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
+#include <osgEarth/Viewpoint>
 #include <QTimer>
+#include <QHash>
 #include <string>
 #include "mapmanager.h"
+#include "mapmanipulator.h"
+#include "../mapobject.h"
 
 namespace Updraft {
 namespace Core {
@@ -45,8 +50,25 @@ class SceneManager: public QObject {
   /// Returns pointer to the group node for random drawing.
   osg::Group* getSimpleGroup();
 
+  /// Registers the osg node into Updraft for mouse picking.
+  /// \param node The node that should be registered
+  /// \param mapObject MapObject that represents this pickable node
+  void registerOsgNode(osg::Node* node, MapObject* mapObject);
+
+  /// Unregisters osg node for mouse picking
+  /// \param node The node that should be unregistered
+  void unregisterOsgNode(osg::Node* node);
+
+  /// Tries to get the associated MapObject for the given node
+  /// \param node The node whose MapObject we want
+  /// \return Pointer to the MapObject that contains the registration info
+  ///         for the given node, if the node was registered.
+  MapObject* getNodeMapObject(osg::Node* node);
+
  public slots:
   void redrawScene();
+  void resetNorth();
+  void untilt();
 
  private:
   osgViewer::Viewer* viewer;
@@ -59,6 +81,7 @@ class SceneManager: public QObject {
 
   MapManager* mapManager;
   osg::Camera* camera;
+  MapManipulator* manipulator;
   osgQt::GraphicsWindowQt* graphicsWindow;
 
   /// Timer that triggers the drawing procedure.
@@ -70,6 +93,21 @@ class SceneManager: public QObject {
   osgQt::GraphicsWindowQt* createGraphicsWindow
     (osg::GraphicsContext::Traits* traits);
   osg::Camera* createCamera(osg::GraphicsContext::Traits* traits);
+
+  /// Map of osg nodes registered for mouse picking
+  QHash<osg::Node*, MapObject*> pickingMap;
+
+  osgEarth::Viewpoint getHomePosition();
+  osgEarth::Util::Viewpoint getInitialPosition();
+  void startInitialAnimation();
+
+  void insertMenuItems();
+
+  bool isCameraPerspective;
+
+  double getAspectRatio();
+  void updateCameraOrtho(osg::Camera* camera);
+  void updateCameraPerspective(osg::Camera* camera);
 };
 
 }  // end namespace Core

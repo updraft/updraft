@@ -7,11 +7,17 @@
 
 #include "tplayer.h"
 
+#ifdef turnpoints_EXPORTS
+# define TPS_EXPORT Q_DECL_EXPORT
+#else
+# define TPS_EXPORT Q_DECL_IMPORT
+#endif
+
 namespace Updraft {
 
 typedef QMap<MapLayerInterface*, TPLayer*> TTPLayerMap;
 
-class Q_DECL_EXPORT TurnPoints : public QObject, public PluginBase {
+class TPS_EXPORT TurnPoints : public QObject, public PluginBase {
   Q_OBJECT
   Q_INTERFACES(Updraft::PluginBase)
 
@@ -24,7 +30,7 @@ class Q_DECL_EXPORT TurnPoints : public QObject, public PluginBase {
 
   unsigned getPriority();
 
-  void initialize();
+  void initialize(CoreInterface *coreInterface);
 
   void deinitialize();
 
@@ -33,6 +39,9 @@ class Q_DECL_EXPORT TurnPoints : public QObject, public PluginBase {
   void fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename);
 
+  void fillContextMenu(MapObject* obj, MenuInterface* menu);
+  bool wantsToHandleClick(MapObject* obj);
+  void handleClick(MapObject* obj, const EventInfo* evt);
  public slots:
   void mapLayerDisplayed(bool value, MapLayerInterface* sender);
 
@@ -40,9 +49,6 @@ class Q_DECL_EXPORT TurnPoints : public QObject, public PluginBase {
   enum FileRoles {
     IMPORT_CUP_FILE = 1
   };
-
-  /// Value which will be used as a next layer id.
-  int nextLayerId;
 
   /// List of imported files
   TTPLayerMap layers;
@@ -62,6 +68,9 @@ class Q_DECL_EXPORT TurnPoints : public QObject, public PluginBase {
   /// Creates new layer item, adds item to the left pane
   /// \param file associated data file (is deleted on layer destruction)
   void addLayer(TPFile *file);
+
+  /// TP settings to be stored in settings array.
+  QVector<SettingInterface*> settings;
 };
 
 }  // End namespace Updraft

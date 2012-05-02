@@ -14,6 +14,9 @@
 
 namespace Updraft {
 
+// Definition of global pointer to coreinterface.
+CoreInterface *g_core = NULL;
+
 TestPlugin::TestPlugin() {}
 
 TestPlugin::~TestPlugin() {
@@ -28,7 +31,9 @@ unsigned TestPlugin::getPriority() {
   return 1;
 }
 
-void TestPlugin::initialize() {
+void TestPlugin::initialize(CoreInterface *coreInterface) {
+  g_core = coreInterface;
+
   // Help about this plugin
   helpAction = new QAction("About testplugin...", this);
   connect(helpAction, SIGNAL(triggered()), this, SLOT(showHelp()));
@@ -36,11 +41,11 @@ void TestPlugin::initialize() {
   helpAction2 = new QAction("About testplugin (higher priority)...", this);
   connect(helpAction2, SIGNAL(triggered()), this, SLOT(showHelp()));
 
-  core->getSystemMenu(MENU_HELP)->insertAction(1, helpAction);
-  core->getSystemMenu(MENU_HELP)->insertAction(0, helpAction2);
+  g_core->getSystemMenu(MENU_HELP)->insertAction(1, helpAction);
+  g_core->getSystemMenu(MENU_HELP)->insertAction(0, helpAction2);
 
   // Create a new menu and insert a test action into it as well
-  myMenu = core->createMenu("Test plugin");
+  myMenu = g_core->createMenu("Test plugin");
 
   helpAction3 = new QAction("About testplugin...", this);
   connect(helpAction3, SIGNAL(triggered()), this, SLOT(showHelp()));
@@ -48,10 +53,10 @@ void TestPlugin::initialize() {
   myMenu->insertAction(0, helpAction3);
 
   // Add an action into a context menu
-  core->getSystemMenu(MENU_CONTEXT)->insertAction(0, helpAction);
+  g_core->getSystemMenu(MENU_CONTEXT)->insertAction(0, helpAction);
 
-  createTab("Button tab 1");
-  createTab("Button tab 2");
+  // createTab("Button tab 1");
+  // createTab("Button tab 2");
 
   FileRegistration regTxt1;
   regTxt1.category = CATEGORY_TEMPORARY;
@@ -61,7 +66,7 @@ void TestPlugin::initialize() {
   regTxt1.roleId = 1;
   regTxt1.plugin = this;
 
-  core->registerFiletype(regTxt1);
+  g_core->registerFiletype(regTxt1);
 
   FileRegistration regTxt2;
   regTxt2.category = CATEGORY_PERSISTENT;
@@ -72,7 +77,7 @@ void TestPlugin::initialize() {
   regTxt2.roleId = 2;
   regTxt2.plugin = this;
 
-  core->registerFiletype(regTxt2);
+  g_core->registerFiletype(regTxt2);
 
   FileRegistration regTxt3;
   regTxt3.category = CATEGORY_PERSISTENT;
@@ -83,7 +88,7 @@ void TestPlugin::initialize() {
   regTxt3.roleId = 3;
   regTxt3.plugin = this;
 
-  core->registerFiletype(regTxt3);
+  g_core->registerFiletype(regTxt3);
 
   FileRegistration regPng;
   regPng.category = CATEGORY_PERSISTENT;
@@ -94,7 +99,7 @@ void TestPlugin::initialize() {
   regPng.roleId = 4;
   regPng.plugin = this;
 
-  core->registerFiletype(regPng);
+  g_core->registerFiletype(regPng);
 
   FileRegistration regHtml;
   regHtml.category = CATEGORY_TEMPORARY;
@@ -104,11 +109,11 @@ void TestPlugin::initialize() {
   regHtml.roleId = 5;
   regHtml.plugin = this;
 
-  core->registerFiletype(regHtml);
-  osg::Group* simpleGroup = core->getSimpleGroup();
+  g_core->registerFiletype(regHtml);
+  // osg::Group* simpleGroup = g_core->getSimpleGroup();
 
   // Create map layers items in the left pane.
-  mapLayerGroup = core->createMapLayerGroup("Test group");
+  mapLayerGroup = g_core->createMapLayerGroup("Test group");
   if (mapLayerGroup != NULL) {
     // create map placer: to draw in the map
     osgEarth::Util::ObjectPlacer* objectPlacer =
@@ -160,14 +165,15 @@ void TestPlugin::initialize() {
       osg::StateAttribute::ON);
 
     // move the center of the node to Prague
-    osg::Node* randomLines = objectPlacer->placeNode(geode,
+    /*osg::Node* randomLines = objectPlacer->placeNode(geode,
       50.087811, 14.42046, 1000);
-
+    
     Updraft::MapLayerInterface* layer1 =
       mapLayerGroup->insertMapLayer(randomLines, "Relative Lines", 0);
-    layer1->connectSignalDisplayed
+    layer1->connectSignalChecked
       (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
     mapLayers.append(layer1);
+    */
 
     // LAYER #2
     // draw route from Brno to Plzen:
@@ -210,13 +216,15 @@ void TestPlugin::initialize() {
     geom2->setColorArray(colors2);
     geom2->setColorBinding(osg::Geometry::BIND_OVERALL);
 
+    /*
     MapLayerInterface* layer2 =
       mapLayerGroup->insertMapLayer(BrnoPlzen, "Brno to Plzen");
 
     // simpleGroup->addChild(BrnoPlzen);
-    layer2->connectSignalDisplayed
+    layer2->connectSignalChecked
       (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
     mapLayers.append(layer2);
+    */
 
     // ADD JUST CHECKBOX
 	/*
@@ -226,13 +234,14 @@ void TestPlugin::initialize() {
   }
 
   // Settings
-  core->addSettingsGroup("testplugin", "Test Plugin Settings");
-  testSetting = core->addSetting("testplugin:testsetting", "Value of PI", 3.14);
-  testSetting2 = core->addSetting("testplugin:testsetting2",
+  g_core->addSettingsGroup("testplugin", "Test Plugin Settings");
+  testSetting = g_core->addSetting("testplugin:testsetting",
+    "Value of PI", 3.14);
+  testSetting2 = g_core->addSetting("testplugin:testsetting2",
     "Number of silver squirters", 333);
-  testSetting3 = core->addSetting("testplugin:testsetting3",
+  testSetting3 = g_core->addSetting("testplugin:testsetting3",
     "Name of the application", "Updraft");
-  hiddenSetting = core->addSetting("testplugin:testsetting", "Not visible",
+  hiddenSetting = g_core->addSetting("testplugin:testsetting", "Not visible",
     "Blablablabla", true);
 
   testSetting->callOnValueChanged(this, SLOT(showPi()));
@@ -252,7 +261,7 @@ void TestPlugin::createTab(QString title) {
   layout->addWidget(btn2);
   layout->addWidget(btn3);
 
-  TabInterface* tab = core->createTab(container, title);
+  TabInterface* tab = g_core->createTab(container, title);
 
   connect(btn1, SIGNAL(clicked()), this, SLOT(showHelp()));
   // connect(btn2, SIGNAL(clicked()), tab, SLOT(showHelp()));
@@ -267,7 +276,7 @@ void TestPlugin::deinitialize() {
 }
 
 void TestPlugin::showHelp() {
-  QMainWindow* win = core->getMainWindow();
+  QMainWindow* win = g_core->getMainWindow();
 
   QMessageBox::information(win, "About testplugin",
     "Testplugin is just a test plugin to see whether our api is working");
@@ -290,7 +299,7 @@ bool TestPlugin::fileOpen(const QString &filename, int roleId) {
 }
 
 void TestPlugin::showPi() {
-  QMainWindow* win = core->getMainWindow();
+  QMainWindow* win = g_core->getMainWindow();
 
   QString message = "The value of PI is %1";
   message = message.arg(testSetting->get().toFloat());

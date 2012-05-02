@@ -5,6 +5,10 @@ FUNCTION (STYLE_CHECK tgt)
     SET(NONFATAL --nonfatal)
   ENDIF(SLOPPY_BUILD)
 
+  IF(WIN32)
+    SET(VS7OUTPUT --output=vs7)
+  ENDIF(WIN32)
+
   IF(NOT QUICK_BUILD)
     # customize used filters
     SET(ADD_FILTER --filter=-build/include_what_you_use)
@@ -12,7 +16,7 @@ FUNCTION (STYLE_CHECK tgt)
     ADD_CUSTOM_COMMAND(
       TARGET ${tgt}
       PRE_BUILD
-      COMMAND python ${STYLE_CHECK_CPPLINT_PATH} ${ADD_FILTER} ${NONFATAL} ${ARGN}
+      COMMAND python ${STYLE_CHECK_CPPLINT_PATH} ${ADD_FILTER} ${NONFATAL} ${VS7OUTPUT} ${ARGN}
     )
   ENDIF(NOT QUICK_BUILD)
 ENDFUNCTION(STYLE_CHECK)

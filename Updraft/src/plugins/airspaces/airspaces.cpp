@@ -4,6 +4,9 @@
 namespace Updraft {
 namespace Airspaces {
 
+// Definition of global pointer to coreinterface.
+CoreInterface *g_core = NULL;
+
 Airspaces::Airspaces() { }
 
 QString Airspaces::getName() {
@@ -14,7 +17,9 @@ unsigned Airspaces::getPriority() {
   return 0;  // TODO(cestmir): decide on the priority of plugins
 }
 
-void Airspaces::initialize() {
+void Airspaces::initialize(CoreInterface *coreInterface) {
+  g_core = coreInterface;
+
   // File type registration
   OAirspaceFileReg.category = CATEGORY_PERSISTENT;
   OAirspaceFileReg.extension = ".txt";
@@ -23,13 +28,12 @@ void Airspaces::initialize() {
   OAirspaceFileReg.importDirectory = "airspaces";
   OAirspaceFileReg.roleId = IMPORT_OPENAIRSPACE_FILE;
   OAirspaceFileReg.plugin = this;
-  core->registerFiletype(OAirspaceFileReg);
+  g_core->registerFiletype(OAirspaceFileReg);
 
   // Create map layers items in the left pane.
-  engine = new oaEngine(core->createMapLayerGroup("Airspaces"));
-  // MapLayerInterface* layer1;
-  // LoadFile("c:/Updraft/CZ2011CTR.txt", 0);
-  // LoadFile("c:/Updraft/CZ2011TMA.txt", 0);
+  mapLayerGroup = g_core->createMapLayerGroup("Airspace");
+  engine = new oaEngine(mapLayerGroup);
+
   loadImportedFiles();
 
   qDebug("airspaces laoded");
@@ -40,6 +44,9 @@ void Airspaces::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
 }
 
 void Airspaces::deinitialize() {
+  delete engine;
+  engine = NULL;
+
   qDebug("airspaces unloaded");
 }
 
@@ -47,10 +54,34 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
   switch (role) {
     case IMPORT_OPENAIRSPACE_FILE:
       // draw openairspace file
-      MapLayerInterface* layer1 = engine->Draw(fileName);
-      layer1->connectSignalDisplayed
-        (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
-      mapLayers.append(layer1);
+      /* mapLayers = engine->Draw(fileName);
+      if (!mapLayers) return false;
+      for (int i = 0; i < mapLayers->size(); ++i) {
+        MapLayerInterface* layer1 = mapLayers->at(i);
+        // layer1->setVisible(false);
+        layer1->connectSignalChecked
+          (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
+        layer1->emitDisplayed(false);
+      }
+      delete mapLayers;*/
+
+      QString displayName = fileName.left(fileName.indexOf('.'));
+      int cuntSlashes = displayName.count('/');
+      displayName = displayName.section('/', cuntSlashes, cuntSlashes);
+
+      mapNodes = engine->Draw(fileName);
+      if (!mapNodes) return false;
+
+      QVector<MapLayerInterface*>* layers =
+        mapLayerGroup->insertMapLayerGroup(mapNodes, displayName);
+      if (!layers) return false;
+
+      for (int i = 0; i < layers->size(); ++i) {
+        layers->at(i)->connectSignalChecked
+          (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
+      }
+
+      delete mapNodes;
       return true;
       break;
   }
@@ -58,7 +89,7 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
 }
 
 void Airspaces::loadImportedFiles() {
-  QDir dir(core->getDataDirectory() + "/" + OAirspaceFileReg.importDirectory);
+  QDir dir(g_core->getDataDirectory() + "/" + OAirspaceFileReg.importDirectory);
 
   if (!dir.exists()) {
     return;

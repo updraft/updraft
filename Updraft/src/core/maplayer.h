@@ -39,12 +39,14 @@ class MapLayer : public QObject, public MapLayerInterface {
 
   void connectSignalDisplayed(const QObject* receiver,
     const char *method);
+  void connectSignalChecked(const QObject* receiver,
+    const char *method);
   void connectSlotSetVisibility(const QObject* sender,
     const char *method);
-  void connectDisplayedToVisibility();
-  void emitDisplayed(bool value);
+  void connectCheckedToVisibility();
 
   void setVisible(bool value);
+  bool isVisible();
 
   MapLayerType getType();
   Layer getLayer();
@@ -56,8 +58,13 @@ class MapLayer : public QObject, public MapLayerInterface {
 
  signals:
   void displayed(bool value, MapLayerInterface* sender);
+  void checked(bool value, MapLayerInterface* sender);
 
  private:
+  /// Emits the checked signal.
+  /// Is called from MapLayerGroup.
+  void emitChecked(bool value);
+
   /// Determines which value of the union layer is valid.
   MapLayerType layerType;
 

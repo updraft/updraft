@@ -14,5 +14,17 @@ MapManipulator::MapManipulator() {
   getSettings()->setLockAzimuthWhilePanning(true);
 }
 
+void MapManipulator::resetNorth(double duration) {
+  osgEarth::Util::Viewpoint viewpoint = getViewpoint();
+  viewpoint.setHeading(0);
+  setViewpoint(viewpoint, duration);
+}
+
+void MapManipulator::untilt(double duration) {
+  osgEarth::Util::Viewpoint viewpoint = getViewpoint();
+  viewpoint.setPitch(-90);
+  setViewpoint(viewpoint, duration);
+}
+
 }  // End namespace Core
 }  // End namespace Updraft

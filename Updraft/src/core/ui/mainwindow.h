@@ -32,6 +32,7 @@ class MainWindow : public QMainWindow {
   Menu* createMenu(QString title);
   void removeMenu(Menu* menu);
   void setMapWidget(QWidget *widget);
+  QWidget* getMapWidget();
 
   /// This method creates new map layer group.
   /// It is wrapped by CoreInterface::createMapLayerGroup.
@@ -39,8 +40,12 @@ class MainWindow : public QMainWindow {
     osg::Group* nodeGroup, osgEarth::MapNode* map);
 
  private slots:
-  /// Called when tab in the bottom pane is closed using the little cross
-  void tabClose(int index);
+  /// Called when any tab is about to close.
+  /// Posts signal to appropriate tab.
+  void tabCloseRequested(int index);
+
+  /// Called when tab has been removed from the bottom pane.
+  void tabRemoved(QWidget* tab);
 
   /// Handles switchin an active tab in the bottom pane.
   void tabSwitch(int index);
@@ -66,6 +71,7 @@ class MainWindow : public QMainWindow {
   Menu* menuHelp;
 
   Menu* menuContext;
+  Menu* menuMapObject;
 
   Tab* activeTab;
 

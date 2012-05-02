@@ -19,7 +19,7 @@ class TPFile {
   virtual QString getFilePath() const = 0;
 
   /// \return List of all turn points contained in file.
-  virtual TTPList getTurnPoints() const = 0;
+  virtual const TTPList& getTurnPoints() const = 0;
 };
 
 }  // End namespace Updraft

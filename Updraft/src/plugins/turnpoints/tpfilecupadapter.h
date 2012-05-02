@@ -2,8 +2,10 @@
 #define UPDRAFT_SRC_PLUGINS_TURNPOINTS_TPFILECUPADAPTER_H_
 
 #include <QtGui>
+#include <QString>
 #include "../../libraries/cup/cup.h"
 #include "tpfile.h"
+#include "../../libraries/util/units.h"
 
 namespace Updraft {
 
@@ -16,7 +18,7 @@ class TPFileCupAdapter : public TPFile {
   // Implementation of TPFile interface.
   QString getFileName() const;
   QString getFilePath() const;
-  TTPList getTurnPoints() const;
+  const TTPList& getTurnPoints() const;
 
   /// Loads turn-points from specified cup file.
   /// Use this method for creating TPFileCupAdapter instances.
@@ -36,6 +38,10 @@ class TPFileCupAdapter : public TPFile {
   /// \param [out] tp pointer to destinatin TurnPoint instance
   /// \param tpEntry entry of cup file for conversion
   void convertCupTPEntry(TurnPoint *tp, const Cup::TPEntry &tpEntry);
+
+  /// Parses the string containing the length with units
+  /// to float in meters
+  float parseLength(const QString& text);
 };
 
 }  // End namespace Updraft
