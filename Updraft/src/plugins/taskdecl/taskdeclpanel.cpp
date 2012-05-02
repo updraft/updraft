@@ -60,7 +60,7 @@ void TaskDeclPanel::addTpButtonPushed() {
     return;
   }
 
-  // Untoggle all other addTp buttons
+  // Uncheck all other addTp buttons
   QAbstractButton* senderButton = qobject_cast<QAbstractButton*>(sender());
 
   foreach(QAbstractButton* toUntoggle, addButtons->buttons()) {
@@ -109,6 +109,7 @@ void TaskDeclPanel::redoButtonPushed() {
 }
 
 void TaskDeclPanel::updateButtons() {
+  qDebug() << "updateButtons()";
   TaskFile* file = taskLayer->getTaskFile();
 
   if (!file) return;
@@ -117,6 +118,7 @@ void TaskDeclPanel::updateButtons() {
   const TaskData* data = file->beginRead();
   int pos = 0;
   while (const TaskPoint* point = data->getTaskPoint(pos)) {
+    qDebug() << "taskPoint pos: " << pos;
     if (!tpButtonExists(pos)) {
       newTurnpointButton(pos, point->getName());
       newAddTpButton(pos+1, false);
@@ -129,6 +131,7 @@ void TaskDeclPanel::updateButtons() {
 
   // Iterate over any remaining task buttons
   while (tpButtonExists(pos)) {
+    qDebug() << "tpButtonExists: " << pos;
     removeTpButtons(pos);
   }
 }
@@ -310,7 +313,7 @@ void TaskDeclPanel::removeTpButtons(int pos) {
   QLayoutItem* item1 =  ui->taskButtonsLayout->takeAt(layoutPos);  // Top frame
   // Add button after it
   QLayoutItem* item2 =  ui->taskButtonsLayout->takeAt(layoutPos);
-  // delete item1->widget();
+  delete item1->widget();
   delete item2->widget();
   delete item1;
   delete item2;
