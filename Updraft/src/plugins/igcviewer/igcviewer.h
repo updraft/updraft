@@ -21,6 +21,7 @@ class IGCMapObject: public QObject, public MapObject {
   IGCMapObject() {}
 
   QObject* asQObject();
+  OpenedFile* getFile();
 };
 
 class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {

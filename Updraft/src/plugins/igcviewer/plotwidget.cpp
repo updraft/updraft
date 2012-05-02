@@ -5,6 +5,7 @@
 #include <QGridLayout>
 #include <QMouseEvent>
 #include <QLabel>
+#include <QTime>
 
 namespace Updraft {
 namespace IgcViewer {
@@ -165,9 +166,15 @@ void PlotWidget::mousePressEvent(QMouseEvent* mouseEvent) {
     int x = mouseEvent->x();
     if ((x >= altitudePlotPainter->getMinX()) &&
       (x <= altitudePlotPainter->getMaxX())) {
-      xLinePicked = x;
-      timePicked = altitudePlotPainter->getTimeAtPixelX(x);
-      emit updatePickedInfo(getInfoText(x));
+      int time = setPickedLine(x);
+      int timeHrs = time / 3600;
+      int timeMins = (time - timeHrs*3600) / 60;
+      int timeSecs = time - timeHrs*3600 - timeMins*60;
+        // if the flight went over the midnight
+      if (timeHrs >= 24) timeHrs -= 24;
+      QTime timestamp(timeHrs, timeMins, timeSecs);
+      emit timeWasPicked(timestamp);
+      emit displayMarker(true);
       update();
     }
   } else {
@@ -175,6 +182,7 @@ void PlotWidget::mousePressEvent(QMouseEvent* mouseEvent) {
       xLinePicked = -1;
       timePicked = -1;
       emit updatePickedInfo("");
+      emit displayMarker(false);
       update();
     }
   }
@@ -207,11 +215,26 @@ void PlotWidget::resizeEvent(QResizeEvent* resizeEvent) {
   mouseOver = false;
 
   if (timePicked >= 0) {
-    xLinePicked = altitudeAxes->placeX(timePicked);
-    emit updatePickedInfo(getInfoText(xLinePicked));
+    setPickedTime(timePicked);
   }
   emit updateCurrentInfo("");
   update();
+}
+
+int PlotWidget::setPickedTime(int time) {
+  timePicked = time;
+  xLinePicked = altitudeAxes->placeX(time);
+  emit updatePickedInfo(getInfoText(xLinePicked));
+  update();
+  return xLinePicked;
+}
+
+int PlotWidget::setPickedLine(int x) {
+  xLinePicked = x;
+  timePicked = altitudePlotPainter->getTimeAtPixelX(x);
+  emit updatePickedInfo(getInfoText(xLinePicked));
+  update();
+  return timePicked;
 }
 
 void IGCTextWidget::setMouseOverText(const QString& text) {

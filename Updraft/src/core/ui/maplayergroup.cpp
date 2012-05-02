@@ -10,6 +10,9 @@ MapLayerGroup::MapLayerGroup(QTreeWidget *widget, const QString &title,
     osg::Group* group, osgEarth::MapNode* map) {
   treeItem = new QTreeWidgetItem();
   treeItem->setText(0, title);
+  treeItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+  treeItem->setCheckState(0, Qt::Checked);
+  mapLayers.insert(treeItem, NULL);
   listWidget = widget;
   nodeGroup = group;
   mapNode = map;
@@ -271,37 +274,57 @@ osgEarth::Util::ObjectPlacer* MapLayerGroup::getObjectPlacer() {
 }
 
 void MapLayerGroup::itemChanged(QTreeWidgetItem *item, int column) {
+  if (item->checkState(column) == Qt::Checked) {
+    changeLayersVisibility(item, column, true);
+  } else {
+    changeLayersVisibility(item, column, false);
+  }
+}
+
+void MapLayerGroup::changeLayersVisibility(QTreeWidgetItem *item, int column,
+  bool value) {
   // Finds MapLayer object for map layer and emits the display/hide signal.
   TMapLayers::iterator it = mapLayers.find(item);
   if (it == mapLayers.end()) return;
   for (int i = 0; i < item->childCount(); i++) {
     QTreeWidgetItem* child = item->child(i);
     TMapLayers::iterator j = mapLayers.find(child);
-    if (item->checkState(column) == Qt::Checked) {
-      child->setDisabled(false);
-      if (j.key()->checkState(column) == Qt::Checked) {
-        j.value()->emitChecked(true);
+    // if (j == mapLayers.end()) continue;
+    if (j.value() == NULL) {
+      child->setDisabled(!value);
+      if (child->checkState(column) == Qt::Checked) {
+        changeLayersVisibility(child, column, true && value);
+      } else {
+        changeLayersVisibility(child, column, false);
       }
-      // the ones that are not checked are still not visible
-    } else if (item->checkState(column) == Qt::Unchecked) {
-      // hide and disable everything fromthe group
-      child->setDisabled(true);
-      mapLayers.find(child).value()->emitChecked(false);
+    } else {
+      if (value) {
+        child->setDisabled(false);
+        if (j.key()->checkState(column) == Qt::Checked) {
+          j.value()->emitChecked(true);
+        }
+        // the ones that are not checked are still not visible
+      } else if (!value) {
+        // hide and disable everything fromthe group
+        child->setDisabled(true);
+        mapLayers.find(child).value()->emitChecked(false);
+      }
     }
   }
   if (it.value() == NULL)
     return;
-  if (item->checkState(column) == Qt::Checked) {
+  if (value) {
     it.value()->emitChecked(true);
-  } else if (item->checkState(column) == Qt::Unchecked) {
+  } else if (!value) {
     it.value()->emitChecked(false);
   }
 }
 
 void MapLayerGroup::addIntoList(QTreeWidgetItem *item,
   int pos, QTreeWidgetItem* toTree) {
-  // if this is the first item, create the tree:
-  if (mapLayers.empty()) {
+  // if this is the first layer item (there is always one for the group),
+  // create the tree:
+  if (mapLayers.count() == 1) {
     displayTree();
   }
 

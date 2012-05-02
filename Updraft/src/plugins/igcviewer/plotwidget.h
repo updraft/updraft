@@ -20,9 +20,17 @@ class PlotWidget : public QWidget {
   PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
     IgcInfo *groundSpeedInfo);
 
+  /// sets the line to the time, and returns the x position of the line
+  int setPickedTime(int time);
+
+  /// sets the line to position x, and returns the time of the pick
+  int setPickedLine(int x);
+
  signals:
   void updateCurrentInfo(const QString& text);
   void updatePickedInfo(const QString& text);
+  void timeWasPicked(QTime time);
+  void displayMarker(bool value);
 
  private:
   void paintEvent(QPaintEvent* paintEvent);
@@ -52,8 +60,8 @@ class PlotWidget : public QWidget {
   /// The coordinate to draw the vertical line where the mouse points.
   int xLine;
 
-  /// Time of the picked point.
-  qreal timePicked;
+  /// Time [in seconds] of the picked point.
+  int timePicked;
 
   /// The coordinate to draw the vertical line at a picked location
   /// - when user clicked on the graph.

@@ -18,6 +18,10 @@ QObject* IGCMapObject::asQObject() {
   return this;
 }
 
+OpenedFile* IGCMapObject::getFile() {
+  return file;
+}
+
 QString IgcViewer::getName() {
   return QString("igcviewer");
 }
@@ -170,6 +174,11 @@ bool IgcViewer::wantsToHandleClick(MapObject* obj) {
 
 /// Handles the left mouse click event on the IGC in the map.
 void IgcViewer::handleClick(MapObject* obj, const EventInfo* evt) {
+  IGCMapObject* iObj = qobject_cast<IGCMapObject*>(obj->asQObject());
+  if (iObj == NULL) {
+    return;
+  }
+  iObj->getFile()->trackClicked(evt);
 }
 
 /*void IgcViewer::fileIdentification(QStringList *roles,
