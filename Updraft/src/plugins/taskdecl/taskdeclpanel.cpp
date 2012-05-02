@@ -62,14 +62,10 @@ void TaskDeclPanel::addTpButtonPushed() {
 
   // Uncheck all other addTp buttons
   QAbstractButton* senderButton = qobject_cast<QAbstractButton*>(sender());
-
-  foreach(QAbstractButton* toUntoggle, addButtons->buttons()) {
-    if (toUntoggle == senderButton) {
-      continue;
-    }
-
-    toUntoggle->setChecked(false);
-  }
+  bool newCheckedState = senderButton->isChecked();
+  uncheckAllAddTpButtons();
+  senderButton->setChecked(newCheckedState);
+  isBeingEdited = senderButton->isChecked();
 }
 
 void TaskDeclPanel::removeTpButtonPushed() {
@@ -109,21 +105,37 @@ void TaskDeclPanel::redoButtonPushed() {
 }
 
 void TaskDeclPanel::updateButtons() {
-  qDebug() << "updateButtons()";
   TaskFile* file = taskLayer->getTaskFile();
 
   if (!file) return;
 
-  // Iterate over the task data
+  // First, we need to uncheck all buttons
+  uncheckAllAddTpButtons();
+
+  // Iterate over the task data and update the buttons
   const TaskData* data = file->beginRead();
   int pos = 0;
+  bool newButtonCheckState = false;
+  bool buttonAlreadyToggled = false;
   while (const TaskPoint* point = data->getTaskPoint(pos)) {
-    qDebug() << "taskPoint pos: " << pos;
     if (!tpButtonExists(pos)) {
       newTurnpointButton(pos, point->getName());
-      newAddTpButton(pos+1, false);
+      if (!buttonAlreadyToggled) {
+        buttonAlreadyToggled = true;
+        newButtonCheckState = isBeingEdited;
+      } else {
+        newButtonCheckState = false;
+      }
+      newAddTpButton(pos+1, newButtonCheckState);
     } else if (!tpButtonCorrect(pos, point)) {
+      if (!buttonAlreadyToggled) {
+        buttonAlreadyToggled = true;
+        newButtonCheckState = isBeingEdited;
+      } else {
+        newButtonCheckState = false;
+      }
       updateTpButton(pos, point);
+      updateAddTpButton(pos+1, newButtonCheckState);
     }
     pos++;
   }
@@ -131,7 +143,6 @@ void TaskDeclPanel::updateButtons() {
 
   // Iterate over any remaining task buttons
   while (tpButtonExists(pos)) {
-    qDebug() << "tpButtonExists: " << pos;
     removeTpButtons(pos);
   }
 }
@@ -266,6 +277,12 @@ void TaskDeclPanel::adjustAddTpText() {
   }
 }
 
+void TaskDeclPanel::uncheckAllAddTpButtons() {
+  foreach(QAbstractButton* toUntoggle, addButtons->buttons()) {
+    toUntoggle->setChecked(false);
+  }
+}
+
 bool TaskDeclPanel::tpButtonExists(int pos) {
   int layoutPos = tpIndexToLayoutPos(pos);
   QLayoutItem* item = ui->taskButtonsLayout->itemAt(layoutPos);
@@ -305,6 +322,19 @@ void TaskDeclPanel::updateTpButton(int pos, const TaskPoint* point) {
   }
 
   button->setName(point->getName());
+}
+
+void TaskDeclPanel::updateAddTpButton(int pos, bool checkState) {
+  int layoutPos = addIndexToLayoutPos(pos);
+  QLayoutItem* item = ui->taskButtonsLayout->itemAt(layoutPos);
+  QWidget* widget = item->widget();
+  QAbstractButton* button = qobject_cast<QAbstractButton*>(widget);
+  if (!button) {
+    qDebug() << "unable to cast in updateAddTpButton method";
+    return;
+  }
+
+  button->setChecked(checkState);
 }
 
 void TaskDeclPanel::removeTpButtons(int pos) {

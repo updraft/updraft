@@ -63,6 +63,8 @@ class TaskDeclPanel : public QWidget {
   bool tpButtonCorrect(int pos, const TaskPoint* point);
   /// Updates the taskpoint button to represent the given TurnPoint.
   void updateTpButton(int pos, const TaskPoint* point);
+  /// Updates the add taskpoint button by changing its check state.
+  void updateAddTpButton(int pos, bool checkState);
 
   /// Removes TaskPoint buttons for the given position.
   void removeTpButtons(int pos);
@@ -75,11 +77,16 @@ class TaskDeclPanel : public QWidget {
   QString addTpText;  // This is here because of translations
   /// Hides or shows the add turnpoint button text according to button number
   void adjustAddTpText();
+  /// Untoggles all plus signs that serve for adding taskpoints
+  void uncheckAllAddTpButtons();
 
   Ui::TaskDeclPanel *ui;
 
   /// Button group that ensures just one checked add tp button
   QButtonGroup* addButtons;
+
+  /// Flag that says, whether the task is being edited
+  bool isBeingEdited;
 
   /// Axis with lengths of task legs
   TaskAxis *taskAxis;
