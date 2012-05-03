@@ -1,7 +1,7 @@
 #ifndef UPDRAFT_SRC_PLUGINS_TASKDECL_DATAHISTORY_H_
 #define UPDRAFT_SRC_PLUGINS_TASKDECL_DATAHISTORY_H_
 
-#include <QList>
+#include <QLinkedList>
 
 namespace Updraft {
 
@@ -14,12 +14,15 @@ class TaskData;
 class DataHistory {
  public:
   /// Creates DataHistory object with one default data entry.
-  DataHistory();
+  explicit DataHistory();
 
   virtual ~DataHistory();
 
   /// \return Current item
   TaskData* getCurrent();
+
+  /// Same as non-const getCurrent()
+  const TaskData* getCurrent() const;
 
   /// \return true if the current item is the first in the DataHistory
   bool isFirst() const;
@@ -31,10 +34,12 @@ class DataHistory {
   bool isMarked() const;
 
   /// Ascends to the next item in the DataHistory.
-  void moveForward();
+  /// \return true if the current iterator has been moved.
+  bool moveForward();
 
-  /// Step back to the previous item in the DataHistory.
-  void moveBack();
+  /// Steps back to the previous item in the DataHistory.
+  /// \return true if the current iterator has been moved.
+  bool moveBack();
 
   /// Removes all newer items than current.
   /// Creates copy of the current item, appends it to the DataHistory
@@ -45,7 +50,7 @@ class DataHistory {
   void setMark();
 
  private:
-  typedef QList<TaskData*> DataContainer;
+  typedef QLinkedList<TaskData*> DataContainer;
   typedef DataContainer::iterator DataIterator;
 
   /// Container storing data history.

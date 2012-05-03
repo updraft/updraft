@@ -1,5 +1,6 @@
 #include "updraft.h"
 #include "ui/maplayergroup.h"
+#include "util/util.h"
 
 namespace Updraft {
 namespace Core {
@@ -22,6 +23,12 @@ Updraft::Updraft(int argc, char** argv)
   sceneManager = new SceneManager(
     QCoreApplication::applicationDirPath() + "/data/initial.earth");
 
+  // Initializes list of available ellipsoids.
+  ellipsoids.append(new Util::Ellipsoid("WGS84",
+    Util::Units::WGS84EquatRadius(), Util::Units::WGS84Flattening()));
+  ellipsoids.append(new Util::Ellipsoid("FAI Sphere",
+    Util::Units::FAISphereRadius()));
+
   // Create the map layer group for initial map.
   osgEarth::MapNode* map = sceneManager->getMapNode();
   osg::Group* group = updraft->sceneManager->newGroup();
@@ -43,6 +50,9 @@ Updraft::~Updraft() {
   delete fileTypeManager;
   delete settingsManager;
   delete mainWindow;
+  foreach(Util::Ellipsoid *e, ellipsoids) {
+    delete e;
+  }
 }
 
 QString Updraft::getDataDirectory() {

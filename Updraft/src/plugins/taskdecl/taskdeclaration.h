@@ -26,7 +26,7 @@ class Q_DECL_EXPORT TaskDeclaration: public QObject, public PluginBase {
 
   unsigned getPriority();
 
-  void initialize();
+  void initialize(CoreInterface *coreInterface);
   void deinitialize();
 
   bool wantsToHandleClick(MapObject* obj);

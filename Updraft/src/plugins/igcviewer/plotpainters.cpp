@@ -4,41 +4,110 @@
 namespace Updraft {
 namespace IgcViewer {
 
-const QBrush VerticalSpeedPlotPainter::POSITIVE_BRUSH = QBrush(Qt::red);
-const QPen VerticalSpeedPlotPainter::POSITIVE_PEN = QPen(Qt::red);
-const QBrush VerticalSpeedPlotPainter::NEGATIVE_BRUSH = QBrush(Qt::blue);
-const QPen VerticalSpeedPlotPainter::NEGATIVE_PEN = QPen(Qt::blue);
+const QBrush VerticalSpeedPlotPainter::POSITIVE_BRUSH =
+  QBrush(QColor(100, 100, 255));
+const QPen VerticalSpeedPlotPainter::POSITIVE_PEN = QPen(QColor(100, 100, 255));
+const QBrush VerticalSpeedPlotPainter::NEGATIVE_BRUSH = QBrush(Qt::red);
+const QPen VerticalSpeedPlotPainter::NEGATIVE_PEN = QPen(Qt::red);
 
-void PlotPainter::init(QPainter *painter, PlotAxes *axes, IgcInfo *info) {
-  this->painter = painter;
+void PlotPainter::init(PlotAxes *axes, IgcInfo *info) {
   this->axes = axes;
   this->info = info;
+
+  connect(axes, SIGNAL(geometryChanged()), this, SLOT(updateBuffer()));
 }
 
-void PlotPainter::draw() {
+void PlotPainter::draw(QPainter* painter) {
+  this->painter = painter;
+  axes->draw(painter);
+  flushBuffer();
+}
+
+int PlotPainter::getMinX() {
+  return dataValues.first().pixel;
+}
+
+int PlotPainter::getMaxX() {
+  return dataValues.last().pixel;
+}
+
+void PlotPainter::updateBuffer() {
+  computePoints();
+  computeDrawingData();
+}
+
+void PlotPainter::computePoints() {
+  buffer.clear();
+  dataValues.clear();
   int count = 1;
   int x = qFloor(axes->placeX(info->absoluteTime(0)));
   qreal sum = axes->placeY(info->value(0));
-
-  axes->draw(painter);
+  qreal dataSum = info->value(0);
 
   for (int i = 1; i < info->count(); ++i) {
     int newX = qFloor(axes->placeX(info->absoluteTime(i)));
 
     if (newX != x) {
       buffer.append(QPointF(x + 0.5, sum / count));
+      Data d = {x, dataSum / count};
+      dataValues.append(d);
       count = 0;
       x = newX;
       sum = 0;
+      dataSum = 0;
     }
 
     count += 1;
     sum += axes->placeY(info->value(i));
+    dataSum += info->value(i);
   }
 
   buffer.append(QPointF(x + 0.5, sum / count));
-  flushBuffer();
-  buffer.clear();
+  Data d = {x, dataSum / count};
+  dataValues.append(d);
+}
+
+qreal PlotPainter::getValueAtPixelX(int x) {
+    // deal with extreme cases:
+  if (dataValues.empty()) return 0;
+  if (x < dataValues.first().pixel) return 0;
+  if (x > dataValues.last().pixel) return 0;
+
+    // guess the position: this should be most of the times
+    // the correct guess
+  int begin = dataValues[0].pixel;
+  int guess = x - begin;
+  int position;
+  if ((guess >= 0) && (guess < dataValues.size())) {
+    position = guess;
+  } else {
+    position = dataValues.size()/2;
+  }
+  if (x == dataValues[position].pixel) {
+    return dataValues[position].value;
+  } else {
+    if (x < dataValues[position].pixel) {
+      while (x < dataValues[position].pixel) position--;
+      return (dataValues[position].value +
+        ((x-dataValues[position].pixel) /
+          (dataValues[position+1].pixel - dataValues[position].pixel))
+        * dataValues[position].value);
+    } else {  // x > dataValues[position].pixel
+      while (x > dataValues[position].pixel) position++;
+      return (dataValues[position-1].value +
+        ((x-dataValues[position-1].pixel) /
+          (dataValues[position].pixel - dataValues[position-1].pixel))
+        * dataValues[position-1].value);
+    }
+  }
+}
+
+qreal PlotPainter::getTimeAtPixelX(int x) {
+  return axes->getInverseX(x);
+}
+
+void PlotPainter::computeDrawingData() {
+  // do nothing, everything is already in the buffer.
 }
 
 void AltitudePlotPainter::flushBuffer() {
@@ -46,15 +115,17 @@ void AltitudePlotPainter::flushBuffer() {
   painter->drawPolyline(buffer);
 }
 
-void VerticalSpeedPlotPainter::flushBuffer() {
+void VerticalSpeedPlotPainter::computeDrawingData() {
+    // clear the polygons lists
+  positivePolygons.clear();
+  negativePolygons.clear();
+
   if (buffer.empty()) return;
   int x = buffer[0].x();
   int y = buffer[0].y();
   int newX = x;
   int newY = y;
   int base = axes->placeY(0);
-  int b = axes->getBase();
-  qDebug() << base << b;
   QPolygon polygon;
 
   polygon << QPoint(x, base) << QPoint(x, y);
@@ -73,17 +144,13 @@ void VerticalSpeedPlotPainter::flushBuffer() {
       int baseIsecX = x + ratio1*((qreal)(newX-x) / (ratio1+ratio2));
       if ((y <= base) && (newY >= base)) {  // we ended the negative part
         polygon << QPoint(baseIsecX, base);
-        painter->setBrush(NEGATIVE_BRUSH);
-        painter->setPen(NEGATIVE_PEN);
-        painter->drawPolygon(polygon);
+        negativePolygons.append(polygon);
           // clear the polygon, and start a new one
         polygon.clear();
         polygon << QPoint(baseIsecX+1, base) << QPoint(newX, newY);
       } else {  // we ended the positive part
         polygon << QPoint(baseIsecX, base);
-        painter->setBrush(POSITIVE_BRUSH);
-        painter->setPen(POSITIVE_PEN);
-        painter->drawPolygon(polygon);
+        positivePolygons.append(polygon);
           // clear the polygon, and start a new one
         polygon.clear();
         polygon << QPoint(baseIsecX+1, base) << QPoint(newX, newY);
@@ -92,7 +159,19 @@ void VerticalSpeedPlotPainter::flushBuffer() {
     x = newX;
     y = newY;
   }
-  // painter->drawPolyline(buffer);
+}
+
+void VerticalSpeedPlotPainter::flushBuffer() {
+  painter->setBrush(POSITIVE_BRUSH);
+  painter->setPen(POSITIVE_PEN);
+  for (int i = 0; i < positivePolygons.size(); i++) {
+    painter->drawPolygon(positivePolygons[i]);
+  }
+  painter->setBrush(NEGATIVE_BRUSH);
+  painter->setPen(NEGATIVE_PEN);
+  for (int i = 0; i < negativePolygons.size(); i++) {
+    painter->drawPolygon(negativePolygons[i]);
+  }
 }
 
 void GroundSpeedPlotPainter::flushBuffer() {

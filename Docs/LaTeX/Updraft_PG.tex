@@ -1,0 +1,206 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%												%
+%		Updraft programmers guide 				%
+%			Authors: 							%
+%				Ales Zita						%
+%				Bohdan Maslowski				%
+%				Cestmir Houska					%
+%				Jakub Marek						%
+%				Maria Vamosova					%
+%				Tomas Zamecnik					%
+%												%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%		
+%
+%		Change Log :
+%			2012/05/01 Programmers guide  template started
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+
+
+\documentclass[12pt,a4paper]{refart}
+%\documentclass[12pt,a4paper]{memoir}
+\listfiles
+
+\usepackage{ifpdf}
+\ifpdf
+\usepackage[pdftex,
+            pagebackref=true,
+            colorlinks=true,
+            linkcolor=blue,
+            unicode
+           ]{hyperref}
+\else
+\usepackage[ps2pdf,
+            pagebackref=true,
+            colorlinks=true,
+            linkcolor=blue,
+            unicode
+           ]{hyperref}
+\usepackage{pspicture}
+\fi
+
+
+\evensidemargin{1in}
+
+%\usepackage{comment}
+%%uncomment this
+%\usepackage{memsty}
+
+%%%% Use the built-in division styling
+%\headstyles{memman}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%				Preamble End
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\evensidemargin{1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%		 		Title
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Updraft \\ Programmers guide}
+ \author{Team Leader : \\
+	%Tom\'{a}\v{s} Z\'{a}me\v{c}n\'{i}k\\
+	Tomas Zamecnik \\
+	Team Members : \\
+	Ales Zita \\
+	Bohdan Maslowski \\
+	Cestmir Houska \\
+	Jakub Marek \\
+	Maria Vamosova \\
+	%Ale\v{s} Zita \\
+	%Bohdan Maslowski \\
+	%\V{C}estm\'{i}r Hou\v{s}ka \\
+	%Jakub Marek \\
+	%M\'{a}ria V\'{a}mo\v{s}ov\'{a} \\
+	Team Supervisor :\\
+	Alexandr Wilkie\\
+   Faculty of Mathematics and Physics,\\
+   Charles University,\\
+   Prague,\\
+   Czech Republic,\\
+   \texttt{sbdy@mff.cuni.cz}}
+ \date{\today}
+
+\maketitle
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%               Table of Content        					
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+ 
+ % ToC, etc
+%%%\pagenumbering{roman}
+\pagestyle{headings}
+%%%%\pagestyle{Ruled}
+
+%  uncomment these :
+%\setupshorttoc
+%\setupparasubsecs
+%\setupmaintoc
+%\tableofcontents
+%\setlength{\unitlength}{1pt}
+
+\setcounter{secnumdepth}{1}
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%               Introduction        					
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+
+%\chapter{Introduction}
+
+\section{Introduction}
+
+\subsection{Glidepath visualisation}
+
+\subsection{The Updraft project}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%               Third Party software        					
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+
+\input 3rdPartySW
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%               Third Party data        					
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+
+\input 3rdPartyData
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%               Program Architecture        					
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Use this section to describe the basic program design / architecture
+
+\clearpage
+
+\section{Program Achitecture}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%               Core        					
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+
+\input Core
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%               Plugins        					
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+
+\section{Updraft Plugins}
+
+\input Airspaces
+
+\input Airfields
+
+\input TurnPoints
+
+\input IGC
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%               Conclusion or smt        					
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+
+\section{Conclusion}
+BlahBlahblah ..
+
+
+\nocite{*}
+
+\end{document}
+
+\endinput

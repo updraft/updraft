@@ -30,7 +30,7 @@ class TPS_EXPORT TurnPoints : public QObject, public PluginBase {
 
   unsigned getPriority();
 
-  void initialize();
+  void initialize(CoreInterface *coreInterface);
 
   void deinitialize();
 
@@ -39,6 +39,7 @@ class TPS_EXPORT TurnPoints : public QObject, public PluginBase {
   void fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename);
 
+  void fillContextMenu(MapObject* obj, MenuInterface* menu);
   bool wantsToHandleClick(MapObject* obj);
   void handleClick(MapObject* obj, const EventInfo* evt);
  public slots:
@@ -67,6 +68,9 @@ class TPS_EXPORT TurnPoints : public QObject, public PluginBase {
   /// Creates new layer item, adds item to the left pane
   /// \param file associated data file (is deleted on layer destruction)
   void addLayer(TPFile *file);
+
+  /// TP settings to be stored in settings array.
+  QVector<SettingInterface*> settings;
 };
 
 }  // End namespace Updraft

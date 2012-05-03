@@ -6,7 +6,7 @@ namespace Updraft {
 DataHistory::DataHistory() {
   dataContainer.append(new TaskData());
   currentItem = dataContainer.begin();
-  markedItem = dataContainer.end();
+  markedItem = currentItem;
 }
 
 DataHistory::~DataHistory() {
@@ -16,6 +16,10 @@ DataHistory::~DataHistory() {
 }
 
 TaskData* DataHistory::getCurrent() {
+  return *currentItem;
+}
+
+const TaskData* DataHistory::getCurrent() const {
   return *currentItem;
 }
 
@@ -31,14 +35,22 @@ bool DataHistory::isMarked() const {
   return markedItem == currentItem;
 }
 
-void DataHistory::moveForward() {
-  if (!isLast())
+bool DataHistory::moveForward() {
+  if (!isLast()) {
     ++currentItem;
+    return true;
+  }
+
+  return false;
 }
 
-void DataHistory::moveBack() {
-  if (!isFirst())
+bool DataHistory::moveBack() {
+  if (!isFirst()) {
     --currentItem;
+    return true;
+  }
+
+  return false;
 }
 
 void DataHistory::storeState() {

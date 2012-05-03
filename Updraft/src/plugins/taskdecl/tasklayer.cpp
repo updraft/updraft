@@ -1,4 +1,9 @@
 #include <osg/Group>
+#include <osg/Geode>
+#include <osg/Geometry>
+#include <osg/LineWidth>
+#include <osgEarthUtil/ObjectPlacer>
+#include <osgEarthSymbology/MeshSubdivider>
 #include "tasklayer.h"
 #include "coreinterface.h"
 #include "tabinterface.h"
@@ -7,6 +12,7 @@
 #include "taskdata.h"
 #include "taskpoint.h"
 #include "../turnpoints/turnpoint.h"
+#include "pluginbase.h"
 
 namespace Updraft {
 
@@ -21,9 +27,8 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   tabSelectedState(true),
   newTaskIndex(_newTaskIndex) {
   // Create new tab in bottom pane.
-  panel = new TaskDeclPanel();
-  panel->setTaskLayer(this);
-  tab = plugin->core->createTab(panel, getTitle());
+  panel = new TaskDeclPanel(this);
+  tab = g_core->createTab(panel, getTitle());
 
   // Connect tab's signals onto the taskLayer
   tab->connectSignalSelected(this, SLOT(tabSelected()));
@@ -35,10 +40,21 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   // Create new mapLayer in mapLayerGroup, assign osgNode and title.
   mapLayer = plugin->mapLayerGroup->insertMapLayer(getNode(), getTitle(), -1);
 
-  mapLayer->connectSignalDisplayed(this,
+  // Connect display and close signals
+  mapLayer->connectSignalChecked(this,
     SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
-
   tab->connectSignalCloseRequested(this, SLOT(tryCloseLayer()));
+
+  // Connect the dataChanged signal
+  connect(this->file, SIGNAL(dataChanged()),
+    this->panel, SLOT(updateButtons()));
+  connect(file, SIGNAL(dataChanged()), this, SLOT(taskDataChanged()));
+
+  // Connect the storageStateChanged signal
+  connect(file, SIGNAL(storageStateChanged()),
+    this, SLOT(taskStorageStateChanged()));
+
+  taskDataChanged();
 }
 
 TaskLayer::~TaskLayer() {
@@ -103,15 +119,11 @@ void TaskLayer::newTaskPoint(const TurnPoint* tp) {
   if (tpIndex < 0) return;
 
   // Modify the file data
-  TaskData* tData = file->beginEdit();
+  TaskData* tData = file->beginEdit(true);
   TaskPoint* newPoint = new TaskPoint();
   newPoint->setTP(tp);
   tData->insertTaskPoint(newPoint, tpIndex);
-  file->endEdit(false);  // TODO(cestmir): Create redo/undo
-
-  // Modify GUI
-  panel->newTurnpointButton(tpIndex, tp->name);
-  panel->newAddTpButton(tpIndex + 1, true);
+  file->endEdit();
 }
 
 void TaskLayer::save() {
@@ -126,6 +138,14 @@ void TaskLayer::save() {
       file->save();
       break;
   }
+}
+
+void TaskLayer::undo() {
+  file->undo();
+}
+
+void TaskLayer::redo() {
+  file->redo();
 }
 
 void TaskLayer::saveAs() {
@@ -170,6 +190,85 @@ void TaskLayer::tabSelected() {
 
 void TaskLayer::tabDeselected() {
   tabSelectedState = false;
+}
+
+void TaskLayer::taskDataChanged() {
+  // Clears content of group node. (Erases old scene)
+  group->removeChildren(0, group->getNumChildren());
+
+  // Draws lines, adds them to group.
+  osg::Geode *geodeLines = new osg::Geode();
+  DrawLines(geodeLines);
+  group->addChild(geodeLines);
+}
+
+void TaskLayer::taskStorageStateChanged() {
+  tab->setTitle(getTitle());
+  plugin->mapLayerGroup->setMapLayerTitle(mapLayer, getTitle());
+}
+
+void TaskLayer::DrawLines(osg::Geode *geode) {
+  // Creates geometry object and draw array.
+  osg::Geometry* geom = new osg::Geometry();
+  geode->addDrawable(geom);
+
+  osg::DrawArrays* drawArrayLines =
+    new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP);
+
+  geom->addPrimitiveSet(drawArrayLines);
+
+  osg::Vec3Array* vertexData = new osg::Vec3Array();
+  geom->setVertexArray(vertexData);
+
+  // Loads TaskData.
+  const TaskData *taskData = file->beginRead();
+  if (taskData == NULL) {
+    return;
+  }
+
+  osgEarth::Util::ObjectPlacer *objectPlacer =
+    plugin->mapLayerGroup->getObjectPlacer();
+
+  // Reads all task points and fills draw array.
+  int pointIndex = 0;
+  const TaskPoint *point = NULL;
+  while ((point = taskData->getTaskPoint(pointIndex))) {
+    osg::Matrixd matrix;
+
+    // TODO(Tom): correct altitude
+    objectPlacer->createPlacerMatrix(point->getLocation().lat,
+      point->getLocation().lon, point->getLocation().alt + 1000.0, matrix);
+
+    vertexData->push_back(osg::Vec3(0.0, 0.0, 0.0) * matrix);
+    ++pointIndex;
+  }
+
+  file->endRead();
+
+  drawArrayLines->setFirst(0);
+  drawArrayLines->setCount(vertexData->size());
+
+  // Subdivides lines
+  osgEarth::Symbology::MeshSubdivider meshSubdivider;
+  meshSubdivider.run(*geom, 0.01, osgEarth::GEOINTERP_GREAT_CIRCLE);
+
+  // Sets lines appearance.
+
+  osg::StateSet* stateSet = geode->getOrCreateStateSet();
+
+  // Turns off lighting.
+  stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+  // Sets line width.
+  osg::LineWidth* linewidth = new osg::LineWidth();
+  linewidth->setWidth(4.0);
+  stateSet->setAttributeAndModes(linewidth, osg::StateAttribute::ON);
+
+  // Sets line color.
+  osg::Vec4Array* colors = new osg::Vec4Array;
+  colors->push_back(osg::Vec4(1.0, 1.0, 0.5, 1.0));
+  geom->setColorArray(colors);
+  geom->setColorBinding(osg::Geometry::BIND_OVERALL);
 }
 
 }  // End namespace Updraft

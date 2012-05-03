@@ -43,22 +43,28 @@ void MapLayer::connectSignalDisplayed(const QObject *receiver,
   connect(this, SIGNAL(displayed(bool, MapLayerInterface*)), receiver, method);
 }
 
+void MapLayer::connectSignalChecked(const QObject *receiver,
+  const char *method) {
+  connect(this, SIGNAL(checked(bool, MapLayerInterface*)), receiver, method);
+}
+
 void MapLayer::connectSlotSetVisibility(const QObject *sender,
   const char* method) {
   connect(sender, method, this, SLOT(setVisibility(bool)));
 }
 
-void MapLayer::connectDisplayedToVisibility() {
-  connect(this, SIGNAL(displayed(bool, MapLayerInterface*)),
+void MapLayer::connectCheckedToVisibility() {
+  connect(this, SIGNAL(checked(bool, MapLayerInterface*)),
     this, SLOT(setVisibility(bool)));
 }
 
-void MapLayer::emitDisplayed(bool value) {
-  emit displayed(value, this);
+void MapLayer::emitChecked(bool value) {
+  emit checked(value, this);
 }
 
 void MapLayer::setVisibility(bool value) {
   setVisible(value);
+  emit displayed(value, this);
 }
 
 MapLayerType MapLayer::getType() {
@@ -100,6 +106,32 @@ void MapLayer::setVisible(bool value) {
       break;
     }
   }
+}
+
+bool MapLayer::isVisible() {
+  switch (layerType) {
+    case OSG_NODE_LAYER: {
+      if (layer.osgNode->getNodeMask() == 0x0) {
+        return false;
+      } else {
+        return true;
+      }
+      break;
+    }
+    case IMAGE_LAYER: {
+      return layer.imageLayer->getEnabled();
+      break;
+    }
+    case ELEVATION_LAYER: {
+      return layer.elevationLayer->getEnabled();
+      break;
+    }
+    case MODEL_LAYER: {
+      return layer.modelLayer->getEnabled();
+      break;
+    }
+  }
+  return false;
 }
 
 }  // End namespace Core

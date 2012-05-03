@@ -25,11 +25,17 @@ class MenuInterface {
   /// Insert action into this menu.
   /// \param position Priority of this action. Actions with
   ///   lower value are closer to the top.
-  virtual void insertAction(int position, QAction* action) = 0;
+  /// \param action The action to be inserted
+  /// \param own Whether the menu should own the given action
+  virtual void insertAction(
+    int position,
+    QAction* action,
+    bool own = false) = 0;
 
   /// Append action to the last place of this menu.
   /// \param action The action to be appended
-  virtual void appendAction(QAction* action) = 0;
+  /// \param own Whether the menu should own the given action
+  virtual void appendAction(QAction* action, bool own = false) = 0;
 };
 
 }  // End namespace Updraft

@@ -2,6 +2,8 @@
 #define UPDRAFT_SRC_MAPLAYERGROUPINTERFACE_H_
 
 #include "maplayerinterface.h"
+#include <QVector>
+#include <QPair>
 
 class QTreeWidgetItem;
 
@@ -53,9 +55,15 @@ class MapLayerGroupInterface {
     (osgEarth::ElevationLayer* layer, const QString& title, int pos = -1) = 0;
   virtual MapLayerInterface* insertMapLayer
     (osgEarth::ModelLayer* layer, const QString& title, int pos = -1) = 0;
+  virtual QVector<MapLayerInterface*>* insertMapLayerGroup
+    (QVector<QPair<osg::Node*, QString> > * mapLayerGroup,
+    const QString& title, int pos = -1) = 0;
 
   /// Removes map layer.
   virtual void removeMapLayer(MapLayerInterface* layer) = 0;
+
+  /// Sets title of the map layer (displayed in the left pane).
+  virtual void setMapLayerTitle(MapLayerInterface* layer, const QString &title) = 0;
 
   /// Creates the treeItem, without any map layer dependency.
   virtual QTreeWidgetItem* createTreeItem

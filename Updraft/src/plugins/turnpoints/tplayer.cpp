@@ -10,6 +10,7 @@
 #include "coreinterface.h"
 #include "turnpoints.h"
 #include "mapobject.h"
+#include "pluginbase.h"
 
 namespace Updraft {
 
@@ -106,20 +107,16 @@ osg::Node* TPLayer::createAutoScale(
   qreal minScale,
   qreal maxScale) {
   // Creates the autoscale transform node
-  QString fontName = "AmphionExtrabold Regular.ttf";
+  QString fontName = "LiberationSans-Regular.ttf";
   QString fontPath = dataDir + "/" + fontName;
 
   // set the osgText
   osgText::Text* text = new osgText::Text;
   text->setCharacterSize(static_cast<float>(characterSize));
-  // if contains the white char
-  // QString mess(message.simplified());
-  // while (mess.indexOf(' ') != -1) {
-    // mess.replace(mess.indexOf(' '), 1, "_");
-  // }
   text->setText(message.toStdString());
   text->setFont(fontPath.toStdString());
-  text->setAlignment(osgText::Text::LEFT_BASE_LINE);
+  text->setFontResolution(20, 20);
+  text->setAlignment(osgText::Text::LEFT_BOTTOM);
   text->setColor(labelColour);
 
   // define the geode
@@ -127,16 +124,26 @@ osg::Node* TPLayer::createAutoScale(
   geode->addDrawable(text);
   geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
-  /* Create billboard
+  // Disables depth test.
+  geode->getOrCreateStateSet()->setMode(GL_DEPTH_TEST,
+    osg::StateAttribute::OFF);
+
+  // Create billboard
   osg::Billboard* nameBill = new osg::Billboard();
   nameBill->addDrawable(text);
   nameBill->setMode(osg::Billboard::AXIAL_ROT);
-  nameBill->setAxis(osg::Vec3(0.0, -1.0, 0.0f));
-  nameBill->setNormal(osg::Vec3(0.0, -1.0, 0.0f)); */
+  nameBill->setAxis(osg::Vec3(0.0, 1.0, 0.0f));
+  nameBill->setNormal(osg::Vec3(0.0, 0.0, 1.0f));
+  nameBill->getOrCreateStateSet()->
+    setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+  // Create LOD
+  osg::LOD* lblLOD = new osg::LOD();
+  lblLOD->addChild(geode, 0, labelDrawDist);
 
   // Create the autotransform
-  osg::AutoTransform* at = new osg::AutoTransform;
-  at->addChild(geode);
+  osg::AutoTransform* at = new osg::AutoTransform();
+  at->addChild(lblLOD);
 
   at->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_SCREEN);
   at->setAutoScaleToScreen(true);
@@ -149,7 +156,7 @@ osg::Node* TPLayer::createAutoScale(
 
 TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
   const TPFile *file_, const QString &dataDir_, TurnPoints* parent_,
-  CoreInterface* core)
+  const QVector<SettingInterface*>& settings)
   : group(new osg::Group()), objectPlacer(objectPlacer_),
   file(file_), displayed(displayed_), dataDir(dataDir_), parent(parent_) {
   if (group == NULL || objectPlacer == NULL || file == NULL) {
@@ -157,29 +164,20 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
   }
 
   // Settings
-  // set defaults
-  core->addSettingsGroup(
-    "Turnpoints", "Turnpoints Plugin Settings");
-  labColSetR = core->addSetting("Turnpoints:labelColourR",
-    "Colour of the turnpoint labels - RED", 1.0);
-  labColSetG = core->addSetting("Turnpoints:labelColourG",
-    "Colour of the turnpoint labels - GREEN", 1.0);
-  labColSetB = core->addSetting("Turnpoints:labelColourB",
-    "Colour of the turnpoint labels - BLUE", 1.0);
-  labColSetA = core->addSetting("Turnpoints:labelColourA",
-    "Colour of the turnpoint labels - ALPHA", 1.0);
-  labMaxScaleSet = core->addSetting("Turnpoints:labelMaxScale",
-    "Maximum scale for label", 30.0, true);
-  labMinScaleSet = core->addSetting("Turnpoints:labelMinScale",
-    "Minimum scale for label", 20.0, true);
   // get stored values
+  if (settings.size() < 8) {
+    qDebug("Not enough settings params.");
+    return;
+  }
   labelColour   = osg::Vec4(
-    labColSetR->get().toFloat(),
-    labColSetG->get().toFloat(),
-    labColSetB->get().toFloat(),
-    labColSetA->get().toFloat());
-  labelMaxScale = labMaxScaleSet->get().toFloat();
-  labelMinScale = labMinScaleSet->get().toFloat();
+    settings[0]->get().toFloat(),
+    settings[1]->get().toFloat(),
+    settings[2]->get().toFloat(),
+    settings[3]->get().toFloat());
+  labelMaxScale = settings[4]->get().toFloat();
+  labelMinScale = settings[5]->get().toFloat();
+  labelDrawDist = settings[6]->get().toFloat();
+  lblSize       = settings[7]->get().toFloat();
 
   // Create node for one turn-point.
   // It will be shared among Autotransform nodes.
@@ -191,6 +189,7 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
   for (TTPList::const_iterator itPoint = points.begin();
     itPoint != points.end(); ++itPoint) {
     osg::Matrixd matrix;
+    osg::Matrixd labelMatrix;
 
     // Add little random displacement to altitude.
     // Reason: If two overlapping objects are in the same height,
@@ -201,6 +200,10 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     // Turn-point is placed 100 meters above it's position (terrain).
     if (!objectPlacer->createPlacerMatrix(itPoint->location.lat,
       itPoint->location.lon, itPoint->location.alt + 100.0 + d, matrix)) {
+      continue;
+    }
+    if (!objectPlacer->createPlacerMatrix(itPoint->location.lat,
+      itPoint->location.lon, itPoint->location.alt + 500.0 + d, labelMatrix)) {
       continue;
     }
 
@@ -218,13 +221,13 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     // Make the autotransform node pickable
     TPMapObject* mapObject = new TPMapObject(&(*itPoint));
     mapObjects.push_back(mapObject);
-    parent->getCoreInterface()->registerOsgNode(tpNode, mapObject);
+    g_core->registerOsgNode(tpNode, mapObject);
 
     group->addChild(tpNode);
 
     group->addChild(createAutoScale(
-      matrix.getTrans(),
-      20.0,
+      labelMatrix.getTrans(),
+      lblSize,
       itPoint->name,
       labelMinScale,
       labelMaxScale));

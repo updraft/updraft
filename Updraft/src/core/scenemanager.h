@@ -6,6 +6,7 @@
 #include <QHash>
 #include <string>
 #include "mapmanager.h"
+#include "mapmanipulator.h"
 #include "../mapobject.h"
 
 namespace Updraft {
@@ -63,7 +64,8 @@ class SceneManager: public QObject {
   MapObject* getNodeMapObject(osg::Node* node);
 
  public slots:
-  void toggleView();
+  void resetNorth();
+  void untilt();
 
  private slots:
   void tick();
@@ -79,6 +81,7 @@ class SceneManager: public QObject {
 
   MapManager* mapManager;
   osg::Camera* camera;
+
   GraphicsWindow* graphicsWindow;
 
   /// If set then we should render a frame soon.
@@ -90,6 +93,8 @@ class SceneManager: public QObject {
   /// If set then there were some events that will probably need processing.
   bool eventDetected;
 
+  MapManipulator* manipulator;
+
   /// Timer that triggers the drawing procedure.
   QTimer* timer;
 
@@ -99,11 +104,18 @@ class SceneManager: public QObject {
   /// Map of osg nodes registered for mouse picking
   QHash<osg::Node*, MapObject*> pickingMap;
 
-  bool is2dEnabled;
+  osgEarth::Util::Viewpoint getHomePosition();
+  osgEarth::Util::Viewpoint getInitialPosition();
+  void startInitialAnimation();
+
+  void insertMenuItems();
+
+  bool isCameraPerspective;
+
   double getAspectRatio();
-  void setPerspectiveCamera(osg::Camera* camera);
-  void setOrthographicCamera(osg::Camera* camera);
-  void updateOrthographicCamera(osg::Camera* camera);
+
+  void updateCameraOrtho(osg::Camera* camera);
+  void updateCameraPerspective(osg::Camera* camera);
 
   friend class GraphicsWindow;
   friend class GraphicsWidget;

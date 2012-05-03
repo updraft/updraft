@@ -120,6 +120,7 @@ class SpeedIgcInfo : public IgcInfo {
  private:
   /// Return the speed of the segment before i
   /// (corresponding to distanceBefore(i)).
+  /// The value is in m/s.
   qreal speedBefore(int i) const;
 
   /// Return the distance of the segment before i (between fixes i-1 and i)
@@ -128,6 +129,9 @@ class SpeedIgcInfo : public IgcInfo {
 
 /// Calculates GPS speed.
 class GroundSpeedIgcInfo : public SpeedIgcInfo {
+ public:
+  qreal value(int i) const;
+
  private:
   qreal distanceBefore(int i) const;
 };

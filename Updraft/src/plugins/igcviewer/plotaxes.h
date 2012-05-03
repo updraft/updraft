@@ -11,7 +11,9 @@ namespace Updraft {
 namespace IgcViewer {
 
 /// X and Y axis for graph plotting.
-class PlotAxes : public QLayoutItem {
+class PlotAxes : public QObject, public QLayoutItem {
+  Q_OBJECT
+
  public:
   /// Overridden from QLayoutItem
   /// \{
@@ -24,13 +26,19 @@ class PlotAxes : public QLayoutItem {
   void setGeometry(const QRect& rect);
   /// \}
 
-  explicit PlotAxes(bool drawTimeTicks = true);
+  explicit PlotAxes(bool drawTimeTicks = true, bool drawAxisX = true);
 
   /// Get the X coordinate for drawing.
   qreal placeX(qreal x);
 
+  /// Get the inverse value for "placeX"
+  qreal getInverseX(qreal x);
+
   /// Get the Y coordinate for drawing.
   qreal placeY(qreal y);
+
+  /// Get the inverse value for "placeY"
+  qreal getInverseY(qreal y);
 
   /// Set the limits for drawing and recalculate all cached values.
   void setLimits(qreal min, qreal max, qreal minTime, qreal maxTime);
@@ -62,7 +70,13 @@ class PlotAxes : public QLayoutItem {
   /// Returns the number of the vertical ticks.
   int getLastHour();
 
+ signals:
+  void geometryChanged();
+
  private:
+  /// Signal change of geometry.
+  void emitGeometryChanged();
+
   /// Return tick value increment in vertical axis.
   qreal findTickIncrement(qreal range, qreal width, qreal minTickSpacing);
 
@@ -80,6 +94,9 @@ class PlotAxes : public QLayoutItem {
 
   /// Draw time ticks.
   bool drawTimeTicks;
+
+  /// Whether to draw the X axis.
+  bool drawAxisX;
 
   /// Position (in drawing cordinates) of the X base.
   qreal base;
@@ -112,27 +129,47 @@ class PlotAxes : public QLayoutItem {
   QVector<int> timeIntervalValues;
 };
 
-class AxisLabel : public QLayoutItem {
+class VerticalSpeedAxes : PlotAxes {
+ public:
+  /// Draw the axes to the painter
+  void draw(QPainter *painter);
+};
+
+class Label : public QLayoutItem {
+ public:
+  /// Overridden from QLayoutItem
+  /// \{
+  virtual Qt::Orientations expandingDirections() const;
+  virtual bool isEmpty() const;
+  virtual QRect geometry() const;
+  virtual QSize maximumSize() const;
+  virtual QSize minimumSize() const;
+  virtual QSize sizeHint() const;
+  virtual void setGeometry(const QRect& rect);
+  /// \}
+  virtual void draw(QPainter* painter);
+ protected:
+  QRect rect;
+};
+
+class AxisLabel : public Label {
  public:
   /// Overridden from QLayoutItem
   /// \{
   Qt::Orientations expandingDirections() const;
-  bool isEmpty() const;
-  QRect geometry() const;
   QSize maximumSize() const;
   QSize minimumSize() const;
   QSize sizeHint() const;
-  void setGeometry(const QRect& rect);
   /// \}
 
   /// Draw the labels to the painter.
   void draw(QPainter *painter);
 
-  explicit AxisLabel(PlotAxes* axis);
+  explicit AxisLabel(PlotAxes* axis, QString unitsDescription);
 
  private:
-  QRect rect;
   PlotAxes* axis;
+  QString unitsDescription;
 
   static const int MIN_WIDTH = 20;
   static const int MIN_HEIGHT = 20;
@@ -142,17 +179,38 @@ class AxisLabel : public QLayoutItem {
   static const QPen LABEL_PEN;
 };
 
-class TimeLabel : public QLayoutItem {
+class TextLabel : public Label {
  public:
   /// Overridden from QLayoutItem
   /// \{
   Qt::Orientations expandingDirections() const;
-  bool isEmpty() const;
-  QRect geometry() const;
   QSize maximumSize() const;
   QSize minimumSize() const;
   QSize sizeHint() const;
-  void setGeometry(const QRect& rect);
+  /// \}
+
+  /// Draw the labels to the painter.
+  void draw(QPainter *painter);
+
+  explicit TextLabel(QString text_);
+
+ private:
+  QString text;
+
+  static const int MIN_WIDTH = 100;
+  static const int MIN_HEIGHT = 15;
+
+  static const QPen LABEL_PEN;
+};
+
+class TimeLabel : public Label {
+ public:
+  /// Overridden from QLayoutItem
+  /// \{
+  Qt::Orientations expandingDirections() const;
+  QSize maximumSize() const;
+  QSize minimumSize() const;
+  QSize sizeHint() const;
   /// \}
 
   /// Draw the labels to the painter.
@@ -161,12 +219,10 @@ class TimeLabel : public QLayoutItem {
   explicit TimeLabel(PlotAxes* axis);
 
  private:
-  QRect rect;
   PlotAxes* axis;
 
   static const int MIN_WIDTH = 100;
-  static const int MIN_HEIGHT = 10;
-  static const int OFFSET_Y = 3;
+  static const int MIN_HEIGHT = 15;
   static const int TEXT_WIDTH_HEIGHT_RATIO = 4;
   static const int TEXT_MIN_WIDTH = 20;
 

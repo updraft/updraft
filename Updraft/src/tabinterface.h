@@ -43,6 +43,9 @@ class TabInterface {
 
   /// Select this tab in the tab pane.
   virtual void select() = 0;
+
+  /// Sets new title of this tab.
+  virtual void setTitle(const QString &title) = 0;
 };
 
 }  // End namespace Updraft

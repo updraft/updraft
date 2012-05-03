@@ -9,6 +9,8 @@
 namespace Updraft {
 namespace Core {
 
+typedef QPair<MapObject*, osg::Vec3> Pair;
+
 class PickHandler: public osgGA::GUIEventHandler {
  public:
   PickHandler(): mX(0), mY(0) {}
@@ -19,15 +21,18 @@ class PickHandler: public osgGA::GUIEventHandler {
   // Store mouse xy location for button press & move events.
   float mX, mY;
 
-  void raiseLeftClick(QVector<MapObject*> mapObjects);
-  void raiseRightClick(QVector<MapObject*> mapObjects);
+  void raiseLeftClick(QVector<Pair> mapObjects);
+  void raiseRightClick(QVector<Pair> mapObjects);
   MapObject* getMapObject(osg::Node* node);
 
   // Get all MapObjectes associated with intersected nodes.
-  QVector<MapObject*> getIntersectedMapObjects(
+  QVector<Pair> getIntersectedMapObjects(
     const double x,
     const double y,
     osgViewer::Viewer* viewer);
+
+  // List of all owned QActions that is used for destruction of these actions.
+  QList<QAction*> ownedActions;
 };
 
 }  // End namespace Core

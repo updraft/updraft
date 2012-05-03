@@ -41,7 +41,23 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   MapLayerInterface* insertMapLayer
     (osgEarth::ModelLayer* layer, const QString& title, int pos = -1);
 
+  /// Inserts the group of layers into the tree
+  QVector<MapLayerInterface*>* insertMapLayerGroup
+    (QVector<QPair<osg::Node*, QString> >* mapLayerGroup,
+    const QString& title, int pos = -1);
+  MapLayerInterface* insertMapLayerGroup
+    (QVector<QPair<osgEarth::ImageLayer*, QString> >* layerGroup,
+    const QString& title, int pos = -1);
+  MapLayerInterface* insertMapLayerGroup
+    (QVector<QPair<osgEarth::ElevationLayer*, QString> >* layerGroup,
+    const QString& title, int pos = -1);
+  MapLayerInterface* insertMapLayerGroup
+    (QVector<QPair<osgEarth::ModelLayer*, QString> >* layerGroup,
+    const QString& title, int pos = -1);
+
   void removeMapLayer(MapLayerInterface* layer);
+
+  void setMapLayerTitle(MapLayerInterface* layer, const QString &title);
 
   QTreeWidgetItem* createTreeItem(const QString& title, int pos = -1);
   void removeTreeItem(QTreeWidgetItem* item);
@@ -55,12 +71,19 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   /// \param column horizontal position in tree view (not used)
   virtual void itemChanged(QTreeWidgetItem *item, int column);
 
+  /// if any map layer emmited the signal it was changed
+  virtual void mapLayerVisibilityChanged(bool value,
+    MapLayerInterface* layer);
+
  private:
+  void changeLayersVisibility(QTreeWidgetItem *item, int column,
+    bool value);
+
   /// widget to draw the list of the map layers
   QTreeWidget* listWidget;
   /// top level item
   QTreeWidgetItem *treeItem;
-  typedef QMap<MapLayerInterface*, QTreeWidgetItem*> TMapLayers;
+  typedef QMap<QTreeWidgetItem*, MapLayerInterface*> TMapLayers;
   TMapLayers mapLayers;
 
   /// Pointer to the subtree of the scene associated with this layer.
@@ -75,7 +98,13 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   /// This function is called by all the other public inserting functions,
   /// that are just interface.
   MapLayerInterface* insertMapLayer
-    (MapLayerInterface* layer, const QString& title, int pos = -1);
+    (MapLayerInterface* layer, const QString& title,
+    int pos = -1, QTreeWidgetItem* toTree = NULL);
+
+  /// Inserts the group of layers into the tree
+  MapLayerInterface* insertMapLayerGroup
+    (QVector<MapLayerInterface*>* layerGroup,
+    const QString& title, int pos = -1);
 
   /// A procedure for adding the map layer into the scene tree.
   void addIntoScene(MapLayerInterface* layer);
@@ -86,7 +115,8 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   /// Adds the tree item into the list at given position.
   /// \param pos The position at the list.
   /// Value < 0 or > list.Length means to add the item at the end.
-  void addIntoList(QTreeWidgetItem* item, int pos);
+  void addIntoList(QTreeWidgetItem* item,
+    int pos, QTreeWidgetItem* toTree = NULL);
 
   /// Functions to add map layer without adding it to scene.
   MapLayerInterface* insertExistingMapLayer

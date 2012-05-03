@@ -1,11 +1,26 @@
 #include "igcviewer.h"
 
 #include <QDebug>
-
 #include "openedfile.h"
 
 namespace Updraft {
+
+// Definition of global pointer to coreinterface.
+CoreInterface *g_core = NULL;
+
 namespace IgcViewer {
+
+IGCMapObject::IGCMapObject(QString objectName_, OpenedFile* file_)
+  : QObject(NULL), MapObject(objectName_), file(file_) {
+}
+
+QObject* IGCMapObject::asQObject() {
+  return this;
+}
+
+OpenedFile* IGCMapObject::getFile() {
+  return file;
+}
 
 QString IgcViewer::getName() {
   return QString("igcviewer");
@@ -15,7 +30,9 @@ unsigned IgcViewer::getPriority() {
   return 0;  // TODO(cestmir): decide on the priority of plugins
 }
 
-void IgcViewer::initialize() {
+void IgcViewer::initialize(CoreInterface *coreInterface) {
+  g_core = coreInterface;
+
   qDebug("igcviewer loaded");
 
   FileRegistration registration;
@@ -26,9 +43,9 @@ void IgcViewer::initialize() {
   registration.roleId = 1;
   registration.plugin = this;
 
-  core->registerFiletype(registration);
+  g_core->registerFiletype(registration);
 
-  mapLayerGroup = core->createMapLayerGroup(tr("IGC files"));
+  mapLayerGroup = g_core->createMapLayerGroup(tr("IGC files"));
 
   automaticColors.append(QPair<QColor, int>(Qt::red, 0));
   automaticColors.append(QPair<QColor, int>(Qt::green, 0));
@@ -67,6 +84,10 @@ bool IgcViewer::fileOpen(const QString &filename, int roleId) {
     freeAutomaticColor(c);
     return false;
   }
+
+  IGCMapObject* mapObject = new IGCMapObject(filename, f);
+  g_core->registerOsgNode(f->getNode(), mapObject);
+  mapObjects.append(mapObject);
 
   foreach(OpenedFile* other, opened) {
     f->updateScales(other);
@@ -139,6 +160,25 @@ void IgcViewer::freeAutomaticColor(QColor c) {
       return;
     }
   }
+}
+
+/// Tells whether this plugin wants to handle a mouse click event.
+bool IgcViewer::wantsToHandleClick(MapObject* obj) {
+  IGCMapObject* iObj = qobject_cast<IGCMapObject*>(obj->asQObject());
+  if (iObj != NULL) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/// Handles the left mouse click event on the IGC in the map.
+void IgcViewer::handleClick(MapObject* obj, const EventInfo* evt) {
+  IGCMapObject* iObj = qobject_cast<IGCMapObject*>(obj->asQObject());
+  if (iObj == NULL) {
+    return;
+  }
+  iObj->getFile()->trackClicked(evt);
 }
 
 /*void IgcViewer::fileIdentification(QStringList *roles,

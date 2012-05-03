@@ -4,6 +4,7 @@
 #include <QtGui>
 #include "../../pluginbase.h"
 #include "oaengine.h"
+#include "../../maplayerinterface.h"
 
 namespace Updraft {
 namespace Airspaces {
@@ -19,7 +20,7 @@ class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
 
   unsigned getPriority();
 
-  void initialize();
+  void initialize(CoreInterface *coreInterface);
 
   void deinitialize();
 
@@ -38,7 +39,9 @@ class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
   FileRegistration OAirspaceFileReg;
 
   QVector<MapLayerInterface*>* mapLayers;
+  QVector<QPair<osg::Node*, QString> >* mapNodes;
   oaEngine* engine;
+  MapLayerGroupInterface* mapLayerGroup;
 };
 
 }  // End namespace Airspaces

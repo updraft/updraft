@@ -1,5 +1,7 @@
 #include "pluginmanager.h"
 
+#include <QDebug>
+#include <QLibrary>
 #include <QtGui>
 
 #include "../pluginbase.h"
@@ -18,25 +20,33 @@ PluginManager::PluginManager() {
     return;
   }
 
-  QStringList pluginDirs = plugins.entryList
-    (QDir::Dirs | QDir::NoDotAndDotDot);
+  QStringList pluginDirs = plugins.entryList(
+    QDir::Dirs | QDir::Readable | QDir::NoDotAndDotDot);
 
-  QStringList dllsMask;
-  dllsMask.push_back(QString("*.so"));
-  dllsMask.push_back(QString("*.dll"));
+  QStringList pluginFiles;
 
   foreach(QString pluginDir, pluginDirs) {
     plugins.cd(pluginDir);
-    QStringList dlls = plugins.entryList(dllsMask);
+    QStringList files = plugins.entryList(QDir::Files | QDir::Readable);
 
-    // Search for the first loadable library.
-    for (QList<QString>::iterator itDll = dlls.begin();
-        itDll != dlls.end(); ++itDll) {
-      if (load(plugins.absolutePath() + "/" + (*itDll)) != NULL) {
-        break;
+    foreach(QString fileName, files) {
+      QString path = plugins.absolutePath() + "/" + fileName;
+      if (QLibrary::isLibrary(path)) {
+        qDebug() << "Found plugin" << path;
+        pluginFiles.append(path);
       }
     }
     plugins.cdUp();
+  }
+
+  QPluginLoader loader;
+  foreach(QString pluginPath, pluginFiles) {
+    loader.setFileName(pluginPath);
+    loader.load();
+  }
+
+  foreach(QString pluginPath, pluginFiles) {
+    load(pluginPath);
   }
 }
 
@@ -51,11 +61,12 @@ PluginManager::~PluginManager() {
 /// Load the plugin, initialize it and put it to the list of
 /// loaded plugins.
 PluginBase* PluginManager::load(QString fileName) {
-  qDebug("Loading plugin %s", fileName.toAscii().data());
+  qDebug() << "Loading plugin" << fileName;
   QPluginLoader loader(fileName);
   QObject *pluginInstance = loader.instance();
-  if (pluginInstance == NULL)
-    qDebug("Loading error report: %s ", loader.errorString().toAscii().data());
+  if (pluginInstance == NULL) {
+    qDebug() << "Loading error report: " << loader.errorString();
+  }
 
   return finishLoading(pluginInstance);
 }
@@ -113,8 +124,7 @@ PluginBase* PluginManager::finishLoading(QObject* obj) {
 
   lp->plugin = plugin;
 
-  lp->plugin->setCoreInterface(new CoreImplementation(plugin));
-  plugin->initialize();
+  plugin->initialize(new CoreImplementation(plugin));
 
   plugins.insert(plugin->getName(), lp);
 

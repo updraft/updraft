@@ -9,6 +9,8 @@ namespace Core {
 class MapManipulator: public osgEarth::Util::EarthManipulator {
  public:
   MapManipulator();
+  void resetNorth(double duration);
+  void untilt(double duration);
 };
 
 }  // End namespace Core

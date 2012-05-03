@@ -4,12 +4,19 @@
 #include <QObject>
 #include <QFileInfo>
 #include <QList>
+#include <QTextEdit>
 
 #include <osg/Geometry>
+// #include <osg/PositionAttitudeTransform>
+#include <osg/AutoTransform>
 
 #include "colorings.h"
 #include "igcinfo.h"
 #include "igcviewer.h"
+#include "plotwidget.h"
+#include "../../eventinfo.h"
+
+class IGCViewer;
 
 namespace Updraft {
 namespace IgcViewer {
@@ -48,6 +55,14 @@ class OpenedFile: public QObject {
   /// Set colors of the track according to the value selected in the viewer.
   void coloringChanged();
 
+  osg::Node* getNode();
+
+  void trackClicked(const EventInfo* eventInfo);
+
+ public slots:
+  void timePicked(QTime time);
+  void displayMarker(bool value);
+
  private slots:
   /// Slot that gets called when the tab associated with this file is closed.
   /// Deletes the opened file.
@@ -64,9 +79,13 @@ class OpenedFile: public QObject {
   /// Set coloring of the track.
   void setColors(Coloring* coloring);
 
+  osg::Node* createMarker();
+
   QFileInfo fileInfo;
 
   QComboBox *colorsCombo;
+  IGCTextWidget* textBox;
+  PlotWidget* plotWidget;
 
   TabInterface *tab;
   MapLayerInterface* track;
@@ -77,8 +96,13 @@ class OpenedFile: public QObject {
   /// Geometry of the 3D track visualisation.
   /// Used for coloring.
   osg::Geometry* geom;
+  osg::Group* sceneRoot;
+  osg::Geode* trackGeode;
+  osg::Node* trackPositionMarker;
+  // osg::PositionAttitudeTransform* currentMarkerTransform;
+  osg::AutoTransform* currentMarkerTransform;
 
-  Coloring *currentColoring;
+  Coloring* currentColoring;
 
   /// List of track points.
   QList<TrackFix> fixList;

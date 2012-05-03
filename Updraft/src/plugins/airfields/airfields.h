@@ -16,7 +16,7 @@ class Q_DECL_EXPORT Airfields: public QObject, public PluginBase {
 
   unsigned getPriority();
 
-  void initialize();
+  void initialize(CoreInterface *coreInterface);
 
   void deinitialize();
  private:

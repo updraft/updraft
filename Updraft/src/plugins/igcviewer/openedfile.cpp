@@ -2,11 +2,15 @@
 
 #include <QComboBox>
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QDebug>
 
 #include <osg/Geode>
 #include <osg/LineWidth>
+#include <osg/ShapeDrawable>
+#include <osg/Vec3>
 
+#include "pluginbase.h"
 #include "igc/igc.h"
 
 #include "plotwidget.h"
@@ -42,7 +46,7 @@ bool OpenedFile::loadIgc(const QString& filename) {
     return false;
   }
 
-  const osg::EllipsoidModel* ellipsoid = viewer->core->getEllipsoidModel();
+  const Util::Ellipsoid* ellipsoid = g_core->getEllipsoid();
 
   fixList.clear();
 
@@ -58,7 +62,7 @@ bool OpenedFile::loadIgc(const QString& filename) {
 
     qreal x, y, z;
 
-    ellipsoid->convertLatLongHeightToXYZ(
+    ellipsoid->getOsgEllipsoidModel()->convertLatLongHeightToXYZ(
       igcFix->gpsLoc.lat_radians(), igcFix->gpsLoc.lon_radians(),
       igcFix->gpsLoc.alt,
       x, y, z);
@@ -81,6 +85,9 @@ bool OpenedFile::init(IgcViewer* viewer,
   }
 
   colorsCombo = new QComboBox();
+  textBox = new IGCTextWidget();
+  textBox->setReadOnly(true);
+  textBox->setFixedSize(100, 300);
 
   gradient = Util::Gradient(Qt::blue, Qt::red, true);
 
@@ -116,17 +123,29 @@ bool OpenedFile::init(IgcViewer* viewer,
 
   QWidget* tabWidget = new QWidget();
   QHBoxLayout* layout = new QHBoxLayout();
+  QVBoxLayout* verticalLayout = new QVBoxLayout();
 
   layout->setContentsMargins(0, 0, 0, 0);
 
-  PlotWidget* plot = new PlotWidget(
+  plotWidget = new PlotWidget(
     altitudeInfo, verticalSpeedInfo, groundSpeedInfo);
 
-  tabWidget->setLayout(layout);
-  layout->addWidget(colorsCombo, 0, Qt::AlignTop);
-  layout->addWidget(plot, 1.0);
+  connect(plotWidget, SIGNAL(updateCurrentInfo(const QString&)),
+    textBox, SLOT(setMouseOverText(const QString&)));
+  connect(plotWidget, SIGNAL(updatePickedInfo(const QString&)),
+    textBox, SLOT(setPickedText(const QString&)));
+  connect(plotWidget, SIGNAL(timeWasPicked(QTime)),
+    this, SLOT(timePicked(QTime)));
+  connect(plotWidget, SIGNAL(displayMarker(bool)),
+    this, SLOT(displayMarker(bool)));
 
-  tab = viewer->core->createTab(tabWidget, fileInfo.fileName());
+  tabWidget->setLayout(layout);
+  verticalLayout->addWidget(colorsCombo, 0, Qt::AlignTop);
+  verticalLayout->addWidget(textBox, 1, Qt::AlignTop);
+  layout->addLayout(verticalLayout, 0);
+  layout->addWidget(plotWidget, 1.0);
+
+  tab = g_core->createTab(tabWidget, fileInfo.fileName());
 
   tab->connectSignalCloseRequested(this, SLOT(close()));
   connect(colorsCombo, SIGNAL(currentIndexChanged(int)),
@@ -163,10 +182,13 @@ void OpenedFile::coloringChanged() {
 }
 
 void OpenedFile::createTrack() {
-  osg::Geode* geode = new osg::Geode();
+  sceneRoot = new osg::Group();
+  trackGeode = new osg::Geode();
 
   geom = new osg::Geometry();
-  geode->addDrawable(geom);
+  trackGeode->addDrawable(geom);
+
+  sceneRoot->addChild(trackGeode);
 
   osg::DrawArrays* drawArrayLines =
     new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP);
@@ -184,15 +206,29 @@ void OpenedFile::createTrack() {
   drawArrayLines->setFirst(0);
   drawArrayLines->setCount(vertices->size());
 
-  osg::StateSet* stateSet = geode->getOrCreateStateSet();
+  osg::StateSet* stateSet = trackGeode->getOrCreateStateSet();
   stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
   stateSet->setMode(GL_LINE_SMOOTH, osg::StateAttribute::ON);
   stateSet->setAttributeAndModes(new osg::LineWidth(3));
   // stateSet->setAttributeAndModes(
   //   new osg::LineWidth(viewer->lineWidthSetting->get().toFloat()));
 
-  track = viewer->mapLayerGroup->insertMapLayer(geode, fileInfo.fileName());
-  track->connectDisplayedToVisibility();
+    // create the marker
+  trackPositionMarker = createMarker();
+  trackPositionMarker->setNodeMask(0x0);  // make it invisible first
+  // currentMarkerTransform = new osg::PositionAttitudeTransform();
+  currentMarkerTransform = new osg::AutoTransform();
+  // currentMarkerTransform->setAutoScaleToScreen(true);
+  currentMarkerTransform->setMinimumScale(10);
+  currentMarkerTransform->setMaximumScale(500);
+  currentMarkerTransform->setScale(500);
+  currentMarkerTransform->addChild(trackPositionMarker);
+  // currentMarkerTransform->setScale(osg::Vec3d(100., 100., 100.));
+  sceneRoot->addChild(currentMarkerTransform);
+
+    // push the scene
+  track = viewer->mapLayerGroup->insertMapLayer(sceneRoot, fileInfo.fileName());
+  track->connectCheckedToVisibility();
 }
 
 void OpenedFile::setColors(Coloring *coloring) {
@@ -227,6 +263,84 @@ void OpenedFile::resetScales() {
 
 QString OpenedFile::fileName() {
   return fileInfo.absoluteFilePath();
+}
+
+osg::Node* OpenedFile::getNode() {
+  return trackGeode;
+}
+
+void OpenedFile::trackClicked(const EventInfo* eventInfo) {
+    // find nearest fix:
+  if (fixList.empty()) return;
+    // index of nearest trackFix
+  QList<TrackFix>::iterator nearest = fixList.begin();
+  float dx = nearest->x - eventInfo->intersection.x();
+  float dy = nearest->y - eventInfo->intersection.y();
+  float dz = nearest->z - eventInfo->intersection.z();
+  float distance = dx*dx + dy*dy + dz*dz;
+  float minDistance = distance;
+
+  for (QList<TrackFix>::iterator it = fixList.begin();
+    it != fixList.end(); it++) {
+    dx = it->x - eventInfo->intersection.x();
+    dy = it->y - eventInfo->intersection.y();
+    dz = it->z - eventInfo->intersection.z();
+    distance = dx*dx + dy*dy + dz*dz;
+    if (distance < minDistance) {
+      minDistance = distance;
+      nearest = it;
+    }
+  }
+
+  qDebug() << minDistance;
+
+  QTime& time = nearest->timestamp;
+  qreal timeSecs = time.hour()*3600 + time.minute()*60 + time.second();
+  plotWidget->setPickedTime(timeSecs);
+
+  currentMarkerTransform->setPosition(
+    osg::Vec3d(nearest->x, nearest->y, nearest->z));
+  displayMarker(true);
+}
+
+void OpenedFile::timePicked(QTime time) {
+    // find fix with nearest time:
+  if (fixList.empty()) return;
+    // index of nearest trackFix
+
+  QList<TrackFix>::iterator nearest = fixList.begin();
+  float distance = qAbs(time.secsTo(nearest->timestamp));
+  float minDistance = distance;
+
+  for (QList<TrackFix>::iterator it = fixList.begin();
+    it != fixList.end(); it++) {
+    distance = qAbs(time.secsTo(it->timestamp));
+    if (distance < minDistance) {
+      minDistance = distance;
+      nearest = it;
+    }
+  }
+
+    // do the transformation of the marker to the position
+    // of the nearest trackFix.
+  currentMarkerTransform->setPosition(
+    osg::Vec3(nearest->x, nearest->y, nearest->z));
+}
+
+osg::Node* OpenedFile::createMarker() {
+  osg::Sphere* unitSphere = new osg::Sphere(osg::Vec3(0, 0, 0), 1.0);
+  osg::ShapeDrawable* unitSphereDrawable = new osg::ShapeDrawable(unitSphere);
+  osg::Geode* unitSphereGeode = new osg::Geode();
+  unitSphereGeode->addDrawable(unitSphereDrawable);
+  return unitSphereGeode;
+}
+
+void OpenedFile::displayMarker(bool value) {
+  if (value) {
+    trackPositionMarker->setNodeMask(0xffffffff);
+  } else {
+    trackPositionMarker->setNodeMask(0x0);
+  }
 }
 
 }  // End namespace IgcViewer

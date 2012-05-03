@@ -30,12 +30,13 @@ class TPLayer {
  public:
   TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     const TPFile *file_, const QString &dataDir, TurnPoints* parent_,
-    CoreInterface* core);
+    const QVector<SettingInterface*>& settings);
 
   virtual ~TPLayer();
 
   /// \return osgNode associated with the layer.
   osg::Node* getNode() const;
+  osg::Node* getLblNode() const;
 
   /// \return Display state
   bool isDisplayed();
@@ -97,13 +98,14 @@ class TPLayer {
   qreal labelMinScale;
   qreal labelMaxScale;
 
-  /// Settings
-  SettingInterface* labColSetR;
-  SettingInterface* labColSetG;
-  SettingInterface* labColSetB;
-  SettingInterface* labColSetA;
-  SettingInterface* labMaxScaleSet;
-  SettingInterface* labMinScaleSet;
+  /// Labels display distance from camera.
+  /// This value is the distance that LOD starts
+  /// to display the labels.
+  /// Reasonable value : 4000 (default)
+  qreal labelDrawDist;
+
+  /// Label font size
+  qreal lblSize;
 };
 
 }  // End namespace Updraft

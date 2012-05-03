@@ -1,5 +1,6 @@
 #include <osgQt/GraphicsWindowQt>
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 #include <osgEarthUtil/Viewpoint>
 #include <osgEarthUtil/ObjectPlacer>
 #include <osgEarth/Map>
@@ -104,9 +105,6 @@ SceneManager::SceneManager(QString baseEarthFile)
     (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   viewer->setCamera(camera);
 
-  is2dEnabled = 0;
-  setPerspectiveCamera(camera);
-
   // create map manager
   mapManager = new MapManager(baseEarthFile);
 
@@ -125,33 +123,45 @@ SceneManager::SceneManager(QString baseEarthFile)
 
   viewer->setSceneData(sceneRoot);
 
-  // set manipulator
-  osgEarth::Util::Viewpoint start(14.42046, 50.087811,
-    0, 0.0, -90.0, 12e6 /*6e7*/);
-  // osgEarth::Util::EarthManipulator* manipulator =
-    // new osgEarth::Util::EarthManipulator();
-  MapManipulator* manipulator = new MapManipulator();
+  manipulator = new MapManipulator();
   manipulator->setNode(mapManager->getMapNode());
-  manipulator->setHomeViewpoint(start);
+  manipulator->setHomeViewpoint(getInitialPosition());
 
   viewer->setCameraManipulator(manipulator);
-  // or set one specific view:
-  // camera->setViewMatrixAsLookAt(osg::Vec3d(0, 0, -6e7),
-    // osg::Vec3d(0, 0, 0), osg::Vec3d(0, 1, 0));
 
   // Create a picking handler
   viewer->addEventHandler(new PickHandler());
+  viewer->addEventHandler(new osgViewer::StatsHandler());
 
-  // insert menu item for switching 2d/3d
-  QAction* toggleViewAction = new QAction("Toggle 2D/3D view", this);
-  connect(toggleViewAction, SIGNAL(triggered()), this, SLOT(toggleView()));
-  Menu* toolsMenu = updraft->mainWindow->getSystemMenu(MENU_TOOLS);
-  toolsMenu->insertAction(1, toggleViewAction);
+  insertMenuItems();
 
   // start drawing
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(tick()));
   timer->start(20);
+}
+
+osgEarth::Util::Viewpoint SceneManager::getHomePosition() {
+  return osgEarth::Util::Viewpoint(14.42046, 50.087811,
+    0, 0.0, -90.0, 15e5);
+}
+
+osgEarth::Util::Viewpoint SceneManager::getInitialPosition() {
+  osgEarth::Util::Viewpoint start = getHomePosition();
+  start.setRange(start.getRange() * 1.3);
+  return start;
+}
+
+void SceneManager::insertMenuItems() {
+  Menu* toolsMenu = updraft->mainWindow->getSystemMenu(MENU_TOOLS);
+
+  QAction* resetNorthAction = new QAction("Reset to north", this);
+  connect(resetNorthAction, SIGNAL(triggered()), this, SLOT(resetNorth()));
+  toolsMenu->insertAction(200, resetNorthAction);
+
+  QAction* untiltAction = new QAction("Untilt", this);
+  connect(untiltAction, SIGNAL(triggered()), this, SLOT(untilt()));
+  toolsMenu->insertAction(300, untiltAction);
 }
 
 SceneManager::~SceneManager() {
@@ -192,24 +202,28 @@ void SceneManager::tick() {
   eventDetected = false;
 }
 
-void SceneManager::redrawScene() {
-  if (is2dEnabled) {
-    updateOrthographicCamera(camera);
-  }
-  viewer->frame();
+void SceneManager::startInitialAnimation() {
+  osgEarth::Util::Viewpoint home = getHomePosition();
+  // set home position for ACTION_HOME
+  manipulator->setHomeViewpoint(home, 1.0);
+  // go to home position now
+  manipulator->setViewpoint(home, 2.0);
 }
 
-void SceneManager::toggleView() {
-  is2dEnabled = !is2dEnabled;
+void SceneManager::redrawScene() {
+  // start initial animation in second frame to prevent jerks
+  static int i = 0;
+  if (i == 1) startInitialAnimation();
+  if (i < 2) ++i;
 
-  if (is2dEnabled) {
-    // TODO(Bohdan): untilt before switching to orthographic view
-    setOrthographicCamera(camera);
-    qDebug("Switched to 2D");
+  bool isTilted = (manipulator->getViewpoint().getPitch() > -88);
+  bool isFar = (manipulator->getDistance() > 7e6);
+  if (isTilted || isFar) {
+    updateCameraPerspective(camera);
   } else {
-    setPerspectiveCamera(camera);
-    qDebug("Switched to 3D");
+    updateCameraOrtho(camera);
   }
+  viewer->frame();
 }
 
 osg::Group* SceneManager::newGroup() {
@@ -257,7 +271,8 @@ osg::Camera* SceneManager::createCamera() {
 
   camera->setClearColor(osg::Vec4(0.2, 0.2, 0.6, 1.0));
   camera->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
-  setOrthographicCamera(camera);
+  isCameraPerspective = FALSE;
+  updateCameraPerspective(camera);
   return camera;
 }
 
@@ -268,25 +283,39 @@ double SceneManager::getAspectRatio() {
   return aspectRatio;
 }
 
-void SceneManager::updateOrthographicCamera(osg::Camera* camera) {
-  osg::Vec3d eye, center, up;
-  camera->getViewMatrixAsLookAt(eye, center, up);
+void SceneManager::updateCameraOrtho(osg::Camera* camera) {
+  static double lastDistance = 0;
+  double distance = manipulator->getDistance();
+  bool hasDistanceChanged = (distance != lastDistance);
+  // no need to update projection matrix
+  if (!hasDistanceChanged && !isCameraPerspective) {
+    return;
+  }
+  lastDistance = distance;
 
-  double distance =  eye.length() - 6365000.f;
-  double fovy = 30.f;
-  double hy = distance * fovy/90.0f;
+  double hy = distance * 0.2679;  // tan(fovy/2)
   double hx = hy * getAspectRatio();
   camera->setProjectionMatrixAsOrtho2D(-hx, hx, -hy, hy);
+  isCameraPerspective = FALSE;
 }
 
-void SceneManager::setOrthographicCamera(osg::Camera* camera) {
-  updateOrthographicCamera(camera);
-}
-
-void SceneManager::setPerspectiveCamera(osg::Camera* camera) {
+void SceneManager::updateCameraPerspective(osg::Camera* camera) {
+  // no need to update projection matrix
+  if (isCameraPerspective) {
+    return;
+  }
   camera->setProjectionMatrixAsPerspective(
     30.0f, getAspectRatio(),
     1.0f, 10000.0f);
+  isCameraPerspective = TRUE;
+}
+
+void SceneManager::resetNorth() {
+  manipulator->resetNorth(1);
+}
+
+void SceneManager::untilt() {
+  manipulator->untilt(1);
 }
 
 }  // end namespace Core
