@@ -18,7 +18,6 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
     
     <lighting>true</lighting>
 
-    <!--
     <image name="OSM on Mapnik Slippy Map" driver="tms">
         <url>http://tile.openstreetmap.org/</url>
         <profile>global-mercator</profile>
@@ -26,11 +25,12 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
         <tile_size>256</tile_size>
         <tms_type>google</tms_type>
     </image>
-    -->
-  
+
+<!--
     <image name="Offline map" driver="gdal">
         <url>world.tif</url>
     </image>
+    -->
      
     <!--
     <image name="Online maps" driver="arcgis">
@@ -58,51 +58,84 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
     </image>
     -->
 
+    <!--
 	  <elevation name="Elevation layer" driver="tms">
         <url>http://readymap.org/readymap/tiles/1.0.0/9/</url>    
     </elevation>
-    
+    -->
+
     <!--
-    <image name="Water" driver="agglite">          
+    <image name="Railways" driver="agglite">         
         <features name="world" driver="ogr">
-            <url>waterways.shp</url>
+            <url>railways.shp</url>
             <ogr_driver>ESRI Shapefile</ogr_driver>
             <build_spatial_index>true</build_spatial_index>
         </features>
+        
+        <layout>
+          <tile_size_factor>30.0</tile_size_factor>
+          <level name="only" max_range="10000">
+          
+          </level>
+        </layout>
+
         <styles>
 	            <style type="text/css">
 	                default {
-	                    stroke: #0000ff;
-	                    stroke-width: 0.01;
-	                    stroke-opacity: 0.5;
+	                    stroke: #ffffff;
+	                    stroke-width: 1.0;
+	                    stroke-opacity: 1.0;
 	                }           
 	            </style>
 	        </styles>
     </image>
     -->
     
-    <!--
-    <model name="State borders" driver="feature_stencil">
+    <model name="Model1" driver="feature_geom">
         <features name="world" driver="ogr">
-            <url>state_borders_lq.shp</url>
+            <url>waterways.shp</url>
+            <!--
             <url>prague.osm-line.shp</url>
             <url>state_borders_lq.shp</url>
-            <convert type="line"/>
+            <convert type="line"/>-->
         </features>
+        <!--
         <extrusion_distance>40000</extrusion_distance>
+        -->
         
         
         <styles>
             <style type="text/css">
                 world {
-                   stroke: #ffff00;
-                   stroke-opacity: 0.5;
-                   stroke-width: 0.1;
+                   stroke: #0000ff;
+                   fill: #0000ff;
+                   stroke-opacity: 1.0;
+                   stroke-width: 1.0;
+                   <!-- altitude-clamping: terrain;
+                   altitude-offset: 10; -->    
                 }            
             </style>
         </styles>
     </model>
-    -->
+    
+    <model name="Model2" driver="feature_geom">
+        <features name="world" driver="ogr">
+            <url>railways.shp</url>
+            <convert type="line"/>
+        </features>
+        
+        <extrusion_distance>40000</extrusion_distance>
+        
+        <styles>
+            <style type="text/css">
+                world {
+                   stroke: #ffff00;
+                   stroke-opacity: 1.0;
+                   stroke-width: 1.0;
+                }            
+            </style>
+        </styles>
+    </model>
     
 </map>
 

@@ -35,7 +35,7 @@ MapManager::MapManager(QString earthFile) {
     osgEarth::ImageLayer* onlineMaps =
       new osgEarth::ImageLayer(*imOpt, source);
 
-    this->map->addImageLayer(onlineMaps);
+    // this->map->insertImageLayer(onlineMaps, 1);
   } else {
     this->map = new osgEarth::Map();
     this->mapNode = new osgEarth::MapNode(this->map);
@@ -89,6 +89,7 @@ void MapManager::fillMapLayerGroup(MapLayerGroupInterface* group) {
     mapLayers.append(layer);
   }
 
+  /*
   osgEarth::ElevationLayerVector outElevationLayers;
   map->getElevationLayers(outElevationLayers);
   for (uint i = 0; i < outElevationLayers.size(); i++) {
@@ -99,6 +100,7 @@ void MapManager::fillMapLayerGroup(MapLayerGroupInterface* group) {
     layer->connectCheckedToVisibility();
     mapLayers.append(layer);
   }
+  */
 
   osgEarth::ModelLayerVector outModelLayers;
   map->getModelLayers(outModelLayers);

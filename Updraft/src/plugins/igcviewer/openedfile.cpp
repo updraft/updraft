@@ -214,17 +214,27 @@ void OpenedFile::createTrack() {
   //   new osg::LineWidth(viewer->lineWidthSetting->get().toFloat()));
 
     // create the marker
-  trackPositionMarker = createMarker();
+
+  // create the billboard
+  osg::Billboard* trackPositionMarker = new osg::Billboard();
+
+  trackPositionMarker->setMode(osg::Billboard::AXIAL_ROT);
+  trackPositionMarker->setAxis(osg::Vec3(0.0f, 0.0f, 1.0f));
+  trackPositionMarker->setNormal(osg::Vec3(0.0f, -1.0f, 0.0f));
+
+  trackPositionMarker->addDrawable(createMarker());
   trackPositionMarker->setNodeMask(0x0);  // make it invisible first
-  // currentMarkerTransform = new osg::PositionAttitudeTransform();
+  osg::StateSet* = trackPositionMarker->
+  /*
   currentMarkerTransform = new osg::AutoTransform();
-  // currentMarkerTransform->setAutoScaleToScreen(true);
+  at->setAutoRotateMode(osg::AutoTransform::NO_ROTATION);
+  currentMarkerTransform->setAutoScaleToScreen(true);
   currentMarkerTransform->setMinimumScale(10);
-  currentMarkerTransform->setMaximumScale(500);
-  currentMarkerTransform->setScale(500);
+  currentMarkerTransform->setMaximumScale(100);
   currentMarkerTransform->addChild(trackPositionMarker);
-  // currentMarkerTransform->setScale(osg::Vec3d(100., 100., 100.));
   sceneRoot->addChild(currentMarkerTransform);
+  */
+  sceneRoot->addChild(trackPositionMarker);
 
     // push the scene
   track = viewer->mapLayerGroup->insertMapLayer(sceneRoot, fileInfo.fileName());
@@ -323,16 +333,37 @@ void OpenedFile::timePicked(QTime time) {
 
     // do the transformation of the marker to the position
     // of the nearest trackFix.
-  currentMarkerTransform->setPosition(
+  // currentMarkerTransform->setPosition(
+  trackPositionMarker->setPosition(
     osg::Vec3(nearest->x, nearest->y, nearest->z));
 }
 
-osg::Node* OpenedFile::createMarker() {
+osg::Drawable* OpenedFile::createMarker(qreal scale) {
+  /*
   osg::Sphere* unitSphere = new osg::Sphere(osg::Vec3(0, 0, 0), 1.0);
   osg::ShapeDrawable* unitSphereDrawable = new osg::ShapeDrawable(unitSphere);
   osg::Geode* unitSphereGeode = new osg::Geode();
   unitSphereGeode->addDrawable(unitSphereDrawable);
-  return unitSphereGeode;
+  */
+  osg::Geometry* geometry = new osg::Geometry();
+
+  osg::Vec3Array* vertices = new osg::Vec3Array(4);
+  (*vertices)[0] = osg::Vec3(-scale, -scale, 0.0);
+  (*vertices)[1] = osg::Vec3( scale, -scale, 0.0);
+  (*vertices)[2] = osg::Vec3( scale, scale, 0.0);
+  (*vertices)[3] = osg::Vec3(-scale, scale, 0.0);
+  geometry->setVertexArray(vertices);
+
+  osg::Vec2Array* texCoords = new osg::Vec2Array(4);
+  (*texCoords)[0] = osg::Vec2(0.0, 0.0);
+  (*texCoords)[1] = osg::Vec2(1.0, 0.0);
+  (*texCoords)[2] = osg::Vec2(1.0, 1.0);
+  (*texCoords)[3] = osg::Vec2(0.0, 1.0);
+  geometry->setTexCoordArray(0, texCoords);
+
+  geometry->addPrimitiveSet(new osg::DrawArrays(
+    osg::PrimitiveSet::QUADS, 0, 4));
+  return geometry;
 }
 
 void OpenedFile::displayMarker(bool value) {
