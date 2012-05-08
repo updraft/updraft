@@ -2,10 +2,6 @@
 #define UPDRAFT_SRC_CORE_SCENEMANAGER_H_
 
 #include <QtGui/QWidget>
-#include <osgQt/GraphicsWindowQt>
-#include <osgViewer/Viewer>
-#include <osgViewer/ViewerEventHandlers>
-#include <osgEarthUtil/Viewpoint>
 #include <QTimer>
 #include <QHash>
 #include <string>
@@ -16,14 +12,16 @@
 namespace Updraft {
 namespace Core {
 
+class GraphicsWindow;
+class GraphicsWidget;
+class Viewer;
+
 /// SceneManager class is a wrapper of the scene, and the scene graph.
 class SceneManager: public QObject {
   Q_OBJECT
 
  public:
-  SceneManager(QString baseEarthFile,
-      osgViewer::ViewerBase::ThreadingModel threadingModel =
-      osgViewer::ViewerBase::SingleThreaded);
+  explicit SceneManager(QString baseEarthFile);
   ~SceneManager();
 
   /// Returns the drawing widget.
@@ -66,12 +64,14 @@ class SceneManager: public QObject {
   MapObject* getNodeMapObject(osg::Node* node);
 
  public slots:
-  void redrawScene();
   void resetNorth();
   void untilt();
 
+ private slots:
+  void tick();
+
  private:
-  osgViewer::Viewer* viewer;
+  Viewer* viewer;
   osg::Group* sceneRoot;
 
   /// Node with the background.
@@ -82,17 +82,23 @@ class SceneManager: public QObject {
   MapManager* mapManager;
   osg::Camera* camera;
   MapManipulator* manipulator;
-  osgQt::GraphicsWindowQt* graphicsWindow;
+
+  GraphicsWindow* graphicsWindow;
+
+  /// If set then we should render a frame soon.
+  bool requestRedraw;
+
+  /// If set then we should render a frame soon.
+  bool requestContinuousUpdate;
+
+  /// If set then there were some events that will probably need processing.
+  bool eventDetected;
 
   /// Timer that triggers the drawing procedure.
   QTimer* timer;
 
-  osg::GraphicsContext::Traits* createGraphicsTraits
-    (int x, int y, int w, int h, const std::string& name = "",
-    bool windowDecoration = false);
-  osgQt::GraphicsWindowQt* createGraphicsWindow
-    (osg::GraphicsContext::Traits* traits);
-  osg::Camera* createCamera(osg::GraphicsContext::Traits* traits);
+  void redrawScene();
+  osg::Camera* createCamera();
 
   /// Map of osg nodes registered for mouse picking
   QHash<osg::Node*, MapObject*> pickingMap;
@@ -108,6 +114,10 @@ class SceneManager: public QObject {
   double getAspectRatio();
   void updateCameraOrtho(osg::Camera* camera);
   void updateCameraPerspective(osg::Camera* camera);
+
+  friend class GraphicsWindow;
+  friend class GraphicsWidget;
+  friend class Viewer;
 };
 
 }  // end namespace Core

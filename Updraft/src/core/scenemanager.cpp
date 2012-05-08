@@ -1,4 +1,6 @@
 #include <osgQt/GraphicsWindowQt>
+#include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 #include <osgEarthUtil/Viewpoint>
 #include <osgEarthUtil/ObjectPlacer>
 #include <osgEarth/Map>
@@ -17,21 +19,88 @@
 namespace Updraft {
 namespace Core {
 
-SceneManager::SceneManager(QString baseEarthFile,
-    osgViewer::ViewerBase::ThreadingModel threadingModel) {
+class GraphicsWindow;
+
+/// Wrapper around osgQt::GLWidget to support on demand rendering.
+class GraphicsWidget: public osgQt::GLWidget {
+ public:
+  GraphicsWidget(
+    SceneManager* sceneManager,
+    QWidget* parent = NULL,
+    const QGLWidget* shareWidget = NULL,
+    Qt::WindowFlags f = 0,
+    bool forwardKeyEvents = false)
+    : osgQt::GLWidget(parent, shareWidget, f, forwardKeyEvents),
+    sceneManager(sceneManager) {}
+
+  SceneManager* sceneManager;
+
+ protected:
+  /// Process event imediately after it is registered.
+  bool event(QEvent* ev);
+};
+
+/// Wrapper around osgQt::GraphicsWindowQt to support on demand rendering.
+class GraphicsWindow: public osgQt::GraphicsWindowQt {
+ public:
+  explicit GraphicsWindow(SceneManager* sceneManager, osgQt::GLWidget* widget)
+    : osgQt::GraphicsWindowQt(widget), sceneManager(sceneManager) {}
+
+  void requestRedraw() {
+    qDebug() << "graphics window request redraw";
+    sceneManager->requestRedraw = true;
+  }
+
+  void requestContinuousUpdate(bool needed) {
+    qDebug() << "graphics window request continuous update " << needed;
+    sceneManager->requestContinuousUpdate = needed;
+  }
+
+ private:
+  SceneManager* sceneManager;
+};
+
+class Viewer: public osgViewer::Viewer {
+ public:
+  explicit Viewer(SceneManager* sceneManager)
+  : sceneManager(sceneManager) {}
+
+  void requestRedraw() {
+    qDebug() << "viewer request redraw";
+    sceneManager->requestRedraw = true;
+  }
+
+  void requestContinuousUpdate(bool needed) {
+    qDebug() << "viewer request continuous update " << needed;
+    sceneManager->requestContinuousUpdate = needed;
+  }
+
+ private:
+  SceneManager* sceneManager;
+};
+
+bool GraphicsWidget::event(QEvent* ev) {
+  int t = ev->type();
+  qDebug() << "event detected " << t;
+  sceneManager->eventDetected = true;
+  return osgQt::GLWidget::event(ev);
+}
+
+SceneManager::SceneManager(QString baseEarthFile)
+  : requestRedraw(false), requestContinuousUpdate(false), eventDetected(false) {
   osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
   manipulator = new MapManipulator();
 
-  viewer = new osgViewer::Viewer();
-  viewer->setThreadingModel(threadingModel);
+  viewer = new Viewer(this);
+  viewer->setThreadingModel(osgViewer::ViewerBase::ThreadPerContext);
 
-  // set graphic traits
-  osg::GraphicsContext::Traits* traits = createGraphicsTraits(0, 0, 100, 100);
-  // create window
-  graphicsWindow = createGraphicsWindow(traits);
+  GraphicsWidget *widget = new GraphicsWidget(this);
+  graphicsWindow = new GraphicsWindow(this, widget);
+  widget->setMouseTracking(false);
+
   // create camera
-  camera = createCamera(traits);
+  camera = createCamera();
   camera->setGraphicsContext(graphicsWindow);
   camera->setClearStencil(128);
   camera->setClearMask
@@ -69,7 +138,7 @@ SceneManager::SceneManager(QString baseEarthFile,
 
   // start drawing
   timer = new QTimer(this);
-  connect(timer, SIGNAL(timeout()), this, SLOT(redrawScene()));
+  connect(timer, SIGNAL(timeout()), this, SLOT(tick()));
   timer->start(20);
 }
 
@@ -118,6 +187,28 @@ void SceneManager::startInitialAnimation() {
   manipulator->setHomeViewpoint(home, 1.0);
   // go to home position now
   manipulator->setViewpoint(home, 2.0);
+}
+
+void SceneManager::tick() {
+  bool needRedraw = requestRedraw || requestContinuousUpdate ||
+    viewer->getDatabasePager()->requiresUpdateSceneGraph() ||
+    viewer->getDatabasePager()->getRequestsInProgress() ||
+    viewer->getCamera()->getUpdateCallback() ||
+    viewer->getSceneData()->getNumChildrenRequiringUpdateTraversal() > 0;
+
+  if (eventDetected && !needRedraw) {
+    qDebug() << "event processing";
+    viewer->eventTraversal();
+    needRedraw = requestRedraw || requestContinuousUpdate;
+  }
+
+  if (needRedraw) {
+    qDebug() << "frame";
+    redrawScene();
+  }
+
+  requestRedraw = false;
+  eventDetected = false;
 }
 
 void SceneManager::redrawScene() {
@@ -175,32 +266,8 @@ MapManager* SceneManager::getMapManager() {
   return mapManager;
 }
 
-osg::GraphicsContext::Traits* SceneManager::createGraphicsTraits
-    (int x, int y, int w, int h, const std::string& name,
-    bool windowDecoration) {
-  osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
-  osg::GraphicsContext::Traits* traits = new osg::GraphicsContext::Traits();
-  traits->windowName = name;
-  traits->windowDecoration = windowDecoration;
-  traits->x = x;
-  traits->y = y;
-  traits->width = w;
-  traits->height = h;
-  traits->doubleBuffer = true;
-  traits->alpha = ds->getMinimumNumAlphaBits();
-  traits->stencil = ds->getMinimumNumStencilBits();
-  traits->sampleBuffers = ds->getMultiSamples();
-  traits->samples = ds->getNumMultiSamples();
-
-  return traits;
-}
-
-osgQt::GraphicsWindowQt* SceneManager::createGraphicsWindow
-    (osg::GraphicsContext::Traits* traits) {
-  return new osgQt::GraphicsWindowQt(traits);
-}
-
-osg::Camera* SceneManager::createCamera(osg::GraphicsContext::Traits* traits) {
+osg::Camera* SceneManager::createCamera() {
+  const osg::GraphicsContext::Traits* traits = graphicsWindow->getTraits();
   osg::Camera* camera = new osg::Camera();
 
   camera->setClearColor(osg::Vec4(0.2, 0.2, 0.6, 1.0));
