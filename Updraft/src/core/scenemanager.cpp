@@ -80,8 +80,21 @@ class Viewer: public osgViewer::Viewer {
 };
 
 bool GraphicsWidget::event(QEvent* ev) {
-  int t = ev->type();
-  qDebug() << "event detected " << t;
+  qDebug() << "event detected " << ev->type();
+
+  // A little hack to make map manipulator work correctly.
+  // TODO(Kuba): This isn't how it should be done.
+  switch (ev->type()) {
+  case QEvent::MouseButtonDblClick:
+  case QEvent::MouseMove:
+  case QEvent::Wheel:
+    sceneManager->requestRedraw = true;
+    break;
+  default:
+    // do nothing
+    break;
+  }
+
   sceneManager->eventDetected = true;
   return osgQt::GLWidget::event(ev);
 }
