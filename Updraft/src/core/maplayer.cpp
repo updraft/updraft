@@ -4,6 +4,8 @@
 #include <osgEarth/ElevationLayer>
 #include <osgEarth/ModelLayer>
 
+#include "updraft.h"
+
 namespace Updraft {
 namespace Core {
 
@@ -106,6 +108,8 @@ void MapLayer::setVisible(bool value) {
       break;
     }
   }
+
+  updraft->sceneManager->requestRedraw();
 }
 
 bool MapLayer::isVisible() {
