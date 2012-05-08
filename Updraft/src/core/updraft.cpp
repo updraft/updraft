@@ -62,7 +62,7 @@ QString Updraft::getDataDirectory() {
 /// Pull the lever.
 /// Shows main window, and enters event loop.
 int Updraft::exec() {
-  mainWindow->show();
+  mainWindow->showMaximized();
   hideSplash();
   return QApplication::exec();
 }
