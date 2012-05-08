@@ -48,12 +48,12 @@ class GraphicsWindow: public osgQt::GraphicsWindowQt {
 
   void requestRedraw() {
     qDebug() << "graphics window request redraw";
-    sceneManager->requestRedraw = true;
+    sceneManager->requestRedraw();
   }
 
   void requestContinuousUpdate(bool needed) {
     qDebug() << "graphics window request continuous update " << needed;
-    sceneManager->requestContinuousUpdate = needed;
+    sceneManager->requestContinuousUpdate(needed);
   }
 
  private:
@@ -67,12 +67,12 @@ class Viewer: public osgViewer::Viewer {
 
   void requestRedraw() {
     qDebug() << "viewer request redraw";
-    sceneManager->requestRedraw = true;
+    sceneManager->requestRedraw();
   }
 
   void requestContinuousUpdate(bool needed) {
     qDebug() << "viewer request continuous update " << needed;
-    sceneManager->requestContinuousUpdate = needed;
+    sceneManager->requestContinuousUpdate(needed);
   }
 
  private:
@@ -88,7 +88,7 @@ bool GraphicsWidget::event(QEvent* ev) {
   case QEvent::MouseButtonDblClick:
   case QEvent::MouseMove:
   case QEvent::Wheel:
-    sceneManager->requestRedraw = true;
+    sceneManager->requestRedraw();
     break;
   default:
     // do nothing
@@ -100,7 +100,8 @@ bool GraphicsWidget::event(QEvent* ev) {
 }
 
 SceneManager::SceneManager(QString baseEarthFile)
-  : requestRedraw(false), requestContinuousUpdate(false), eventDetected(false) {
+  : requestedRedraw(false), requestedContinuousUpdate(false),
+  eventDetected(false) {
   osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
   manipulator = new MapManipulator();
@@ -203,7 +204,7 @@ void SceneManager::startInitialAnimation() {
 }
 
 void SceneManager::tick() {
-  bool needRedraw = requestRedraw || requestContinuousUpdate ||
+  bool needRedraw = requestedRedraw || requestedContinuousUpdate ||
     viewer->getDatabasePager()->requiresUpdateSceneGraph() ||
     viewer->getDatabasePager()->getRequestsInProgress() ||
     viewer->getCamera()->getUpdateCallback() ||
@@ -212,7 +213,7 @@ void SceneManager::tick() {
   if (eventDetected && !needRedraw) {
     qDebug() << "event processing";
     viewer->eventTraversal();
-    needRedraw = requestRedraw || requestContinuousUpdate;
+    needRedraw = requestedRedraw || requestedContinuousUpdate;
   }
 
   if (needRedraw) {
@@ -220,7 +221,7 @@ void SceneManager::tick() {
     redrawScene();
   }
 
-  requestRedraw = false;
+  requestedRedraw = false;
   eventDetected = false;
 }
 
@@ -330,6 +331,14 @@ void SceneManager::resetNorth() {
 
 void SceneManager::untilt() {
   manipulator->untilt(1);
+}
+
+void SceneManager::requestRedraw() {
+  requestedRedraw = true;
+}
+
+void SceneManager::requestContinuousUpdate(bool needed) {
+  requestedContinuousUpdate = needed;
 }
 
 }  // end namespace Core

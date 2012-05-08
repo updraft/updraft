@@ -67,6 +67,12 @@ class SceneManager: public QObject {
   void resetNorth();
   void untilt();
 
+  /// Request single (almost) immediate redraw.
+  void requestRedraw();
+
+  /// Request continuous updates.
+  void requestContinuousUpdate(bool needed);
+
  private slots:
   void tick();
 
@@ -86,10 +92,10 @@ class SceneManager: public QObject {
   GraphicsWindow* graphicsWindow;
 
   /// If set then we should render a frame soon.
-  bool requestRedraw;
+  bool requestedRedraw;
 
   /// If set then we should render a frame soon.
-  bool requestContinuousUpdate;
+  bool requestedContinuousUpdate;
 
   /// If set then there were some events that will probably need processing.
   bool eventDetected;
