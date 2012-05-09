@@ -19,8 +19,8 @@ TaskDeclPanel::TaskDeclPanel(TaskLayer* layer,
   QWidget *parent, Qt::WFlags flags)
   : QWidget(parent, flags),
   addTpText("Add turnpoint"),
-  taskLayer(layer),
-  ui(new Ui::TaskDeclPanel) {
+  ui(new Ui::TaskDeclPanel),
+  taskLayer(layer) {
   // Create the UI
   ui->setupUi(this);
   addButtons = new QButtonGroup(this);
