@@ -80,16 +80,37 @@ bool TaskData::fromXml(const QString &serialized) {
   return true;
 }
 
-void TaskData::insertTaskPoint(TaskPoint *taskPoint, int position) {
+bool TaskData::insertTaskPoint(TaskPoint *taskPoint, int position) {
   if (taskPoint == NULL) {
-    return;
+    return false;
   }
 
   if (position < 0 || position >= taskPoints.size()) {
     position = taskPoints.size();
   }
 
+  Util::Location loc1 = taskPoint->getLocation();
+
+  // Prevent inserting TaskPoints that are too close to each other
+  if (position != 0) {
+    TaskPoint* prev = taskPoints[position - 1];
+    Util::Location loc2 = prev->getLocation();
+    // TODO(cestmir): Put the tollerance into settings
+    if (g_core->getEllipsoid()->distance(loc1, loc2) < 500) {
+      return false;
+    }
+  }
+
+  if (position != taskPoints.size()) {
+    TaskPoint* next = taskPoints[position];
+    Util::Location loc2 = next->getLocation();
+    if (g_core->getEllipsoid()->distance(loc1, loc2) < 500) {
+      return false;
+    }
+  }
+
   taskPoints.insert(position, taskPoint);
+  return true;
 }
 
 void TaskData::moveTaskPoint(int from, int to) {

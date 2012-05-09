@@ -122,7 +122,12 @@ void TaskLayer::newTaskPoint(const TurnPoint* tp) {
   TaskData* tData = file->beginEdit(true);
   TaskPoint* newPoint = new TaskPoint();
   newPoint->setTP(tp);
-  tData->insertTaskPoint(newPoint, tpIndex);
+
+  // If the task point insertion failed, remove it
+  if (!tData->insertTaskPoint(newPoint, tpIndex)) {
+    delete newPoint;
+  }
+
   file->endEdit();
 }
 
