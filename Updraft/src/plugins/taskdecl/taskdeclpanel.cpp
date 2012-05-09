@@ -88,8 +88,12 @@ void TaskDeclPanel::removeTpButtonPushed() {
   }
 
   // Let's remove the top frame and the plus button now
+  TaskFile* file = taskLayer->getTaskFile();
+
+  TaskData* data = file->beginEdit(true);
   int pos = ui->taskButtonsLayout->indexOf(topFrame);
-  removeTpButtons(tpLayoutPosToIndex(pos));
+  data->deleteTaskPoint(tpLayoutPosToIndex(pos));
+  file->endEdit();
 }
 
 void TaskDeclPanel::saveButtonPushed() {
@@ -217,6 +221,7 @@ void TaskDeclPanel::newTurnpointButton(int index, const QString& name) {
   }
 
   TaskPointButton* button = new TaskPointButton(index, name);
+  button->connectQuit(this, SLOT(removeTpButtonPushed()));
 
   // Insert the GUI into the panel GUI
   int layoutPos = tpIndexToLayoutPos(index);

@@ -31,8 +31,6 @@ TaskPointButton::TaskPointButton(int pos, const QString& name)
   quitButton->setFlat(true);
   quitButton->setIconSize(QSize(8, 8));
 
-  // TODO(cestmir): react to close button
-
   closeFrameLayout->addWidget(quitButton);
   closeFrameLayout->addStretch();
 
@@ -48,6 +46,10 @@ void TaskPointButton::setName(const QString& newName) {
 
 QString TaskPointButton::getName() {
   return nameWidget->text();
+}
+
+void TaskPointButton::connectQuit(QObject* object, const char* slot) {
+  QObject::connect(quitButton, SIGNAL(clicked()), object, slot);
 }
 
 }  // End namespace Updraft
