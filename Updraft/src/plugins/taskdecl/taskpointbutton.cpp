@@ -12,6 +12,7 @@ TaskPointButton::TaskPointButton(int pos, const QString& name)
   : QFrame(NULL) {
   topFrameLayout = new QHBoxLayout();
   this->setLayout(topFrameLayout);
+  this->setMaximumHeight(100);
 
   // number
   number = new QLabel(QString("%1. ").arg(pos+1));
@@ -31,8 +32,7 @@ TaskPointButton::TaskPointButton(int pos, const QString& name)
   quitButton->setFlat(true);
   quitButton->setIconSize(QSize(8, 8));
 
-  // TODO(cestmir): react to close button
-
+  closeFrameLayout->addStretch();
   closeFrameLayout->addWidget(quitButton);
   closeFrameLayout->addStretch();
 
@@ -48,6 +48,10 @@ void TaskPointButton::setName(const QString& newName) {
 
 QString TaskPointButton::getName() {
   return nameWidget->text();
+}
+
+void TaskPointButton::connectQuit(QObject* object, const char* slot) {
+  QObject::connect(quitButton, SIGNAL(clicked()), object, slot);
 }
 
 }  // End namespace Updraft

@@ -19,8 +19,8 @@ TaskDeclPanel::TaskDeclPanel(TaskLayer* layer,
   QWidget *parent, Qt::WFlags flags)
   : QWidget(parent, flags),
   addTpText("Add turnpoint"),
-  taskLayer(layer),
-  ui(new Ui::TaskDeclPanel) {
+  ui(new Ui::TaskDeclPanel),
+  taskLayer(layer) {
   // Create the UI
   ui->setupUi(this);
   addButtons = new QButtonGroup(this);
@@ -88,8 +88,12 @@ void TaskDeclPanel::removeTpButtonPushed() {
   }
 
   // Let's remove the top frame and the plus button now
+  TaskFile* file = taskLayer->getTaskFile();
+
+  TaskData* data = file->beginEdit(true);
   int pos = ui->taskButtonsLayout->indexOf(topFrame);
-  removeTpButtons(tpLayoutPosToIndex(pos));
+  data->deleteTaskPoint(tpLayoutPosToIndex(pos));
+  file->endEdit();
 }
 
 void TaskDeclPanel::saveButtonPushed() {
@@ -159,14 +163,42 @@ const QWidget* TaskDeclPanel::getTaskPointWidget(int i) const {
 
 void TaskDeclPanel::dataChanged() {
   const TaskData* data = taskLayer->getTaskFile()->beginRead();
+  updateSummaryLabel(data);
+  taskLayer->getTaskFile()->endRead();
 
+  // Enables/disables undo,redo buttons.
+  ui->undoButton->setEnabled(!taskLayer->getTaskFile()->isFirstInHistory());
+  ui->redoButton->setEnabled(!taskLayer->getTaskFile()->isLastInHistory());
+}
+
+void TaskDeclPanel::updateSummaryLabel(const TaskData* data) {
   QString text;
 
-  if (data->isFaiTriangle()) {
-    text = tr("FAI Triangle");
-  } else {
-    text = tr("%1 task points").arg(data->size());
+  bool closedCourse = data->isClosed();
+  int count = data->size();
+  if (closedCourse) {
+    // in closed course we count start and landing as one point
+    count -= 1;
   }
+
+  if (data->isFaiTriangle()) {
+    if (count == 3) {
+      text = tr("FAI Triangle");
+    } else {
+      text = tr("FAI Triangle (4 task points)");
+    }
+  } else if (closedCourse) {
+    if (count == 3) {
+        text = tr("Triangle");
+    } else if (count == 2) {
+        text = tr("Out and Return");
+    } else {
+      text = tr("Closed course, %1 task points").arg(count);
+    }
+  } else {
+    text = tr("%1 task points").arg(count);
+  }
+
   text.append(" - ");
 
   qreal officialDistance = data->officialDistance();
@@ -178,12 +210,6 @@ void TaskDeclPanel::dataChanged() {
   }
 
   ui->taskSummaryLabel->setText(text);
-
-  // Enables/disables undo,redo buttons.
-  ui->undoButton->setEnabled(!taskLayer->getTaskFile()->isFirstInHistory());
-  ui->redoButton->setEnabled(!taskLayer->getTaskFile()->isLastInHistory());
-
-  taskLayer->getTaskFile()->endRead();
 }
 
 void TaskDeclPanel::newTurnpointButton(int index, const QString& name) {
@@ -195,6 +221,7 @@ void TaskDeclPanel::newTurnpointButton(int index, const QString& name) {
   }
 
   TaskPointButton* button = new TaskPointButton(index, name);
+  button->connectQuit(this, SLOT(removeTpButtonPushed()));
 
   // Insert the GUI into the panel GUI
   int layoutPos = tpIndexToLayoutPos(index);

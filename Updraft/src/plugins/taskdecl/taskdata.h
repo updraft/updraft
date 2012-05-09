@@ -36,7 +36,7 @@ class TaskData {
   /// Inserts new TaskPoint. All TaskPoints are deleted in ~TaskData.
   /// \param position target position of TaskPoint in sequence
   /// If position is invalid, TaskPoint is appended to end of sequence.
-  void insertTaskPoint(TaskPoint *taskPoint, int position);
+  bool insertTaskPoint(TaskPoint *taskPoint, int position);
 
   /// Changes position of TaskPoint in sequence.
   /// \param from position of desired TaskPoint

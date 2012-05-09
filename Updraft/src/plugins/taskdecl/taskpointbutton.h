@@ -19,6 +19,9 @@ class TaskPointButton : public QFrame {
   void setName(const QString& newName);
   QString getName();
 
+  /// Connects the quit signal to a given slot
+  void connectQuit(QObject* object, const char* slot);
+
  private:
   /// Position of the TaskPoint
   int taskPointPos;
