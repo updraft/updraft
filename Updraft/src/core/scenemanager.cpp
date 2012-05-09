@@ -17,7 +17,7 @@
 namespace Updraft {
 namespace Core {
 
-SceneManager::SceneManager(QString baseEarthFile,
+SceneManager::SceneManager(QVector<QString> mapEarthFiles, int active,
     osgViewer::ViewerBase::ThreadingModel threadingModel) {
   osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
@@ -38,8 +38,18 @@ SceneManager::SceneManager(QString baseEarthFile,
     (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   viewer->setCamera(camera);
 
-  // create map manager
-  mapManager = new MapManager(baseEarthFile);
+  // create all map managers
+  for (int i = 0; i < mapEarthFiles.size(); i++) {
+    mapManagers.append(new MapManager(mapEarthFiles[i]));
+    qDebug() << mapManagers[i];
+  }
+
+  if ((active < mapManagers.size()) && (active >= 0)) {
+    activeMapIndex = active;
+  } else {
+    activeMapIndex = 0;
+  }
+  MapManager* currentMapManager = mapManagers[activeMapIndex];
 
   // create and set scene
   sceneRoot = new osg::Group();
@@ -50,13 +60,14 @@ SceneManager::SceneManager(QString baseEarthFile,
     // add basic group for nodes
   simpleGroup = new osg::Group();
   sceneRoot->addChild(simpleGroup);
-    // add basic map
-  mapNode = mapManager->getMapNode();
+
+    // add active map
+  mapNode = currentMapManager->getMapNode();
   sceneRoot->addChild(mapNode);
 
   viewer->setSceneData(sceneRoot);
 
-  manipulator->setNode(mapManager->getMapNode());
+  manipulator->setNode(mapNode);
   manipulator->setHomeViewpoint(getInitialPosition());
 
   viewer->setCameraManipulator(manipulator);
@@ -171,8 +182,53 @@ MapObject* SceneManager::getNodeMapObject(osg::Node* node) {
   }
 }
 
+void SceneManager::fillMapLayerGroup(
+  MapLayerGroupInterface* mapLayerGroup) {
+  for (int i = 0; i < mapManagers.size(); i++) {
+    QString name = QString::fromStdString(
+      mapManagers[i]->getMap()->getName());
+    MapLayerInterface* layer =
+      mapLayerGroup->insertExistingMapLayer(
+      mapManagers[i]->getMapNode(), name);
+    layer->connectSignalChecked(
+      this, SLOT(checkedMap(bool, MapLayerInterface*)));
+    if (i == activeMapIndex) {
+      layer->emitDisplayed(true);
+    } else {
+      layer->emitDisplayed(false);
+    }
+    layers.append(layer);
+  }
+}
+
+void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
+  // find the map layer:
+  int index = 0;
+  for (index = 0; index < layers.size(); index++) {
+    if (layers[index] == object) break;
+  }
+  if (index == activeMapIndex) {
+      // cannot uncheck the active map
+    if (value == false) {
+        // force the chcekbox to be visible
+      layers[index]->emitDisplayed(true);
+    }
+  } else {
+    // checked non active map
+    // replace the map in the scene:
+    if (value == true) {
+      int oldIndex = activeMapIndex;
+      activeMapIndex = index;
+      sceneRoot->removeChild(mapManagers[oldIndex]->getMapNode());
+      sceneRoot->addChild(mapManagers[activeMapIndex]->getMapNode());
+      layers[oldIndex]->emitDisplayed(false);
+      layers[activeMapIndex]->emitDisplayed(true);
+    }
+  }
+}
+
 MapManager* SceneManager::getMapManager() {
-  return mapManager;
+  return mapManagers[activeMapIndex];
 }
 
 osg::GraphicsContext::Traits* SceneManager::createGraphicsTraits

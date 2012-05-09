@@ -22,6 +22,7 @@ MapManager::MapManager(QString earthFile) {
     this->map = mapNode->getMap();
 
     // add image layer wih our own driver
+    /*
     osgEarth::Drivers::ArcGISOptions opt;
     opt.url() =
       "http://server.arcgisonline.com/ArcGIS/rest/"
@@ -35,7 +36,8 @@ MapManager::MapManager(QString earthFile) {
     osgEarth::ImageLayer* onlineMaps =
       new osgEarth::ImageLayer(*imOpt, source);
 
-    // this->map->insertImageLayer(onlineMaps, 1);
+    this->map->insertImageLayer(onlineMaps, 1);
+    */
   } else {
     this->map = new osgEarth::Map();
     this->mapNode = new osgEarth::MapNode(this->map);
@@ -115,6 +117,10 @@ void MapManager::fillMapLayerGroup(MapLayerGroupInterface* group) {
 
 osgEarth::MapNode* MapManager::getMapNode() {
   return mapNode;
+}
+
+osgEarth::Map* MapManager::getMap() {
+  return map;
 }
 }
 }

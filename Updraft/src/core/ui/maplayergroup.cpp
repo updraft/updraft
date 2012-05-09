@@ -169,6 +169,9 @@ MapLayerInterface* MapLayerGroup::insertExistingMapLayer
   }
   newItem->setCheckState(0, state);
 
+  layer->connectSignalDisplayed
+      (this, SLOT(mapLayerVisibilityChanged(bool, MapLayerInterface*)));
+
   // add the item into the menu list and maplist
   addIntoList(newItem, pos);
   mapLayers.insert(newItem, layer);
@@ -229,7 +232,7 @@ void MapLayerGroup::removeMapLayer(MapLayerInterface* layer) {
     }
   }
 
-  if (mapLayers.empty()) {
+  if (mapLayers.count() == 1) {
     hideTree();
   }
 }

@@ -9,6 +9,9 @@
 #include <osg/LineWidth>
 #include <osg/ShapeDrawable>
 #include <osg/Vec3>
+#include <osg/Texture2D>
+#include <osgDB/ReadFile>
+#include <osg/BlendFunc>
 
 #include "pluginbase.h"
 #include "igc/igc.h"
@@ -213,28 +216,21 @@ void OpenedFile::createTrack() {
   // stateSet->setAttributeAndModes(
   //   new osg::LineWidth(viewer->lineWidthSetting->get().toFloat()));
 
-    // create the marker
-
+    // create the marker:
   // create the billboard
-  osg::Billboard* trackPositionMarker = new osg::Billboard();
-
-  trackPositionMarker->setMode(osg::Billboard::AXIAL_ROT);
-  trackPositionMarker->setAxis(osg::Vec3(0.0f, 0.0f, 1.0f));
-  trackPositionMarker->setNormal(osg::Vec3(0.0f, -1.0f, 0.0f));
-
-  trackPositionMarker->addDrawable(createMarker());
+  // set the texture
+  trackPositionMarker = createMarker(25.);
   trackPositionMarker->setNodeMask(0x0);  // make it invisible first
-  osg::StateSet* = trackPositionMarker->
-  /*
+
   currentMarkerTransform = new osg::AutoTransform();
-  at->setAutoRotateMode(osg::AutoTransform::NO_ROTATION);
+  currentMarkerTransform->setAutoRotateMode(
+    osg::AutoTransform::ROTATE_TO_SCREEN);
   currentMarkerTransform->setAutoScaleToScreen(true);
-  currentMarkerTransform->setMinimumScale(10);
+  currentMarkerTransform->setMinimumScale(0.1);
   currentMarkerTransform->setMaximumScale(100);
   currentMarkerTransform->addChild(trackPositionMarker);
   sceneRoot->addChild(currentMarkerTransform);
-  */
-  sceneRoot->addChild(trackPositionMarker);
+  // sceneRoot->addChild(trackPositionMarker);
 
     // push the scene
   track = viewer->mapLayerGroup->insertMapLayer(sceneRoot, fileInfo.fileName());
@@ -309,6 +305,7 @@ void OpenedFile::trackClicked(const EventInfo* eventInfo) {
   plotWidget->setPickedTime(timeSecs);
 
   currentMarkerTransform->setPosition(
+  // trackPositionMarker->setPosition(0,
     osg::Vec3d(nearest->x, nearest->y, nearest->z));
   displayMarker(true);
 }
@@ -333,12 +330,12 @@ void OpenedFile::timePicked(QTime time) {
 
     // do the transformation of the marker to the position
     // of the nearest trackFix.
-  // currentMarkerTransform->setPosition(
-  trackPositionMarker->setPosition(
+  currentMarkerTransform->setPosition(
+  // trackPositionMarker->setPosition(0,
     osg::Vec3(nearest->x, nearest->y, nearest->z));
 }
 
-osg::Drawable* OpenedFile::createMarker(qreal scale) {
+osg::Geode* OpenedFile::createMarker(qreal scale) {
   /*
   osg::Sphere* unitSphere = new osg::Sphere(osg::Vec3(0, 0, 0), 1.0);
   osg::ShapeDrawable* unitSphereDrawable = new osg::ShapeDrawable(unitSphere);
@@ -363,7 +360,29 @@ osg::Drawable* OpenedFile::createMarker(qreal scale) {
 
   geometry->addPrimitiveSet(new osg::DrawArrays(
     osg::PrimitiveSet::QUADS, 0, 4));
-  return geometry;
+
+  osg::Geode* geode = new osg::Geode();
+
+  osg::StateSet* stateSet = geode->getOrCreateStateSet();
+  QString path = QCoreApplication::applicationDirPath()
+    + "/data/igcmarker.png";
+  osg::Image* image = osgDB::readImageFile(path.toStdString());
+  osg::Texture2D* texture = new osg::Texture2D();
+  texture->setImage(image);
+
+  // Turn off lighting for the billboard.
+  stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+  // Turn on texturing, bind texture.
+  stateSet->setTextureAttributeAndModes(0, texture);
+
+  // Turn on blending.
+  stateSet->setAttributeAndModes(new osg::BlendFunc());
+  stateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+
+  geode->addDrawable(geometry);
+
+  return geode;
 }
 
 void OpenedFile::displayMarker(bool value) {

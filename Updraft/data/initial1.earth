@@ -1,0 +1,29 @@
+<!--
+Updraft initial map file.
+
+Please note that use of ESRI's free maps is subject to certain restrictions:
+http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
+-->
+
+<map name="Open Street Maps" type="geocentric">
+    
+    <cache type="tms">
+      <path>osgearth_cache_osm</path>
+    </cache>
+    
+    <lighting>true</lighting>
+
+    <image name="Offline map" driver="gdal">
+        <url>world.tif</url>
+    </image>
+
+    <image name="OSM on Mapnik Slippy Map" driver="tms">
+        <url>http://tile.openstreetmap.org/</url>
+        <profile>global-mercator</profile>
+        <format>png</format>
+        <tile_size>256</tile_size>
+        <tms_type>google</tms_type>
+    </image>    
+</map>
+
+

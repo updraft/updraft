@@ -18,6 +18,11 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
     
     <lighting>true</lighting>
 
+  
+    <image name="Offline map" driver="gdal">
+        <url>world.tif</url>
+    </image>
+
     <image name="OSM on Mapnik Slippy Map" driver="tms">
         <url>http://tile.openstreetmap.org/</url>
         <profile>global-mercator</profile>
@@ -25,12 +30,6 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
         <tile_size>256</tile_size>
         <tms_type>google</tms_type>
     </image>
-
-<!--
-    <image name="Offline map" driver="gdal">
-        <url>world.tif</url>
-    </image>
-    -->
      
     <!--
     <image name="Online maps" driver="arcgis">
@@ -91,17 +90,15 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
     </image>
     -->
     
+    <!--
     <model name="Model1" driver="feature_geom">
         <features name="world" driver="ogr">
             <url>waterways.shp</url>
-            <!--
             <url>prague.osm-line.shp</url>
             <url>state_borders_lq.shp</url>
-            <convert type="line"/>-->
+            <convert type="line"/>
         </features>
-        <!--
         <extrusion_distance>40000</extrusion_distance>
-        -->
         
         
         <styles>
@@ -111,13 +108,15 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
                    fill: #0000ff;
                    stroke-opacity: 1.0;
                    stroke-width: 1.0;
-                   <!-- altitude-clamping: terrain;
-                   altitude-offset: 10; -->    
+                   altitude-clamping: terrain;
+                   altitude-offset: 10;     
                 }            
             </style>
         </styles>
     </model>
+    -->
     
+    <!--
     <model name="Model2" driver="feature_geom">
         <features name="world" driver="ogr">
             <url>railways.shp</url>
@@ -136,6 +135,7 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
             </style>
         </styles>
     </model>
+    -->
     
 </map>
 

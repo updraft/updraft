@@ -45,6 +45,8 @@ class MapLayer : public QObject, public MapLayerInterface {
     const char *method);
   void connectCheckedToVisibility();
 
+  void emitDisplayed(bool value);
+
   void setVisible(bool value);
   bool isVisible();
 

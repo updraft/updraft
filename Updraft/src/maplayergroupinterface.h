@@ -27,6 +27,7 @@ namespace Updraft {
 
 namespace Core {
   class MapManager;
+  class SceneManager;
 }
 
 /// Map layer group used by plugins.
@@ -78,6 +79,7 @@ class MapLayerGroupInterface {
   /// Returns the placer associated with the mapNode.
   virtual osgEarth::Util::ObjectPlacer* getObjectPlacer() = 0;
 
+  friend class Core::SceneManager;
   friend class Core::MapManager;
 
  private:
