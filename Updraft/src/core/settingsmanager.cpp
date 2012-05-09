@@ -8,12 +8,19 @@
 #include "ui_settingsdialog.h"
 #include "settingsmodel.h"
 
+#include "coloreditor.h"
+
 namespace Updraft {
 namespace Core {
 
 SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
   // Initialize id regexp for identifier pattern matching
   idRegExp = QRegExp("[a-zA-Z0-9_]+");
+
+  QItemEditorFactory *factory = new QItemEditorFactory;
+  factory->registerEditor(QVariant::Color,
+    new QStandardItemEditorCreator<ColorEditor>());
+  QItemEditorFactory::setDefaultFactory(factory);
 
   model = new SettingsModel();
   model->loadSettings("settings.xml");
