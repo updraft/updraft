@@ -80,6 +80,10 @@ void CoreImplementation::registerOsgNode(osg::Node* node,
   updraft->sceneManager->registerOsgNode(node, mapObject);
 }
 
+void CoreImplementation::requestRedraw() {
+  updraft->sceneManager->requestRedraw();
+}
+
 }  // End namespace Core
 }  // End namespace Updraft
 

@@ -111,6 +111,9 @@ class CoreInterface {
   /// \param mapObject The map object that this node represents when clicked
   //TODO(cestmir): We will probably need unregistering as well
   virtual void registerOsgNode(osg::Node* node, MapObject* mapObject) = 0;
+
+  /// Request single redraw of the scene.
+  virtual void requestRedraw() = 0;
 };
 
 }  // End namespace Updraft

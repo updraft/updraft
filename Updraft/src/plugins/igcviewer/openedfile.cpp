@@ -163,6 +163,7 @@ bool OpenedFile::init(IgcViewer* viewer,
 
 void OpenedFile::redraw() {
   setColors(colorings[viewer->currentColoring]);
+  g_core->requestRedraw();
 }
 
 void OpenedFile::close() {
@@ -178,7 +179,7 @@ void OpenedFile::close() {
 
 void OpenedFile::coloringChanged() {
   colorsCombo->setCurrentIndex(viewer->currentColoring);
-  setColors(colorings[viewer->currentColoring]);
+  redraw();
 }
 
 void OpenedFile::createTrack() {
