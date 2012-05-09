@@ -12,6 +12,7 @@ TaskPointButton::TaskPointButton(int pos, const QString& name)
   : QFrame(NULL) {
   topFrameLayout = new QHBoxLayout();
   this->setLayout(topFrameLayout);
+  this->setMaximumHeight(100);
 
   // number
   number = new QLabel(QString("%1. ").arg(pos+1));
@@ -31,6 +32,7 @@ TaskPointButton::TaskPointButton(int pos, const QString& name)
   quitButton->setFlat(true);
   quitButton->setIconSize(QSize(8, 8));
 
+  closeFrameLayout->addStretch();
   closeFrameLayout->addWidget(quitButton);
   closeFrameLayout->addStretch();
 
