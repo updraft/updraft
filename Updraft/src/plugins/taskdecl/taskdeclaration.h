@@ -24,8 +24,6 @@ class Q_DECL_EXPORT TaskDeclaration: public QObject, public PluginBase {
 
   QString getName();
 
-  unsigned getPriority();
-
   void initialize(CoreInterface *coreInterface);
   void deinitialize();
 

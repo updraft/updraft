@@ -31,8 +31,6 @@ class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
  public:
   QString getName();
 
-  unsigned getPriority();
-
   void initialize(CoreInterface *coreInterface);
 
   void deinitialize();

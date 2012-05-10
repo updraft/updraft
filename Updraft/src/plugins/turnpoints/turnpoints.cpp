@@ -25,10 +25,6 @@ QString TurnPoints::getName() {
   return QString("turnpoints");
 }
 
-unsigned TurnPoints::getPriority() {
-  return 0;  // TODO(cestmir): decide on the priority of plugins
-}
-
 void TurnPoints::initialize(CoreInterface *coreInterface) {
   g_core = coreInterface;
 

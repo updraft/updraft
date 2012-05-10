@@ -18,8 +18,6 @@ class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
 
   QString getName();
 
-  unsigned getPriority();
-
   void initialize(CoreInterface *coreInterface);
 
   void deinitialize();

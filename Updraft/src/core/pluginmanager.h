@@ -32,7 +32,7 @@ class PluginManager {
 
   LoadedPlugin* findByPointer(PluginBase *pointer);
 
-  QHash<QString, LoadedPlugin*> plugins;
+  QMap<QString, LoadedPlugin*> plugins;
 };
 
 }  // namespace Core

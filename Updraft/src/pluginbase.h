@@ -37,9 +37,6 @@ class PluginBase {
   /// \{
   virtual QString getName() = 0;
 
-  /// Priority gives the order in which plugins receive callbacks.
-  virtual unsigned getPriority() = 0;
-
   /// Plugin's API version.
   virtual unsigned getPluginApiVersion() { return PLUGIN_API_VERSION; }
   /// \}
