@@ -60,12 +60,24 @@ void TaskDeclPanel::addTpButtonPushed() {
     return;
   }
 
-  // Uncheck all other addTp buttons
+  // Remember check state of the sender button
   QAbstractButton* senderButton = qobject_cast<QAbstractButton*>(sender());
   bool newCheckedState = senderButton->isChecked();
+
+  // Uncheck all other addTp buttons
   uncheckAllAddTpButtons();
+
+  // Toggle sender button and the editing state
   senderButton->setChecked(newCheckedState);
   isBeingEdited = senderButton->isChecked();
+
+  // Set the toggled button in the task data
+  TaskFile* file = taskLayer->getTaskFile();
+  TaskData* data = file->beginEdit(false);
+  int addButtonIndex = ui->taskButtonsLayout->indexOf(senderButton);
+  addButtonIndex = addLayoutPosToIndex(addButtonIndex);
+  data->setAddTaskPointButton(addButtonIndex);
+  file->endEdit();
 }
 
 void TaskDeclPanel::removeTpButtonPushed() {
@@ -119,29 +131,20 @@ void TaskDeclPanel::updateButtons() {
   // Iterate over the task data and update the buttons
   const TaskData* data = file->beginRead();
   int pos = 0;
-  bool newButtonCheckState = false;
-  bool buttonAlreadyToggled = false;
   while (const TaskPoint* point = data->getTaskPoint(pos)) {
     if (!tpButtonExists(pos)) {
       newTurnpointButton(pos, point->getName());
-      if (!buttonAlreadyToggled) {
-        buttonAlreadyToggled = true;
-        newButtonCheckState = isBeingEdited;
-      } else {
-        newButtonCheckState = false;
-      }
-      newAddTpButton(pos+1, newButtonCheckState);
+      newAddTpButton(pos+1, false);
     } else if (!tpButtonCorrect(pos, point)) {
-      if (!buttonAlreadyToggled) {
-        buttonAlreadyToggled = true;
-        newButtonCheckState = isBeingEdited;
-      } else {
-        newButtonCheckState = false;
-      }
       updateTpButton(pos, point);
-      updateAddTpButton(pos+1, newButtonCheckState);
     }
     pos++;
+  }
+
+  // Check the corresponding add button if in editing mode
+  int checkedButton = data->getAddTaskPointButton();
+  if (isBeingEdited && checkedButton != -1) {
+    updateAddTpButton(checkedButton, true);
   }
   file->endRead();
 
