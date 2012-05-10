@@ -21,7 +21,14 @@ void ColorEditor::setColor(const QColor &c) {
 }
 
 void ColorEditor::onClick() {
-  setColor(QColorDialog::getColor(c, this));
+  QColor color = QColorDialog::getColor(c, this, QString(),
+    QColorDialog::ShowAlphaChannel);
+
+  if (!color.isValid()) {
+    return;
+  }
+
+  setColor(color);
 }
 
 }  // End namespace Core
