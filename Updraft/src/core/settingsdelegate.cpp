@@ -2,8 +2,19 @@
 #include "settingsmanager.h"
 #include "basicsetting.h"
 
+#include "coloreditor.h"
+
 namespace Updraft {
 namespace Core {
+
+SettingsDelegate::SettingsDelegate(QObject *parent)
+  : QStyledItemDelegate(parent) {
+  QItemEditorFactory *factory = new QItemEditorFactory;
+  factory->registerEditor(QVariant::Color,
+    new QStandardItemEditorCreator<ColorEditor>());
+
+  setItemEditorFactory(factory);
+}
 
 void SettingsDelegate::setModelData(
   QWidget* editor,
