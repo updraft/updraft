@@ -51,6 +51,10 @@ void TurnPoints::initialize(CoreInterface *coreInterface) {
   settings.push_back(g_core->addSetting("Turnpoints:labelSize",
     "Labels font size", 20.0, true));
 
+  g_core->addSetting("Turnpoints:labelColor",
+    "Color of the turnpoints labels",
+    QColor(Qt::white));
+
   mapLayerGroup = g_core->createMapLayerGroup(tr("Turn-points"));
 
   g_core->registerFiletype(cupTPsReg);
