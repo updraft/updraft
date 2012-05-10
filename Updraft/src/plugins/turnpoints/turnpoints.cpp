@@ -25,10 +25,6 @@ QString TurnPoints::getName() {
   return QString("turnpoints");
 }
 
-unsigned TurnPoints::getPriority() {
-  return 0;  // TODO(cestmir): decide on the priority of plugins
-}
-
 void TurnPoints::initialize(CoreInterface *coreInterface) {
   g_core = coreInterface;
 
@@ -50,6 +46,10 @@ void TurnPoints::initialize(CoreInterface *coreInterface) {
     "Minimum distance from camera for label to draw.", 4000.0, true));
   settings.push_back(g_core->addSetting("Turnpoints:labelSize",
     "Labels font size", 20.0, true));
+
+  g_core->addSetting("Turnpoints:labelColor",
+    "Color of the turnpoints labels",
+    QColor(Qt::white));
 
   mapLayerGroup = g_core->createMapLayerGroup(tr("Turn-points"));
 

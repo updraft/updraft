@@ -7,8 +7,8 @@
 #include <QTextEdit>
 
 #include <osg/Geometry>
-// #include <osg/PositionAttitudeTransform>
 #include <osg/AutoTransform>
+// #include <osg/Billboard>
 
 #include "colorings.h"
 #include "igcinfo.h"
@@ -79,7 +79,7 @@ class OpenedFile: public QObject {
   /// Set coloring of the track.
   void setColors(Coloring* coloring);
 
-  osg::Node* createMarker();
+  osg::Geode* createMarker(qreal scale);
 
   QFileInfo fileInfo;
 
@@ -98,8 +98,7 @@ class OpenedFile: public QObject {
   osg::Geometry* geom;
   osg::Group* sceneRoot;
   osg::Geode* trackGeode;
-  osg::Node* trackPositionMarker;
-  // osg::PositionAttitudeTransform* currentMarkerTransform;
+  osg::Geode* trackPositionMarker;
   osg::AutoTransform* currentMarkerTransform;
 
   Coloring* currentColoring;

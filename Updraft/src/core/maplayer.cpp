@@ -58,13 +58,16 @@ void MapLayer::connectCheckedToVisibility() {
     this, SLOT(setVisibility(bool)));
 }
 
+void MapLayer::emitDisplayed(bool value) {
+  emit displayed(value, this);
+}
+
 void MapLayer::emitChecked(bool value) {
   emit checked(value, this);
 }
 
 void MapLayer::setVisibility(bool value) {
   setVisible(value);
-  emit displayed(value, this);
 }
 
 MapLayerType MapLayer::getType() {
@@ -106,6 +109,7 @@ void MapLayer::setVisible(bool value) {
       break;
     }
   }
+  emit displayed(value, this);
 }
 
 bool MapLayer::isVisible() {

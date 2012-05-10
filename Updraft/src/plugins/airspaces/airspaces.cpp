@@ -13,10 +13,6 @@ QString Airspaces::getName() {
   return QString("airspaces");
 }
 
-unsigned Airspaces::getPriority() {
-  return 0;  // TODO(cestmir): decide on the priority of plugins
-}
-
 void Airspaces::initialize(CoreInterface *coreInterface) {
   g_core = coreInterface;
 

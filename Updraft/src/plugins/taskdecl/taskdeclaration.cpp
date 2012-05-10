@@ -19,10 +19,6 @@ QString TaskDeclaration::getName() {
   return QString("taskdecl");
 }
 
-unsigned TaskDeclaration::getPriority() {
-  return 0;  // TODO(cestmir): decide on the priority of plugins
-}
-
 void TaskDeclaration::initialize(CoreInterface *coreInterface) {
   g_core = coreInterface;
 

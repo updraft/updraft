@@ -71,6 +71,8 @@ class MapLayerInterface {
 
   virtual bool isVisible() = 0;
 
+  virtual void emitDisplayed(bool value) = 0;
+
   virtual Layer getLayer() = 0;
   virtual void setLayer(Layer l) = 0;
 

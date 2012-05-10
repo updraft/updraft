@@ -24,6 +24,7 @@ class MapManager {
   ~MapManager();
 
   osgEarth::MapNode* getMapNode();
+  osgEarth::Map* getMap();
 
   /// Gets all the map layers from the map.
   QVector<MapLayerInterface*> getMapLayers();
@@ -31,7 +32,7 @@ class MapManager {
   void fillMapLayerGroup(MapLayerGroupInterface* group);
 
  private:
-  osgEarth::MapNode* mapNode;
+  osg::ref_ptr<osgEarth::MapNode> mapNode;
   osgEarth::Map* map;
   QVector<MapLayerInterface*> mapLayers;
   MapLayerGroupInterface* mapLayerGroup;

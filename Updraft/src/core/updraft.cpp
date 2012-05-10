@@ -20,8 +20,13 @@ Updraft::Updraft(int argc, char** argv)
   mainWindow = new MainWindow(NULL);
   settingsManager = new SettingsManager();
   fileTypeManager = new FileTypeManager();
-  sceneManager = new SceneManager(
-    QCoreApplication::applicationDirPath() + "/data/initial.earth");
+  QVector<QString> mapPaths;
+  mapPaths.append(QCoreApplication::applicationDirPath()
+    + "/data/initial1.earth");
+  mapPaths.append(QCoreApplication::applicationDirPath()
+    + "/data/initial2.earth");
+
+  sceneManager = new SceneManager(mapPaths);
 
   // Initializes list of available ellipsoids.
   ellipsoids.append(new Util::Ellipsoid("WGS84",
@@ -37,7 +42,8 @@ Updraft::Updraft(int argc, char** argv)
   QString title("Maps");
   MapLayerGroupInterface* mapLayerGroup =
     mainWindow->createMapLayerGroup(title, group, map);
-  sceneManager->getMapManager()->fillMapLayerGroup(mapLayerGroup);
+  // sceneManager->getMapManager()->fillMapLayerGroup(mapLayerGroup);
+  sceneManager->fillMapLayerGroup(mapLayerGroup);
 
   pluginManager = new PluginManager();
 

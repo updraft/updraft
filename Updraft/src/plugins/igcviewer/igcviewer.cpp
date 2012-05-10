@@ -26,10 +26,6 @@ QString IgcViewer::getName() {
   return QString("igcviewer");
 }
 
-unsigned IgcViewer::getPriority() {
-  return 0;  // TODO(cestmir): decide on the priority of plugins
-}
-
 void IgcViewer::initialize(CoreInterface *coreInterface) {
   g_core = coreInterface;
 

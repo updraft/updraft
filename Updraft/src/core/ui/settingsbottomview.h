@@ -26,6 +26,8 @@ class SettingsBottomView: public QAbstractItemView {
 
   void setTopIndex(const QModelIndex& index);
 
+  void setItemDelegate(QAbstractItemDelegate *delegate);
+
  public slots:
   void commit();
   void reset();
