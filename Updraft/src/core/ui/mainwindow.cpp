@@ -138,7 +138,7 @@ void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
 }
 
 void MainWindow::standardMenuItems() {
-  QAction* openAction = new QAction(tr("&Open File..."), this);
+  QAction* openAction = new QAction(tr("&Open..."), this);
   menuFile->insertAction(0, openAction);
   connect(openAction, SIGNAL(triggered()), this, SLOT(openFile()));
 
@@ -152,7 +152,7 @@ void MainWindow::standardMenuItems() {
   exitSepAction->setSeparator(true);
   menuFile->insertAction(99, exitSepAction);
 
-  QAction* userDocAction = new QAction(tr("&User Documentation..."), this);
+  QAction* userDocAction = new QAction(tr("Updraft Help"), this);
   menuHelp->insertAction(0, userDocAction);
   connect(userDocAction, SIGNAL(triggered()), this, SLOT(openUserDoc()));
 
@@ -166,7 +166,7 @@ void MainWindow::tabsVisibility() {
 }
 
 void MainWindow::openFile() {
-  updraft->fileTypeManager->openFileDialog(tr("Open File..."));
+  updraft->fileTypeManager->openFileDialog(tr("Open"));
 }
 
 void MainWindow::appExit() {

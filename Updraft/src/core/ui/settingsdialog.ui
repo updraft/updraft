@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Options</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -72,7 +72,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>636</width>
+          <width>634</width>
           <height>411</height>
          </rect>
         </property>
@@ -100,7 +100,7 @@
      <item>
       <widget class="QCheckBox" name="showHidden">
        <property name="text">
-        <string>Show hidden settings</string>
+        <string>Show advanced options</string>
        </property>
       </widget>
      </item>
