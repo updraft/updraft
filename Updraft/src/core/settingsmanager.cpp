@@ -113,7 +113,7 @@ void SettingsManager::addGroup(
   const QString& description,
   const QString& icon) {
   addGroupInternal(groupId + "_visible", description, icon);
-  addGroupInternal(groupId + "_hidden", description + " (hidden)", icon);
+  addGroupInternal(groupId + "_hidden", description + tr(" (hidden)"), icon);
 }
 
 void SettingsManager::execDialog() {

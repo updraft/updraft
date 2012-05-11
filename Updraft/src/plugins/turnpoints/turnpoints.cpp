@@ -29,7 +29,7 @@ void TurnPoints::initialize(CoreInterface *coreInterface) {
   g_core = coreInterface;
 
   g_core->addSettingsGroup(
-    "Turnpoints", "Turnpoints Plugin Settings");
+    "Turnpoints", tr("Turnpoints Plugin Settings"));
   settings.push_back(g_core->addSetting("Turnpoints:labelColourR",
     "Colour of the turnpoint labels - RED", 1.0));
   settings.push_back(g_core->addSetting("Turnpoints:labelColourG",
@@ -48,7 +48,7 @@ void TurnPoints::initialize(CoreInterface *coreInterface) {
     "Labels font size", 20.0, true));
 
   g_core->addSetting("Turnpoints:labelColor",
-    "Color of the turnpoints labels",
+    tr("Color of the turnpoints labels"),
     QColor(Qt::white));
 
   mapLayerGroup = g_core->createMapLayerGroup(tr("Turn-points"));

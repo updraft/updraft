@@ -79,10 +79,10 @@ void SettingsTopView::currentChanged(
   if (!bottom) return;
   if (bottom->editorValuesChanged()) {
     QMessageBox::StandardButton butt =
-      QMessageBox::question(NULL, "Unsaved changes in this tab.",
-      "You have some unsaved changes to the setting values in the current "
+      QMessageBox::question(NULL, tr("Unsaved changes in this tab."),
+      tr("You have some unsaved changes to the setting values in the current "
       "settings group. Do you want to apply these changes or reset the "
-      "settings to their previous values?",
+      "settings to their previous values?"),
       QMessageBox::Reset | QMessageBox::Apply | QMessageBox::Cancel);
     switch (butt) {
       case QMessageBox::Reset:

@@ -31,21 +31,21 @@ void TaskDeclaration::initialize(CoreInterface *coreInterface) {
 
   // Menu - New Task
 
-  QAction* createTaskAction = new QAction("New Task", this);
+  QAction* createTaskAction = new QAction(tr("New Task"), this);
   connect(createTaskAction, SIGNAL(triggered()), this, SLOT(createTask()));
 
   g_core->getSystemMenu(MENU_FILE)->insertAction(2, createTaskAction);
 
   // Menu - Save
 
-  QAction* saveTaskAction = new QAction("Save Task", this);
+  QAction* saveTaskAction = new QAction(tr("Save Task"), this);
   connect(saveTaskAction, SIGNAL(triggered()), this, SLOT(saveTask()));
 
   g_core->getSystemMenu(MENU_FILE)->insertAction(3, saveTaskAction);
 
   // Menu - Save As
 
-  QAction* saveAsTaskAction = new QAction("Save Task As...", this);
+  QAction* saveAsTaskAction = new QAction(tr("Save Task As..."), this);
   connect(saveAsTaskAction, SIGNAL(triggered()), this, SLOT(saveTaskAs()));
 
   g_core->getSystemMenu(MENU_FILE)->insertAction(4, saveAsTaskAction);

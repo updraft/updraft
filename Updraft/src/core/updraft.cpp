@@ -29,9 +29,9 @@ Updraft::Updraft(int argc, char** argv)
   sceneManager = new SceneManager(mapPaths);
 
   // Initializes list of available ellipsoids.
-  ellipsoids.append(new Util::Ellipsoid("WGS84",
+  ellipsoids.append(new Util::Ellipsoid(tr("WGS84"),
     Util::Units::WGS84EquatRadius(), Util::Units::WGS84Flattening()));
-  ellipsoids.append(new Util::Ellipsoid("FAI Sphere",
+  ellipsoids.append(new Util::Ellipsoid(tr("FAI Sphere"),
     Util::Units::FAISphereRadius()));
 
   // Create the map layer group for initial map.

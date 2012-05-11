@@ -24,6 +24,8 @@ namespace Core {
 
 /// Top level object of updraft project.
 class Updraft : public QApplication {
+  Q_DECLARE_TR_FUNCTIONS(Updraft)
+
  public:
   Updraft(int argc, char** argv);
   ~Updraft();

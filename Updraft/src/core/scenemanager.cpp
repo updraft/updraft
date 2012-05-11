@@ -98,11 +98,11 @@ osgEarth::Util::Viewpoint SceneManager::getInitialPosition() {
 void SceneManager::insertMenuItems() {
   Menu* viewMenu = updraft->mainWindow->getSystemMenu(MENU_VIEW);
 
-  QAction* resetNorthAction = new QAction("Rotate to north", this);
+  QAction* resetNorthAction = new QAction(tr("Rotate to north"), this);
   connect(resetNorthAction, SIGNAL(triggered()), this, SLOT(resetNorth()));
   viewMenu->insertAction(200, resetNorthAction);
 
-  QAction* untiltAction = new QAction("Restore 2D View", this);
+  QAction* untiltAction = new QAction(tr("Restore 2D View"), this);
   connect(untiltAction, SIGNAL(triggered()), this, SLOT(untilt()));
   viewMenu->insertAction(300, untiltAction);
 }
