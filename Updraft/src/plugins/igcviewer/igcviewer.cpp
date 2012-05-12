@@ -11,11 +11,7 @@ CoreInterface *g_core = NULL;
 namespace IgcViewer {
 
 IGCMapObject::IGCMapObject(QString objectName_, OpenedFile* file_)
-  : QObject(NULL), MapObject(objectName_), file(file_) {
-}
-
-QObject* IGCMapObject::asQObject() {
-  return this;
+  : MapObject(objectName_), file(file_) {
 }
 
 OpenedFile* IGCMapObject::getFile() {
@@ -160,21 +156,15 @@ void IgcViewer::freeAutomaticColor(QColor c) {
 
 /// Tells whether this plugin wants to handle a mouse click event.
 bool IgcViewer::wantsToHandleClick(MapObject* obj) {
-  IGCMapObject* iObj = qobject_cast<IGCMapObject*>(obj->asQObject());
-  if (iObj != NULL) {
-    return true;
-  } else {
-    return false;
-  }
+  return obj->getObjectTypeName() == IGCMapObject::getClassName();
 }
 
 /// Handles the left mouse click event on the IGC in the map.
 void IgcViewer::handleClick(MapObject* obj, const EventInfo* evt) {
-  IGCMapObject* iObj = qobject_cast<IGCMapObject*>(obj->asQObject());
-  if (iObj == NULL) {
+  if (obj->getObjectTypeName() != IGCMapObject::getClassName())
     return;
-  }
-  iObj->getFile()->trackClicked(evt);
+
+  static_cast<IGCMapObject*>(obj)->getFile()->trackClicked(evt);
 }
 
 /*void IgcViewer::fileIdentification(QStringList *roles,

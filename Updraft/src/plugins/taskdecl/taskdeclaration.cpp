@@ -71,8 +71,8 @@ void TaskDeclaration::deinitialize() {
 }
 
 bool TaskDeclaration::wantsToHandleClick(MapObject* obj) {
-  TPMapObject* mObj = qobject_cast<TPMapObject*>(obj->asQObject());
-  if (mObj == NULL) return false;
+  if (obj->getObjectTypeName() != TPMapObject::getClassName())
+    return false;
 
   TaskLayer* layer = getActiveLayer();
   if (!layer) return false;
@@ -84,10 +84,10 @@ void TaskDeclaration::handleClick(MapObject* obj, const EventInfo* evt) {
   TaskLayer* layer = getActiveLayer();
   if (!layer) return;
 
-  TPMapObject* mObj = qobject_cast<TPMapObject*>(obj->asQObject());
-  if (mObj == NULL) return;
+  if (obj->getObjectTypeName() != TPMapObject::getClassName())
+    return;
 
-  layer->newTaskPoint(mObj->turnPoint);
+  layer->newTaskPoint(static_cast<TPMapObject*>(obj)->turnPoint);
   return;
 }
 

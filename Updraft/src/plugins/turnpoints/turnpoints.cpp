@@ -89,21 +89,12 @@ void TurnPoints::fileIdentification(QStringList *roles,
 }
 
 void TurnPoints::fillContextMenu(MapObject* obj, MenuInterface* menu) {
-  QObject* qObj = obj->asQObject();
-
-  if (!qObj) return;
-
-  TPMapObject* mapObject = qobject_cast<TPMapObject*>(qObj);
-  if (!mapObject) return;
-
   QAction* action = new QAction("Dummy action", NULL);
   menu->appendAction(action, true);
 }
 
 bool TurnPoints::wantsToHandleClick(MapObject* obj) {
-  QObject* qObj = obj->asQObject();
-  if (qObj && qobject_cast<TPMapObject*>(qObj)) return true;
-  return false;
+  return obj->getObjectTypeName() == TPMapObject::getClassName();
 }
 
 void TurnPoints::handleClick(MapObject* obj, const EventInfo* evt) {
