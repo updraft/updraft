@@ -10,6 +10,9 @@
 #include "../mapobject.h"
 
 namespace Updraft {
+
+class SettingInterface;
+
 namespace Core {
 
 class GraphicsWindow;
@@ -75,6 +78,10 @@ class SceneManager: public QObject {
 
  private slots:
   void tick();
+  void redrawScene();
+
+  /// Reconnects timer signal to either tick(), or directly to redrawScene().
+  void reconnectTimerSignal();
 
  private:
   Viewer* viewer;
@@ -103,7 +110,6 @@ class SceneManager: public QObject {
   /// Timer that triggers the drawing procedure.
   QTimer* timer;
 
-  void redrawScene();
   osg::Camera* createCamera();
 
   /// Map of osg nodes registered for mouse picking
@@ -120,6 +126,8 @@ class SceneManager: public QObject {
   double getAspectRatio();
   void updateCameraOrtho(osg::Camera* camera);
   void updateCameraPerspective(osg::Camera* camera);
+
+  SettingInterface *onDemandSetting;
 
   friend class GraphicsWindow;
   friend class GraphicsWidget;

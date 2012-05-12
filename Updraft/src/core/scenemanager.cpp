@@ -15,6 +15,7 @@
 #include "ui/mainwindow.h"
 #include "ui/menu.h"
 #include "../menuinterface.h"
+#include "../settinginterface.h"
 
 namespace Updraft {
 namespace Core {
@@ -150,8 +151,17 @@ SceneManager::SceneManager(QString baseEarthFile)
 
   insertMenuItems();
 
-  // start drawing
+  // start timer and conenct it appropriately
   timer = new QTimer(this);
+
+  onDemandSetting = updraft->settingsManager->addSetting(
+    "Core:onDemand",
+    tr("Render frames only when necessary"),
+    QVariant(true),
+    true);
+
+  onDemandSetting->callOnValueChanged(this, SLOT(reconnectTimerSignal()));
+  reconnectTimerSignal();  // We need to call this manually once.
   connect(timer, SIGNAL(timeout()), this, SLOT(tick()));
   timer->start(20);
 }
@@ -339,6 +349,19 @@ void SceneManager::requestRedraw() {
 
 void SceneManager::requestContinuousUpdate(bool needed) {
   requestedContinuousUpdate = needed;
+}
+
+void SceneManager::reconnectTimerSignal() {
+  disconnect(timer, SIGNAL(timeout()), this, SLOT(tick()));
+  disconnect(timer, SIGNAL(timeout()), this, SLOT(redrawScene()));
+
+  if (onDemandSetting->get().toBool()) {
+    connect(timer, SIGNAL(timeout()), this, SLOT(tick()));
+    qDebug() << "On demand rendering is ON";
+  } else {
+    connect(timer, SIGNAL(timeout()), this, SLOT(redrawScene()));
+    qDebug() << "On demand rendering is OFF";
+  }
 }
 
 }  // end namespace Core
