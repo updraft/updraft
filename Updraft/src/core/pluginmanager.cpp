@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QLibrary>
 #include <QtGui>
+#include <QFileInfo>
 
 #include "../pluginbase.h"
 #include "coreimplementation.h"
@@ -10,7 +11,6 @@
 namespace Updraft {
 namespace Core {
 
-/// Constructor loads static plugins.
 PluginManager::PluginManager() {
   qDebug("Searching for plugins in plugin directory.");
 
@@ -58,9 +58,7 @@ PluginManager::~PluginManager() {
   }
 }
 
-/// Load the plugin, initialize it and put it to the list of
-/// loaded plugins.
-PluginBase* PluginManager::load(QString fileName) {
+PluginBase* PluginManager::load(const QString &fileName) {
   qDebug() << "Loading plugin" << fileName;
   QPluginLoader loader(fileName);
   QObject *pluginInstance = loader.instance();
@@ -68,10 +66,10 @@ PluginBase* PluginManager::load(QString fileName) {
     qDebug() << "Loading error report: " << loader.errorString();
   }
 
-  return finishLoading(pluginInstance);
+  return finishLoading(pluginInstance, QFileInfo(fileName).absoluteDir());
 }
 
-PluginBase* PluginManager::getPlugin(QString name) {
+PluginBase* PluginManager::getPlugin(const QString &name) {
   LoadedPlugin* lp = plugins.value(name);
   if (!lp) return NULL;
 
@@ -88,13 +86,7 @@ QVector<PluginBase*> PluginManager::getAllPlugins() {
   return ret;
 }
 
-/// Create core interface, initialize plugin and
-/// place it in the list of loaded plugins.
-/// Logs a debug message about the reason of failure.
-/// \return Pointer to loaded plugin or NULL.
-/// \param obj Loaded plugin before casting to PluginBase.
-///   Can be NULL if loading failed (this will be logged).
-PluginBase* PluginManager::finishLoading(QObject* obj) {
+PluginBase* PluginManager::finishLoading(QObject* obj, const QDir &dir) {
   if (!obj) {
     qDebug("Loading plugin failed.");
     return NULL;
@@ -123,22 +115,13 @@ PluginBase* PluginManager::finishLoading(QObject* obj) {
   }
 
   lp->plugin = plugin;
+  lp->dir = dir;
 
   plugin->initialize(new CoreImplementation(plugin));
 
   plugins.insert(plugin->getName(), lp);
 
   return plugin;
-}
-
-PluginManager::LoadedPlugin* PluginManager::findByPointer(PluginBase* pointer) {
-  foreach(LoadedPlugin *p, plugins.values()) {
-    if (p->plugin == pointer) {
-      return p;
-    }
-  }
-
-  return NULL;
 }
 
 }  // namespace Core
