@@ -1,13 +1,22 @@
 #include "coloreditor.h"
 
 #include <QColorDialog>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 namespace Updraft {
 namespace Core {
 
 ColorEditor::ColorEditor(QWidget *parent)
-  : QPushButton(parent) {
-  connect(this, SIGNAL(clicked()), this, SLOT(onClick()));
+  : QWidget(parent) {
+  button = new QPushButton();
+
+  QVBoxLayout* layout = new QVBoxLayout;
+  layout->setContentsMargins(0, 0, 0, 0);
+  layout->addWidget(button);
+  this->setLayout(layout);
+
+  connect(button, SIGNAL(clicked()), this, SLOT(onClick()));
 }
 
 const QColor &ColorEditor::color() {
@@ -16,8 +25,19 @@ const QColor &ColorEditor::color() {
 
 void ColorEditor::setColor(const QColor &c) {
   this->c = c;
-  setText(QString("R/G/B/A: %1/%2/%3/%4")
+  button->setText(QString("R/G/B/A: %1/%2/%3/%4")
     .arg(c.red()).arg(c.green()).arg(c.blue()).arg(c.alpha()));
+
+  // Change colors of the button to make it nicer
+  QColor textColor;
+  if (c.lightness() > 164) {
+    textColor = "#000000";
+  } else {
+    textColor = "#FFFFFF";
+  }
+  QString style = QString("background-color: ") + c.name() +
+    "; color: " + textColor.name() + ";";
+  button->setStyleSheet(style);
 }
 
 void ColorEditor::onClick() {
