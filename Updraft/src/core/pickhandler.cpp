@@ -3,6 +3,8 @@
 #include <QSet>
 #include <QPair>
 #include "scenemanager.h"
+#include "../settinginterface.h"
+#include "settingsmanager.h"
 #include "updraft.h"
 #include "pickaction.h"
 #include "../eventinfo.h"
@@ -10,6 +12,11 @@
 
 namespace Updraft {
 namespace Core {
+
+PickHandler::PickHandler(): mX(0), mY(0) {
+  mouseEventTolerance = updraft->settingsManager->addSetting(
+    "coreGui:mouseEventTolerance", "Mouse click tolerance", QVariant(10.0));
+}
 
 bool PickHandler::handle(
   const osgGA::GUIEventAdapter& ea,
@@ -23,6 +30,7 @@ bool PickHandler::handle(
     case osgGA::GUIEventAdapter::MOVE:
       // Record mouse location for the button press
       // and move events.
+      qDebug("Mouse move: %f:%f", mX, mY);
       mX = ea.getX();
       mY = ea.getY();
       return false;
@@ -31,7 +39,8 @@ bool PickHandler::handle(
       // button press or move event, perform a
       // pick. (Otherwise, the trackball
       // manipulator will handle it.)
-      if (mX == ea.getX() && mY == ea.getY()) {
+      qDebug("Mouse release: %f:%f", ea.getX(), ea.getY());
+      if (eventsCloseEnough(mX, mY, ea.getX(), ea.getY())) {
         // click event
         QVector<Pair> mapObjects =
           getIntersectedMapObjects(ea.getXnormalized(), ea.getYnormalized(),
@@ -165,6 +174,19 @@ void PickHandler::raiseRightClick(
 
 MapObject* PickHandler::getMapObject(osg::Node* node) {
   return updraft->sceneManager->getNodeMapObject(node);
+}
+
+bool PickHandler::eventsCloseEnough(float x1, float y1, float x2, float y2) {
+  float dx = x1 - x2;
+  float dy = y1 - y2;
+  float tolerance = mouseEventTolerance->get().toFloat();
+
+  if (dy <= tolerance && dy >= -tolerance &&
+      dx <= tolerance && dx >= -tolerance) {
+    return true;
+  }
+
+  return false;
 }
 
 QVector<Pair> PickHandler::getIntersectedMapObjects(
