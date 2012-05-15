@@ -16,7 +16,7 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
   idRegExp = QRegExp("[a-zA-Z0-9_]+");
 
   model = new SettingsModel();
-  model->loadSettings("settings.xml");
+  model->loadSettings(updraft->getDataDirectory() + "/settings.xml");
 
   // Set the dialog's model
   dialog->setModel(model);
@@ -38,7 +38,7 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
 }
 
 SettingsManager::~SettingsManager() {
-  model->saveSettings("settings.xml");
+  model->saveSettings(updraft->getDataDirectory() + "/settings.xml");
   delete model;
 
   // TODO(cestmir): We probably need to destroy this, since it has no parent
