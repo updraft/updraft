@@ -1,5 +1,7 @@
 #include "settingsmanager.h"
 
+#include <QDesktopServices>
+
 #include "updraft.h"
 #include "ui/mainwindow.h"
 #include "ui/menu.h"
@@ -16,7 +18,7 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
   idRegExp = QRegExp("[a-zA-Z0-9_]+");
 
   model = new SettingsModel();
-  model->loadSettings(updraft->getDataDirectory() + "/settings.xml");
+  model->loadSettings(getSettingsFilename());
 
   // Set the dialog's model
   dialog->setModel(model);
@@ -38,7 +40,7 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
 }
 
 SettingsManager::~SettingsManager() {
-  model->saveSettings(updraft->getDataDirectory() + "/settings.xml");
+  model->saveSettings(getSettingsFilename());
   delete model;
 
   // TODO(cestmir): We probably need to destroy this, since it has no parent
@@ -229,6 +231,38 @@ void SettingsManager::unregisterSetting(
   SettingsItem* item,
   BasicSetting* setting) {
   settings.remove(item, setting);
+}
+
+QString SettingsManager::getSettingsFilename() {
+  QString homePath =
+    QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
+  QString appDataPath =
+    QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+
+  QString settingsFile;
+
+  if (trySettingsPath(&settingsFile, homePath)) return settingsFile;
+  if (trySettingsPath(&settingsFile, appDataPath)) return settingsFile;
+  if (trySettingsPath(&settingsFile, QDir::currentPath())) return settingsFile;
+
+  qDebug() << "None of the default setting directories worked";
+  return "";
+}
+
+bool SettingsManager::trySettingsPath(QString* settingsFile, QString path) {
+  QDir settingsDir(path);
+  qDebug() << "Searching for settings in " << settingsDir.filePath("updraft");
+
+  if (!settingsDir.exists("updraft")) {
+    settingsDir.mkdir("updraft");
+  }
+
+  if (settingsDir.cd("updraft")) {
+    *settingsFile = settingsDir.filePath("settings.xml");
+    return true;
+  }
+
+  return false;
 }
 
 }  // End namespace Core
