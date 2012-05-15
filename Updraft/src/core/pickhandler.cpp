@@ -27,10 +27,7 @@ bool PickHandler::handle(
 
   switch (ea.getEventType()) {
     case osgGA::GUIEventAdapter::PUSH:
-    case osgGA::GUIEventAdapter::MOVE:
-      // Record mouse location for the button press
-      // and move events.
-      qDebug("Mouse move: %f:%f", mX, mY);
+      // Record mouse location for the button press events
       mX = ea.getX();
       mY = ea.getY();
       return false;
@@ -39,7 +36,6 @@ bool PickHandler::handle(
       // button press or move event, perform a
       // pick. (Otherwise, the trackball
       // manipulator will handle it.)
-      qDebug("Mouse release: %f:%f", ea.getX(), ea.getY());
       if (eventsCloseEnough(mX, mY, ea.getX(), ea.getY())) {
         // click event
         QVector<Pair> mapObjects =
