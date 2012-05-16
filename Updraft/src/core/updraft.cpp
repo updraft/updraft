@@ -1,6 +1,10 @@
 #include "updraft.h"
+
+#include <QDesktopServices>
+
 #include "ui/maplayergroup.h"
 #include "util/util.h"
+#include "variantfunctions.h"
 
 namespace Updraft {
 namespace Core {
@@ -18,7 +22,18 @@ Updraft::Updraft(int argc, char** argv)
   splash.show();
 
   mainWindow = new MainWindow(NULL);
+
   settingsManager = new SettingsManager();
+  QDir dataDir =
+    QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
+  dataDir.cd("updraft");
+  QVariant dataDirVariant;
+  dataDirVariant.setValue(dataDir);
+  dataDirectory = settingsManager->addSetting(
+    "core:dataDir",
+    "Data directory",
+    dataDirVariant);
+
   fileTypeManager = new FileTypeManager();
   QVector<QString> mapPaths;
   mapPaths.append(QCoreApplication::applicationDirPath()
@@ -62,7 +77,8 @@ Updraft::~Updraft() {
 }
 
 QString Updraft::getDataDirectory() {
-  return QCoreApplication::applicationDirPath() + "/data";
+  QDir dataDir = dataDirectory->get().value<QDir>();
+  return dataDir.absolutePath();
 }
 
 /// Pull the lever.

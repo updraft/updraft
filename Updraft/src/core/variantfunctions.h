@@ -27,5 +27,7 @@ inline QString variantToString(const QVariant& var) {
 }  // End namespace Core
 }  // End namespace Updraft
 
+Q_DECLARE_METATYPE(QDir);
+
 #endif  // UPDRAFT_SRC_CORE_VARIANTFUNCTIONS_H_
 

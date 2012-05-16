@@ -16,6 +16,8 @@
 
 namespace Updraft {
 
+class SettingInterface;
+
 namespace Util {
   class Ellipsoid;
 }
@@ -37,6 +39,7 @@ class Updraft : public QApplication {
 
   // TODO(Tom): Load data directory from settings.
   QString getDataDirectory();
+  SettingInterface* dataDirectory;
 
   MainWindow* mainWindow;
   FileTypeManager* fileTypeManager;
