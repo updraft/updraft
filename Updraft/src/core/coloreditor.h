@@ -1,12 +1,14 @@
 #ifndef UPDRAFT_SRC_CORE_COLOREDITOR_H_
 #define UPDRAFT_SRC_CORE_COLOREDITOR_H_
 
-#include <QPushButton>
+#include <QWidget>
+
+class QPushButton;
 
 namespace Updraft {
 namespace Core {
 
-class ColorEditor: public QPushButton {
+class ColorEditor: public QWidget {
   Q_OBJECT
   Q_PROPERTY(QColor color READ color WRITE setColor USER true)
  public:
@@ -20,6 +22,7 @@ class ColorEditor: public QPushButton {
 
  private:
   QColor c;
+  QPushButton* button;
 };
 
 }  // End namespace Core

@@ -1,24 +1,42 @@
 #include "updraft.h"
+
+#include <QDesktopServices>
+
 #include "ui/maplayergroup.h"
 #include "util/util.h"
+#include "variantfunctions.h"
 
 namespace Updraft {
 namespace Core {
 
 Updraft::Updraft(int argc, char** argv)
   : QApplication(argc, argv) {
+  // Needed so that we can use custom types in QVariant
+  registerMetaTypes();
+
   QTranslator trans;
   trans.load("translations/czech");
 
   installTranslator(&trans);
 
+  // TODO(cestmir): Maybe put the splash image elsewhere?
   QPixmap splashImage(
     QCoreApplication::applicationDirPath() + "/data/splash.png");
   splash.setPixmap(splashImage);
   splash.show();
 
   mainWindow = new MainWindow(NULL);
+
   settingsManager = new SettingsManager();
+  QDir dataDir = QCoreApplication::applicationDirPath();
+  dataDir.cd("data");
+  QVariant dataDirVariant;
+  dataDirVariant.setValue(dataDir);
+  dataDirectory = settingsManager->addSetting(
+    "core:dataDir",
+    "Data directory",
+    dataDirVariant);
+
   fileTypeManager = new FileTypeManager();
   QVector<QString> mapPaths;
   mapPaths.append(QCoreApplication::applicationDirPath()
@@ -62,7 +80,8 @@ Updraft::~Updraft() {
 }
 
 QString Updraft::getDataDirectory() {
-  return QCoreApplication::applicationDirPath() + "/data";
+  QDir dataDir = dataDirectory->get().value<QDir>();
+  return dataDir.absolutePath();
 }
 
 /// Pull the lever.

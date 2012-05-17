@@ -132,9 +132,8 @@ QVariant SettingsModel::data(const QModelIndex& index, int role) const {
         return QVariant(item->getIcon());
       }
       QDomElement element = node.toElement();
-      QVariant ret = QVariant(element.text());
-      ret.convert(
-        QVariant::nameToType(element.attribute("type").toAscii().data()));
+      QVariant ret =
+        variantFromString(element.text(), element.attribute("type"));
       return ret;
     }
     node = node.nextSibling();
@@ -249,7 +248,7 @@ bool SettingsModel::setData(
 
   // Set the data and data type into the element
   QDomElement element = dataNode.toElement();
-  element.setAttribute("type", QVariant::typeToName(value.type()));
+  element.setAttribute("type", value.typeName());
   QString data = variantToString(value);
   element.appendChild(domDoc.createTextNode(data));
 

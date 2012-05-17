@@ -7,13 +7,16 @@
 #include "../mapobject.h"
 
 namespace Updraft {
+
+class SettingInterface;
+
 namespace Core {
 
 typedef QPair<MapObject*, osg::Vec3> Pair;
 
 class PickHandler: public osgGA::GUIEventHandler {
  public:
-  PickHandler(): mX(0), mY(0) {}
+  PickHandler();
 
   bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
 
@@ -24,6 +27,11 @@ class PickHandler: public osgGA::GUIEventHandler {
   void raiseLeftClick(QVector<Pair> mapObjects);
   void raiseRightClick(QVector<Pair> mapObjects);
   MapObject* getMapObject(osg::Node* node);
+
+  // Says whether two mouse events are close enough to belong together
+  bool eventsCloseEnough(float x1, float y1, float x2, float y2);
+
+  SettingInterface* mouseEventTolerance;
 
   // Get all MapObjectes associated with intersected nodes.
   QVector<Pair> getIntersectedMapObjects(

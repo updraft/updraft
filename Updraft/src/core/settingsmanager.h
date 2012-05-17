@@ -55,6 +55,11 @@ Q_OBJECT
   void registerSetting(SettingsItem* item, BasicSetting* setting);
   void unregisterSetting(SettingsItem* item, BasicSetting* setting);
 
+  /// Searches the standard locations for a settings file and returns
+  /// its location.
+  static QString getSettingsFilename();
+  static bool trySettingsPath(QString* settingsFile, QString path);
+
   QAction* settingsAction;
 
   SettingsDialog* dialog;
