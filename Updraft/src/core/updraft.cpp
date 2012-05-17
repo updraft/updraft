@@ -11,11 +11,15 @@ namespace Core {
 
 Updraft::Updraft(int argc, char** argv)
   : QApplication(argc, argv) {
+  // Needed so that we can use custom types in QVariant
+  registerMetaTypes();
+
   QTranslator trans;
   trans.load("translations/czech");
 
   installTranslator(&trans);
 
+  // TODO(cestmir): Maybe put the splash image elsewhere?
   QPixmap splashImage(
     QCoreApplication::applicationDirPath() + "/data/splash.png");
   splash.setPixmap(splashImage);
@@ -24,9 +28,8 @@ Updraft::Updraft(int argc, char** argv)
   mainWindow = new MainWindow(NULL);
 
   settingsManager = new SettingsManager();
-  QDir dataDir =
-    QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
-  dataDir.cd("updraft");
+  QDir dataDir = QCoreApplication::applicationDirPath();
+  dataDir.cd("data");
   QVariant dataDirVariant;
   dataDirVariant.setValue(dataDir);
   dataDirectory = settingsManager->addSetting(
