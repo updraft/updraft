@@ -13,11 +13,14 @@ class DirectoryEditor: public QPushButton {
  public:
   explicit DirectoryEditor(QWidget *parent = 0);
 
-  QDir directory();
+  const QDir& directory() const;
   void setDirectory(const QDir &dir);
 
  private slots:
   void onClick();
+
+ private:
+  QDir dirProp;
 };
 
 }  // End namespace Core

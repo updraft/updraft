@@ -9,12 +9,12 @@ DirectoryEditor::DirectoryEditor(QWidget *parent): QPushButton(parent) {
   connect(this, SIGNAL(clicked()), this, SLOT(onClick()));
 }
 
-QDir DirectoryEditor::directory() {
-  QDir retVal(this->text());
-  return retVal;
+const QDir& DirectoryEditor::directory() const {
+  return dirProp;
 }
 
 void DirectoryEditor::setDirectory(const QDir &dir) {
+  dirProp =  dir;
   this->setText(dir.absolutePath());
 }
 
