@@ -45,8 +45,6 @@ FUNCTION(GATHER_SOURCES prefix)
     QT4_ADD_TRANSLATION(translations_wrapped ${translations})
   ENDIF()
   
-  message(${sources} ${headers} ${translations})
-
   SET(${prefix}_sources ${sources} PARENT_SCOPE)
   SET(${prefix}_headers ${headers} PARENT_SCOPE)
   SET(${prefix}_forms ${forms} PARENT_SCOPE)
