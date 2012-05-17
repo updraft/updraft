@@ -98,10 +98,10 @@ SettingInterface* SettingsManager::addSetting(
     settingIndex = model->index(groupRows, 0, groupIndex);
 
     // Set the data
-    model->setData(settingIndex, settingIdPart, Qt::UserRole);
-    model->setData(settingIndex, description, Qt::DisplayRole);
     model->setData(settingIndex, defaultValue, Qt::EditRole);
     model->setData(settingIndex, defaultValue, Qt::UserRole+1);
+    model->setData(settingIndex, settingIdPart, Qt::UserRole);
+    model->setData(settingIndex, description, Qt::DisplayRole);
   }
 
   SettingsItem* settingItem = model->itemFromIndex(settingIndex);
