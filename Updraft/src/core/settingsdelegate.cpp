@@ -1,8 +1,11 @@
 #include "settingsdelegate.h"
+
+#include <QMetaType>
+
 #include "settingsmanager.h"
 #include "basicsetting.h"
-
 #include "coloreditor.h"
+#include "directoryeditor.h"
 
 namespace Updraft {
 namespace Core {
@@ -14,6 +17,19 @@ SettingsDelegate::SettingsDelegate(QObject *parent)
     new QStandardItemEditorCreator<ColorEditor>());
 
   setItemEditorFactory(factory);
+}
+
+QWidget* SettingsDelegate::createEditor(QWidget* parent,
+  const QStyleOptionViewItem& option, const QModelIndex& index) const {
+  QWidget* widget;
+  QVariant data = index.model()->data(index, Qt::EditRole);
+  int type = QMetaType::type(data.typeName());
+  if (type == QMetaType::type("QDir")) {
+    widget = new DirectoryEditor(parent);
+  } else {
+    widget = QStyledItemDelegate::createEditor(parent, option, index);
+  }
+  return widget;
 }
 
 void SettingsDelegate::setModelData(
@@ -34,6 +50,9 @@ void SettingsDelegate::setEditorData(
   const QModelIndex& index) const {
   QByteArray propertyName = editor->metaObject()->userProperty().name();
   const QAbstractItemModel* model = index.model();
+
+  QVariant name = model->data(index, Qt::UserRole);
+  QVariant value = model->data(index, Qt::EditRole);
 
   // Only reset editor data if the property differs from the value in the model
   if (!variantsEqual(model->data(index, Qt::EditRole),
