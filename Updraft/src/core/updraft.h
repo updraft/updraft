@@ -7,7 +7,6 @@
 #include "filetypemanager.h"
 #include "pluginmanager.h"
 #include "scenemanager.h"
-#include "../maplayerinterface.h"
 #include "settingsmanager.h"
 #include "splashscreen.h"
 

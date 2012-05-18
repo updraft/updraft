@@ -2,6 +2,8 @@
 
 #include <QDesktopServices>
 
+#include "../maplayerinterface.h"
+#include "../settinginterface.h"
 #include "ui/maplayergroup.h"
 #include "util/util.h"
 #include "variantfunctions.h"
