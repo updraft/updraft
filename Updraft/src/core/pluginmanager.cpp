@@ -76,6 +76,13 @@ PluginBase* PluginManager::getPlugin(const QString &name) {
   return lp->plugin;
 }
 
+QDir PluginManager::getPluginDir(const QString &name) {
+  LoadedPlugin* lp = plugins.value(name);
+  if (!lp) return QDir();
+
+  return lp->dir;
+}
+
 QVector<PluginBase*> PluginManager::getAllPlugins() {
   QVector<PluginBase*> ret;
 

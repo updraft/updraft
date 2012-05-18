@@ -22,7 +22,7 @@ class PluginManager {
   PluginBase* getPlugin(const QString &name);
 
   /// Return directory with plugin data.
-  const QDir &getPluginDir(const QString &name);
+  QDir getPluginDir(const QString &name);
 
   /// Return list of all loaded plugins.
   QVector<PluginBase*> getAllPlugins();
