@@ -3,8 +3,10 @@
 namespace Updraft {
 namespace Core {
 
-  SplashScreen::SplashScreen(const QPixmap& pixmap)
-    :QSplashScreen(pixmap) {}
+SplashScreen::SplashScreen() {
+  setPixmap(QPixmap(":/core/splash.png"));
+}
+
 }  // End namespace Core
 }  // End namespace Updraft
 

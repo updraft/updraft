@@ -21,10 +21,6 @@ Updraft::Updraft(int argc, char** argv)
 
   installTranslator(&trans);
 
-  // TODO(cestmir): Maybe put the splash image elsewhere?
-  QPixmap splashImage(
-    QCoreApplication::applicationDirPath() + "/data/splash.png");
-  splash.setPixmap(splashImage);
   splash.show();
 
   mainWindow = new MainWindow(NULL);
