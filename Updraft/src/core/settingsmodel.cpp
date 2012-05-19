@@ -55,6 +55,8 @@ SettingsModel::~SettingsModel() {
 }
 
 void SettingsModel::loadSettings(QString filename) {
+  qDebug() << "Loading settings from " << filename;
+
   QFile file(filename);
   bool result;
 
@@ -69,8 +71,6 @@ void SettingsModel::loadSettings(QString filename) {
     qDebug() << "Could not load settings into the application!";
     return;
   }
-
-  qDebug() << "Loading settings";
 
   // Traverse the dom document tree and create the internal item structure
   if (rootItem) delete rootItem;
@@ -100,7 +100,7 @@ void SettingsModel::loadSettings(QString filename) {
 }
 
 void SettingsModel::saveSettings(QString filename) {
-  qDebug() << "Saving settings";
+  qDebug() << "Saving settings to " << filename;
 
   QFile file(filename);
   bool result;

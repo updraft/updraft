@@ -57,8 +57,18 @@ Q_OBJECT
 
   /// Searches the standard locations for a settings file and returns
   /// its location.
-  static QString getSettingsFilename();
-  static bool trySettingsPath(QString* settingsFile, QString path);
+  QString getSettingsFilename();
+
+  /// Check if file settings.xml exists in dir/dir2.
+  /// \return Absolute path to settings.xml, or empty string if it wasn't found.
+  QString checkSettingsXml(const QString &dir1, const QString &dir2);
+
+  /// Create file settings.xml in dir/dir2.
+  /// \return Absolute path to settings.xml, or empty string if
+  /// something went wrong.
+  QString createSettingsXml(const QString &dir1, const QString &dir2);
+
+  QString settingsFile;
 
   QAction* settingsAction;
 

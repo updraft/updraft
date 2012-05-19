@@ -17,8 +17,10 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
   // Initialize id regexp for identifier pattern matching
   idRegExp = QRegExp("[a-zA-Z0-9_]+");
 
+  settingsFile = getSettingsFilename();
+
   model = new SettingsModel();
-  model->loadSettings(getSettingsFilename());
+  model->loadSettings(settingsFile);
 
   // Set the dialog's model
   dialog->setModel(model);
@@ -40,7 +42,7 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
 }
 
 SettingsManager::~SettingsManager() {
-  model->saveSettings(getSettingsFilename());
+  model->saveSettings(settingsFile);
   delete model;
 
   // TODO(cestmir): We probably need to destroy this, since it has no parent
@@ -234,35 +236,90 @@ void SettingsManager::unregisterSetting(
 }
 
 QString SettingsManager::getSettingsFilename() {
-  QString homePath =
+  QString homeDir =
     QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
-  QString appDataPath =
+  QString appDataDir =
     QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+  QString executableDir = updraft->applicationDirPath();
 
-  QString settingsFile;
+  QString settingsFilePath;
 
-  if (trySettingsPath(&settingsFile, homePath)) return settingsFile;
-  if (trySettingsPath(&settingsFile, appDataPath)) return settingsFile;
-  if (trySettingsPath(&settingsFile, QDir::currentPath())) return settingsFile;
+#ifdef Q_WS_X11
+  if (settingsFilePath.isEmpty()) {
+    settingsFilePath = checkSettingsXml(homeDir, ".updraft");
+  }
+#endif
 
-  qDebug() << "None of the default setting directories worked";
-  return "";
+  if (settingsFilePath.isEmpty()) {
+    settingsFilePath = checkSettingsXml(appDataDir, "updraft");
+  }
+
+  if (settingsFilePath.isEmpty()) {
+    settingsFilePath = checkSettingsXml(executableDir, QString());
+  }
+
+  if (settingsFilePath.isEmpty()) {
+#ifdef Q_WS_X11
+    settingsFilePath = createSettingsXml(homeDir, ".updraft");
+#else
+    settingsFilePath = createSettingsXml(appDataDir, "updraft");
+#endif
+  }
+
+  return settingsFilePath;
 }
 
-bool SettingsManager::trySettingsPath(QString* settingsFile, QString path) {
-  QDir settingsDir(path);
-  qDebug() << "Searching for settings in " << settingsDir.filePath("updraft");
+QString SettingsManager::checkSettingsXml(
+  const QString &dir1, const QString& dir2) {
+  QDir dir = QDir(dir1);
 
-  if (!settingsDir.exists("updraft")) {
-    settingsDir.mkdir("updraft");
+  qDebug() << "Looking for settings.xml in " << dir.absoluteFilePath(dir2);
+
+
+  if (!dir2.isEmpty()) {
+    if (!dir.cd(dir2)) {
+      return QString();
+    }
   }
 
-  if (settingsDir.cd("updraft")) {
-    *settingsFile = settingsDir.filePath("settings.xml");
-    return true;
+  QFileInfo file(dir, "settings.xml");
+
+  if (
+    file.exists() &&
+    file.isFile() &&
+    file.isReadable() &&
+    file.isWritable()) {
+    return file.absoluteFilePath();
   }
 
-  return false;
+  return QString();
+}
+
+QString SettingsManager::createSettingsXml(
+  const QString &dir, const QString &dir2) {
+  QDir dir = QDir(dir1);
+
+  qDebug() << "Creating settings.xml in " << dir.absoluteFilePath(dir2);
+
+  if (!dir2.isEmpty()) {
+    dir.mkdir(dir2);
+
+    if (!dir.cd(dir2)) {
+      qDebug() << "Failed to create directory for settings file.";
+      return QString();
+    }
+  }
+
+  QString path = dir.absoluteFilePath("settings.xml");
+  QFile file(path);
+
+  if (!file.open(QFile::WriteOnly)) {
+    qDebug() << "Failed to create settings.xml file.";
+    return QString();
+  } else {
+    file.close();
+    return path;
+  }
 }
 
 }  // End namespace Core
