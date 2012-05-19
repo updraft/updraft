@@ -67,6 +67,7 @@ Updraft::Updraft(int argc, char** argv)
   sceneManager->fillMapLayerGroup(mapLayerGroup);
 
   pluginManager = new PluginManager();
+  pluginManager->finishInit();
 
   mainWindow->setMapWidget(sceneManager->getWidget());
 }

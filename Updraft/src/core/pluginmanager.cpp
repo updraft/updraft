@@ -61,12 +61,45 @@ PluginManager::~PluginManager() {
 PluginBase* PluginManager::load(const QString &fileName) {
   qDebug() << "Loading plugin" << fileName;
   QPluginLoader loader(fileName);
+
   QObject *pluginInstance = loader.instance();
-  if (pluginInstance == NULL) {
-    qDebug() << "Loading error report: " << loader.errorString();
+  if (!pluginInstance) {
+    qDebug() << "Loading plugin failed. (" << loader.errorString() << ")";
+    return NULL;
   }
 
-  return finishLoading(pluginInstance, QFileInfo(fileName).absoluteDir());
+  PluginBase* plugin = qobject_cast<PluginBase*>(pluginInstance);
+  if (!plugin) {
+    qDebug("Plugin doesn't have correct interface.");
+    return NULL;
+  }
+
+  unsigned apiVersion = plugin->getPluginApiVersion();
+  if (apiVersion != PLUGIN_API_VERSION) {
+    qDebug("Wrong version of plugin API (expected %d, got %d).",
+      PLUGIN_API_VERSION, apiVersion);
+    return NULL;
+  }
+
+  if (plugins.contains(plugin->getName())) {
+    qDebug("Plugin named %s already loaded",
+      plugin->getName().toAscii().data());
+    return NULL;
+  }
+
+  LoadedPlugin* lp = new LoadedPlugin;
+  lp->plugin = plugin;
+  lp->dir = QFileInfo(fileName).absoluteDir();
+
+  plugins.insert(plugin->getName(), lp);
+
+  return plugin;
+}
+
+void PluginManager::finishInit() {
+  foreach(LoadedPlugin *lp, plugins.values()) {
+    lp->plugin->initialize(new CoreImplementation(lp->plugin));
+  }
 }
 
 PluginBase* PluginManager::getPlugin(const QString &name) {
@@ -91,44 +124,6 @@ QVector<PluginBase*> PluginManager::getAllPlugins() {
   }
 
   return ret;
-}
-
-PluginBase* PluginManager::finishLoading(QObject* obj, const QDir &dir) {
-  if (!obj) {
-    qDebug("Loading plugin failed.");
-    return NULL;
-  }
-
-  LoadedPlugin* lp = new LoadedPlugin;
-  PluginBase* plugin = qobject_cast<PluginBase*>(obj);
-
-  if (!plugin) {
-    qDebug("Plugin doesn't have correct interface.");
-    return NULL;
-  }
-
-  unsigned apiVersion = plugin->getPluginApiVersion();
-
-  if (apiVersion != PLUGIN_API_VERSION) {
-    qDebug("Wrong version of plugin API (expected %d, got %d).",
-      PLUGIN_API_VERSION, apiVersion);
-    return NULL;
-  }
-
-  if (plugins.contains(plugin->getName())) {
-    qDebug("Plugin named %s already loaded",
-      plugin->getName().toAscii().data());
-    return NULL;
-  }
-
-  lp->plugin = plugin;
-  lp->dir = dir;
-
-  plugin->initialize(new CoreImplementation(plugin));
-
-  plugins.insert(plugin->getName(), lp);
-
-  return plugin;
 }
 
 }  // namespace Core
