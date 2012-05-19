@@ -63,12 +63,12 @@ void Updraft::coreSettings() {
   dataDirVariant.setValue(dataDir);
   dataDirectory = settingsManager->addSetting(
     "core:dataDir",
-    "Data directory",
+    tr("Data directory"),
     dataDirVariant);
 }
 
 void Updraft::createEllipsoids() {
-  ellipsoids.append(new Util::Ellipsoid(tr("WGS84"),
+  ellipsoids.append(new Util::Ellipsoid(tr("WGS84 Ellipsoid"),
     Util::Units::WGS84EquatRadius(), Util::Units::WGS84Flattening()));
   ellipsoids.append(new Util::Ellipsoid(tr("FAI Sphere"),
     Util::Units::FAISphereRadius()));

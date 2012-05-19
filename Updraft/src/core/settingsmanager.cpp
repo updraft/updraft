@@ -32,7 +32,7 @@ void SettingsManager::finishInit() {
   Menu* toolsMenu = win->getSystemMenu(MENU_TOOLS);
 
   settingsAction = new QAction(QIcon(":/core/icons/configure.png"),
-    tr("Settings..."), this);
+    tr("&Options..."), this);
   settingsAction->setIconVisibleInMenu(true);
   connect(settingsAction, SIGNAL(triggered()),
     this, SLOT(execDialog()));
