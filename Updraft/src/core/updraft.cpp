@@ -37,30 +37,13 @@ Updraft::Updraft(int argc, char** argv)
     dataDirVariant);
 
   fileTypeManager = new FileTypeManager();
-  QVector<QString> mapPaths;
-  mapPaths.append(QCoreApplication::applicationDirPath()
-    + "/data/initial1.earth");
-  mapPaths.append(QCoreApplication::applicationDirPath()
-    + "/data/initial2.earth");
-
-  sceneManager = new SceneManager(mapPaths);
+  sceneManager = new SceneManager();
 
   // Initializes list of available ellipsoids.
   ellipsoids.append(new Util::Ellipsoid(tr("WGS84"),
     Util::Units::WGS84EquatRadius(), Util::Units::WGS84Flattening()));
   ellipsoids.append(new Util::Ellipsoid(tr("FAI Sphere"),
     Util::Units::FAISphereRadius()));
-
-  // Create the map layer group for initial map.
-  osgEarth::MapNode* map = sceneManager->getMapNode();
-  osg::Group* group = updraft->sceneManager->newGroup();
-  // TODO(Maria): Get name from the .earth file.
-  // QString title = QString::fromStdString(map->getMap()->getName());
-  QString title("Maps");
-  MapLayerGroupInterface* mapLayerGroup =
-    mainWindow->createMapLayerGroup(title, group, map);
-  // sceneManager->getMapManager()->fillMapLayerGroup(mapLayerGroup);
-  sceneManager->fillMapLayerGroup(mapLayerGroup);
 
   pluginManager = new PluginManager();
   pluginManager->finishInit();

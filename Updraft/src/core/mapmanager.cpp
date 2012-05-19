@@ -122,5 +122,10 @@ osgEarth::MapNode* MapManager::getMapNode() {
 osgEarth::Map* MapManager::getMap() {
   return map;
 }
+
+QString MapManager::getName() {
+  return QString::fromStdString(map->getName());
 }
-}
+
+}  // End namespace Core
+}  // End namespace Updraft

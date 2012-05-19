@@ -17,14 +17,13 @@
 namespace Updraft {
 namespace Core {
 
-SceneManager::SceneManager(QVector<QString> mapEarthFiles, int active,
-    osgViewer::ViewerBase::ThreadingModel threadingModel) {
+SceneManager::SceneManager() {
   osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
   manipulator = new MapManipulator();
 
   viewer = new osgViewer::Viewer();
-  viewer->setThreadingModel(threadingModel);
+  viewer->setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
 
   // set graphic traits
   osg::GraphicsContext::Traits* traits = createGraphicsTraits(0, 0, 100, 100);
@@ -38,31 +37,22 @@ SceneManager::SceneManager(QVector<QString> mapEarthFiles, int active,
     (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   viewer->setCamera(camera);
 
-  // create all map managers
-  for (int i = 0; i < mapEarthFiles.size(); i++) {
-    mapManagers.append(new MapManager(mapEarthFiles[i]));
-    qDebug() << mapManagers[i];
-  }
-
-  if ((active < mapManagers.size()) && (active >= 0)) {
-    activeMapIndex = active;
-  } else {
-    activeMapIndex = 0;
-  }
-  MapManager* currentMapManager = mapManagers[activeMapIndex];
+  createMapManagers();
 
   // create and set scene
   sceneRoot = new osg::Group();
-    // create and add background
+
+  // create and add background
   background = new osg::ClearNode();
   background->setClearColor(osg::Vec4(0.8f, 0.8f, 0.8f, 1.0f));
   sceneRoot->addChild(background);
-    // add basic group for nodes
+
+  // add basic group for nodes
   simpleGroup = new osg::Group();
   sceneRoot->addChild(simpleGroup);
 
-    // add active map
-  mapNode = currentMapManager->getMapNode();
+  // add active map
+  mapNode = mapManagers[activeMapIndex]->getMapNode();
   sceneRoot->addChild(mapNode);
 
   viewer->setSceneData(sceneRoot);
@@ -76,7 +66,8 @@ SceneManager::SceneManager(QVector<QString> mapEarthFiles, int active,
   viewer->addEventHandler(new PickHandler());
   viewer->addEventHandler(new osgViewer::StatsHandler);
 
-  insertMenuItems();
+  menuItems();
+  mapLayerGroup();
 
   // start drawing
   timer = new QTimer(this);
@@ -95,7 +86,7 @@ osgEarth::Util::Viewpoint SceneManager::getInitialPosition() {
   return start;
 }
 
-void SceneManager::insertMenuItems() {
+void SceneManager::menuItems() {
   Menu* viewMenu = updraft->mainWindow->getSystemMenu(MENU_VIEW);
 
   QAction* resetNorthAction = new QAction(tr("Rotate to north"), this);
@@ -107,11 +98,42 @@ void SceneManager::insertMenuItems() {
   viewMenu->insertAction(300, untiltAction);
 }
 
+void SceneManager::mapLayerGroup() {
+  osgEarth::MapNode* map = getMapNode();
+  osg::Group* group = newGroup();
+  // TODO(Maria): Get name from the .earth file.
+  // QString title = QString::fromStdString(map->getMap()->getName());
+  MapLayerGroupInterface* mapLayerGroup =
+    updraft->mainWindow->createMapLayerGroup(tr("Maps"), group, map);
+
+  for (int i = 0; i < mapManagers.size(); i++) {
+    MapManager *manager = mapManagers[i];
+
+    MapLayerInterface* layer = mapLayerGroup->insertExistingMapLayer(
+      manager->getMapNode(), manager->getName());
+
+    layer->connectSignalChecked(
+      this, SLOT(checkedMap(bool, MapLayerInterface*)));
+
+    if (i == activeMapIndex) {
+      layer->emitDisplayed(true);
+    } else {
+      layer->emitDisplayed(false);
+    }
+
+    layers.append(layer);
+  }
+}
+
 SceneManager::~SceneManager() {
   // We should unregister all the registered osg nodes
   QList<osg::Node*> registeredNodes = pickingMap.keys();
   foreach(osg::Node* node, registeredNodes) {
     unregisterOsgNode(node);
+  }
+
+  foreach(MapManager *m, mapManagers) {
+    delete m;
   }
 }
 
@@ -182,25 +204,6 @@ MapObject* SceneManager::getNodeMapObject(osg::Node* node) {
   }
 }
 
-void SceneManager::fillMapLayerGroup(
-  MapLayerGroupInterface* mapLayerGroup) {
-  for (int i = 0; i < mapManagers.size(); i++) {
-    QString name = QString::fromStdString(
-      mapManagers[i]->getMap()->getName());
-    MapLayerInterface* layer =
-      mapLayerGroup->insertExistingMapLayer(
-      mapManagers[i]->getMapNode(), name);
-    layer->connectSignalChecked(
-      this, SLOT(checkedMap(bool, MapLayerInterface*)));
-    if (i == activeMapIndex) {
-      layer->emitDisplayed(true);
-    } else {
-      layer->emitDisplayed(false);
-    }
-    layers.append(layer);
-  }
-}
-
 void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
   // find the map layer:
   int index = 0;
@@ -210,7 +213,7 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
   if (index == activeMapIndex) {
       // cannot uncheck the active map
     if (value == false) {
-        // force the chcekbox to be visible
+      // force the chcekbox to be visible
       layers[index]->emitDisplayed(true);
     }
   } else {
@@ -306,6 +309,15 @@ void SceneManager::resetNorth() {
 
 void SceneManager::untilt() {
   manipulator->untilt(1);
+}
+
+void SceneManager::createMapManagers() {
+  mapManagers.append(
+    new MapManager(updraft->getDataDirectory() + "/initial1.earth"));
+  mapManagers.append(
+    new MapManager(updraft->getDataDirectory() + "/initial2.earth"));
+
+  activeMapIndex = 0;
 }
 
 }  // end namespace Core
