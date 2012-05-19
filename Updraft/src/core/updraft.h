@@ -49,6 +49,10 @@ class Updraft : public QApplication {
   // List of ellipsoid models used in Updraft.
   QList<Util::Ellipsoid*> ellipsoids;
 
+ private:
+  void coreSettings();
+  void createEllipsoids();
+
   SplashScreen splash;
 };
 

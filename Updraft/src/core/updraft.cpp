@@ -13,42 +13,25 @@ namespace Core {
 
 Updraft::Updraft(int argc, char** argv)
   : QApplication(argc, argv) {
+  splash.show();
+
   // Needed so that we can use custom types in QVariant
   registerMetaTypes();
 
-  QTranslator trans;
-  trans.load("translations/czech");
+  settingsManager = new SettingsManager();
+  pluginManager = new PluginManager();
 
-  installTranslator(&trans);
-
-  splash.show();
+  coreSettings();
+  createEllipsoids();
 
   mainWindow = new MainWindow(NULL);
-
-  settingsManager = new SettingsManager();
-  settingsManager->finishInit();
-  QDir dataDir = QCoreApplication::applicationDirPath();
-  dataDir.cd("data");
-  QVariant dataDirVariant;
-  dataDirVariant.setValue(dataDir);
-  dataDirectory = settingsManager->addSetting(
-    "core:dataDir",
-    "Data directory",
-    dataDirVariant);
-
   fileTypeManager = new FileTypeManager();
   sceneManager = new SceneManager();
 
-  // Initializes list of available ellipsoids.
-  ellipsoids.append(new Util::Ellipsoid(tr("WGS84"),
-    Util::Units::WGS84EquatRadius(), Util::Units::WGS84Flattening()));
-  ellipsoids.append(new Util::Ellipsoid(tr("FAI Sphere"),
-    Util::Units::FAISphereRadius()));
-
-  pluginManager = new PluginManager();
-  pluginManager->finishInit();
-
   mainWindow->setMapWidget(sceneManager->getWidget());
+
+  settingsManager->finishInit();
+  pluginManager->finishInit();
 }
 
 Updraft::~Updraft() {
@@ -57,6 +40,7 @@ Updraft::~Updraft() {
   delete fileTypeManager;
   delete settingsManager;
   delete mainWindow;
+
   foreach(Util::Ellipsoid *e, ellipsoids) {
     delete e;
   }
@@ -65,6 +49,24 @@ Updraft::~Updraft() {
 QString Updraft::getDataDirectory() {
   QDir dataDir = dataDirectory->get().value<QDir>();
   return dataDir.absolutePath();
+}
+
+void Updraft::coreSettings() {
+  QDir dataDir = QCoreApplication::applicationDirPath();
+  dataDir.cd("data");
+  QVariant dataDirVariant;
+  dataDirVariant.setValue(dataDir);
+  dataDirectory = settingsManager->addSetting(
+    "core:dataDir",
+    "Data directory",
+    dataDirVariant);
+}
+
+void Updraft::createEllipsoids() {
+  ellipsoids.append(new Util::Ellipsoid(tr("WGS84"),
+    Util::Units::WGS84EquatRadius(), Util::Units::WGS84Flattening()));
+  ellipsoids.append(new Util::Ellipsoid(tr("FAI Sphere"),
+    Util::Units::FAISphereRadius()));
 }
 
 /// Pull the lever.
