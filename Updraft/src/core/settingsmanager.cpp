@@ -13,16 +13,16 @@
 namespace Updraft {
 namespace Core {
 
-SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
+SettingsManager::SettingsManager()
+  : dialog(NULL) {
   // Initialize id regexp for identifier pattern matching
   idRegExp = QRegExp("[a-zA-Z0-9_]+");
 
   model = new SettingsModel();
   model->loadSettings(getSettingsFilename());
+}
 
-  // Set the dialog's model
-  dialog->setModel(model);
-
+void SettingsManager::finishInit() {
   // Let the manager know whenever the model changes
   connect(model, SIGNAL(itemChanged(SettingsItem*)),
     this, SLOT(itemValueChanged(SettingsItem*)));
@@ -42,9 +42,6 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
 SettingsManager::~SettingsManager() {
   model->saveSettings(getSettingsFilename());
   delete model;
-
-  // TODO(cestmir): We probably need to destroy this, since it has no parent
-  delete dialog;
 }
 
 SettingInterface* SettingsManager::addSetting(
@@ -119,11 +116,17 @@ void SettingsManager::addGroup(
 }
 
 void SettingsManager::execDialog() {
+  dialog = new SettingsDialog(updraft->mainWindow, this);
+  dialog->setModel(model);
+
   if (dialog->exec() == QDialog::Accepted) {
     dialog->commitEditorData();
   } else {
     dialog->resetEditors();
   }
+
+  delete dialog;
+  dialog = NULL;
 }
 
 void SettingsManager::resetToDefaults() {
@@ -140,7 +143,9 @@ void SettingsManager::resetToDefaults() {
     }
   }
 
-  dialog->resetEditors();
+  if (dialog) {
+    dialog->resetEditors();
+  }
 }
 
 void SettingsManager::itemValueChanged(SettingsItem* item) {
@@ -215,8 +220,6 @@ QModelIndex SettingsManager::addGroupInternal(
     model->setData(groupIndex, description, Qt::DisplayRole);
     model->setData(groupIndex, icon, Qt::DecorationRole);
   }
-
-  dialog->recalculateTopViewWidth();
 
   return groupIndex;
 }

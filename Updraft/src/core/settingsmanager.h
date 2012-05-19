@@ -19,8 +19,17 @@ class SettingsManager: public QObject {
 Q_OBJECT
 
  public:
+  /// Prepare the settings manager to a state where settings are loaded
+  /// and accessible, but don't do anything gui related.
+  /// \note finishInit(); must be called after both SettingsManager and
+  /// TranslationManager are created!
   SettingsManager();
   ~SettingsManager();
+
+  /// Finalize the initialization.
+  /// Used to break the circular dependency between settings manager
+  /// and translation manager.
+  void finishInit();
 
   SettingInterface* addSetting(
     const QString& settingId,

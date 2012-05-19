@@ -30,6 +30,7 @@ Updraft::Updraft(int argc, char** argv)
   mainWindow = new MainWindow(NULL);
 
   settingsManager = new SettingsManager();
+  settingsManager->finishInit();
   QDir dataDir = QCoreApplication::applicationDirPath();
   dataDir.cd("data");
   QVariant dataDirVariant;
