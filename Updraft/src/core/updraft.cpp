@@ -20,6 +20,7 @@ Updraft::Updraft(int argc, char** argv)
 
   settingsManager = new SettingsManager();
   pluginManager = new PluginManager();
+  translationManager = new TranslationManager();
 
   coreSettings();
   createEllipsoids();
@@ -49,6 +50,10 @@ Updraft::~Updraft() {
 QString Updraft::getDataDirectory() {
   QDir dataDir = dataDirectory->get().value<QDir>();
   return dataDir.absolutePath();
+}
+
+QDir Updraft::getTranslationDirectory() {
+  return QDir(applicationDirPath());
 }
 
 void Updraft::coreSettings() {
