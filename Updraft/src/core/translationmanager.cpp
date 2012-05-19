@@ -1,5 +1,7 @@
 #include "translationmanager.h"
 
+#include <QLocale>
+
 #include "updraft.h"
 #include "../pluginbase.h"
 
@@ -19,11 +21,15 @@ TranslationManager::TranslationManager() {
   languageSetting = updraft->settingsManager->addSetting(
     "core:language",
     tr("Language"),
-    QString("english"),  // TODO(Kuba) Create an editor for trasnlations.
+    QLocale::languageToString(QLocale::system().language()),
+      // TODO(Kuba) Create an editor for trasnlations.
     false);
   languageSetting->callOnValueChanged(this, SLOT(languageChanged()));
 
   languageChanged();
+
+  // TODO(Kuba): Translate the setting description
+  // languageSetting->setDescription()
 }
 
 void TranslationManager::languageChanged() {
