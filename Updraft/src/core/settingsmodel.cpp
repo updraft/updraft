@@ -44,10 +44,8 @@ int SettingsItem::rowCount() {
   return children.size();
 }
 
-SettingsModel::SettingsModel(): domDoc("settings") {
-  QDomElement model = domDoc.createElement("model");
-  domDoc.appendChild(model);
-  rootItem = new SettingsItem(model, this);
+SettingsModel::SettingsModel(): domDoc("settings"), rootItem(NULL) {
+  reinitializeData();
 }
 
 SettingsModel::~SettingsModel() {
@@ -67,9 +65,11 @@ void SettingsModel::loadSettings(QString filename) {
     return;
   }
 
+  reinitializeData();
   result = domDoc.setContent(&file);
   if (!result) {
     file.close();
+    reinitializeData();
     qDebug() << "Could not load settings into the application!";
     return;
   }
@@ -320,6 +320,14 @@ void SettingsModel::insertRowInternal(int row, SettingsItem* item) {
     item->getNode().insertBefore(element, next);
     item->insertChild(newItem, row);
   }
+}
+
+void SettingsModel::reinitializeData() {
+  if (rootItem) delete rootItem;
+
+  QDomElement model = domDoc.createElement("model");
+  domDoc.appendChild(model);
+  rootItem = new SettingsItem(model, this);
 }
 
 }  // End namespace Core
