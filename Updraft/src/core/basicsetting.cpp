@@ -28,6 +28,14 @@ void BasicSetting::set(const QVariant& newValue) {
   }
 }
 
+void BasicSetting::setDescription(const QString& newDescription) {
+  if (item) {
+    SettingsModel* model = item->getModel();
+    QModelIndex index = model->indexFromItem(item);
+    model->setData(index, QVariant(newDescription), Qt::UserRole+1);
+  }
+}
+
 void BasicSetting::callOnValueChanged(QObject* slotOwner, const char* slot) {
   QObject::connect(this, SIGNAL(valueChanged()), slotOwner, slot);
 }
