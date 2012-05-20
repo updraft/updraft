@@ -3,6 +3,8 @@
 
 #include <QList>
 #include <QString>
+#include <QPair>
+#include <QStringList>
 #include <QTranslator>
 
 #include "../settinginterface.h"
@@ -23,6 +25,9 @@ class TranslationManager: public QObject {
   /// Sets the language and calls the translate() method on
   /// updraft singleton (= the whole application).
   void languageChanged();
+
+  /// List all available languages
+  QStringList availableLanguages();
 
  private:
   /// Load all the languages to the translator.

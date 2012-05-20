@@ -20,16 +20,14 @@ TranslationManager::TranslationManager() {
 
   languageSetting = updraft->settingsManager->addSetting(
     "core:language",
-    tr("Language"),
-    QLocale::languageToString(QLocale::system().language()),
-      // TODO(Kuba) Create an editor for trasnlations.
+    "",  // description is given after a language file is loaded
+    availableLanguages()[0],  // TODO(Kuba) Create an editor for trasnlations.
     false);
   languageSetting->callOnValueChanged(this, SLOT(languageChanged()));
 
   languageChanged();
 
-  // TODO(Kuba): Translate the setting description
-  // languageSetting->setDescription()
+  languageSetting->setDescription(tr("Language"));
 }
 
 void TranslationManager::languageChanged() {
@@ -57,6 +55,31 @@ void TranslationManager::loadLanguage(const QString &lang) {
     dir = updraft->pluginManager->getPluginDir(name);
     loadTranslationFile(pair.second, dir, lang);
   }
+}
+
+QStringList TranslationManager::availableLanguages() {
+  QStringList nameFilter;
+  nameFilter << "*.qm";
+
+  QSet<QString> found =
+    updraft->getTranslationDirectory().entryList(
+      nameFilter, QDir::Files | QDir::Readable).toSet();
+
+  foreach(PluginTranslator pair, pluginTranslators) {
+    QString name = pair.first->getName();
+    QDir dir = updraft->pluginManager->getPluginDir(name);
+
+    found.unite(dir.entryList(
+      nameFilter, QDir::Files | QDir::Readable).toSet());
+  }
+
+  QStringList ret;
+
+  foreach(QString str, found) {
+    ret.append(str.left(str.size() - 3));
+  }
+
+  return ret;
 }
 
 }  // End namespace Core
