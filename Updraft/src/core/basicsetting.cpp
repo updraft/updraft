@@ -32,7 +32,7 @@ void BasicSetting::setDescription(const QString& newDescription) {
   if (item) {
     SettingsModel* model = item->getModel();
     QModelIndex index = model->indexFromItem(item);
-    model->setData(index, QVariant(newDescription), Qt::UserRole+1);
+    model->setData(index, QVariant(newDescription), Qt::DisplayRole);
   }
 }
 
