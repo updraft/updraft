@@ -62,12 +62,14 @@ void SettingsModel::loadSettings(QString filename) {
 
   result = file.open(QIODevice::ReadOnly);
   if (!result) {
+    file.close();
     qDebug() << "Could not load settings file!";
     return;
   }
 
   result = domDoc.setContent(&file);
   if (!result) {
+    file.close();
     qDebug() << "Could not load settings into the application!";
     return;
   }

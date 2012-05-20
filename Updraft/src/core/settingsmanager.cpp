@@ -304,9 +304,16 @@ QString SettingsManager::createSettingsXml(
 
   qDebug() << "Creating settings.xml in " << dir.absoluteFilePath(dir2);
 
-  if (!dir2.isEmpty()) {
+  // Change to the updraft settings directory
+  if (!dir.exists(dir2)) {
     dir.mkdir(dir2);
 
+    if (!dir.cd(dir2)) {
+      qDebug() << "Failed to create directory for settings file.";
+      dir.rmdir(dir2);
+      return QString();
+    }
+  } else {
     if (!dir.cd(dir2)) {
       qDebug() << "Failed to create directory for settings file.";
       return QString();
