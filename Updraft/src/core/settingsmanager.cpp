@@ -13,7 +13,8 @@
 namespace Updraft {
 namespace Core {
 
-SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
+SettingsManager::SettingsManager()
+  : dialog(NULL) {
   // Initialize id regexp for identifier pattern matching
   idRegExp = QRegExp("[a-zA-Z0-9_]+");
 
@@ -21,10 +22,9 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
 
   model = new SettingsModel();
   model->loadSettings(settingsFile);
+}
 
-  // Set the dialog's model
-  dialog->setModel(model);
-
+void SettingsManager::finishInit() {
   // Let the manager know whenever the model changes
   connect(model, SIGNAL(itemChanged(SettingsItem*)),
     this, SLOT(itemValueChanged(SettingsItem*)));
@@ -34,7 +34,7 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
   Menu* toolsMenu = win->getSystemMenu(MENU_TOOLS);
 
   settingsAction = new QAction(QIcon(":/core/icons/configure.png"),
-    tr("Settings..."), this);
+    tr("&Options..."), this);
   settingsAction->setIconVisibleInMenu(true);
   connect(settingsAction, SIGNAL(triggered()),
     this, SLOT(execDialog()));
@@ -44,9 +44,6 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
 SettingsManager::~SettingsManager() {
   model->saveSettings(settingsFile);
   delete model;
-
-  // TODO(cestmir): We probably need to destroy this, since it has no parent
-  delete dialog;
 }
 
 SettingInterface* SettingsManager::addSetting(
@@ -121,11 +118,17 @@ void SettingsManager::addGroup(
 }
 
 void SettingsManager::execDialog() {
+  dialog = new SettingsDialog(updraft->mainWindow, this);
+  dialog->setModel(model);
+
   if (dialog->exec() == QDialog::Accepted) {
     dialog->commitEditorData();
   } else {
     dialog->resetEditors();
   }
+
+  delete dialog;
+  dialog = NULL;
 }
 
 void SettingsManager::resetToDefaults() {
@@ -142,7 +145,9 @@ void SettingsManager::resetToDefaults() {
     }
   }
 
-  dialog->resetEditors();
+  if (dialog) {
+    dialog->resetEditors();
+  }
 }
 
 void SettingsManager::itemValueChanged(SettingsItem* item) {
@@ -217,8 +222,6 @@ QModelIndex SettingsManager::addGroupInternal(
     model->setData(groupIndex, description, Qt::DisplayRole);
     model->setData(groupIndex, icon, Qt::DecorationRole);
   }
-
-  dialog->recalculateTopViewWidth();
 
   return groupIndex;
 }
@@ -296,7 +299,7 @@ QString SettingsManager::checkSettingsXml(
 }
 
 QString SettingsManager::createSettingsXml(
-  const QString &dir, const QString &dir2) {
+  const QString &dir1, const QString &dir2) {
   QDir dir = QDir(dir1);
 
   qDebug() << "Creating settings.xml in " << dir.absoluteFilePath(dir2);

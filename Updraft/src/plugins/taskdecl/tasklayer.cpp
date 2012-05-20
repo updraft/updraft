@@ -78,10 +78,10 @@ void TaskLayer::display(bool displayed_) {
 QString TaskLayer::getTitle() const {
   switch (file->getStorageState()) {
     case TaskFile::UNSTORED_EMPTY:
-      return QString("[New Task %1]").arg(newTaskIndex);
+      return "[" + tr("New Task") + QString(" %1]").arg(newTaskIndex);
 
     case TaskFile::UNSTORED_EDITED:
-      return QString("[New Task %1] *").arg(newTaskIndex);
+      return "[" + tr("New Task") + QString(" %1] *").arg(newTaskIndex);
 
     case TaskFile::STORED_SYNCHRONIZED:
       return file->getFileName();

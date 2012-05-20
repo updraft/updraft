@@ -18,7 +18,7 @@ namespace Updraft {
 TaskDeclPanel::TaskDeclPanel(TaskLayer* layer,
   QWidget *parent, Qt::WFlags flags)
   : QWidget(parent, flags),
-  addTpText("Add turnpoint"),
+  addTpText(tr("Add turnpoint")),
   ui(new Ui::TaskDeclPanel),
   taskLayer(layer) {
   // Create the UI
@@ -196,7 +196,7 @@ void TaskDeclPanel::updateSummaryLabel(const TaskData* data) {
     } else if (count == 2) {
         text = tr("Out and Return");
     } else {
-      text = tr("Closed course, %1 task points").arg(count);
+      text = tr("Closed course") + ", " + tr("%1 task points").arg(count);
     }
   } else {
     text = tr("%1 task points").arg(count);
