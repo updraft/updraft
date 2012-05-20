@@ -5,7 +5,7 @@ namespace Core {
 
 bool variantsEqual(const QVariant& var1, const QVariant& var2) {
   int type1 = QMetaType::type(var1.typeName());
-  int type2 = QMetaType::type(var2.typeName());
+  // int type2 = QMetaType::type(var2.typeName());
 
   if (type1 == QMetaType::type("double")) {
     return qFuzzyCompare(var1.toDouble(), var2.toDouble());
