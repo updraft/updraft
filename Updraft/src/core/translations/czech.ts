@@ -43,6 +43,14 @@
     </message>
 </context>
 <context>
+    <name>PickHandler</name>
+    <message>
+        <location filename="../pickhandler.cpp" line="18"/>
+        <source>Mouse click tolerance</source>
+        <translation>Tolerance kliknutí</translation>
+    </message>
+</context>
+<context>
     <name>SettingsDialog</name>
     <message>
         <location filename="../ui/settingsdialog.ui" line="14"/>
@@ -173,7 +181,7 @@
 <context>
     <name>Updraft::Core::TranslationManager</name>
     <message>
-        <location filename="../translationmanager.cpp" line="23"/>
+        <location filename="../translationmanager.cpp" line="30"/>
         <source>Language</source>
         <translation>Jazyk</translation>
     </message>

@@ -15,7 +15,7 @@ namespace Core {
 
 PickHandler::PickHandler(): mX(0), mY(0) {
   mouseEventTolerance = updraft->settingsManager->addSetting(
-    "coreGui:mouseEventTolerance", "Mouse click tolerance", QVariant(10.0));
+    "coreGui:mouseEventTolerance", tr("Mouse click tolerance"), QVariant(10.0));
 }
 
 bool PickHandler::handle(
