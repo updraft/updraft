@@ -181,7 +181,7 @@
 <context>
     <name>Updraft::Core::TranslationManager</name>
     <message>
-        <location filename="../translationmanager.cpp" line="30"/>
+        <location filename="../translationmanager.cpp" line="34"/>
         <source>Language</source>
         <translation>Jazyk</translation>
     </message>

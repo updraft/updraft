@@ -3,6 +3,7 @@
 #include <QLocale>
 
 #include "updraft.h"
+#include "translationlanguage.h"
 #include "../pluginbase.h"
 
 namespace Updraft {
@@ -18,10 +19,13 @@ TranslationManager::TranslationManager() {
     updraft->installTranslator(translator);
   }
 
+  QVariant defaultValue;
+  defaultValue.setValue(TranslationLanguage(availableLanguages()[0]));
+
   languageSetting = updraft->settingsManager->addSetting(
     "core:language",
     "",  // description is given after a language file is loaded
-    availableLanguages()[0],  // TODO(Kuba) Create an editor for trasnlations.
+    defaultValue,
     false);
   languageSetting->callOnValueChanged(this, SLOT(languageChanged()));
 
@@ -31,7 +35,8 @@ TranslationManager::TranslationManager() {
 }
 
 void TranslationManager::languageChanged() {
-  QString language = languageSetting->get().value<QString>();
+  QString language =
+    languageSetting->get().value<TranslationLanguage>().asQString();
 
   loadLanguage(language);
 }
