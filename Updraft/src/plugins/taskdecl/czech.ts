@@ -55,27 +55,27 @@
     <name>Updraft::TaskDeclaration</name>
     <message>
         <source>Tasks</source>
-        <translation>Úkoly</translation>
+        <translation>Tratě</translation>
     </message>
     <message>
         <source>New Task</source>
-        <translation>Nový úkol</translation>
+        <translation>Nová trať</translation>
     </message>
     <message>
         <source>Save Task</source>
-        <translation>Uložit úkol</translation>
+        <translation>Uložit trať</translation>
     </message>
     <message>
         <source>Save Task As...</source>
-        <translation>Uložit úkol jako...</translation>
+        <translation>Uložit trať jako...</translation>
     </message>
     <message>
         <source>Task file</source>
-        <translation>Soubor úkolu</translation>
+        <translation>Soubor tratě</translation>
     </message>
     <message>
         <source>Open task</source>
-        <translation>Otevřít úkol</translation>
+        <translation>Otevřít trať</translation>
     </message>
 </context>
 <context>
