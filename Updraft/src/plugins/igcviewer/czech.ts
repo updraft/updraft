@@ -5,11 +5,11 @@
     <name>Updraft::IgcViewer::IgcViewer</name>
     <message>
         <source>IGC flight recording</source>
-        <translation>Nahrávka letu IGC</translation>
+        <translation>Záznam letu IGC</translation>
     </message>
     <message>
         <source>Open flight record</source>
-        <translation>Otevřít nahrávku letu</translation>
+        <translation>Otevřít záznam letu</translation>
     </message>
     <message>
         <source>IGC files</source>
@@ -59,15 +59,15 @@
     </message>
     <message>
         <source>Alt</source>
-        <translation type="unfinished">Výška</translation>
+        <translation>Výška</translation>
     </message>
     <message>
         <source>GS</source>
-        <translation type="unfinished">GS</translation>
+        <translation>GS</translation>
     </message>
     <message>
         <source>Vario</source>
-        <translation type="unfinished">Vario</translation>
+        <translation>Vario</translation>
     </message>
 </context>
 </TS>
