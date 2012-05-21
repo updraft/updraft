@@ -1,4 +1,7 @@
 <RCC>
+    <qresource prefix="/core">
+        <file alias="splash.png">resources/splash.png</file>
+    </qresource>
     <qresource prefix="/core/icons">
         <file alias="configure.png">resources/icons/configure.png</file>
     </qresource>

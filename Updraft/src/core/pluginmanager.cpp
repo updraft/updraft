@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QLibrary>
 #include <QtGui>
+#include <QFileInfo>
 
 #include "../pluginbase.h"
 #include "coreimplementation.h"
@@ -10,7 +11,6 @@
 namespace Updraft {
 namespace Core {
 
-/// Constructor loads static plugins.
 PluginManager::PluginManager() {
   qDebug("Searching for plugins in plugin directory.");
 
@@ -58,58 +58,23 @@ PluginManager::~PluginManager() {
   }
 }
 
-/// Load the plugin, initialize it and put it to the list of
-/// loaded plugins.
-PluginBase* PluginManager::load(QString fileName) {
+PluginBase* PluginManager::load(const QString &fileName) {
   qDebug() << "Loading plugin" << fileName;
   QPluginLoader loader(fileName);
+
   QObject *pluginInstance = loader.instance();
-  if (pluginInstance == NULL) {
-    qDebug() << "Loading error report: " << loader.errorString();
-  }
-
-  return finishLoading(pluginInstance);
-}
-
-PluginBase* PluginManager::getPlugin(QString name) {
-  LoadedPlugin* lp = plugins.value(name);
-  if (!lp) return NULL;
-
-  return lp->plugin;
-}
-
-QVector<PluginBase*> PluginManager::getAllPlugins() {
-  QVector<PluginBase*> ret;
-
-  foreach(LoadedPlugin *p, plugins.values()) {
-    ret.append(p->plugin);
-  }
-
-  return ret;
-}
-
-/// Create core interface, initialize plugin and
-/// place it in the list of loaded plugins.
-/// Logs a debug message about the reason of failure.
-/// \return Pointer to loaded plugin or NULL.
-/// \param obj Loaded plugin before casting to PluginBase.
-///   Can be NULL if loading failed (this will be logged).
-PluginBase* PluginManager::finishLoading(QObject* obj) {
-  if (!obj) {
-    qDebug("Loading plugin failed.");
+  if (!pluginInstance) {
+    qDebug() << "Loading plugin failed. (" << loader.errorString() << ")";
     return NULL;
   }
 
-  LoadedPlugin* lp = new LoadedPlugin;
-  PluginBase* plugin = qobject_cast<PluginBase*>(obj);
-
+  PluginBase* plugin = qobject_cast<PluginBase*>(pluginInstance);
   if (!plugin) {
     qDebug("Plugin doesn't have correct interface.");
     return NULL;
   }
 
   unsigned apiVersion = plugin->getPluginApiVersion();
-
   if (apiVersion != PLUGIN_API_VERSION) {
     qDebug("Wrong version of plugin API (expected %d, got %d).",
       PLUGIN_API_VERSION, apiVersion);
@@ -122,23 +87,43 @@ PluginBase* PluginManager::finishLoading(QObject* obj) {
     return NULL;
   }
 
+  LoadedPlugin* lp = new LoadedPlugin;
   lp->plugin = plugin;
-
-  plugin->initialize(new CoreImplementation(plugin));
+  lp->dir = QFileInfo(fileName).absoluteDir();
 
   plugins.insert(plugin->getName(), lp);
 
   return plugin;
 }
 
-PluginManager::LoadedPlugin* PluginManager::findByPointer(PluginBase* pointer) {
+void PluginManager::finishInit() {
+  foreach(LoadedPlugin *lp, plugins.values()) {
+    lp->plugin->initialize(new CoreImplementation(lp->plugin));
+  }
+}
+
+PluginBase* PluginManager::getPlugin(const QString &name) {
+  LoadedPlugin* lp = plugins.value(name);
+  if (!lp) return NULL;
+
+  return lp->plugin;
+}
+
+QDir PluginManager::getPluginDir(const QString &name) {
+  LoadedPlugin* lp = plugins.value(name);
+  if (!lp) return QDir();
+
+  return lp->dir;
+}
+
+QVector<PluginBase*> PluginManager::getAllPlugins() {
+  QVector<PluginBase*> ret;
+
   foreach(LoadedPlugin *p, plugins.values()) {
-    if (p->plugin == pointer) {
-      return p;
-    }
+    ret.append(p->plugin);
   }
 
-  return NULL;
+  return ret;
 }
 
 }  // namespace Core

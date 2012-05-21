@@ -19,35 +19,36 @@ QString TaskDeclaration::getName() {
   return QString("taskdecl");
 }
 
-unsigned TaskDeclaration::getPriority() {
-  return 0;  // TODO(cestmir): decide on the priority of plugins
-}
-
 void TaskDeclaration::initialize(CoreInterface *coreInterface) {
   g_core = coreInterface;
 
   mapLayerGroup = g_core->createMapLayerGroup(tr("Tasks"));
 
+  // Menu - separator
+  QAction* sepAction = new QAction(this);
+  sepAction->setSeparator(true);
+  g_core->getSystemMenu(MENU_FILE)->insertAction(1, sepAction);
+
   // Menu - New Task
 
-  QAction* createTaskAction = new QAction("New Task", this);
+  QAction* createTaskAction = new QAction(tr("New Task"), this);
   connect(createTaskAction, SIGNAL(triggered()), this, SLOT(createTask()));
 
-  g_core->getSystemMenu(MENU_FILE)->appendAction(createTaskAction);
+  g_core->getSystemMenu(MENU_FILE)->insertAction(2, createTaskAction);
 
   // Menu - Save
 
-  QAction* saveTaskAction = new QAction("Save Task", this);
+  QAction* saveTaskAction = new QAction(tr("Save Task"), this);
   connect(saveTaskAction, SIGNAL(triggered()), this, SLOT(saveTask()));
 
-  g_core->getSystemMenu(MENU_FILE)->appendAction(saveTaskAction);
+  g_core->getSystemMenu(MENU_FILE)->insertAction(3, saveTaskAction);
 
   // Menu - Save As
 
-  QAction* saveAsTaskAction = new QAction("Save Task As...", this);
+  QAction* saveAsTaskAction = new QAction(tr("Save Task As..."), this);
   connect(saveAsTaskAction, SIGNAL(triggered()), this, SLOT(saveTaskAs()));
 
-  g_core->getSystemMenu(MENU_FILE)->appendAction(saveAsTaskAction);
+  g_core->getSystemMenu(MENU_FILE)->insertAction(4, saveAsTaskAction);
 
   // File type registration
 
@@ -70,8 +71,8 @@ void TaskDeclaration::deinitialize() {
 }
 
 bool TaskDeclaration::wantsToHandleClick(MapObject* obj) {
-  TPMapObject* mObj = qobject_cast<TPMapObject*>(obj->asQObject());
-  if (mObj == NULL) return false;
+  if (obj->getObjectTypeName() != TPMapObject::getClassName())
+    return false;
 
   TaskLayer* layer = getActiveLayer();
   if (!layer) return false;
@@ -83,10 +84,10 @@ void TaskDeclaration::handleClick(MapObject* obj, const EventInfo* evt) {
   TaskLayer* layer = getActiveLayer();
   if (!layer) return;
 
-  TPMapObject* mObj = qobject_cast<TPMapObject*>(obj->asQObject());
-  if (mObj == NULL) return;
+  if (obj->getObjectTypeName() != TPMapObject::getClassName())
+    return;
 
-  layer->newTaskPoint(mObj->turnPoint);
+  layer->newTaskPoint(static_cast<TPMapObject*>(obj)->turnPoint);
   return;
 }
 

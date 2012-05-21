@@ -4,21 +4,18 @@
 #include "mapobject.h"
 #include "turnpoint.h"
 
-#ifdef turnpoints_EXPORTS
-# define TPS_EXPORT Q_DECL_EXPORT
-#else
-# define TPS_EXPORT Q_DECL_IMPORT
-#endif
-
 namespace Updraft {
 
-class TPS_EXPORT TPMapObject: public QObject, public MapObject {
-  Q_OBJECT
-
+class TPMapObject : public MapObject {
  public:
-  explicit TPMapObject(const TurnPoint* tp): QObject(NULL),
-    MapObject(tp->name), turnPoint(tp) {}
-  QObject* asQObject() { return this; }
+  explicit TPMapObject(const TurnPoint* tp)
+  : MapObject(tp->name), turnPoint(tp) {}
+
+  // Use this method for comparing class name.
+  // \return Name of this class.
+  static QString getClassName() { return "TPMapObject"; }
+
+  QString getObjectTypeName() { return getClassName(); }
 
   const TurnPoint* turnPoint;
 };

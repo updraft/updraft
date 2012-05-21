@@ -78,10 +78,10 @@ void TaskLayer::display(bool displayed_) {
 QString TaskLayer::getTitle() const {
   switch (file->getStorageState()) {
     case TaskFile::UNSTORED_EMPTY:
-      return QString("[New Task %1]").arg(newTaskIndex);
+      return "[" + tr("New Task") + QString(" %1]").arg(newTaskIndex);
 
     case TaskFile::UNSTORED_EDITED:
-      return QString("[New Task %1] *").arg(newTaskIndex);
+      return "[" + tr("New Task") + QString(" %1] *").arg(newTaskIndex);
 
     case TaskFile::STORED_SYNCHRONIZED:
       return file->getFileName();
@@ -122,7 +122,12 @@ void TaskLayer::newTaskPoint(const TurnPoint* tp) {
   TaskData* tData = file->beginEdit(true);
   TaskPoint* newPoint = new TaskPoint();
   newPoint->setTP(tp);
-  tData->insertTaskPoint(newPoint, tpIndex);
+
+  // If the task point insertion failed, remove it
+  if (!tData->insertTaskPoint(newPoint, tpIndex)) {
+    delete newPoint;
+  }
+
   file->endEdit();
 }
 

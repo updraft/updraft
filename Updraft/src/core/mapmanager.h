@@ -21,9 +21,11 @@ class MapManager {
 
   /// Creates a new MapManager with map created from the earth file.
   explicit MapManager(QString earthFile);
-  ~MapManager();
+
+  QString getName();
 
   osgEarth::MapNode* getMapNode();
+  osgEarth::Map* getMap();
 
   /// Gets all the map layers from the map.
   QVector<MapLayerInterface*> getMapLayers();
@@ -31,7 +33,7 @@ class MapManager {
   void fillMapLayerGroup(MapLayerGroupInterface* group);
 
  private:
-  osgEarth::MapNode* mapNode;
+  osg::ref_ptr<osgEarth::MapNode> mapNode;
   osgEarth::Map* map;
   QVector<MapLayerInterface*> mapLayers;
   MapLayerGroupInterface* mapLayerGroup;

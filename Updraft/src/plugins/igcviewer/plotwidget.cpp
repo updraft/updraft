@@ -45,7 +45,7 @@ PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
   qreal minTime = altitudeInfo->absoluteMinTime();
   qreal maxTime = altitudeInfo->absoluteMaxTime();
 
-  TextLabel* altLabel = new TextLabel("Altitude [m]");
+  TextLabel* altLabel = new TextLabel(tr("Altitude") + " [m]");
   layout->addItem(altLabel, 0, 1);
   labels.append(altLabel);
 
@@ -65,7 +65,7 @@ PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
   layout->addItem(altitudeTimeLabel, 2, 1);
   labels.append(altitudeTimeLabel);
 
-  TextLabel* gsLabel = new TextLabel("Ground speed [km/h]");
+  TextLabel* gsLabel = new TextLabel(tr("Ground speed") + " [km/h]");
   layout->addItem(gsLabel, 3, 1);
   labels.append(gsLabel);
 
@@ -81,7 +81,7 @@ PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
   layout->addItem(groundSpeedLabel, 4, 0);
   labels.append(groundSpeedLabel);
 
-  TextLabel* vsLabel = new TextLabel("Vertical speed [m/s]");
+  TextLabel* vsLabel = new TextLabel(tr("Vertical speed") + " [m/s]");
   layout->addItem(vsLabel, 5, 1);
   labels.append(vsLabel);
 
@@ -154,10 +154,10 @@ QString PlotWidget::getInfoText(int x) {
   gspeed.setNum(groundSpeedPlotPainter->getValueAtPixelX(x), 5, 0);
   QString vspeed;
   vspeed.setNum(verticalSpeedPlotPainter->getValueAtPixelX(x), 5, 1);
-  info = "Time " + hrs + ":" + mins + ":" + secs + "\n"
-    + "Alt " + altitude + " m\n"
-    + "GS " + gspeed + " km/h\n"
-    + "Vario " + vspeed + " m/s";
+  info = tr("Time") + " " + hrs + ":" + mins + ":" + secs + "\n"
+    + tr("Alt") + " " + altitude + " m\n"
+    + tr("GS") + " " + gspeed + " km/h\n"
+    + tr("Vario") + " " + vspeed + " m/s";
   return info;
 }
 

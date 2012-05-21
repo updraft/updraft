@@ -50,13 +50,25 @@ class MainWindow : public QMainWindow {
   /// Handles switchin an active tab in the bottom pane.
   void tabSwitch(int index);
 
+  /// Handles File->Open... menu action.
   void openFile();
+
+  /// Handles File->Exit menu action.
+  void appExit();
+
+  /// Handles Help->User Documentation menu action.
+  void openUserDoc();
+
+  /// Handles Help->About... menu action.
+  void showAboutDialog();
 
  protected:
   // TODO(cestmir): Just a temporary method to test context menu
   void contextMenuEvent(QContextMenuEvent* event);
 
  private:
+  /// Adds the standard menu items to menu.
+  /// This includes Open File, Exit, Help ...
   void standardMenuItems();
 
   /// Adjusts the visibility of the bottom pane.
@@ -66,7 +78,7 @@ class MainWindow : public QMainWindow {
   Ui::MainWindow *ui;
 
   Menu* menuFile;
-  Menu* menuEdit;
+  Menu* menuView;
   Menu* menuTools;
   Menu* menuHelp;
 

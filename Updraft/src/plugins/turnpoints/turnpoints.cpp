@@ -25,15 +25,11 @@ QString TurnPoints::getName() {
   return QString("turnpoints");
 }
 
-unsigned TurnPoints::getPriority() {
-  return 0;  // TODO(cestmir): decide on the priority of plugins
-}
-
 void TurnPoints::initialize(CoreInterface *coreInterface) {
   g_core = coreInterface;
 
   g_core->addSettingsGroup(
-    "Turnpoints", "Turnpoints Plugin Settings");
+    "Turnpoints", tr("Turn-points Options"));
   settings.push_back(g_core->addSetting("Turnpoints:labelColourR",
     "Colour of the turnpoint labels - RED", 1.0));
   settings.push_back(g_core->addSetting("Turnpoints:labelColourG",
@@ -50,6 +46,10 @@ void TurnPoints::initialize(CoreInterface *coreInterface) {
     "Minimum distance from camera for label to draw.", 4000.0, true));
   settings.push_back(g_core->addSetting("Turnpoints:labelSize",
     "Labels font size", 20.0, true));
+
+  g_core->addSetting("Turnpoints:labelColor",
+    tr("Color of the turnpoints labels"),
+    QColor(Qt::white));
 
   mapLayerGroup = g_core->createMapLayerGroup(tr("Turn-points"));
 
@@ -89,21 +89,12 @@ void TurnPoints::fileIdentification(QStringList *roles,
 }
 
 void TurnPoints::fillContextMenu(MapObject* obj, MenuInterface* menu) {
-  QObject* qObj = obj->asQObject();
-
-  if (!qObj) return;
-
-  TPMapObject* mapObject = qobject_cast<TPMapObject*>(qObj);
-  if (!mapObject) return;
-
   QAction* action = new QAction("Dummy action", NULL);
   menu->appendAction(action, true);
 }
 
 bool TurnPoints::wantsToHandleClick(MapObject* obj) {
-  QObject* qObj = obj->asQObject();
-  if (qObj && qobject_cast<TPMapObject*>(qObj)) return true;
-  return false;
+  return obj->getObjectTypeName() == TPMapObject::getClassName();
 }
 
 void TurnPoints::handleClick(MapObject* obj, const EventInfo* evt) {

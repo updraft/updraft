@@ -1,5 +1,7 @@
 #include "settingsmanager.h"
 
+#include <QDesktopServices>
+
 #include "updraft.h"
 #include "ui/mainwindow.h"
 #include "ui/menu.h"
@@ -11,16 +13,18 @@
 namespace Updraft {
 namespace Core {
 
-SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
+SettingsManager::SettingsManager()
+  : dialog(NULL) {
   // Initialize id regexp for identifier pattern matching
   idRegExp = QRegExp("[a-zA-Z0-9_]+");
 
+  settingsFile = getSettingsFilename();
+
   model = new SettingsModel();
-  model->loadSettings("settings.xml");
+  model->loadSettings(settingsFile);
+}
 
-  // Set the dialog's model
-  dialog->setModel(model);
-
+void SettingsManager::finishInit() {
   // Let the manager know whenever the model changes
   connect(model, SIGNAL(itemChanged(SettingsItem*)),
     this, SLOT(itemValueChanged(SettingsItem*)));
@@ -30,7 +34,7 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
   Menu* toolsMenu = win->getSystemMenu(MENU_TOOLS);
 
   settingsAction = new QAction(QIcon(":/core/icons/configure.png"),
-    tr("Settings..."), this);
+    tr("&Options..."), this);
   settingsAction->setIconVisibleInMenu(true);
   connect(settingsAction, SIGNAL(triggered()),
     this, SLOT(execDialog()));
@@ -38,11 +42,8 @@ SettingsManager::SettingsManager(): dialog(new SettingsDialog(NULL, this)) {
 }
 
 SettingsManager::~SettingsManager() {
-  model->saveSettings("settings.xml");
+  model->saveSettings(settingsFile);
   delete model;
-
-  // TODO(cestmir): We probably need to destroy this, since it has no parent
-  delete dialog;
 }
 
 SettingInterface* SettingsManager::addSetting(
@@ -96,10 +97,10 @@ SettingInterface* SettingsManager::addSetting(
     settingIndex = model->index(groupRows, 0, groupIndex);
 
     // Set the data
-    model->setData(settingIndex, settingIdPart, Qt::UserRole);
-    model->setData(settingIndex, description, Qt::DisplayRole);
     model->setData(settingIndex, defaultValue, Qt::EditRole);
     model->setData(settingIndex, defaultValue, Qt::UserRole+1);
+    model->setData(settingIndex, settingIdPart, Qt::UserRole);
+    model->setData(settingIndex, description, Qt::DisplayRole);
   }
 
   SettingsItem* settingItem = model->itemFromIndex(settingIndex);
@@ -113,15 +114,21 @@ void SettingsManager::addGroup(
   const QString& description,
   const QString& icon) {
   addGroupInternal(groupId + "_visible", description, icon);
-  addGroupInternal(groupId + "_hidden", description + " (hidden)", icon);
+  addGroupInternal(groupId + "_hidden", description + tr(" (hidden)"), icon);
 }
 
 void SettingsManager::execDialog() {
+  dialog = new SettingsDialog(updraft->mainWindow, this);
+  dialog->setModel(model);
+
   if (dialog->exec() == QDialog::Accepted) {
     dialog->commitEditorData();
   } else {
     dialog->resetEditors();
   }
+
+  delete dialog;
+  dialog = NULL;
 }
 
 void SettingsManager::resetToDefaults() {
@@ -138,7 +145,9 @@ void SettingsManager::resetToDefaults() {
     }
   }
 
-  dialog->resetEditors();
+  if (dialog) {
+    dialog->resetEditors();
+  }
 }
 
 void SettingsManager::itemValueChanged(SettingsItem* item) {
@@ -214,8 +223,6 @@ QModelIndex SettingsManager::addGroupInternal(
     model->setData(groupIndex, icon, Qt::DecorationRole);
   }
 
-  dialog->recalculateTopViewWidth();
-
   return groupIndex;
 }
 
@@ -229,6 +236,100 @@ void SettingsManager::unregisterSetting(
   SettingsItem* item,
   BasicSetting* setting) {
   settings.remove(item, setting);
+}
+
+QString SettingsManager::getSettingsFilename() {
+  QString homeDir =
+    QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
+  QString appDataDir =
+    QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+  QString executableDir = updraft->applicationDirPath();
+
+  QString settingsFilePath;
+
+#ifdef Q_WS_X11
+  if (settingsFilePath.isEmpty()) {
+    settingsFilePath = checkSettingsXml(homeDir, ".updraft");
+  }
+#endif
+
+  if (settingsFilePath.isEmpty()) {
+    settingsFilePath = checkSettingsXml(appDataDir, "updraft");
+  }
+
+  if (settingsFilePath.isEmpty()) {
+    settingsFilePath = checkSettingsXml(executableDir, QString());
+  }
+
+  if (settingsFilePath.isEmpty()) {
+#ifdef Q_WS_X11
+    settingsFilePath = createSettingsXml(homeDir, ".updraft");
+#else
+    settingsFilePath = createSettingsXml(appDataDir, "updraft");
+#endif
+  }
+
+  return settingsFilePath;
+}
+
+QString SettingsManager::checkSettingsXml(
+  const QString &dir1, const QString& dir2) {
+  QDir dir = QDir(dir1);
+
+  qDebug() << "Looking for settings.xml in " << dir.absoluteFilePath(dir2);
+
+
+  if (!dir2.isEmpty()) {
+    if (!dir.cd(dir2)) {
+      return QString();
+    }
+  }
+
+  QFileInfo file(dir, "settings.xml");
+
+  if (
+    file.exists() &&
+    file.isFile() &&
+    file.isReadable() &&
+    file.isWritable()) {
+    return file.absoluteFilePath();
+  }
+
+  return QString();
+}
+
+QString SettingsManager::createSettingsXml(
+  const QString &dir1, const QString &dir2) {
+  QDir dir = QDir(dir1);
+
+  qDebug() << "Creating settings.xml in " << dir.absoluteFilePath(dir2);
+
+  // Change to the updraft settings directory
+  if (!dir.exists(dir2)) {
+    dir.mkdir(dir2);
+
+    if (!dir.cd(dir2)) {
+      qDebug() << "Failed to create directory for settings file.";
+      dir.rmdir(dir2);
+      return QString();
+    }
+  } else {
+    if (!dir.cd(dir2)) {
+      qDebug() << "Failed to create directory for settings file.";
+      return QString();
+    }
+  }
+
+  QString path = dir.absoluteFilePath("settings.xml");
+  QFile file(path);
+
+  if (!file.open(QFile::WriteOnly)) {
+    qDebug() << "Failed to create settings.xml file.";
+    return QString();
+  } else {
+    file.close();
+    return path;
+  }
 }
 
 }  // End namespace Core

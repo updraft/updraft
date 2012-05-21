@@ -13,10 +13,8 @@ class MapObject {
   MapObject() {}
   MapObject(QString objectName): name(objectName) {}
 
-  /// Returns a pointer to this class typecasted to QObject.
-  /// It should suffice to { return this; } in the implementation.
-  /// \return Pointer to this object cast to QObject
-  virtual QObject* asQObject() = 0;
+  /// Returns a name of the class for runtime type identification.
+  virtual QString getObjectTypeName() = 0;
 
   QString name;
 };
@@ -24,4 +22,3 @@ class MapObject {
 }  // End namespace Updraft
 
 #endif
-

@@ -16,8 +16,6 @@ SettingsDialog::SettingsDialog(QWidget* parent, SettingsManager* manager)
   ui->bottomView->setItemDelegate(settingsDelegate);
   ui->topView->setBottom(ui->bottomView);
 
-  setWindowTitle(tr("Settings"));
-
   connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)),
     this, SLOT(buttonBoxClicked(QAbstractButton*)));
   connect(ui->showHidden, SIGNAL(stateChanged(int)),
@@ -34,6 +32,8 @@ void SettingsDialog::setModel(QAbstractItemModel* model) {
   ui->topView->resize(sizeHint());
   ui->bottomView->setModel(model);
   ui->bottomView->resize(sizeHint());
+
+  recalculateTopViewWidth();
 }
 
 void SettingsDialog::recalculateTopViewWidth() {

@@ -12,15 +12,19 @@ namespace IgcViewer {
 
 class OpenedFile;
 
-class IGCMapObject: public QObject, public MapObject {
-  Q_OBJECT
+class IGCMapObject : public MapObject {
  private:
   OpenedFile* file;
  public:
   IGCMapObject(QString objectName_, OpenedFile* file_);
   IGCMapObject() {}
 
-  QObject* asQObject();
+  // Use this method for comparing class name.
+  // \return Name of this class.
+  static QString getClassName() { return "IGCMapObject"; }
+
+  QString getObjectTypeName() { return getClassName(); }
+
   OpenedFile* getFile();
 };
 
@@ -30,8 +34,6 @@ class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
 
  public:
   QString getName();
-
-  unsigned getPriority();
 
   void initialize(CoreInterface *coreInterface);
 

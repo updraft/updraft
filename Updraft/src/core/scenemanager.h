@@ -24,7 +24,7 @@ class SceneManager: public QObject {
   Q_OBJECT
 
  public:
-  explicit SceneManager(QString baseEarthFile);
+  SceneManager();
   ~SceneManager();
 
   /// Returns the drawing widget.
@@ -83,8 +83,20 @@ class SceneManager: public QObject {
   /// Reconnects timer signal to either tick(), or directly to redrawScene().
   void reconnectTimerSignal();
 
+  void checkedMap(bool value, MapLayerInterface* layer);
+
  private:
+  /// Create map managers from earth files.
+  void createMapManagers();
+
+  /// Create the menu items in main window.
+  void menuItems();
+
+  /// Create the map layer group and fill it with maps.
+  void mapLayerGroup();
+
   Viewer* viewer;
+
   osg::Group* sceneRoot;
 
   /// Node with the background.
@@ -92,7 +104,9 @@ class SceneManager: public QObject {
   osgEarth::MapNode* mapNode;
   osg::Group* simpleGroup;
 
-  MapManager* mapManager;
+  QVector<MapManager*> mapManagers;
+  QVector<MapLayerInterface*> layers;
+  int activeMapIndex;
   osg::Camera* camera;
   MapManipulator* manipulator;
 

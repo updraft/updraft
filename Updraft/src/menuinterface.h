@@ -7,7 +7,7 @@ namespace Updraft {
 
 enum SystemMenu {
   MENU_FILE,
-  MENU_EDIT,
+  MENU_VIEW,
   MENU_TOOLS,
   MENU_HELP,
   MENU_CONTEXT,

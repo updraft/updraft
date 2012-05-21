@@ -10,6 +10,8 @@ SET(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 SET(SLOPPY_BUILD OFF CACHE BOOL "Don't require style checks to pass.")
 SET(QUICK_BUILD OFF CACHE BOOL "Don't perform style checks at all.")
 
+SET(UPDATE_TRANSLATIONS OFF CACHE BOOL "Update source translation translations/*.ts")
+
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	INCLUDE(CheckCXXCompilerFlag)
 	CHECK_CXX_COMPILER_FLAG(-Wall HAS_WALL)
