@@ -204,7 +204,7 @@ MACRO(PLUGIN_BUILD name)
     OPTIONAL
   )
   INSTALL(FILES ${${name}_translations_wrapped}
-    DESTINATION ${CMAKE_BINARY_DIR}/plugins/${name}
+    DESTINATION ${TRANSLATIONS_DST_DIR}/plugins/${name}
     OPTIONAL
   )
 
