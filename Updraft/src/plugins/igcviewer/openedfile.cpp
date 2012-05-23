@@ -88,9 +88,6 @@ bool OpenedFile::init(IgcViewer* viewer,
   }
 
   colorsCombo = new QComboBox();
-  textBox = new IGCTextWidget();
-  textBox->setReadOnly(true);
-  textBox->setFixedSize(100, 300);
 
   gradient = Util::Gradient(Qt::blue, Qt::red, true);
 
@@ -105,6 +102,9 @@ bool OpenedFile::init(IgcViewer* viewer,
   ADD_IGCINFO(verticalSpeedInfo, new VerticalSpeedIgcInfo());
   ADD_IGCINFO(groundSpeedInfo, new GroundSpeedIgcInfo());
   ADD_IGCINFO(timeInfo, new TimeIgcInfo());
+
+  trackData = new TrackData();
+  trackData->init(&fixList);
 
   #define ADD_COLORING(name, pointer) \
     do { \
@@ -131,12 +131,17 @@ bool OpenedFile::init(IgcViewer* viewer,
   layout->setContentsMargins(0, 0, 0, 0);
 
   plotWidget = new PlotWidget(
-    altitudeInfo, verticalSpeedInfo, groundSpeedInfo);
+    trackData, altitudeInfo, verticalSpeedInfo, groundSpeedInfo);
+
+  textBox = new IGCTextWidget(plotWidget->getSegmentsStatTexts(),
+    plotWidget->getPointsStatTexts());
+  textBox->setReadOnly(true);
+  textBox->setFixedSize(100, 300);
 
   connect(plotWidget, SIGNAL(updateCurrentInfo(const QString&)),
     textBox, SLOT(setMouseOverText(const QString&)));
-  connect(plotWidget, SIGNAL(updatePickedInfo(const QString&)),
-    textBox, SLOT(setPickedText(const QString&)));
+  connect(plotWidget, SIGNAL(updateText()),
+    textBox, SLOT(updateText()));
   connect(plotWidget, SIGNAL(timeWasPicked(QTime)),
     this, SLOT(timePicked(QTime)));
   connect(plotWidget, SIGNAL(displayMarker(bool)),
@@ -222,7 +227,8 @@ void OpenedFile::createTrack() {
   trackPositionMarker = createMarker(25.);
   trackPositionMarker->setNodeMask(0x0);  // make it invisible first
 
-  currentMarkerTransform = new osg::AutoTransform();
+  /*
+  osg::AutoTransform* currentMarkerTransform = new osg::AutoTransform();
   currentMarkerTransform->setAutoRotateMode(
     osg::AutoTransform::ROTATE_TO_SCREEN);
   currentMarkerTransform->setAutoScaleToScreen(true);
@@ -230,7 +236,7 @@ void OpenedFile::createTrack() {
   currentMarkerTransform->setMaximumScale(100);
   currentMarkerTransform->addChild(trackPositionMarker);
   sceneRoot->addChild(currentMarkerTransform);
-  // sceneRoot->addChild(trackPositionMarker);
+  */
 
     // push the scene
   track = viewer->mapLayerGroup->insertMapLayer(sceneRoot, fileInfo.fileName());
@@ -300,14 +306,22 @@ void OpenedFile::trackClicked(const EventInfo* eventInfo) {
 
   qDebug() << minDistance;
 
-  QTime& time = nearest->timestamp;
-  qreal timeSecs = time.hour()*3600 + time.minute()*60 + time.second();
-  plotWidget->setPickedTime(timeSecs);
+  QTime time = nearest->timestamp;
+  // qreal timeSecs = time.hour()*3600 + time.minute()*60 + time.second();
+  plotWidget->addPickedTime(time);
 
+  osg::AutoTransform* currentMarkerTransform = new osg::AutoTransform();
+  currentMarkerTransform->setAutoRotateMode(
+    osg::AutoTransform::ROTATE_TO_SCREEN);
+  currentMarkerTransform->setAutoScaleToScreen(true);
+  currentMarkerTransform->setMinimumScale(0.1);
+  currentMarkerTransform->setMaximumScale(100);
+  currentMarkerTransform->addChild(trackPositionMarker);
+  sceneRoot->addChild(currentMarkerTransform);
   currentMarkerTransform->setPosition(
-  // trackPositionMarker->setPosition(0,
-    osg::Vec3d(nearest->x, nearest->y, nearest->z));
-  displayMarker(true);
+    osg::Vec3(nearest->x, nearest->y, nearest->z));
+  currentMarkers.append(currentMarkerTransform);
+  // displayMarker(true);
 }
 
 void OpenedFile::timePicked(QTime time) {
@@ -330,9 +344,18 @@ void OpenedFile::timePicked(QTime time) {
 
     // do the transformation of the marker to the position
     // of the nearest trackFix.
+  // create a new transform node:
+  osg::AutoTransform* currentMarkerTransform = new osg::AutoTransform();
+  currentMarkerTransform->setAutoRotateMode(
+    osg::AutoTransform::ROTATE_TO_SCREEN);
+  currentMarkerTransform->setAutoScaleToScreen(true);
+  currentMarkerTransform->setMinimumScale(0.1);
+  currentMarkerTransform->setMaximumScale(100);
+  currentMarkerTransform->addChild(trackPositionMarker);
+  sceneRoot->addChild(currentMarkerTransform);
   currentMarkerTransform->setPosition(
-  // trackPositionMarker->setPosition(0,
     osg::Vec3(nearest->x, nearest->y, nearest->z));
+  currentMarkers.append(currentMarkerTransform);
 }
 
 osg::Geode* OpenedFile::createMarker(qreal scale) {
@@ -389,7 +412,7 @@ void OpenedFile::displayMarker(bool value) {
   if (value) {
     trackPositionMarker->setNodeMask(0xffffffff);
   } else {
-    trackPositionMarker->setNodeMask(0x0);
+    // trackPositionMarker->setNodeMask(0x0);
   }
 }
 

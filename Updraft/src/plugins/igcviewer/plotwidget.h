@@ -5,6 +5,7 @@
 #include <QPen>
 #include <QWidget>
 #include <QTextEdit>
+#include <QTime>
 
 #include "igcinfo.h"
 #include "plotaxes.h"
@@ -13,22 +14,34 @@
 namespace Updraft {
 namespace IgcViewer {
 
+struct PickData {
+  PickData(int x, QTime t): xLine(x), time(t) {}
+  int xLine;
+  QTime time;
+};
+
 class PlotWidget : public QWidget {
   Q_OBJECT
 
  public:
-  PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
-    IgcInfo *groundSpeedInfo);
+  PlotWidget(TrackData* trackData, IgcInfo* altitudeInfo,
+    IgcInfo* verticalSpeedInfo, IgcInfo *groundSpeedInfo);
 
   /// sets the line to the time, and returns the x position of the line
   int setPickedTime(int time);
+  void addPickedTime(QTime time);
 
   /// sets the line to position x, and returns the time of the pick
   int setPickedLine(int x);
 
+  void addPickedLine(int x);
+
+  QList<QString>* getSegmentsStatTexts();
+  QList<QString>* getPointsStatTexts();
+
  signals:
   void updateCurrentInfo(const QString& text);
-  void updatePickedInfo(const QString& text);
+  void updateText();
   void timeWasPicked(QTime time);
   void displayMarker(bool value);
 
@@ -39,11 +52,27 @@ class PlotWidget : public QWidget {
   void leaveEvent(QEvent* leaveEvent);
   void resizeEvent(QResizeEvent* resizeEvent);
 
-  QString getInfoText(int x);
+  QString createPointStatText(QTime time, int xLine);
+  void updatePickedTexts(int i);
+  QString createSegmentStatText(int startPointIndex, int endPointIndex);
+  QTime getTimeFromSecs(int timeInSecs);
+
+    /// The coordinate to draw the vertical line where the mouse points.
+  int xLine;
+
+  /// Time [in seconds] of the picked point.
+  int timePicked;
+
+  /// The coordinate to draw the vertical line at a picked location
+  /// - when user clicked on the graph.
+  QList<PickData> pickedPoints;
+  QList<QString> segmentsStatTexts;
+  QList<QString> pickedPointsStatTexts;
 
   QImage* graphPicture;
 
   QVector<Label*> labels;
+  PickedLabel* pickedLabel;
 
   PlotAxes *altitudeAxes;
   PlotAxes *verticalSpeedAxes;
@@ -53,19 +82,10 @@ class PlotWidget : public QWidget {
   VerticalSpeedPlotPainter* verticalSpeedPlotPainter;
   GroundSpeedPlotPainter* groundSpeedPlotPainter;
 
+  TrackData* trackData;
   IgcInfo* altitudeInfo;
   IgcInfo* verticalSpeedInfo;
   IgcInfo *groundSpeedInfo;
-
-  /// The coordinate to draw the vertical line where the mouse points.
-  int xLine;
-
-  /// Time [in seconds] of the picked point.
-  int timePicked;
-
-  /// The coordinate to draw the vertical line at a picked location
-  /// - when user clicked on the graph.
-  int xLinePicked;
 
   /// Whether the mouse if over the graph(!) - not widget.
   bool mouseOver;
@@ -86,14 +106,21 @@ class PlotWidget : public QWidget {
 class IGCTextWidget : public QTextEdit {
   Q_OBJECT
 
+ public:
+  IGCTextWidget() : segmentsTexts(NULL), pointsTexts(NULL) {}
+  IGCTextWidget(QList<QString>* s, QList<QString>* p)
+    : segmentsTexts(s), pointsTexts(p) {updateText();}
+
  public slots:
-  void setPickedText(const QString& text);
+  void setSegmentsTexts(QList<QString>* texts);
+  void setPointsTexts(QList<QString>* texts);
   void setMouseOverText(const QString& text);
+  void updateText();
 
  private:
-  QString pickedText;
   QString mouseOverText;
-  void updateText();
+  QList<QString>* segmentsTexts;
+  QList<QString>* pointsTexts;
 };
 
 }  // End namespace Updraft

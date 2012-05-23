@@ -13,6 +13,7 @@ const QPen PlotAxes::TIME_TICKS_PEN = QPen(QBrush(Qt::gray), 1);
 const QPen AxisLabel::LABEL_PEN = QPen(Qt::white);
 const QPen TimeLabel::LABEL_PEN = QPen(Qt::white);
 const QPen TextLabel::LABEL_PEN = QPen(Qt::white);
+const QPen PickedLabel::LABEL_PEN = QPen(Qt::white);
 
 static const qreal LN10 = qLn(10);
 
@@ -340,6 +341,28 @@ void TextLabel::draw(QPainter* painter) {
   painter->drawText(rect, Qt::AlignLeft | Qt::AlignBottom, text);
 }
 
+// Picked Label:
+
+Qt::Orientations PickedLabel::expandingDirections() const {
+  return Qt::Horizontal;
+}
+
+QSize PickedLabel::maximumSize() const {
+  return QSize(65536, 65536);
+}
+
+QSize PickedLabel::sizeHint() const {
+  return QSize(100, 100);
+}
+
+QSize PickedLabel::minimumSize() const {
+  return QSize(MIN_WIDTH, MIN_HEIGHT);
+}
+
+void PickedLabel::draw(QPainter *painter) {
+  // draw
+}
+
 // Time Label:
 
 Qt::Orientations TimeLabel::expandingDirections() const {
@@ -386,7 +409,6 @@ void TimeLabel::draw(QPainter* painter) {
       QPoint(pixelX + width/2, rect.bottom()));
     painter->drawText(zerosRect, Qt::AlignLeft, zeros);
   }
-
 
   for (int hour = 24; hour <= lastHour; ++hour) {
     qreal pixelX = axis->placeX(hour * 3600);

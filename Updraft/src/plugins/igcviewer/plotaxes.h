@@ -4,11 +4,14 @@
 #include <QPoint>
 #include <QPainter>
 #include <QLayoutItem>
+#include <QLinkedList>
 
 #include "util/util.h"
 
 namespace Updraft {
 namespace IgcViewer {
+
+struct PickData;
 
 /// X and Y axis for graph plotting.
 class PlotAxes : public QObject, public QLayoutItem {
@@ -199,6 +202,30 @@ class TextLabel : public Label {
 
   static const int MIN_WIDTH = 100;
   static const int MIN_HEIGHT = 15;
+
+  static const QPen LABEL_PEN;
+};
+
+class PickedLabel : public Label {
+ public:
+  /// Overridden from QLayoutItem
+  /// \{
+  Qt::Orientations expandingDirections() const;
+  QSize maximumSize() const;
+  QSize minimumSize() const;
+  QSize sizeHint() const;
+  /// \}
+  void draw(QPainter* painter);
+
+  PickedLabel(QList<PickData>* p, QList<QString>* t):
+    pickedPositions(p), texts(t) {}
+
+ private:
+  QList<PickData>* pickedPositions;
+  QList<QString>* texts;
+
+  static const int MIN_WIDTH = 100;
+  static const int MIN_HEIGHT = 30;
 
   static const QPen LABEL_PEN;
 };

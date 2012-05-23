@@ -8,7 +8,6 @@
 
 #include <osg/Geometry>
 #include <osg/AutoTransform>
-// #include <osg/Billboard>
 
 #include "colorings.h"
 #include "igcinfo.h"
@@ -99,7 +98,7 @@ class OpenedFile: public QObject {
   osg::Group* sceneRoot;
   osg::Geode* trackGeode;
   osg::Geode* trackPositionMarker;
-  osg::AutoTransform* currentMarkerTransform;
+  QList<osg::AutoTransform*> currentMarkers;
 
   Coloring* currentColoring;
 
@@ -117,6 +116,8 @@ class OpenedFile: public QObject {
   IgcInfo* verticalSpeedInfo;
   IgcInfo* groundSpeedInfo;
   IgcInfo* timeInfo;
+
+  TrackData* trackData;
 
   Util::Gradient gradient;
 };
