@@ -11,7 +11,7 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
       <path>osgearth_cache_osm</path>
     </cache>
     
-    <lighting>true</lighting>
+    <lighting>false</lighting>
 
     <image name="Offline map" driver="gdal">
         <url>world.tif</url>
