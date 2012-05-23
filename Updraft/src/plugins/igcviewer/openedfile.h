@@ -73,8 +73,17 @@ class OpenedFile: public QObject {
   /// Fills fixList.
   bool loadIgc(const QString& filename);
 
-  /// Create the track in map.
-  void createTrack();
+  /// Create whole track in map.
+  void createGroup();
+
+  /// Create the track geometry in map.
+  osg::Node* createTrack();
+
+  /// Create the skirt under the track.
+  osg::Node* createSkirt();
+
+  /// Create position marker.
+  osg::Node* createMarker();
 
   /// Set coloring of the track.
   void setColors(Coloring* coloring);

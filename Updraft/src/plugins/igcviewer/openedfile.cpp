@@ -5,6 +5,7 @@
 #include <QVBoxLayout>
 #include <QDebug>
 
+#include <osg/Depth>
 #include <osg/Geode>
 #include <osg/LineWidth>
 #include <osg/ShapeDrawable>
@@ -157,7 +158,7 @@ bool OpenedFile::init(IgcViewer* viewer,
   // Sets automatic tab closing on request (without prompt).
   tab->connectCloseRequestToClose();
 
-  createTrack();
+  createGroup();
 
   coloringChanged();
 
@@ -184,14 +185,23 @@ void OpenedFile::coloringChanged() {
   setColors(colorings[viewer->currentColoring]);
 }
 
-void OpenedFile::createTrack() {
+void OpenedFile::createGroup() {
   sceneRoot = new osg::Group();
+
+  sceneRoot->addChild(createTrack());
+  sceneRoot->addChild(createSkirt());
+  sceneRoot->addChild(createMarker());
+
+  // push the scene
+  track = viewer->mapLayerGroup->insertMapLayer(sceneRoot, fileInfo.fileName());
+  track->connectCheckedToVisibility();
+}
+
+osg::Node* OpenedFile::createTrack() {
   trackGeode = new osg::Geode();
-
   geom = new osg::Geometry();
-  trackGeode->addDrawable(geom);
 
-  sceneRoot->addChild(trackGeode);
+  trackGeode->addDrawable(geom);
 
   osg::DrawArrays* drawArrayLines =
     new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP);
@@ -199,7 +209,6 @@ void OpenedFile::createTrack() {
 
   osg::Vec3Array* vertices = new osg::Vec3Array();
   geom->setVertexArray(vertices);
-
   geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
   foreach(TrackFix fix, fixList) {
@@ -216,7 +225,60 @@ void OpenedFile::createTrack() {
   // stateSet->setAttributeAndModes(
   //   new osg::LineWidth(viewer->lineWidthSetting->get().toFloat()));
 
-    // create the marker:
+  return trackGeode;
+}
+
+osg::Node* OpenedFile::createSkirt() {
+  osg::Geode *geode = new osg::Geode();
+  osg::Geometry *skirtGeom = new osg::Geometry();
+
+  geode->addDrawable(skirtGeom);
+
+  osg::DrawArrays* drawArray =
+    new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP);
+  skirtGeom->addPrimitiveSet(drawArray);
+
+  osg::Vec3Array* vertices = new osg::Vec3Array();
+  skirtGeom->setVertexArray(vertices);
+
+  skirtGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+  const osg::EllipsoidModel* ellipsoid =
+    g_core->getEllipsoid()->getOsgEllipsoidModel();
+  foreach(TrackFix fix, fixList) {
+    double x, y, z;
+    ellipsoid->convertLatLongHeightToXYZ(
+      fix.location.lat_radians(), fix.location.lon_radians(),
+      0,
+      x, y, z);
+    vertices->push_back(osg::Vec3(fix.x, fix.y, fix.z));
+    vertices->push_back(osg::Vec3(x, y, z));
+  }
+
+  drawArray->setFirst(0);
+  drawArray->setCount(vertices->size());
+
+  osg::Vec4Array* color = new osg::Vec4Array();
+  color->push_back(osg::Vec4(0.5, 0.5, 0.5, 0.5));
+  skirtGeom->setColorArray(color);
+
+  osg::StateSet* stateSet = geode->getOrCreateStateSet();
+  stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+  stateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
+  stateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+  stateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
+
+  osg::Depth* depth = new osg::Depth;
+  depth->setWriteMask(false);
+  stateSet->setAttributeAndModes(depth, osg::StateAttribute::ON);
+
+  stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+  return geode;
+}
+
+osg::Node* OpenedFile::createMarker() {
+  // create the marker:
   // create the billboard
   // set the texture
   trackPositionMarker = createMarker(25.);
@@ -232,9 +294,7 @@ void OpenedFile::createTrack() {
   sceneRoot->addChild(currentMarkerTransform);
   // sceneRoot->addChild(trackPositionMarker);
 
-    // push the scene
-  track = viewer->mapLayerGroup->insertMapLayer(sceneRoot, fileInfo.fileName());
-  track->connectCheckedToVisibility();
+  return currentMarkerTransform;
 }
 
 void OpenedFile::setColors(Coloring *coloring) {
