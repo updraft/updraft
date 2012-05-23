@@ -8,6 +8,7 @@
 #include "pluginmanager.h"
 #include "scenemanager.h"
 #include "settingsmanager.h"
+#include "translationmanager.h"
 #include "splashscreen.h"
 
 /// Pointer to the instance of Updraft object.
@@ -25,7 +26,7 @@ namespace Core {
 
 /// Top level object of updraft project.
 class Updraft : public QApplication {
-  Q_DECLARE_TR_FUNCTIONS(Updraft)
+  Q_OBJECT
 
  public:
   Updraft(int argc, char** argv);
@@ -37,7 +38,10 @@ class Updraft : public QApplication {
   void hideSplash();
 
   // TODO(Tom): Load data directory from settings.
+  // TODO(Kuba): Return QDir instead of QString
   QString getDataDirectory();
+  QDir getTranslationDirectory();
+
   SettingInterface* dataDirectory;
 
   MainWindow* mainWindow;
@@ -45,9 +49,14 @@ class Updraft : public QApplication {
   PluginManager* pluginManager;
   SceneManager* sceneManager;
   SettingsManager* settingsManager;
+  TranslationManager* translationManager;
 
   // List of ellipsoid models used in Updraft.
   QList<Util::Ellipsoid*> ellipsoids;
+
+ private:
+  void coreSettings();
+  void createEllipsoids();
 
   SplashScreen splash;
 };

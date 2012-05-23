@@ -17,6 +17,7 @@ class BasicSetting: public QObject, public SettingInterface {
 
   QVariant get();
   void set(const QVariant& newValue);
+  void setDescription(const QString& newDescription);
 
   void callOnValueChanged(QObject* slotOwner, const char* slot);
 

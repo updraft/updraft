@@ -13,61 +13,26 @@ namespace Core {
 
 Updraft::Updraft(int argc, char** argv)
   : QApplication(argc, argv) {
+  splash.show();
+
   // Needed so that we can use custom types in QVariant
   registerMetaTypes();
 
-  QTranslator trans;
-  trans.load("translations/czech");
+  settingsManager = new SettingsManager();
+  pluginManager = new PluginManager();
+  translationManager = new TranslationManager();
 
-  installTranslator(&trans);
-
-  // TODO(cestmir): Maybe put the splash image elsewhere?
-  QPixmap splashImage(
-    QCoreApplication::applicationDirPath() + "/data/splash.png");
-  splash.setPixmap(splashImage);
-  splash.show();
+  coreSettings();
+  createEllipsoids();
 
   mainWindow = new MainWindow(NULL);
-
-  settingsManager = new SettingsManager();
-  QDir dataDir = QCoreApplication::applicationDirPath();
-  dataDir.cd("data");
-  QVariant dataDirVariant;
-  dataDirVariant.setValue(dataDir);
-  dataDirectory = settingsManager->addSetting(
-    "core:dataDir",
-    "Data directory",
-    dataDirVariant);
-
   fileTypeManager = new FileTypeManager();
-  QVector<QString> mapPaths;
-  mapPaths.append(QCoreApplication::applicationDirPath()
-    + "/data/initial1.earth");
-  mapPaths.append(QCoreApplication::applicationDirPath()
-    + "/data/initial2.earth");
-
-  sceneManager = new SceneManager(mapPaths);
-
-  // Initializes list of available ellipsoids.
-  ellipsoids.append(new Util::Ellipsoid(tr("WGS84"),
-    Util::Units::WGS84EquatRadius(), Util::Units::WGS84Flattening()));
-  ellipsoids.append(new Util::Ellipsoid(tr("FAI Sphere"),
-    Util::Units::FAISphereRadius()));
-
-  // Create the map layer group for initial map.
-  osgEarth::MapNode* map = sceneManager->getMapNode();
-  osg::Group* group = updraft->sceneManager->newGroup();
-  // TODO(Maria): Get name from the .earth file.
-  // QString title = QString::fromStdString(map->getMap()->getName());
-  QString title("Maps");
-  MapLayerGroupInterface* mapLayerGroup =
-    mainWindow->createMapLayerGroup(title, group, map);
-  // sceneManager->getMapManager()->fillMapLayerGroup(mapLayerGroup);
-  sceneManager->fillMapLayerGroup(mapLayerGroup);
-
-  pluginManager = new PluginManager();
+  sceneManager = new SceneManager();
 
   mainWindow->setMapWidget(sceneManager->getWidget());
+
+  settingsManager->finishInit();
+  pluginManager->finishInit();
 }
 
 Updraft::~Updraft() {
@@ -76,6 +41,7 @@ Updraft::~Updraft() {
   delete fileTypeManager;
   delete settingsManager;
   delete mainWindow;
+
   foreach(Util::Ellipsoid *e, ellipsoids) {
     delete e;
   }
@@ -84,6 +50,28 @@ Updraft::~Updraft() {
 QString Updraft::getDataDirectory() {
   QDir dataDir = dataDirectory->get().value<QDir>();
   return dataDir.absolutePath();
+}
+
+QDir Updraft::getTranslationDirectory() {
+  return QDir(applicationDirPath());
+}
+
+void Updraft::coreSettings() {
+  QDir dataDir = QCoreApplication::applicationDirPath();
+  dataDir.cd("data");
+  QVariant dataDirVariant;
+  dataDirVariant.setValue(dataDir);
+  dataDirectory = settingsManager->addSetting(
+    "core:dataDir",
+    tr("Data directory"),
+    dataDirVariant);
+}
+
+void Updraft::createEllipsoids() {
+  ellipsoids.append(new Util::Ellipsoid(tr("WGS84 Ellipsoid"),
+    Util::Units::WGS84EquatRadius(), Util::Units::WGS84Flattening()));
+  ellipsoids.append(new Util::Ellipsoid(tr("FAI Sphere"),
+    Util::Units::FAISphereRadius()));
 }
 
 /// Pull the lever.

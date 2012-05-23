@@ -50,6 +50,7 @@ FUNCTION(GATHER_SOURCES prefix)
   SET(${prefix}_forms ${forms} PARENT_SCOPE)
   SET(${prefix}_resources ${resources} PARENT_SCOPE)
   SET(${prefix}_translations ${translations} PARENT_SCOPE)
+  SET(${prefix}_translations_wrapped ${translations_wrapped} PARENT_SCOPE)
   SET(${prefix}_all_sources
     ${sources}
     ${headers}
@@ -200,6 +201,10 @@ MACRO(PLUGIN_BUILD name)
   INSTALL(
     TARGETS ${name}
     DESTINATION ${CMAKE_BINARY_DIR}/plugins/${name}
+    OPTIONAL
+  )
+  INSTALL(FILES ${${name}_translations_wrapped}
+    DESTINATION ${TRANSLATIONS_DST_DIR}/plugins/${name}
     OPTIONAL
   )
 

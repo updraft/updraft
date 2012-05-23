@@ -32,6 +32,8 @@ void SettingsDialog::setModel(QAbstractItemModel* model) {
   ui->topView->resize(sizeHint());
   ui->bottomView->setModel(model);
   ui->bottomView->resize(sizeHint());
+
+  recalculateTopViewWidth();
 }
 
 void SettingsDialog::recalculateTopViewWidth() {

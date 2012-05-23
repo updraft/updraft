@@ -21,9 +21,7 @@ class SceneManager: public QObject {
   Q_OBJECT
 
  public:
-  SceneManager(QVector<QString> mapEarthFiles, int active = 0,
-      osgViewer::ViewerBase::ThreadingModel threadingModel =
-      osgViewer::ViewerBase::SingleThreaded);
+  SceneManager();
   ~SceneManager();
 
   /// Returns the drawing widget.
@@ -65,9 +63,6 @@ class SceneManager: public QObject {
   ///         for the given node, if the node was registered.
   MapObject* getNodeMapObject(osg::Node* node);
 
-  /// Fills the group with maps.
-  void fillMapLayerGroup(MapLayerGroupInterface* mapLayerGroup);
-
  public slots:
   void redrawScene();
   void resetNorth();
@@ -77,6 +72,15 @@ class SceneManager: public QObject {
   void checkedMap(bool value, MapLayerInterface* layer);
 
  private:
+  /// Create map managers from earth files.
+  void createMapManagers();
+
+  /// Create the menu items in main window.
+  void menuItems();
+
+  /// Create the map layer group and fill it with maps.
+  void mapLayerGroup();
+
   osgViewer::Viewer* viewer;
   osg::Group* sceneRoot;
 

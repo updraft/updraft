@@ -6,6 +6,7 @@
 #include "basicsetting.h"
 #include "coloreditor.h"
 #include "directoryeditor.h"
+#include "translationlanguageeditor.h"
 
 namespace Updraft {
 namespace Core {
@@ -24,8 +25,11 @@ QWidget* SettingsDelegate::createEditor(QWidget* parent,
   QWidget* widget;
   QVariant data = index.model()->data(index, Qt::EditRole);
   int type = QMetaType::type(data.typeName());
+
   if (type == QMetaType::type("QDir")) {
     widget = new DirectoryEditor(parent);
+  } else if (type == QMetaType::type("TranslationLanguage")) {
+    widget = new TranslationLanguageEditor(parent);
   } else {
     widget = QStyledItemDelegate::createEditor(parent, option, index);
   }

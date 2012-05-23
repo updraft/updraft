@@ -29,7 +29,7 @@ void TurnPoints::initialize(CoreInterface *coreInterface) {
   g_core = coreInterface;
 
   g_core->addSettingsGroup(
-    "Turnpoints", tr("Turnpoints Plugin Settings"));
+    "Turnpoints", tr("Turn-points Options"));
   settings.push_back(g_core->addSetting("Turnpoints:labelColourR",
     "Colour of the turnpoint labels - RED", 1.0));
   settings.push_back(g_core->addSetting("Turnpoints:labelColourG",

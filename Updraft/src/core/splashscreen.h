@@ -8,7 +8,7 @@ namespace Core {
 
 class SplashScreen: public QSplashScreen {
  public:
-  SplashScreen(const QPixmap& pixmap = QPixmap());
+  SplashScreen();
  private:
 };
 
