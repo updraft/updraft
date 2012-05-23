@@ -55,13 +55,13 @@ void SettingsDelegate::setEditorData(
   QByteArray propertyName = editor->metaObject()->userProperty().name();
   const QAbstractItemModel* model = index.model();
 
-  QVariant name = model->data(index, Qt::UserRole);
   QVariant value = model->data(index, Qt::EditRole);
 
   // Only reset editor data if the property differs from the value in the model
-  if (!variantsEqual(model->data(index, Qt::EditRole),
-    editor->property(propertyName))) {
-    QStyledItemDelegate::setEditorData(editor, index);
+  if (!variantsEqual(value, editor->property(propertyName))) {
+    qDebug() << "setting property" << propertyName << " to " << value;
+    qDebug() << editor->metaObject()->indexOfProperty(propertyName);
+    qDebug() << editor->setProperty(propertyName, value);
   }
 }
 

@@ -14,8 +14,9 @@ bool variantsEqual(const QVariant& var1, const QVariant& var2) {
     return
       var1.value<QDir>().absolutePath() == var2.value<QDir>().absolutePath();
   } else if (type1 ==  QMetaType::type("TranslationLanguage")) {
-    return var1.value<TranslationLanguage>().asQString() ==
+    bool ret = var1.value<TranslationLanguage>().asQString() ==
       var2.value<TranslationLanguage>().asQString();
+    return ret;
   } else {
     return var1 == var2;
   }
