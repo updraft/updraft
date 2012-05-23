@@ -117,7 +117,10 @@ osg::Node* TPLayer::createAutoScale(
   text->setFont(fontPath.toStdString());
   text->setFontResolution(20, 20);
   text->setAlignment(osgText::Text::LEFT_BOTTOM);
-  text->setColor(labelColour);
+  // text->setColor(labelColour);
+  text->setBackdropType(osgText::Text::OUTLINE);
+  text->setColor(osg::Vec4(0.0, 0.0, 0.0, 1.0));
+  text->setBackdropColor(osg::Vec4(1.0, 1.0, 1.0, 1.0));
 
   // define the geode
   osg::Geode* geode = new osg::Geode;
