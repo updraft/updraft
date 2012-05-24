@@ -28,7 +28,7 @@ void Airspaces::initialize(CoreInterface *coreInterface) {
 
   // Create map layers items in the left pane.
   mapLayerGroup = g_core->createMapLayerGroup(tr("Airspaces"));
-  engine = new oaEngine(mapLayerGroup);
+  // engine = new oaEngine(mapLayerGroup);
 
   loadImportedFiles();
 
@@ -39,9 +39,23 @@ void Airspaces::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
   sender->setVisible(value);
 }
 
+void Airspaces::reloadAirspaces() {
+  // delete engine;
+  // engine = new oaEngine(mapLayerGroup);
+
+  // loadImportedFiles();
+
+  // mapLayerGroup
+
+  qDebug("airspaces reloaded");
+
+  // deinitialize();
+  // initialize();
+}
+
 void Airspaces::deinitialize() {
-  delete engine;
-  engine = NULL;
+  // delete engine;
+  // engine = NULL;
 
   qDebug("airspaces unloaded");
 }
@@ -61,6 +75,8 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
       }
       delete mapLayers;*/
 
+      oaEngine* engine = new oaEngine(mapLayerGroup);
+
       QString displayName = fileName.left(fileName.indexOf('.'));
       int cuntSlashes = displayName.count('/');
       displayName = displayName.section('/', cuntSlashes, cuntSlashes);
@@ -78,6 +94,10 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
       }
 
       delete mapNodes;
+
+      delete engine;
+      engine = NULL;
+
       return true;
       break;
   }
