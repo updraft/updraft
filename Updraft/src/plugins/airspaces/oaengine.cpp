@@ -19,8 +19,8 @@ oaEngine::oaEngine(MapLayerGroupInterface* LG) {
   SIDE_COL_GRADIENT       = true;
   POLY_OPACITY_BOTTOM     = 0.5;
   POLY_OPACITY_TOP        = 0.1;
-  WIRE_OPACITY_BOTTOM     = 0.6;
-  WIRE_OPACITY_TOP        = 0.2;
+  WIRE_OPACITY_BOTTOM     = 0.5;  // 0.6;
+  WIRE_OPACITY_TOP        = 0.5;  // 0.2;
   ELEV_TILE_RESOLUTION    = 0.01;
   GND                     = 0;
   ROOF                    = 80000;
