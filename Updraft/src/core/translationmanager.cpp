@@ -9,6 +9,8 @@
 namespace Updraft {
 namespace Core {
 
+const QString TranslationManager::defaultLanguage = "english";
+
 TranslationManager::TranslationManager() {
   coreTranslator = new QTranslator(this);
   updraft->installTranslator(coreTranslator);
@@ -20,7 +22,7 @@ TranslationManager::TranslationManager() {
   }
 
   QVariant defaultValue;
-  defaultValue.setValue(TranslationLanguage(availableLanguages()[0]));
+  defaultValue.setValue(TranslationLanguage(defaultLanguage));
 
   languageSetting = updraft->settingsManager->addSetting(
     "core:language",
@@ -52,6 +54,10 @@ void TranslationManager::loadTranslationFile(
 void TranslationManager::loadLanguage(const QString &lang) {
   qDebug() << "Loading language " << lang;
 
+  if (lang == defaultLanguage) {
+    return;
+  }
+
   QDir dir = updraft->getTranslationDirectory();
   loadTranslationFile(coreTranslator, dir, lang);
 
@@ -66,9 +72,11 @@ QStringList TranslationManager::availableLanguages() {
   QStringList nameFilter;
   nameFilter << "*.qm";
 
-  QSet<QString> found =
+  QSet<QString> found;
+
+  found.unite(
     updraft->getTranslationDirectory().entryList(
-      nameFilter, QDir::Files | QDir::Readable).toSet();
+      nameFilter, QDir::Files | QDir::Readable).toSet());
 
   foreach(PluginTranslator pair, pluginTranslators) {
     QString name = pair.first->getName();
@@ -79,6 +87,8 @@ QStringList TranslationManager::availableLanguages() {
   }
 
   QStringList ret;
+
+  ret.append(defaultLanguage);
 
   foreach(QString str, found) {
     ret.append(str.left(str.size() - 3));
