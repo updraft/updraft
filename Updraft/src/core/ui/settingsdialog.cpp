@@ -36,7 +36,7 @@ void SettingsDialog::setModel(QAbstractItemModel* model) {
   recalculateTopViewWidth();
 
   // simulate checkbox toggle to keepthe hidden settings hidden
-  // hideCheckboxToggled();
+  hideCheckboxToggled();
 }
 
 void SettingsDialog::recalculateTopViewWidth() {
