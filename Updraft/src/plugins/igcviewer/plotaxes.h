@@ -129,12 +129,6 @@ class PlotAxes : public QObject, public QLayoutItem {
   QVector<int> timeIntervalValues;
 };
 
-class VerticalSpeedAxes : PlotAxes {
- public:
-  /// Draw the axes to the painter
-  void draw(QPainter *painter);
-};
-
 class Label : public QLayoutItem {
  public:
   /// Overridden from QLayoutItem

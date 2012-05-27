@@ -291,8 +291,6 @@ osg::Node* OpenedFile::createMarker() {
   currentMarkerTransform->setMinimumScale(0.1);
   currentMarkerTransform->setMaximumScale(100);
   currentMarkerTransform->addChild(trackPositionMarker);
-  sceneRoot->addChild(currentMarkerTransform);
-  // sceneRoot->addChild(trackPositionMarker);
 
   return currentMarkerTransform;
 }
