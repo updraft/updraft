@@ -100,7 +100,7 @@ QVector<QPair<osg::Node*, QString> >* oaEngine::Draw(const QString& fileName) {
       OpenAirspace::Airspace* A = AirspaceSet.at(i);
 
       // get the bundle of airspaces with the same name/class
-      QString aName = A->GetClassName();
+      QString aName = QString("Class " + A->GetClassName());
         // (A->GetName() == NULL) ?
         // QString("N/A") : (*A->GetName());
       if (nameSuffix != aName) {  // A->GetClassName()
@@ -388,8 +388,15 @@ void oaEngine::PushLayer(osg::Geode* OAGeode, const QString& displayName) {
   // MapLayerInterface* newLayer = new Core::MapLayer((osg::Node*)OAGeode);
   // newLayer->setVisible(false);
   // QPair<osg::Node*, QString> toPush
-  mapLayers->push_back(QPair<osg::Node*, QString>(OAGeode,
-    "Class " + displayName));
+
+  // To sort the airspaces find where to insert
+  QVector<QPair<osg::Node*, QString> >::iterator it;
+  it = mapLayers->begin();
+  while (it < mapLayers->end() && (*it).second < displayName)
+    ++it;
+
+  // mapLayers->push_back(QPair<osg::Node*, QString>(OAGeode, displayName));
+  mapLayers->insert(it, QPair<osg::Node*, QString>(OAGeode, displayName));
 }
 
 osg::Geometry* oaEngine::DrawPolygon(
