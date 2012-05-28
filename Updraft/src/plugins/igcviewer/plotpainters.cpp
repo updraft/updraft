@@ -39,16 +39,21 @@ void PlotPainter::updateBuffer() {
 void PlotPainter::computePoints() {
   buffer.clear();
   dataValues.clear();
+  indexes.clear();
   int count = 1;
   int x = qFloor(axes->placeX(info->absoluteTime(0)));
   qreal sum = axes->placeY(info->value(0));
   qreal dataSum = info->value(0);
+  indexes.append(0);
 
   for (int i = 1; i < info->count(); ++i) {
     int newX = qFloor(axes->placeX(info->absoluteTime(i)));
 
     if (newX != x) {
       buffer.append(QPointF(x + 0.5, sum / count));
+      for (int k = 0; k < newX - x; k++) {
+        indexes.append(i);
+      }
       Data d = {x, dataSum / count};
       dataValues.append(d);
       count = 0;
@@ -65,45 +70,59 @@ void PlotPainter::computePoints() {
   buffer.append(QPointF(x + 0.5, sum / count));
   Data d = {x, dataSum / count};
   dataValues.append(d);
+  // don't append to the indexes array: there are the starting indexes.
 }
 
 qreal PlotPainter::getValueAtPixelX(int x) {
-    // deal with extreme cases:
-  if (dataValues.empty()) return 0;
-  if (x < dataValues.first().pixel) return 0;
-  if (x > dataValues.last().pixel) return 0;
-
-    // guess the position: this should be most of the times
-    // the correct guess
-  int begin = dataValues[0].pixel;
-  int guess = x - begin;
-  int position;
-  if ((guess >= 0) && (guess < dataValues.size())) {
-    position = guess;
+  int startPixel = axes->placeX(info->absoluteTime(0));
+  int i = x - startPixel;
+  if (i < indexes.size()) {
+    return info->value(indexes[i]);
   } else {
-    position = dataValues.size()/2;
-  }
-  if (x == dataValues[position].pixel) {
-    return dataValues[position].value;
-  } else {
-    if (x < dataValues[position].pixel) {
-      while (x < dataValues[position].pixel) position--;
-      return (dataValues[position].value +
-        ((x-dataValues[position].pixel) /
-          (dataValues[position+1].pixel - dataValues[position].pixel))
-        * dataValues[position].value);
-    } else {  // x > dataValues[position].pixel
-      while (x > dataValues[position].pixel) position++;
-      return (dataValues[position-1].value +
-        ((x-dataValues[position-1].pixel) /
-          (dataValues[position].pixel - dataValues[position-1].pixel))
-        * dataValues[position-1].value);
-    }
+    return 0;
   }
 }
 
+int PlotPainter::getIndexAtPixelX(int x) {
+  int startPixel = axes->placeX(info->absoluteTime(0));
+  int i = x - startPixel;
+  if (i < indexes.size()) {
+    return info->value(indexes[i]);
+  } else {
+    return indexes.size();
+  }
+}
+
+qreal PlotPainter::getMeanValueAtPixels(int start, int end) {
+  if (end < start) {
+      // swap the values
+    int x = start;
+    start = end;
+    end = x;
+  }
+  int startPixel = axes->placeX(info->absoluteTime(0));
+  int s = start - startPixel;
+  int e = end - startPixel;
+
+  int startIndex = indexes[s];
+  int endIndex = (e < indexes.size() - 1) ? indexes[e+1]-1 : info->count();
+
+  qreal value = 0;
+  for (int i = startIndex; i <= endIndex; i++) {
+    value += info->value(i);
+  }
+
+  return value / (qreal)(endIndex - startIndex + 1);
+}
+
 qreal PlotPainter::getTimeAtPixelX(int x) {
-  return axes->getInverseX(x);
+  int startPixel = axes->placeX(info->absoluteTime(0));
+  int i = x - startPixel;
+  if (i < indexes.size()) {
+    return info->absoluteTime(indexes[i]);
+  } else {
+    return 0;
+  }
 }
 
 void PlotPainter::computeDrawingData() {

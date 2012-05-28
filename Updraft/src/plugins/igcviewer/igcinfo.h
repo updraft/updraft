@@ -159,6 +159,31 @@ class TimeIgcInfo : public IgcInfo {
  private:
 };
 
+class TrackData {
+ public:
+  void init(const QList<TrackFix>* fixList_);
+  qreal avgSpeed(QTime start, QTime end);
+  qreal avgSpeedOverall();
+  qreal avgSpeedSince(QTime start);
+  qreal avgSpeedUntil(QTime end);
+  qreal avgRise(QTime start, QTime end);
+  qreal avgRiseOverall();
+  qreal avgRiseSince(QTime start);
+  qreal avgRiseUntil(QTime end);
+  qreal distance(QTime start, QTime end);
+  qreal distanceOverall();
+  qreal distanceSince(QTime start);
+  qreal distanceUntil(QTime end);
+
+  QTime getStartTime();
+  QTime getEndTime();
+ private:
+  const QList<TrackFix>* fixList;
+  qreal avgSpeed(int startPosition, int endPosition);
+  qreal avgRise(int startPosition, int endPosition);
+  qreal distance(int startPosition, int endPosition);
+};
+
 }  // End namespace IgcViewer
 }  // End namespace Updraft
 
