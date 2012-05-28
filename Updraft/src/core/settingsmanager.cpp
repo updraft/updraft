@@ -262,8 +262,10 @@ QString SettingsManager::getSettingsFilename() {
   }
 
   if (settingsFilePath.isEmpty()) {
-#ifdef Q_WS_X11
+#if defined(Q_WS_X11)
     settingsFilePath = createSettingsXml(homeDir, ".updraft");
+#elif defined(Q_WS_WIN)
+    settingsFilePath = createSettingsXml(executableDir, QString());
 #else
     settingsFilePath = createSettingsXml(appDataDir, "updraft");
 #endif
