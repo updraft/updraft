@@ -87,7 +87,7 @@ class OPENAIRSPACE_EXPORT Airspace {
     *     GP glider prohibited 
     *     CTR CTR
     *     W Wave Window */
-    enum ACType { R, Q, P, A, B, C, D, E, GP, CTR, W };
+    enum ACType { R, Q, P, A, B, C, D, E, GP, CTR, W, NA };
 
 
 /* unused
@@ -162,7 +162,9 @@ class OPENAIRSPACE_EXPORT Airspace {
     inline const OpenAirspace::Airspace::ACType& GetClass() {
       return this->AC;
     }
-    inline const QString& GetClassName() const {
+    inline const QString& GetClassName() {
+      if (!this->ACstring)
+        this->ACstring = new QString("NA");
       return *this->ACstring;
     }
 

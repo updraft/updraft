@@ -68,16 +68,18 @@ namespace OpenAirspace {
     else if (text == "CTR") this->AC = CTR;
     else if (text == "W") this->AC = W;
     else
-      return;
+      this->AC = NA;
+    // return;
 
     while (!(*ts).atEnd()) {
       (*ts) >> text;
+      // int check = ts->pos();
 
       if (text == "AC")
         return;
       if (text.size() == 0 || text.at(0) == '*') {
         if (text.size() != 0)
-          ts->readLine();
+          text = ts->readLine();
         continue;
       }
 
@@ -219,10 +221,13 @@ namespace OpenAirspace {
   Position Airspace::ParseCoord(const QString& text) {
     Position cor;
     int i = 0, j = 0;
-    while (text.at(i) != 'N' && text.at(i) != 'S' && i < text.size()) ++i;
-    while (text.at(j) != 'E' && text.at(j) != 'W' && j < text.size()) ++j;
+    while (i < text.size() && text.at(i) != 'N' && text.at(i) != 'S'
+      && text.at(i) != 'n' && text.at(i) != 's') ++i;
+    while (j < text.size() && text.at(j) != 'E' && text.at(j) != 'W'
+      && text.at(j) != 'e' && text.at(j) != 'w') ++j;
     if (i == text.size() || j == text.size()) {
-      qWarning("Error parsing coordinates in Airspace file: N/S/E/W nt found.");
+      qWarning("Error parsing coords in Airspace file: N/S/E/W not found.");
+      return cor;
     }
     QString parse = text.left(i);
     int parts = parse.count(':');
