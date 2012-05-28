@@ -9,16 +9,12 @@
 
 #include "igcinfo.h"
 #include "plotaxes.h"
+#include "graphlabels.h"
+#include "infotexts.h"
 #include "plotpainters.h"
 
 namespace Updraft {
 namespace IgcViewer {
-
-struct PickData {
-  PickData(int x, QTime t): xLine(x), time(t) {}
-  int xLine;
-  QTime time;
-};
 
 class PlotWidget : public QWidget {
   Q_OBJECT
@@ -27,8 +23,6 @@ class PlotWidget : public QWidget {
   PlotWidget(TrackData* trackData, IgcInfo* altitudeInfo,
     IgcInfo* verticalSpeedInfo, IgcInfo *groundSpeedInfo);
 
-  /// sets the line to the time, and returns the x position of the line
-  int setPickedTime(int time);
   void addPickedTime(QTime time);
 
   /// sets the line to position x, and returns the time of the pick
@@ -43,7 +37,7 @@ class PlotWidget : public QWidget {
   void updateCurrentInfo(const QString& text);
   void updateText();
   void timeWasPicked(QTime time);
-  void displayMarker(bool value);
+  void clearMarkers();
 
  private:
   void paintEvent(QPaintEvent* paintEvent);
@@ -51,6 +45,8 @@ class PlotWidget : public QWidget {
   void mousePressEvent(QMouseEvent* mouseEvent);
   void leaveEvent(QEvent* leaveEvent);
   void resizeEvent(QResizeEvent* resizeEvent);
+
+  void redrawGraphPicture();
 
   QString createPointStatText(QTime time, int xLine);
   void updatePickedTexts(int i);
@@ -61,7 +57,7 @@ class PlotWidget : public QWidget {
   int xLine;
 
   /// Time [in seconds] of the picked point.
-  int timePicked;
+  // int timePicked;
 
   /// The coordinate to draw the vertical line at a picked location
   /// - when user clicked on the graph.
@@ -101,26 +97,6 @@ class PlotWidget : public QWidget {
 
   static const QPen MOUSE_LINE_PEN;
   static const QPen MOUSE_LINE_PICKED_PEN;
-};
-
-class IGCTextWidget : public QTextEdit {
-  Q_OBJECT
-
- public:
-  IGCTextWidget() : segmentsTexts(NULL), pointsTexts(NULL) {}
-  IGCTextWidget(QList<QString>* s, QList<QString>* p)
-    : segmentsTexts(s), pointsTexts(p) {updateText();}
-
- public slots:
-  void setSegmentsTexts(QList<QString>* texts);
-  void setPointsTexts(QList<QString>* texts);
-  void setMouseOverText(const QString& text);
-  void updateText();
-
- private:
-  QString mouseOverText;
-  QList<QString>* segmentsTexts;
-  QList<QString>* pointsTexts;
 };
 
 }  // End namespace Updraft

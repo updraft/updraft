@@ -7,6 +7,7 @@
 #include <QTextEdit>
 
 #include <osg/Geometry>
+#include <osg/Geode>
 #include <osg/AutoTransform>
 
 #include "colorings.h"
@@ -60,7 +61,7 @@ class OpenedFile: public QObject {
 
  public slots:
   void timePicked(QTime time);
-  void displayMarker(bool value);
+  void clearMarkers();
 
  private slots:
   /// Slot that gets called when the tab associated with this file is closed.
@@ -80,9 +81,6 @@ class OpenedFile: public QObject {
 
   /// Create the skirt under the track.
   osg::Node* createSkirt();
-
-  /// Create position marker.
-  osg::Node* createMarker();
 
   /// Set coloring of the track.
   void setColors(Coloring* coloring);
@@ -106,7 +104,7 @@ class OpenedFile: public QObject {
   osg::Geometry* geom;
   osg::Group* sceneRoot;
   osg::Geode* trackGeode;
-  osg::Geode* trackPositionMarker;
+  osg::ref_ptr<osg::Geode> trackPositionMarker;
   QList<osg::AutoTransform*> currentMarkers;
 
   Coloring* currentColoring;

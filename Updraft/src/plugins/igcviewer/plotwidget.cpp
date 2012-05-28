@@ -24,7 +24,6 @@ PlotWidget::PlotWidget(TrackData* trackData, IgcInfo* altitudeInfo,
     // set mouse tracking
   setMouseTracking(true);
   xLine = -1;
-  timePicked = -1;
   mouseOver = false;
   graphPicture = new QImage();
 
@@ -99,6 +98,7 @@ PlotWidget::PlotWidget(TrackData* trackData, IgcInfo* altitudeInfo,
 
   pickedLabel = new PickedLabel(&pickedPoints, &segmentsStatTexts);
   layout->addItem(pickedLabel, 7, 1);
+  labels.append(pickedLabel);
 
   segmentsStatTexts.append(createSegmentStatText(-1, 1));
   // ownership of axes is transfered to layout,
@@ -181,9 +181,9 @@ void PlotWidget::mousePressEvent(QMouseEvent* mouseEvent) {
       pickedPoints.clear();
       segmentsStatTexts.clear();
       segmentsStatTexts.append(createSegmentStatText(-1, 1));
-      timePicked = -1;
+      redrawGraphPicture();
       emit updateText();
-      // emit displayMarker(false);
+      emit clearMarkers();
       update();
     }
   }
@@ -195,7 +195,7 @@ void PlotWidget::leaveEvent(QEvent* leaveEvent) {
   update();
 }
 
-void PlotWidget::resizeEvent(QResizeEvent* resizeEvent) {
+void PlotWidget::redrawGraphPicture() {
   delete(graphPicture);  // delete the old pixel map
   graphPicture = new QImage(width(), height(), QImage::Format_RGB32);
 
@@ -215,20 +215,12 @@ void PlotWidget::resizeEvent(QResizeEvent* resizeEvent) {
 
   mouseOver = false;
 
-  if (timePicked >= 0) {
-    setPickedTime(timePicked);
-  }
   emit updateCurrentInfo("");
   update();
 }
 
-int PlotWidget::setPickedTime(int time) {
-  timePicked = time;
-  // pickedPoints.append (altitudeAxes->placeX(time));
-  // emit updatePickedInfo(getInfoText(pickedPoints));
-  update();
-  // return pickedPoints;
-  return 0;
+void PlotWidget::resizeEvent(QResizeEvent* resizeEvent) {
+  redrawGraphPicture();
 }
 
 QTime PlotWidget::getTimeFromSecs(int timeInSecs) {
@@ -254,6 +246,8 @@ void PlotWidget::addPickedLine(int x) {
   updatePickedTexts(i);
 
   emit updateText();
+  emit timeWasPicked(timestamp);
+  update();
 }
 
 void PlotWidget::addPickedTime(QTime time) {
@@ -269,6 +263,7 @@ void PlotWidget::addPickedTime(QTime time) {
   updatePickedTexts(i);
 
   emit updateText();
+  update();
 }
 
 void PlotWidget::updatePickedTexts(int i) {
@@ -283,6 +278,7 @@ void PlotWidget::updatePickedTexts(int i) {
   QTime time = pickedPoints[i].time;
   int x = pickedPoints[i].xLine;
   pickedPointsStatTexts.insert(i, createPointStatText(time, x));
+  redrawGraphPicture();
 }
 
 QString PlotWidget::createSegmentStatText(
@@ -362,38 +358,6 @@ QList<QString>* PlotWidget::getSegmentsStatTexts() {
 
 QList<QString>* PlotWidget::getPointsStatTexts() {
   return &pickedPointsStatTexts;
-}
-
-void IGCTextWidget::setMouseOverText(const QString& text) {
-  mouseOverText = text;
-  updateText();
-}
-
-void IGCTextWidget::setSegmentsTexts(QList<QString>* text) {
-  segmentsTexts = text;
-  updateText();
-}
-
-void IGCTextWidget::setPointsTexts(QList<QString>* text) {
-  pointsTexts = text;
-  updateText();
-}
-
-void IGCTextWidget::updateText() {
-  QString string;
-  if (!mouseOverText.isEmpty()) {
-    string = mouseOverText;
-    string += "\n\n-----------\n\n";
-  }
-  for (int i = 0; i < segmentsTexts->size()-1; i++) {
-    string += segmentsTexts->at(i);
-    string += "\n\n";
-    string += pointsTexts->at(i);
-    string += "\n\n";
-  }
-  if (!segmentsTexts->isEmpty())
-    string += segmentsTexts->last();
-  setText(string);
 }
 
 }  // End namespace IgcViewer

@@ -2,6 +2,7 @@
 
 #include <QComboBox>
 #include <QHBoxLayout>
+#include <QSplitter>
 #include <QVBoxLayout>
 #include <QDebug>
 
@@ -126,7 +127,9 @@ bool OpenedFile::init(IgcViewer* viewer,
 
 
   QWidget* tabWidget = new QWidget();
+  QWidget* leftPart = new QWidget();
   QHBoxLayout* layout = new QHBoxLayout();
+  // QSplitter* splitter = new QSplitter(tabWidget);
   QVBoxLayout* verticalLayout = new QVBoxLayout();
 
   layout->setContentsMargins(0, 0, 0, 0);
@@ -137,7 +140,6 @@ bool OpenedFile::init(IgcViewer* viewer,
   textBox = new IGCTextWidget(plotWidget->getSegmentsStatTexts(),
     plotWidget->getPointsStatTexts());
   textBox->setReadOnly(true);
-  textBox->setFixedSize(100, 300);
 
   connect(plotWidget, SIGNAL(updateCurrentInfo(const QString&)),
     textBox, SLOT(setMouseOverText(const QString&)));
@@ -145,14 +147,18 @@ bool OpenedFile::init(IgcViewer* viewer,
     textBox, SLOT(updateText()));
   connect(plotWidget, SIGNAL(timeWasPicked(QTime)),
     this, SLOT(timePicked(QTime)));
-  connect(plotWidget, SIGNAL(displayMarker(bool)),
-    this, SLOT(displayMarker(bool)));
+  connect(plotWidget, SIGNAL(clearMarkers()),
+    this, SLOT(clearMarkers()));
 
   tabWidget->setLayout(layout);
   verticalLayout->addWidget(colorsCombo, 0, Qt::AlignTop);
   verticalLayout->addWidget(textBox, 1, Qt::AlignTop);
   layout->addLayout(verticalLayout, 0);
+  // leftPart->setLayout(verticalLayout);
+  // splitter->addWidget(leftPart);
+  // layout->add
   layout->addWidget(plotWidget, 1.0);
+  // splitter->addWidget(plotWidget);
 
   tab = g_core->createTab(tabWidget, fileInfo.fileName());
 
@@ -195,7 +201,8 @@ void OpenedFile::createGroup() {
 
   sceneRoot->addChild(createTrack());
   sceneRoot->addChild(createSkirt());
-  sceneRoot->addChild(createMarker());
+  trackPositionMarker = createMarker(25.);
+  trackPositionMarker->setNodeMask(0xffffffff);
 
   // push the scene
   track = viewer->mapLayerGroup->insertMapLayer(sceneRoot, fileInfo.fileName());
@@ -282,27 +289,6 @@ osg::Node* OpenedFile::createSkirt() {
   return geode;
 }
 
-osg::Node* OpenedFile::createMarker() {
-  // create the marker:
-  // create the billboard
-  // set the texture
-  trackPositionMarker = createMarker(25.);
-  trackPositionMarker->setNodeMask(0x0);  // make it invisible first
-
-  /*
-  osg::AutoTransform* currentMarkerTransform = new osg::AutoTransform();
-  currentMarkerTransform->setAutoRotateMode(
-    osg::AutoTransform::ROTATE_TO_SCREEN);
-  currentMarkerTransform->setAutoScaleToScreen(true);
-  currentMarkerTransform->setMinimumScale(0.1);
-  currentMarkerTransform->setMaximumScale(100);
-  currentMarkerTransform->addChild(trackPositionMarker);
-  sceneRoot->addChild(currentMarkerTransform);
-  */
-
-  return currentMarkerTransform;
-}
-
 void OpenedFile::setColors(Coloring *coloring) {
   currentColoring = coloring;
 
@@ -367,7 +353,6 @@ void OpenedFile::trackClicked(const EventInfo* eventInfo) {
   qDebug() << minDistance;
 
   QTime time = nearest->timestamp;
-  // qreal timeSecs = time.hour()*3600 + time.minute()*60 + time.second();
   plotWidget->addPickedTime(time);
 
   osg::AutoTransform* currentMarkerTransform = new osg::AutoTransform();
@@ -381,7 +366,6 @@ void OpenedFile::trackClicked(const EventInfo* eventInfo) {
   currentMarkerTransform->setPosition(
     osg::Vec3(nearest->x, nearest->y, nearest->z));
   currentMarkers.append(currentMarkerTransform);
-  // displayMarker(true);
 }
 
 void OpenedFile::timePicked(QTime time) {
@@ -419,12 +403,6 @@ void OpenedFile::timePicked(QTime time) {
 }
 
 osg::Geode* OpenedFile::createMarker(qreal scale) {
-  /*
-  osg::Sphere* unitSphere = new osg::Sphere(osg::Vec3(0, 0, 0), 1.0);
-  osg::ShapeDrawable* unitSphereDrawable = new osg::ShapeDrawable(unitSphere);
-  osg::Geode* unitSphereGeode = new osg::Geode();
-  unitSphereGeode->addDrawable(unitSphereDrawable);
-  */
   osg::Geometry* geometry = new osg::Geometry();
 
   osg::Vec3Array* vertices = new osg::Vec3Array(4);
@@ -468,12 +446,11 @@ osg::Geode* OpenedFile::createMarker(qreal scale) {
   return geode;
 }
 
-void OpenedFile::displayMarker(bool value) {
-  if (value) {
-    trackPositionMarker->setNodeMask(0xffffffff);
-  } else {
-    // trackPositionMarker->setNodeMask(0x0);
+void OpenedFile::clearMarkers() {
+  for (int i = 0; i < currentMarkers.size(); i++) {
+    sceneRoot->removeChild(currentMarkers[i]);
   }
+  currentMarkers.clear();
 }
 
 }  // End namespace IgcViewer
