@@ -339,7 +339,17 @@ void oaEngine::FillOGLArrays(
 
 osg::Geode* oaEngine::FindLayer(const QString& name) {
   // find, remove from array and return the Node with name
-  return NULL;
+  osg::Geode* result = NULL;
+  if (!mapLayers) return NULL;
+  QVector<QPair<osg::Node*, QString> >::iterator it;
+  // it = mapLayers->begin();
+  for (it = mapLayers->begin(); it < mapLayers->end(); ++it) {
+    if ((*it).second == name) {
+      result = (osg::Geode*)(*it).first;
+      mapLayers->erase(it);
+    }
+  }
+  return result;
 }
 
 void oaEngine::PushLayer(osg::Geode* OAGeode, const QString& displayName) {
@@ -378,7 +388,8 @@ void oaEngine::PushLayer(osg::Geode* OAGeode, const QString& displayName) {
   // MapLayerInterface* newLayer = new Core::MapLayer((osg::Node*)OAGeode);
   // newLayer->setVisible(false);
   // QPair<osg::Node*, QString> toPush
-  mapLayers->push_back(QPair<osg::Node*, QString>(OAGeode, displayName));
+  mapLayers->push_back(QPair<osg::Node*, QString>(OAGeode,
+    "Class " + displayName));
 }
 
 osg::Geometry* oaEngine::DrawPolygon(
