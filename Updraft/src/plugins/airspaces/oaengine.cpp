@@ -8,7 +8,7 @@ oaEngine::oaEngine(MapLayerGroupInterface* LG) {
   this->mapLayerGroup = LG;
 
   // some defaults
-  USE_POINTWISE_ELEVATION = false;
+  USE_POINTWISE_ELEVATION = true;
   DRAW_UNDERGROUND        = false;
   TOP_FACE                = false;
   BOTTOM_FACE             = false;
@@ -100,14 +100,16 @@ QVector<QPair<osg::Node*, QString> >* oaEngine::Draw(const QString& fileName) {
       OpenAirspace::Airspace* A = AirspaceSet.at(i);
 
       // get the bundle of airspaces with the same name/class
-      if (nameSuffix != A->GetClassName()) {
+      QString aName = (A->GetName() == NULL) ?
+        QString("N/A") : (*A->GetName());
+      if (nameSuffix != aName) {  // A->GetClassName()
         // if there is a geode initialized
         // insert into the array of layers
         if (OAGeode)
           PushLayer(OAGeode, nameSuffix);
 
         // change the suffix to current one
-        nameSuffix = A->GetClassName();
+        nameSuffix = aName;
 
         // init the subscene
         OAGeode = new osg::Geode();
