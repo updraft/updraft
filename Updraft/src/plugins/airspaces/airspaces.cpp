@@ -27,7 +27,7 @@ void Airspaces::initialize(CoreInterface *coreInterface) {
   g_core->registerFiletype(OAirspaceFileReg);
 
   // Create map layers items in the left pane.
-  mapLayerGroup = g_core->createMapLayerGroup(tr("Airspaces"));
+  mapLayerGroup = g_core->createMapLayerGroup(tr("Airspace"));
   // engine = new oaEngine(mapLayerGroup);
 
   loadImportedFiles();

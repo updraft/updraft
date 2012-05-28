@@ -100,19 +100,25 @@ QVector<QPair<osg::Node*, QString> >* oaEngine::Draw(const QString& fileName) {
       OpenAirspace::Airspace* A = AirspaceSet.at(i);
 
       // get the bundle of airspaces with the same name/class
-      QString aName = (A->GetName() == NULL) ?
-        QString("N/A") : (*A->GetName());
+      QString aName = A->GetClassName();
+        // (A->GetName() == NULL) ?
+        // QString("N/A") : (*A->GetName());
       if (nameSuffix != aName) {  // A->GetClassName()
         // if there is a geode initialized
-        // insert into the array of layers
+        // insert new into the array of layers
+        // or find one of the same name
         if (OAGeode)
           PushLayer(OAGeode, nameSuffix);
 
         // change the suffix to current one
         nameSuffix = aName;
 
-        // init the subscene
-        OAGeode = new osg::Geode();
+        // try to find out if exists
+        OAGeode = FindLayer(nameSuffix);
+
+        // if not found init the subscene
+        if (!OAGeode)
+          OAGeode = new osg::Geode();
       }
 
       // set the colour of the geometry if defined
@@ -329,6 +335,11 @@ void oaEngine::FillOGLArrays(
       floorAgl, ceilingAgl);
     OAGeode->addDrawable(geom);
   }
+}
+
+osg::Geode* oaEngine::FindLayer(const QString& name) {
+  // find, remove from array and return the Node with name
+  return NULL;
 }
 
 void oaEngine::PushLayer(osg::Geode* OAGeode, const QString& displayName) {
