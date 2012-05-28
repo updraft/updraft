@@ -43,6 +43,8 @@ class TranslationManager: public QObject {
   QTranslator *coreTranslator;
 
   SettingInterface *languageSetting;
+
+  static const QString defaultLanguage;
 };
 
 }  // End namespace Core

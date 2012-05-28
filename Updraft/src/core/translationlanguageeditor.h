@@ -10,7 +10,8 @@ namespace Core {
 
 class TranslationLanguageEditor: public QComboBox {
   Q_OBJECT
-  Q_PROPERTY(TranslationLanguage lang READ lang WRITE setLang USER true)
+  Q_PROPERTY
+    (Updraft::Core::TranslationLanguage lang READ lang WRITE setLang USER true)
  public:
   explicit TranslationLanguageEditor(QWidget *parent);
 

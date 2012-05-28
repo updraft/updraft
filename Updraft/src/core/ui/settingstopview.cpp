@@ -14,7 +14,10 @@ SettingsTopView::SettingsTopView(QWidget* parent): QListView(parent) {
 
 bool SettingsTopView::setShowHidden(bool show) {
   // If the currently selected group should be hidden, try to change it
-  if (showHidden && !show && groupIsHidden(currentIndex().row())) {
+  if (currentIndex().isValid() &&
+    showHidden &&
+    !show &&
+    groupIsHidden(currentIndex().row())) {
     // Find the first row that doesn't have to be hidden and try to select it
     int row;
     for (row = 0; row < model()->rowCount(); ++row) {

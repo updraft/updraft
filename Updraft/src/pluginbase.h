@@ -20,12 +20,6 @@ extern CoreInterface *g_core;
 
 class EventInfo;
 
-// Forward declarations
-namespace Core {
-  class UpdraftParent;
-  class PluginManager;
-}
-
 /// Base class for plugins.
 /// All mehtods of this class must be pure virtual or inline!
 class PluginBase {
