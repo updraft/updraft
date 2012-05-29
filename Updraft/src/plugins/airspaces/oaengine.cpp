@@ -8,7 +8,7 @@ oaEngine::oaEngine(MapLayerGroupInterface* LG) {
   this->mapLayerGroup = LG;
 
   // some defaults
-  USE_POINTWISE_ELEVATION = true;
+  USE_POINTWISE_ELEVATION = false;
   DRAW_UNDERGROUND        = false;
   TOP_FACE                = false;
   BOTTOM_FACE             = false;
