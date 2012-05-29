@@ -8,13 +8,6 @@ CoreInterface *g_core = NULL;
 
 TurnPoints::TurnPoints()
   : mapLayerGroup(NULL) {
-  cupTPsReg.category = CATEGORY_PERSISTENT;
-  cupTPsReg.extension = ".cup";
-  cupTPsReg.typeDescription = tr("SeeYou turn-points file");
-  cupTPsReg.roleDescription = tr("Import turn-points");
-  cupTPsReg.importDirectory = "turnpoints";
-  cupTPsReg.roleId = IMPORT_CUP_FILE;
-  cupTPsReg.plugin = this;
 }
 
 TurnPoints::~TurnPoints() {
@@ -53,6 +46,13 @@ void TurnPoints::initialize(CoreInterface *coreInterface) {
 
   mapLayerGroup = g_core->createMapLayerGroup(tr("Turn-points"));
 
+  cupTPsReg.category = CATEGORY_PERSISTENT;
+  cupTPsReg.extension = ".cup";
+  cupTPsReg.typeDescription = tr("SeeYou turn-points file");
+  cupTPsReg.roleDescription = tr("Import turn-points");
+  cupTPsReg.importDirectory = "turnpoints";
+  cupTPsReg.roleId = IMPORT_CUP_FILE;
+  cupTPsReg.plugin = this;
   g_core->registerFiletype(cupTPsReg);
 
   loadImportedFiles();
