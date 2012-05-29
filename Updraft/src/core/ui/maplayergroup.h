@@ -27,9 +27,6 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   /// Removes coresponding tree widget from GUI.
   ~MapLayerGroup();
 
-  // Implementation of the virtual functions.
-  MapLayerInterface* createEmptyMapLayer();
-
   /// Multiple overloaded functions that instert maplayer
   /// depending on the type of the layer.
   MapLayerInterface* insertMapLayer
@@ -41,27 +38,15 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   MapLayerInterface* insertMapLayer
     (osgEarth::ModelLayer* layer, const QString& title, int pos = -1);
 
-  /// Inserts the group of layers into the tree
   QVector<MapLayerInterface*>* insertMapLayerGroup
     (QVector<QPair<osg::Node*, QString> >* mapLayerGroup,
-    const QString& title, int pos = -1);
-  MapLayerInterface* insertMapLayerGroup
-    (QVector<QPair<osgEarth::ImageLayer*, QString> >* layerGroup,
-    const QString& title, int pos = -1);
-  MapLayerInterface* insertMapLayerGroup
-    (QVector<QPair<osgEarth::ElevationLayer*, QString> >* layerGroup,
-    const QString& title, int pos = -1);
-  MapLayerInterface* insertMapLayerGroup
-    (QVector<QPair<osgEarth::ModelLayer*, QString> >* layerGroup,
     const QString& title, int pos = -1);
 
   void removeMapLayer(MapLayerInterface* layer);
 
   void setMapLayerTitle(MapLayerInterface* layer, const QString &title);
 
-  QTreeWidgetItem* createTreeItem(const QString& title, int pos = -1);
-  void removeTreeItem(QTreeWidgetItem* item);
-
+  osg::Group* getNodeGroup();
   osgEarth::MapNode* getMapNode();
   osgEarth::Util::ObjectPlacer* getObjectPlacer();
 
@@ -105,12 +90,6 @@ class MapLayerGroup : public QObject, public MapLayerGroupInterface {
   MapLayerInterface* insertMapLayerGroup
     (QVector<MapLayerInterface*>* layerGroup,
     const QString& title, int pos = -1);
-
-  /// A procedure for adding the map layer into the scene tree.
-  void addIntoScene(MapLayerInterface* layer);
-
-  /// A procedure for removing the map layer from the scene tree.
-  void removeFromScene(MapLayerInterface* layer);
 
   /// Adds the tree item into the list at given position.
   /// \param pos The position at the list.
