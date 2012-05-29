@@ -48,9 +48,12 @@ namespace OpenAirspace {
     this->Wi        = -1;
     this->Z         = -1;
 
+    int check = ts->pos();
     (*ts) >> text;
-    if (text != "AC")
+    if (text != "AC") {
+      int check = ts->pos();
       return;
+    }
 
     (*ts) >> text;
     if (!this->ACstring)
@@ -79,7 +82,8 @@ namespace OpenAirspace {
         // check = ts->status();
 
       if (text == "AC") {
-        ts->seek(ts->pos() -2);
+        int check = ts->pos();
+        ts->seek(check -2);
         return;
       }
       if (text.size() == 0 || text.at(0) == '*') {
