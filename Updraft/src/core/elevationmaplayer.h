@@ -1,10 +1,11 @@
 #ifndef UPDRAFT_SRC_CORE_ELEVATIONMAPLAYER_H_
 #define UPDRAFT_SRC_CORE_ELEVATIONMAPLAYER_H_
 
-#include "maplayer.h"
-
 #include <osgEarth/ElevationLayer>
 #include <osg/ref_ptr>
+
+#include "maplayer.h"
+
 
 namespace Updraft {
 namespace Core {

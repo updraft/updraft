@@ -1,10 +1,11 @@
 #ifndef UPDRAFT_SRC_CORE_MODELMAPLAYER_H_
 #define UPDRAFT_SRC_CORE_MODELMAPLAYER_H_
 
-#include "maplayer.h"
-
 #include <osgEarth/ModelLayer>
 #include <osg/ref_ptr>
+
+#include "maplayer.h"
+
 
 namespace Updraft {
 namespace Core {

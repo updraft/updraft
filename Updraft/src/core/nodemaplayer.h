@@ -1,10 +1,11 @@
 #ifndef UPDRAFT_SRC_CORE_NODEMAPLAYER_H_
 #define UPDRAFT_SRC_CORE_NODEMAPLAYER_H_
 
-#include "maplayer.h"
-
 #include <osg/Node>
 #include <osg/ref_ptr>
+
+#include "maplayer.h"
+
 
 namespace Updraft {
 namespace Core {

@@ -1,10 +1,11 @@
 #ifndef UPDRAFT_SRC_CORE_IMAGEMAPLAYER_H_
 #define UPDRAFT_SRC_CORE_IMAGEMAPLAYER_H_
 
-#include "maplayer.h"
-
 #include <osg/ref_ptr>
 #include <osgEarth/ImageLayer>
+
+#include "maplayer.h"
+
 
 namespace Updraft {
 namespace Core {

@@ -31,13 +31,13 @@ void TurnPoints::initialize(CoreInterface *coreInterface) {
   g_core->addSettingsGroup(
     "Turnpoints", tr("Turn-points Options"));
   settings.push_back(g_core->addSetting("Turnpoints:labelColourR",
-    "Colour of the turnpoint labels - RED", 1.0));
+    "Colour of the turnpoint labels - RED", 1.0, true));
   settings.push_back(g_core->addSetting("Turnpoints:labelColourG",
-    "Colour of the turnpoint labels - GREEN", 1.0));
+    "Colour of the turnpoint labels - GREEN", 1.0, true));
   settings.push_back(g_core->addSetting("Turnpoints:labelColourB",
-    "Colour of the turnpoint labels - BLUE", 1.0));
+    "Colour of the turnpoint labels - BLUE", 1.0, true));
   settings.push_back(g_core->addSetting("Turnpoints:labelColourA",
-    "Colour of the turnpoint labels - ALPHA", 1.0));
+    "Colour of the turnpoint labels - ALPHA", 1.0, true));
   settings.push_back(g_core->addSetting("Turnpoints:labelMaxScale",
     "Maximum scale for label", 100.0, true));
   settings.push_back(g_core->addSetting("Turnpoints:labelMinScale",
