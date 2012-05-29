@@ -69,5 +69,13 @@
         <source>Vario</source>
         <translation>Vario</translation>
     </message>
+    <message>
+        <source>avg GS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>avg VS</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

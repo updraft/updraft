@@ -8,20 +8,29 @@ oaEngine::oaEngine(MapLayerGroupInterface* LG) {
   this->mapLayerGroup = LG;
 
   // some defaults
+  // Turn this on to compute the terrain elevation
+  // in every polygon vertex
   USE_POINTWISE_ELEVATION = false;
+  // Turn this on to draw the airspace polygons to lvl 0
   DRAW_UNDERGROUND        = false;
+  // Turn this on to draw the selected face of the polygon (NA)
   TOP_FACE                = false;
   BOTTOM_FACE             = false;
   SIDE_FACE               = true;
+  // Turn this on to draw the polygon wireframe
   TOP_WIREFRAME           = true;
   BOTTOM_WIREFRAME        = true;
   SIDE_WIREFRAME          = false;
+  // Turn this on to draw the side with gradient
   SIDE_COL_GRADIENT       = true;
+  // Opacity settings
   POLY_OPACITY_BOTTOM     = 0.5;
   POLY_OPACITY_TOP        = 0.1;
   WIRE_OPACITY_BOTTOM     = 0.5;  // 0.6;
   WIRE_OPACITY_TOP        = 0.5;  // 0.2;
+  // Elevation resolution setting
   ELEV_TILE_RESOLUTION    = 0.01;
+  // Sets the default height of ground and ceiling
   GND                     = 0;
   ROOF                    = 80000;
 
