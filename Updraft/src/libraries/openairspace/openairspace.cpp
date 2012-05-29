@@ -21,6 +21,7 @@ namespace OpenAirspace {
 
     while (text != "AC" && !ts.atEnd())
       ts >> text;
+    ts.seek(ts.pos() -2);
 
     if (ts.atEnd())
       qDebug("Not supported OpenAirspace format.");
@@ -30,9 +31,9 @@ namespace OpenAirspace {
     this->allAirspaces = new QVector<Airspace*>();
     while (!ts.atEnd()) {
       // if (!ts.atEnd())
-      int check = ts.pos();
-      ts.seek(ts.pos() -2);
-      check = ts.pos();
+      // int check = ts.pos();
+      // ts.seek(ts.pos() -2);
+      // check = ts.pos();
       if (ts.pos() < 0) {
         qDebug("Airspace file not properly parsed.");
         break;

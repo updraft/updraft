@@ -49,7 +49,8 @@ namespace OpenAirspace {
     this->Z         = -1;
 
     (*ts) >> text;
-    if (text != "AC") return;
+    if (text != "AC")
+      return;
 
     (*ts) >> text;
     if (!this->ACstring)
@@ -74,9 +75,13 @@ namespace OpenAirspace {
     while (!(*ts).atEnd()) {
       (*ts) >> text;
       // int check = ts->pos();
+      // if (check <= 0)
+        // check = ts->status();
 
-      if (text == "AC")
+      if (text == "AC") {
+        ts->seek(ts->pos() -2);
         return;
+      }
       if (text.size() == 0 || text.at(0) == '*') {
         if (text.size() != 0)
           text = ts->readLine();
