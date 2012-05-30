@@ -161,26 +161,25 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
   const TPFile *file_, const QString &dataDir_, TurnPoints* parent_,
   const QVector<SettingInterface*>& settings)
   : group(new osg::Group()), objectPlacer(objectPlacer_),
-  file(file_), displayed(displayed_), dataDir(dataDir_), parent(parent_) {
+  file(file_), displayed(displayed_), dataDir(dataDir_), parent(parent_),
+  labelMaxScale(100.0),
+  labelMinScale(10.0),
+  labelDrawDist(4000.0),
+  lblSize(20.0) {
   if (group == NULL || objectPlacer == NULL || file == NULL) {
     return;
   }
 
   // Settings
   // get stored values
-  if (settings.size() < 8) {
+  if (settings.size() >= 4) {
+    labelMaxScale = settings[0]->get().toFloat();
+    labelMinScale = settings[1]->get().toFloat();
+    labelDrawDist = settings[2]->get().toFloat();
+    lblSize       = settings[3]->get().toFloat();
+  } else {
     qDebug("Not enough settings params.");
-    return;
   }
-  labelColour   = osg::Vec4(
-    settings[0]->get().toFloat(),
-    settings[1]->get().toFloat(),
-    settings[2]->get().toFloat(),
-    settings[3]->get().toFloat());
-  labelMaxScale = settings[4]->get().toFloat();
-  labelMinScale = settings[5]->get().toFloat();
-  labelDrawDist = settings[6]->get().toFloat();
-  lblSize       = settings[7]->get().toFloat();
 
   // Create node for one turn-point.
   // It will be shared among Autotransform nodes.

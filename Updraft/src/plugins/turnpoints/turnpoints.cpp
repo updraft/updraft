@@ -30,14 +30,6 @@ void TurnPoints::initialize(CoreInterface *coreInterface) {
 
   g_core->addSettingsGroup(
     "Turnpoints", tr("Turn-points Options"));
-  settings.push_back(g_core->addSetting("Turnpoints:labelColourR",
-    "Colour of the turnpoint labels - RED", 1.0, true));
-  settings.push_back(g_core->addSetting("Turnpoints:labelColourG",
-    "Colour of the turnpoint labels - GREEN", 1.0, true));
-  settings.push_back(g_core->addSetting("Turnpoints:labelColourB",
-    "Colour of the turnpoint labels - BLUE", 1.0, true));
-  settings.push_back(g_core->addSetting("Turnpoints:labelColourA",
-    "Colour of the turnpoint labels - ALPHA", 1.0, true));
   settings.push_back(g_core->addSetting("Turnpoints:labelMaxScale",
     "Maximum scale for label", 100.0, true));
   settings.push_back(g_core->addSetting("Turnpoints:labelMinScale",
@@ -46,10 +38,6 @@ void TurnPoints::initialize(CoreInterface *coreInterface) {
     "Minimum distance from camera for label to draw.", 4000.0, true));
   settings.push_back(g_core->addSetting("Turnpoints:labelSize",
     "Labels font size", 20.0, true));
-
-  g_core->addSetting("Turnpoints:labelColor",
-    tr("Color of the turnpoints labels"),
-    QColor(Qt::white));
 
   mapLayerGroup = g_core->createMapLayerGroup(tr("Turn-points"));
 

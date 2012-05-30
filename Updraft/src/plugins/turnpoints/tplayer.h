@@ -91,9 +91,6 @@ class TPLayer {
   // when real turnpoint MapObjects are implemented
   QList<TPMapObject*> mapObjects;
 
-  /// Colour of the label setting
-  osg::Vec4 labelColour;
-
   /// Text min/max visibility setting
   qreal labelMinScale;
   qreal labelMaxScale;
