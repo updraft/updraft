@@ -150,7 +150,7 @@ class OPENAIRSPACE_EXPORT Airspace {
     /// UserAirspace class constructor code.
     /// This takes the filename in Userirspace free format and parses
     /// the data contained into private variables
-    explicit Airspace(QTextStream* ts);
+    Airspace(QTextStream* ts, bool* acOn);
 
     /// copy ctor
     // Airspace(const Airspace&);

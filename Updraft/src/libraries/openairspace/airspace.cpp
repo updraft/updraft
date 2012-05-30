@@ -4,7 +4,7 @@ OpenAirspace::Position OpenAirspace::Airspace::X;
 bool OpenAirspace::Airspace::validX;
 
 namespace OpenAirspace {
-  Airspace::Airspace(QTextStream* ts) {
+  Airspace::Airspace(QTextStream* ts, bool* acOn) {
     QString text("");
 
     /* testing :
@@ -48,12 +48,14 @@ namespace OpenAirspace {
     this->Wi        = -1;
     this->Z         = -1;
 
-    int check = ts->pos();
-    (*ts) >> text;
-    if (text != "AC") {
+    // int check = ts->pos();
+    // (*ts) >> text;
+    // if (text != "AC") {
+    if (!acOn) {
       int check = ts->pos();
       return;
     }
+    *acOn = false;
 
     (*ts) >> text;
     if (!this->ACstring)
@@ -82,8 +84,9 @@ namespace OpenAirspace {
         // check = ts->status();
 
       if (text == "AC") {
-        int check = ts->pos();
-        ts->seek(check -2);
+        // int check = ts->pos();
+        // ts->seek(check -2);
+        *acOn = true;
         return;
       }
       if (text.size() == 0 || text.at(0) == '*') {
