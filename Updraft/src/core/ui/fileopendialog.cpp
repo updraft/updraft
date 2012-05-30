@@ -1,4 +1,6 @@
 #include "fileopendialog.h"
+#include "ui/mainwindow.h"
+#include "filetypemanager.h"
 
 namespace Updraft {
 namespace Core {

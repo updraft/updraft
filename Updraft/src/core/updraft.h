@@ -3,16 +3,12 @@
 
 #include <QApplication>
 
-#include "ui/mainwindow.h"
-#include "filetypemanager.h"
-#include "pluginmanager.h"
-#include "scenemanager.h"
-#include "settingsmanager.h"
-#include "translationmanager.h"
 #include "splashscreen.h"
 
 /// Pointer to the instance of Updraft object.
 #define updraft (static_cast<Updraft*>(Updraft::instance()))
+
+class QDir;
 
 namespace Updraft {
 
@@ -23,6 +19,13 @@ namespace Util {
 }
 
 namespace Core {
+
+class MainWindow;
+class FileTypeManager;
+class PluginManager;
+class SceneManager;
+class SettingsManager;
+class TranslationManager;
 
 /// Top level object of updraft project.
 class Updraft : public QApplication {

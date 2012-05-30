@@ -1,6 +1,7 @@
 #include "translationlanguageeditor.h"
 
 #include "updraft.h"
+#include "translationmanager.h"
 
 namespace Updraft {
 namespace Core {

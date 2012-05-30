@@ -1,6 +1,7 @@
 #include "mapmanipulator.h"
 #include "updraft.h"
 #include "../settinginterface.h"
+#include "settingsmanager.h"
 
 namespace Updraft {
 namespace Core {

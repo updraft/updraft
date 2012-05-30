@@ -5,6 +5,8 @@
 #include "updraft.h"
 #include "translationlanguage.h"
 #include "../pluginbase.h"
+#include "pluginmanager.h"
+#include "settingsmanager.h"
 
 namespace Updraft {
 namespace Core {

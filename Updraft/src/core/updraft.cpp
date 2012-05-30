@@ -7,6 +7,12 @@
 #include "ui/maplayergroup.h"
 #include "util/util.h"
 #include "variantfunctions.h"
+#include "ui/mainwindow.h"
+#include "filetypemanager.h"
+#include "pluginmanager.h"
+#include "scenemanager.h"
+#include "settingsmanager.h"
+#include "translationmanager.h"
 
 namespace Updraft {
 namespace Core {

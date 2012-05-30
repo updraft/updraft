@@ -7,6 +7,7 @@
 #include "menu.h"
 #include "maplayergroup.h"
 #include "updraft.h"
+#include "filetypemanager.h"
 
 namespace Updraft {
 namespace Core {

@@ -9,6 +9,8 @@
 #include "pickaction.h"
 #include "../eventinfo.h"
 #include "../pluginbase.h"
+#include "ui/mainwindow.h"
+#include "pluginmanager.h"
 
 namespace Updraft {
 namespace Core {
