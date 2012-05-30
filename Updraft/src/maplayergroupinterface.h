@@ -7,14 +7,10 @@
 
 namespace osg {
   class Node;
-  class Group;
 }
 
 namespace osgEarth {
   class MapNode;
-  class ImageLayer;
-  class ElevationLayer;
-  class ModelLayer;
 
   namespace Util {
     class ObjectPlacer;
@@ -43,16 +39,8 @@ class MapLayerGroupInterface {
   ///   the group append the layer at the end.
   /// \param layer Pointer representing this layer.
   /// \param title Name of the layer; caption of the tree item.
-  /// \{
   virtual MapLayerInterface* insertMapLayer
     (osg::Node* layer, const QString& title, int pos = -1) = 0;
-  virtual MapLayerInterface* insertMapLayer
-    (osgEarth::ImageLayer* layer, const QString& title, int pos = -1) = 0;
-  virtual MapLayerInterface* insertMapLayer
-    (osgEarth::ElevationLayer* layer, const QString& title, int pos = -1) = 0;
-  virtual MapLayerInterface* insertMapLayer
-    (osgEarth::ModelLayer* layer, const QString& title, int pos = -1) = 0;
-  /// \}
 
   /// Insert map layer group to the map.
   /// insertMapLayer adds new QTreeWidgetItem.
@@ -82,16 +70,8 @@ class MapLayerGroupInterface {
 
  private:
   /// Add map layer without adding it to scene.
-  /// \{
   virtual MapLayerInterface* insertExistingMapLayer
     (osg::Node* layer, const QString& title, int pos = -1) = 0;
-  virtual MapLayerInterface* insertExistingMapLayer
-    (osgEarth::ImageLayer* layer, const QString& title, int pos = -1) = 0;
-  virtual MapLayerInterface* insertExistingMapLayer
-    (osgEarth::ElevationLayer* layer, const QString& title, int pos = -1) = 0;
-  virtual MapLayerInterface* insertExistingMapLayer
-    (osgEarth::ModelLayer* layer, const QString& title, int pos = -1) = 0;
-  /// \}
 };
 
 }  // End namespace Updraft
