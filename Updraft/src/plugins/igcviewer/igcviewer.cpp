@@ -71,13 +71,13 @@ bool IgcViewer::fileOpen(const QString &filename, int roleId) {
   OpenedFile* f = new OpenedFile();
 
   QColor c = findAutomaticColor();
-  if (!f->init(this, filename, c)) {
+  if (!f->init(this, absFilename, c)) {
     delete f;
     freeAutomaticColor(c);
     return false;
   }
 
-  IGCMapObject* mapObject = new IGCMapObject(filename, f);
+  IGCMapObject* mapObject = new IGCMapObject(absFilename, f);
   g_core->registerOsgNode(f->getNode(), mapObject);
   mapObjects.append(mapObject);
 
@@ -88,12 +88,13 @@ bool IgcViewer::fileOpen(const QString &filename, int roleId) {
     other->redraw();
   }
 
-  opened.insert(filename, f);
+  opened.insert(absFilename, f);
 
   return true;
 }
 
 void IgcViewer::fileClose(OpenedFile *f) {
+  QString str = f->fileName();
   opened.remove(f->fileName());
 
   freeAutomaticColor(f->getAutomaticColor());

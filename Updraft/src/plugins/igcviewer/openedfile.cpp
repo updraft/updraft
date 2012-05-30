@@ -33,10 +33,12 @@ OpenedFile::~OpenedFile() {
   foreach(IgcInfo* info, igcInfo) {
     delete info;
   }
+  igcInfo.clear();
 
   foreach(Coloring* coloring, colorings) {
     delete coloring;
   }
+  colorings.clear();
 
   viewer->mapLayerGroup->removeMapLayer(track);
 
