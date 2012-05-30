@@ -2,9 +2,6 @@
 #include <osgEarthUtil/ObjectPlacer>
 #include "maplayergroup.h"
 #include "../nodemaplayer.h"
-#include "../imagemaplayer.h"
-#include "../elevationmaplayer.h"
-#include "../modelmaplayer.h"
 
 namespace Updraft {
 namespace Core {
@@ -54,24 +51,6 @@ void MapLayerGroup::hideTree() {
 MapLayerInterface* MapLayerGroup::insertMapLayer
   (osg::Node* mapLayer, const QString& title, int pos) {
   MapLayerInterface* layer = new NodeMapLayer(mapLayer);
-  return insertMapLayer(layer, title, pos);
-}
-
-MapLayerInterface* MapLayerGroup::insertMapLayer
-  (osgEarth::ImageLayer* mapLayer, const QString& title, int pos) {
-  MapLayerInterface* layer = new ImageMapLayer(mapLayer);
-  return insertMapLayer(layer, title, pos);
-}
-
-MapLayerInterface* MapLayerGroup::insertMapLayer
-  (osgEarth::ElevationLayer* mapLayer, const QString& title, int pos) {
-  MapLayerInterface* layer = new ElevationMapLayer(mapLayer);
-  return insertMapLayer(layer, title, pos);
-}
-
-MapLayerInterface* MapLayerGroup::insertMapLayer
-  (osgEarth::ModelLayer* mapLayer, const QString& title, int pos) {
-  MapLayerInterface* layer = new ModelMapLayer(mapLayer);
   return insertMapLayer(layer, title, pos);
 }
 
@@ -134,24 +113,6 @@ QVector<MapLayerInterface*>* MapLayerGroup::insertMapLayerGroup
 MapLayerInterface* MapLayerGroup::insertExistingMapLayer
   (osg::Node* mapLayer, const QString& title, int pos) {
   MapLayerInterface* layer = new NodeMapLayer(mapLayer);
-  return insertExistingMapLayer(layer, title, pos);
-}
-
-MapLayerInterface* MapLayerGroup::insertExistingMapLayer
-  (osgEarth::ImageLayer* mapLayer, const QString& title, int pos) {
-  MapLayerInterface* layer = new ImageMapLayer(mapLayer);
-  return insertExistingMapLayer(layer, title, pos);
-}
-
-MapLayerInterface* MapLayerGroup::insertExistingMapLayer
-  (osgEarth::ElevationLayer* mapLayer, const QString& title, int pos) {
-  MapLayerInterface* layer = new ElevationMapLayer(mapLayer);
-  return insertExistingMapLayer(layer, title, pos);
-}
-
-MapLayerInterface* MapLayerGroup::insertExistingMapLayer
-  (osgEarth::ModelLayer* mapLayer, const QString& title, int pos) {
-  MapLayerInterface* layer = new ModelMapLayer(mapLayer);
   return insertExistingMapLayer(layer, title, pos);
 }
 
