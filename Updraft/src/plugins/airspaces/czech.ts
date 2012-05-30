@@ -13,11 +13,11 @@
     </message>
     <message>
         <source>Airspace</source>
-        <translation type="obsolete">Vzdušný prostor</translation>
+        <translation type="unfinished">Vzdušný prostor</translation>
     </message>
     <message>
         <source>Airspaces</source>
-        <translation>Vzdušné prostory</translation>
+        <translation type="obsolete">Vzdušné prostory</translation>
     </message>
 </context>
 </TS>

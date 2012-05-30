@@ -114,6 +114,14 @@
     </message>
 </context>
 <context>
+    <name>Updraft::Core::MapManipulator</name>
+    <message>
+        <location filename="../mapmanipulator.cpp" line="20"/>
+        <source>Mouse zoom sensitivity</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Updraft::Core::SceneManager</name>
     <message>
         <location filename="../scenemanager.cpp" line="92"/>
@@ -138,12 +146,12 @@
         <translation type="obsolete">Možnosti</translation>
     </message>
     <message>
-        <location filename="../ui/settingsdialog.cpp" line="65"/>
+        <location filename="../ui/settingsdialog.cpp" line="68"/>
         <source>Reset to defaults?</source>
         <translation>Obnovit výchozí?</translation>
     </message>
     <message>
-        <location filename="../ui/settingsdialog.cpp" line="66"/>
+        <location filename="../ui/settingsdialog.cpp" line="69"/>
         <source>All settings values will be erased and set to defaults. Are you sure you want to continue?</source>
         <translation>Všechny možnosti budou vráceny na výchozí hodnoty. Chcete pokračovat?</translation>
     </message>
@@ -168,12 +176,12 @@
 <context>
     <name>Updraft::Core::SettingsTopView</name>
     <message>
-        <location filename="../ui/settingstopview.cpp" line="82"/>
+        <location filename="../ui/settingstopview.cpp" line="85"/>
         <source>Unsaved changes in this tab.</source>
         <translation>Neuložené změny v této záložce.</translation>
     </message>
     <message>
-        <location filename="../ui/settingstopview.cpp" line="83"/>
+        <location filename="../ui/settingstopview.cpp" line="86"/>
         <source>You have some unsaved changes to the setting values in the current settings group. Do you want to apply these changes or reset the settings to their previous values?</source>
         <translation>V této záložce jsou neuložené změny. Chcete tyto změny použít, nebo obnovit předchozí hodnoty?</translation>
     </message>
@@ -181,7 +189,7 @@
 <context>
     <name>Updraft::Core::TranslationManager</name>
     <message>
-        <location filename="../translationmanager.cpp" line="34"/>
+        <location filename="../translationmanager.cpp" line="36"/>
         <source>Language</source>
         <translation>Jazyk</translation>
     </message>
