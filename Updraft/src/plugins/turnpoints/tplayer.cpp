@@ -53,9 +53,9 @@ osg::Geode* TPLayer::createGeode(qreal scale, bool isAirfield) {
   // Create texture
   QString imageName("");
   if (isAirfield) {
-    imageName = "airfield.tga";
+    imageName = "airfield.png";
   } else {
-    imageName = "turnpoint.tga";
+    imageName = "turnpoint.png";
   }
   QString texPath = dataDir + "/" + imageName;
   osg::Image *image = osgDB::readImageFile(texPath.toStdString());
