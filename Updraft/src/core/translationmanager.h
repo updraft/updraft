@@ -18,16 +18,9 @@ class TranslationManager: public QObject {
 
  public:
   TranslationManager();
-  void translate();
 
   /// List all available languages
   QStringList availableLanguages();
-
- private slots:
-  /// Called when the language setting changes.
-  /// Sets the language and calls the translate() method on
-  /// updraft singleton (= the whole application).
-  void languageChanged();
 
  private:
   /// Load all the languages to the translator.

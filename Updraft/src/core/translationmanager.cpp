@@ -31,18 +31,12 @@ TranslationManager::TranslationManager() {
     "",  // description is given after a language file is loaded
     defaultValue,
     false);
-  languageSetting->callOnValueChanged(this, SLOT(languageChanged()));
 
-  languageChanged();
-
-  languageSetting->setDescription(tr("Language"));
-}
-
-void TranslationManager::languageChanged() {
   QString language =
     languageSetting->get().value<TranslationLanguage>().asQString();
-
   loadLanguage(language);
+
+  languageSetting->setDescription(tr("Language"));
 }
 
 void TranslationManager::loadTranslationFile(
