@@ -20,6 +20,12 @@ namespace osg {
   class Group;
 }
 
+namespace osgEarth {
+namespace Util {
+  class ElevationManager;
+}
+}
+
 namespace Updraft {
 
 namespace Util {
@@ -111,6 +117,9 @@ class CoreInterface {
   /// \param mapObject The map object that this node represents when clicked
   //TODO(cestmir): We will probably need unregistering as well
   virtual void registerOsgNode(osg::Node* node, MapObject* mapObject) = 0;
+
+  /// Returns an elevation manager for the scene, to request elevation data from.
+  virtual osgEarth::Util::ElevationManager* getElevationManager() = 0;
 };
 
 }  // End namespace Updraft

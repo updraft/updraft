@@ -12,6 +12,12 @@
 #include "mapmanager.h"
 #include "../mapobject.h"
 
+namespace osgEarth {
+namespace Util {
+  class ElevationManager;
+}
+}
+
 namespace Updraft {
 namespace Core {
 
@@ -62,6 +68,10 @@ class SceneManager: public QObject {
   ///         for the given node, if the node was registered.
   MapObject* getNodeMapObject(osg::Node* node);
 
+  /// Returns an elevation manager associated with the map
+  /// that has elevation layer.
+  osgEarth::Util::ElevationManager* getElevationManager();
+
  public slots:
   void redrawScene();
   void resetNorth();
@@ -80,6 +90,8 @@ class SceneManager: public QObject {
   /// Create the map layer group and fill it with maps.
   void mapLayerGroup();
 
+  osgEarth::Util::ElevationManager* createElevationManager();
+
   osgViewer::Viewer* viewer;
   osg::Group* sceneRoot;
 
@@ -93,6 +105,7 @@ class SceneManager: public QObject {
   int activeMapIndex;
   osg::Camera* camera;
   MapManipulator* manipulator;
+  osgEarth::Util::ElevationManager* elevationManager;
   osgQt::GraphicsWindowQt* graphicsWindow;
 
   /// Timer that triggers the drawing procedure.

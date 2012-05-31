@@ -3,6 +3,7 @@
 #include <osgEarthUtil/ObjectPlacer>
 #include <osgEarth/Map>
 #include <osgEarth/MapNode>
+#include <osgEarthUtil/ElevationManager>
 #include <string>
 
 #include "scenemanager.h"
@@ -36,6 +37,7 @@ SceneManager::SceneManager() {
   viewer->setCamera(camera);
 
   createMapManagers();
+  elevationManager = createElevationManager();
 
   // create and set scene
   sceneRoot = new osg::Group();
@@ -185,12 +187,28 @@ osg::Group* SceneManager::getSimpleGroup() {
   return simpleGroup;
 }
 
+osgEarth::Util::ElevationManager* SceneManager::getElevationManager() {
+  return elevationManager;
+}
+
 void SceneManager::registerOsgNode(osg::Node* node, MapObject* mapObject) {
   pickingMap.insert(node, mapObject);
 }
 
 void SceneManager::unregisterOsgNode(osg::Node* node) {
   pickingMap.remove(node);
+}
+
+osgEarth::Util::ElevationManager* SceneManager::createElevationManager() {
+  osgEarth::Util::ElevationManager* e;
+  for (int i = 0; i < mapManagers.size(); i++) {
+    if (mapManagers[i]->hasElevation()) {
+      e = new osgEarth::Util::ElevationManager(
+        mapManagers[i]->getMap());
+      break;
+    }
+  }
+  return e;
 }
 
 MapObject* SceneManager::getNodeMapObject(osg::Node* node) {

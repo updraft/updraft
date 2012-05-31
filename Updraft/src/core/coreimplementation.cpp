@@ -84,6 +84,10 @@ void CoreImplementation::registerOsgNode(osg::Node* node,
   updraft->sceneManager->registerOsgNode(node, mapObject);
 }
 
+osgEarth::Util::ElevationManager* CoreImplementation::getElevationManager() {
+  return updraft->sceneManager->getElevationManager();
+}
+
 }  // End namespace Core
 }  // End namespace Updraft
 

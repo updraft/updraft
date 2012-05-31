@@ -50,6 +50,8 @@ class CoreImplementation : public CoreInterface {
 
   void registerOsgNode(osg::Node* node, MapObject* mapObject);
 
+  osgEarth::Util::ElevationManager* getElevationManager();
+
  private:
   PluginBase* plugin;
 };

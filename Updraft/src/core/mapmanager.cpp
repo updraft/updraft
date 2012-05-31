@@ -98,5 +98,15 @@ QString MapManager::getName() {
   return QString::fromStdString(map->getName());
 }
 
+bool MapManager::hasElevation() {
+  osgEarth::ElevationLayerVector outElevationLayers;
+  map->getElevationLayers(outElevationLayers);
+  if (outElevationLayers.size() > 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 }  // End namespace Core
 }  // End namespace Updraft
