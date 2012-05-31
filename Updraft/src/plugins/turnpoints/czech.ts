@@ -17,7 +17,7 @@
     </message>
     <message>
         <source>Color of the turnpoints labels</source>
-        <translation>Barva popisků otočných bodů</translation>
+        <translation type="obsolete">Barva popisků otočných bodů</translation>
     </message>
     <message>
         <source>Turn-points</source>

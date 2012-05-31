@@ -84,5 +84,17 @@
         <source>New Task</source>
         <translation>Nový úkol</translation>
     </message>
+    <message>
+        <source>The document </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has been modified.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to save your changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

@@ -21,7 +21,7 @@ namespace OpenAirspace {
 
     while (text != "AC" && !ts.atEnd())
       ts >> text;
-    ts.seek(ts.pos() -2);
+    // ts.seek(ts.pos() -2);
     bool acOn = true;
 
     if (ts.atEnd())

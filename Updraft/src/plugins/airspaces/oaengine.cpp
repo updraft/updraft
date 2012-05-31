@@ -10,7 +10,7 @@ oaEngine::oaEngine(MapLayerGroupInterface* LG) {
   // some defaults
   // Turn this on to compute the terrain elevation
   // in every polygon vertex
-  USE_POINTWISE_ELEVATION = false;
+  USE_POINTWISE_ELEVATION = true;
   // Turn this on to draw the airspace polygons to lvl 0
   DRAW_UNDERGROUND        = false;
   // Turn this on to draw the selected face of the polygon (NA)
@@ -29,7 +29,7 @@ oaEngine::oaEngine(MapLayerGroupInterface* LG) {
   WIRE_OPACITY_BOTTOM     = 0.5;  // 0.6;
   WIRE_OPACITY_TOP        = 0.5;  // 0.2;
   // Elevation resolution setting
-  ELEV_TILE_RESOLUTION    = 0.01;
+  ELEV_TILE_RESOLUTION    = 0.1;  // 0.01
   // Sets the default height of ground and ceiling
   GND                     = 0;
   ROOF                    = 80000;
@@ -109,7 +109,7 @@ QVector<QPair<osg::Node*, QString> >* oaEngine::Draw(const QString& fileName) {
       OpenAirspace::Airspace* A = AirspaceSet.at(i);
 
       // get the bundle of airspaces with the same name/class
-      QString aName = QString("Class " + A->GetClassName());
+      QString aName = QString(A->GetClassName());
         // (A->GetName() == NULL) ?
         // QString("N/A") : (*A->GetName());
       if (nameSuffix != aName) {  // A->GetClassName()

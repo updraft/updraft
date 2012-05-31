@@ -45,7 +45,7 @@
 <context>
     <name>PickHandler</name>
     <message>
-        <location filename="../pickhandler.cpp" line="18"/>
+        <location filename="../pickhandler.cpp" line="20"/>
         <source>Mouse click tolerance</source>
         <translation>Tolerance kliknutí</translation>
     </message>
@@ -80,7 +80,7 @@
 <context>
     <name>Updraft::Core::FileOpenDialog</name>
     <message>
-        <location filename="../ui/fileopendialog.cpp" line="53"/>
+        <location filename="../ui/fileopendialog.cpp" line="55"/>
         <source>All supported types</source>
         <translation>Všechny typy</translation>
     </message>
@@ -88,27 +88,27 @@
 <context>
     <name>Updraft::Core::MainWindow</name>
     <message>
-        <location filename="../ui/mainwindow.cpp" line="141"/>
+        <location filename="../ui/mainwindow.cpp" line="142"/>
         <source>&amp;Open...</source>
         <translation>&amp;Otevřít...</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.cpp" line="145"/>
+        <location filename="../ui/mainwindow.cpp" line="146"/>
         <source>E&amp;xit</source>
         <translation>&amp;Konec</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.cpp" line="155"/>
+        <location filename="../ui/mainwindow.cpp" line="156"/>
         <source>Updraft Help</source>
         <translation>Témata nápovědy</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.cpp" line="159"/>
+        <location filename="../ui/mainwindow.cpp" line="160"/>
         <source>&amp;About...</source>
         <translation>&amp;O programu...</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.cpp" line="169"/>
+        <location filename="../ui/mainwindow.cpp" line="170"/>
         <source>Open</source>
         <translation>Otevřít</translation>
     </message>
@@ -116,7 +116,7 @@
 <context>
     <name>Updraft::Core::MapManipulator</name>
     <message>
-        <location filename="../mapmanipulator.cpp" line="20"/>
+        <location filename="../mapmanipulator.cpp" line="21"/>
         <source>Mouse zoom sensitivity</source>
         <translation type="unfinished"></translation>
     </message>
@@ -189,7 +189,7 @@
 <context>
     <name>Updraft::Core::TranslationManager</name>
     <message>
-        <location filename="../translationmanager.cpp" line="36"/>
+        <location filename="../translationmanager.cpp" line="38"/>
         <source>Language</source>
         <translation>Jazyk</translation>
     </message>
@@ -201,17 +201,17 @@
         <translation type="obsolete">WGS84</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="66"/>
+        <location filename="../updraft.cpp" line="72"/>
         <source>Data directory</source>
         <translation>Adresář s daty</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="71"/>
+        <location filename="../updraft.cpp" line="77"/>
         <source>WGS84 Ellipsoid</source>
         <translation>WGS84 Elipsoid</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="73"/>
+        <location filename="../updraft.cpp" line="79"/>
         <source>FAI Sphere</source>
         <translation>FAI Koule</translation>
     </message>
