@@ -7,6 +7,7 @@
 #include "menu.h"
 #include "maplayergroup.h"
 #include "updraft.h"
+#include "filetypemanager.h"
 
 namespace Updraft {
 namespace Core {
@@ -18,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
   ui->setupUi(this);
 
   menuFile = new Menu(ui->menuFile, false);
-  menuEdit = new Menu(ui->menuEdit, false);
+  menuView = new Menu(ui->menuView, false);
   menuTools = new Menu(ui->menuTools, false);
   menuHelp = new Menu(ui->menuHelp, false);
 
@@ -41,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow() {
     delete menuHelp;
     delete menuTools;
-    delete menuEdit;
+    delete menuView;
     delete menuFile;
     delete menuContext;
     delete menuMapObject;
@@ -58,8 +59,8 @@ Menu* MainWindow::getSystemMenu(SystemMenu menu) {
     case MENU_FILE:
       return menuFile;
     break;
-    case MENU_EDIT:
-      return menuEdit;
+    case MENU_VIEW:
+      return menuView;
     break;
     case MENU_TOOLS:
       return menuTools;
@@ -137,21 +138,46 @@ void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
   menuContext->getQMenu()->popup(event->globalPos());
 }
 
-/// Add the standard menu items to menu.
-/// This includes Open / Save, Help ...
 void MainWindow::standardMenuItems() {
-  QAction* openAction = new QAction(tr("&Open File..."), this);
+  QAction* openAction = new QAction(tr("&Open..."), this);
   menuFile->insertAction(0, openAction);
   connect(openAction, SIGNAL(triggered()), this, SLOT(openFile()));
+
+  QAction* exitAction = new QAction(tr("E&xit"), this);
+  // Position Exit action at the end of file menu.
+  menuFile->insertAction(100, exitAction);
+  connect(exitAction, SIGNAL(triggered()), this, SLOT(appExit()));
+
+  // Inserts separator before Exit action.
+  QAction* exitSepAction = new QAction(this);
+  exitSepAction->setSeparator(true);
+  menuFile->insertAction(99, exitSepAction);
+
+  QAction* userDocAction = new QAction(tr("Updraft Help"), this);
+  menuHelp->insertAction(0, userDocAction);
+  connect(userDocAction, SIGNAL(triggered()), this, SLOT(openUserDoc()));
+
+  QAction* aboutAction = new QAction(tr("&About..."), this);
+  menuHelp->insertAction(1, aboutAction);
+  connect(aboutAction, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
 }
 
 void MainWindow::tabsVisibility() {
   ui->tabWidget->setVisible(ui->tabWidget->count() > 0);
 }
 
-/// Handle File->Open... menu action.
 void MainWindow::openFile() {
-  updraft->fileTypeManager->openFileDialog(tr("Open File..."));
+  updraft->fileTypeManager->openFileDialog(tr("Open"));
+}
+
+void MainWindow::appExit() {
+  updraft->exit();
+}
+
+void MainWindow::openUserDoc() {
+}
+
+void MainWindow::showAboutDialog() {
 }
 
 void MainWindow::setMapWidget(QWidget *widget) {

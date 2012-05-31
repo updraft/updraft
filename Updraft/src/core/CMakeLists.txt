@@ -23,9 +23,9 @@ ADD_DEFINITIONS(-DUPDRAFT_CORE)
 GATHER_SOURCES(core)
 
 FILE(GLOB_RECURSE lang ${CMAKE_CURRENT_SOURCE_DIR}/*.ts)
-QT4_CREATE_TRANSLATION(translations ${core_sources} ${core_headers} ${core_forms} ${lang})
 
-ADD_EXECUTABLE(updraft ${core_all_sources})
+
+ADD_EXECUTABLE(updraft ${core_all_sources} ${translations})
 
 # Handling of output filenames and directories on Windows
 IF(WIN32)
@@ -60,5 +60,6 @@ TARGET_LINK_LIBRARIES(updraft
     ${OSGEARTH_LIBRARIES}
     util)
 INSTALL(TARGETS updraft DESTINATION ${CMAKE_BINARY_DIR} OPTIONAL)
-INSTALL(FILES ${translations} DESTINATION ${CMAKE_BINARY_DIR}/translations OPTIONAL)
+INSTALL(FILES ${core_translations_wrapped}
+    DESTINATION ${TRANSLATIONS_DST_DIR} OPTIONAL)
 

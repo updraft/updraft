@@ -11,11 +11,7 @@ CoreInterface *g_core = NULL;
 namespace IgcViewer {
 
 IGCMapObject::IGCMapObject(QString objectName_, OpenedFile* file_)
-  : QObject(NULL), MapObject(objectName_), file(file_) {
-}
-
-QObject* IGCMapObject::asQObject() {
-  return this;
+  : MapObject(objectName_), file(file_) {
 }
 
 OpenedFile* IGCMapObject::getFile() {
@@ -24,10 +20,6 @@ OpenedFile* IGCMapObject::getFile() {
 
 QString IgcViewer::getName() {
   return QString("igcviewer");
-}
-
-unsigned IgcViewer::getPriority() {
-  return 0;  // TODO(cestmir): decide on the priority of plugins
 }
 
 void IgcViewer::initialize(CoreInterface *coreInterface) {
@@ -79,13 +71,13 @@ bool IgcViewer::fileOpen(const QString &filename, int roleId) {
   OpenedFile* f = new OpenedFile();
 
   QColor c = findAutomaticColor();
-  if (!f->init(this, filename, c)) {
+  if (!f->init(this, absFilename, c)) {
     delete f;
     freeAutomaticColor(c);
     return false;
   }
 
-  IGCMapObject* mapObject = new IGCMapObject(filename, f);
+  IGCMapObject* mapObject = new IGCMapObject(absFilename, f);
   g_core->registerOsgNode(f->getNode(), mapObject);
   mapObjects.append(mapObject);
 
@@ -96,12 +88,13 @@ bool IgcViewer::fileOpen(const QString &filename, int roleId) {
     other->redraw();
   }
 
-  opened.insert(filename, f);
+  opened.insert(absFilename, f);
 
   return true;
 }
 
 void IgcViewer::fileClose(OpenedFile *f) {
+  QString str = f->fileName();
   opened.remove(f->fileName());
 
   freeAutomaticColor(f->getAutomaticColor());
@@ -164,21 +157,15 @@ void IgcViewer::freeAutomaticColor(QColor c) {
 
 /// Tells whether this plugin wants to handle a mouse click event.
 bool IgcViewer::wantsToHandleClick(MapObject* obj) {
-  IGCMapObject* iObj = qobject_cast<IGCMapObject*>(obj->asQObject());
-  if (iObj != NULL) {
-    return true;
-  } else {
-    return false;
-  }
+  return obj->getObjectTypeName() == IGCMapObject::getClassName();
 }
 
 /// Handles the left mouse click event on the IGC in the map.
 void IgcViewer::handleClick(MapObject* obj, const EventInfo* evt) {
-  IGCMapObject* iObj = qobject_cast<IGCMapObject*>(obj->asQObject());
-  if (iObj == NULL) {
+  if (obj->getObjectTypeName() != IGCMapObject::getClassName())
     return;
-  }
-  iObj->getFile()->trackClicked(evt);
+
+  static_cast<IGCMapObject*>(obj)->getFile()->trackClicked(evt);
 }
 
 /*void IgcViewer::fileIdentification(QStringList *roles,

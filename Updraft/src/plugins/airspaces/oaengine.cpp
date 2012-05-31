@@ -8,20 +8,29 @@ oaEngine::oaEngine(MapLayerGroupInterface* LG) {
   this->mapLayerGroup = LG;
 
   // some defaults
-  USE_POINTWISE_ELEVATION = false;
+  // Turn this on to compute the terrain elevation
+  // in every polygon vertex
+  USE_POINTWISE_ELEVATION = true;
+  // Turn this on to draw the airspace polygons to lvl 0
   DRAW_UNDERGROUND        = false;
+  // Turn this on to draw the selected face of the polygon (NA)
   TOP_FACE                = false;
   BOTTOM_FACE             = false;
   SIDE_FACE               = true;
+  // Turn this on to draw the polygon wireframe
   TOP_WIREFRAME           = true;
   BOTTOM_WIREFRAME        = true;
   SIDE_WIREFRAME          = false;
+  // Turn this on to draw the side with gradient
   SIDE_COL_GRADIENT       = true;
+  // Opacity settings
   POLY_OPACITY_BOTTOM     = 0.5;
   POLY_OPACITY_TOP        = 0.1;
-  WIRE_OPACITY_BOTTOM     = 0.6;
-  WIRE_OPACITY_TOP        = 0.2;
-  ELEV_TILE_RESOLUTION    = 0.01;
+  WIRE_OPACITY_BOTTOM     = 0.5;  // 0.6;
+  WIRE_OPACITY_TOP        = 0.5;  // 0.2;
+  // Elevation resolution setting
+  ELEV_TILE_RESOLUTION    = 0.1;  // 0.01
+  // Sets the default height of ground and ceiling
   GND                     = 0;
   ROOF                    = 80000;
 
@@ -100,17 +109,25 @@ QVector<QPair<osg::Node*, QString> >* oaEngine::Draw(const QString& fileName) {
       OpenAirspace::Airspace* A = AirspaceSet.at(i);
 
       // get the bundle of airspaces with the same name/class
-      if (nameSuffix != A->GetClassName()) {
+      QString aName = QString(A->GetClassName());
+        // (A->GetName() == NULL) ?
+        // QString("N/A") : (*A->GetName());
+      if (nameSuffix != aName) {  // A->GetClassName()
         // if there is a geode initialized
-        // insert into the array of layers
+        // insert new into the array of layers
+        // or find one of the same name
         if (OAGeode)
           PushLayer(OAGeode, nameSuffix);
 
         // change the suffix to current one
-        nameSuffix = A->GetClassName();
+        nameSuffix = aName;
 
-        // init the subscene
-        OAGeode = new osg::Geode();
+        // try to find out if exists
+        OAGeode = FindLayer(nameSuffix);
+
+        // if not found init the subscene
+        if (!OAGeode)
+          OAGeode = new osg::Geode();
       }
 
       // set the colour of the geometry if defined
@@ -329,6 +346,21 @@ void oaEngine::FillOGLArrays(
   }
 }
 
+osg::Geode* oaEngine::FindLayer(const QString& name) {
+  // find, remove from array and return the Node with name
+  osg::Geode* result = NULL;
+  if (!mapLayers) return NULL;
+  QVector<QPair<osg::Node*, QString> >::iterator it;
+  // it = mapLayers->begin();
+  for (it = mapLayers->begin(); it < mapLayers->end(); ++it) {
+    if ((*it).second == name) {
+      result = (osg::Geode*)(*it).first;
+      mapLayers->erase(it);
+    }
+  }
+  return result;
+}
+
 void oaEngine::PushLayer(osg::Geode* OAGeode, const QString& displayName) {
   // change the thickness of the line
   osg::LineWidth* linewidth = new osg::LineWidth();
@@ -365,7 +397,15 @@ void oaEngine::PushLayer(osg::Geode* OAGeode, const QString& displayName) {
   // MapLayerInterface* newLayer = new Core::MapLayer((osg::Node*)OAGeode);
   // newLayer->setVisible(false);
   // QPair<osg::Node*, QString> toPush
-  mapLayers->push_back(QPair<osg::Node*, QString>(OAGeode, displayName));
+
+  // To sort the airspaces find where to insert
+  QVector<QPair<osg::Node*, QString> >::iterator it;
+  it = mapLayers->begin();
+  while (it < mapLayers->end() && (*it).second < displayName)
+    ++it;
+
+  // mapLayers->push_back(QPair<osg::Node*, QString>(OAGeode, displayName));
+  mapLayers->insert(it, QPair<osg::Node*, QString>(OAGeode, displayName));
 }
 
 osg::Geometry* oaEngine::DrawPolygon(

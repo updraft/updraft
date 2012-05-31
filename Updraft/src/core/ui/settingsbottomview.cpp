@@ -243,6 +243,11 @@ void SettingsBottomView::rowsInserted(
   insertionIndex = parent;
 }
 
+void SettingsBottomView::setItemDelegate(QAbstractItemDelegate *delegate) {
+  QAbstractItemView::setItemDelegate(delegate);
+  createEditors();
+}
+
 }  // End namespace Core
 }  // End namespace Updraft
 

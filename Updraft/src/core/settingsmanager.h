@@ -19,8 +19,17 @@ class SettingsManager: public QObject {
 Q_OBJECT
 
  public:
+  /// Prepare the settings manager to a state where settings are loaded
+  /// and accessible, but don't do anything gui related.
+  /// \note finishInit(); must be called after both SettingsManager and
+  /// TranslationManager are created!
   SettingsManager();
   ~SettingsManager();
+
+  /// Finalize the initialization.
+  /// Used to break the circular dependency between settings manager
+  /// and translation manager.
+  void finishInit();
 
   SettingInterface* addSetting(
     const QString& settingId,
@@ -54,6 +63,21 @@ Q_OBJECT
 
   void registerSetting(SettingsItem* item, BasicSetting* setting);
   void unregisterSetting(SettingsItem* item, BasicSetting* setting);
+
+  /// Searches the standard locations for a settings file and returns
+  /// its location.
+  QString getSettingsFilename();
+
+  /// Check if file settings.xml exists in dir/dir2.
+  /// \return Absolute path to settings.xml, or empty string if it wasn't found.
+  QString checkSettingsXml(const QString &dir1, const QString &dir2);
+
+  /// Create file settings.xml in dir/dir2.
+  /// \return Absolute path to settings.xml, or empty string if
+  /// something went wrong.
+  QString createSettingsXml(const QString &dir1, const QString &dir2);
+
+  QString settingsFile;
 
   QAction* settingsAction;
 

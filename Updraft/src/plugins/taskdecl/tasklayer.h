@@ -68,7 +68,8 @@ class TaskLayer : public QObject {
   void newTaskPoint(const TurnPoint* tp);
 
   /// Saves file. If the path is not set, file dialog is invoked.
-  void save();
+  /// \return True on success. False on fail or cancell.
+  bool save();
 
   /// Moves forward in file history.
   void undo();
@@ -77,7 +78,8 @@ class TaskLayer : public QObject {
   void redo();
 
   /// Invokes save as dialog and saves file.
-  void saveAs();
+  /// \return True on success. False on fail or cancell.
+  bool saveAs();
 
  public slots:
   void mapLayerDisplayed(bool value, MapLayerInterface* sender);

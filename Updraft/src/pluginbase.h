@@ -20,12 +20,6 @@ extern CoreInterface *g_core;
 
 class EventInfo;
 
-// Forward declarations
-namespace Core {
-  class UpdraftParent;
-  class PluginManager;
-}
-
 /// Base class for plugins.
 /// All mehtods of this class must be pure virtual or inline!
 class PluginBase {
@@ -36,9 +30,6 @@ class PluginBase {
   /// Plugin metadata.
   /// \{
   virtual QString getName() = 0;
-
-  /// Priority gives the order in which plugins receive callbacks.
-  virtual unsigned getPriority() = 0;
 
   /// Plugin's API version.
   virtual unsigned getPluginApiVersion() { return PLUGIN_API_VERSION; }

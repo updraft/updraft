@@ -2,6 +2,10 @@
 #include "util/util.h"
 
 #include "updraft.h"
+#include "ui/mainwindow.h"
+#include "filetypemanager.h"
+#include "scenemanager.h"
+#include "settingsmanager.h"
 
 namespace Updraft {
 namespace Core {

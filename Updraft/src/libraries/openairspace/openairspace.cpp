@@ -21,17 +21,25 @@ namespace OpenAirspace {
 
     while (text != "AC" && !ts.atEnd())
       ts >> text;
+    // ts.seek(ts.pos() -2);
+    bool acOn = true;
 
     if (ts.atEnd())
       qDebug("Not supported OpenAirspace format.");
-    else
+    // else
       // qDebug("Parsing OpenAirspace file %s", fileName.toAscii().data());
 
     this->allAirspaces = new QVector<Airspace*>();
     while (!ts.atEnd()) {
       // if (!ts.atEnd())
-        ts.seek(ts.pos() -2);
-      Airspace* nextairspace = new Airspace(&ts);
+      // int check = ts.pos();
+      // ts.seek(ts.pos() -2);
+      // check = ts.pos();
+      // if (ts.pos() < 0) {
+        // qDebug("Airspace file not properly parsed.");
+        // break;
+      // }
+      Airspace* nextairspace = new Airspace(&ts, &acOn);
       this->allAirspaces->push_back(nextairspace);
     }
 

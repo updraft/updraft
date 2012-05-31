@@ -22,6 +22,7 @@ MapManager::MapManager(QString earthFile) {
     this->map = mapNode->getMap();
 
     // add image layer wih our own driver
+    /*
     osgEarth::Drivers::ArcGISOptions opt;
     opt.url() =
       "http://server.arcgisonline.com/ArcGIS/rest/"
@@ -35,7 +36,8 @@ MapManager::MapManager(QString earthFile) {
     osgEarth::ImageLayer* onlineMaps =
       new osgEarth::ImageLayer(*imOpt, source);
 
-    this->map->addImageLayer(onlineMaps);
+    this->map->insertImageLayer(onlineMaps, 1);
+    */
   } else {
     this->map = new osgEarth::Map();
     this->mapNode = new osgEarth::MapNode(this->map);
@@ -76,43 +78,17 @@ QVector<MapLayerInterface*> MapManager::getMapLayers() {
   return mapLayers;
 }
 
-void MapManager::fillMapLayerGroup(MapLayerGroupInterface* group) {
-  mapLayerGroup = group;
-
-  osgEarth::ImageLayerVector outImageLayers;
-  map->getImageLayers(outImageLayers);
-  for (uint i = 0; i < outImageLayers.size(); i++) {
-    QString name = QString::fromStdString(outImageLayers[i]->getName());
-    MapLayerInterface* layer =
-      mapLayerGroup->insertExistingMapLayer(outImageLayers[i], name);
-    layer->connectCheckedToVisibility();
-    mapLayers.append(layer);
-  }
-
-  osgEarth::ElevationLayerVector outElevationLayers;
-  map->getElevationLayers(outElevationLayers);
-  for (uint i = 0; i < outElevationLayers.size(); i++) {
-    QString name = QString::fromStdString(outElevationLayers[i]->getName());
-    MapLayerInterface* layer =
-      mapLayerGroup->insertExistingMapLayer
-      (outElevationLayers[i], name);
-    layer->connectCheckedToVisibility();
-    mapLayers.append(layer);
-  }
-
-  osgEarth::ModelLayerVector outModelLayers;
-  map->getModelLayers(outModelLayers);
-  for (uint i = 0; i < outModelLayers.size(); i++) {
-    QString name = QString::fromStdString(outModelLayers[i]->getName());
-    MapLayerInterface* layer =
-      mapLayerGroup->insertExistingMapLayer(outModelLayers[i], name);
-    layer->connectCheckedToVisibility();
-    mapLayers.append(layer);
-  }
-}
-
 osgEarth::MapNode* MapManager::getMapNode() {
   return mapNode;
 }
+
+osgEarth::Map* MapManager::getMap() {
+  return map;
 }
+
+QString MapManager::getName() {
+  return QString::fromStdString(map->getName());
 }
+
+}  // End namespace Core
+}  // End namespace Updraft

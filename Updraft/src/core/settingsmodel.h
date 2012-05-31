@@ -74,6 +74,8 @@ class SettingsModel: public QAbstractItemModel {
   QString dataRoleToString(int role) const;
   void insertRowInternal(int row, SettingsItem* item);
 
+  void reinitializeData();
+
   QDomDocument domDoc;
   SettingsItem* rootItem;
 };

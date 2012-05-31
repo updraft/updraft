@@ -7,14 +7,13 @@ namespace Airspaces {
 // Definition of global pointer to coreinterface.
 CoreInterface *g_core = NULL;
 
-Airspaces::Airspaces() { }
+Airspaces::Airspaces() {
+  mapLayers = NULL;
+  mapLayerGroup = NULL;
+}
 
 QString Airspaces::getName() {
   return QString("airspaces");
-}
-
-unsigned Airspaces::getPriority() {
-  return 0;  // TODO(cestmir): decide on the priority of plugins
 }
 
 void Airspaces::initialize(CoreInterface *coreInterface) {
@@ -31,22 +30,54 @@ void Airspaces::initialize(CoreInterface *coreInterface) {
   g_core->registerFiletype(OAirspaceFileReg);
 
   // Create map layers items in the left pane.
-  mapLayerGroup = g_core->createMapLayerGroup("Airspace");
-  engine = new oaEngine(mapLayerGroup);
+  mapLayerGroup = g_core->createMapLayerGroup(tr("Airspace"));
+  // engine = new oaEngine(mapLayerGroup);
+  mapLayers = new QVector<MapLayerInterface*>();
 
   loadImportedFiles();
 
-  qDebug("airspaces laoded");
+  qDebug("airspaces loaded");
 }
 
 void Airspaces::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
   sender->setVisible(value);
+  // reloadAirspaces();
+}
+
+void Airspaces::reloadAirspaces() {
+  // delete engine;
+  // engine = new oaEngine(mapLayerGroup);
+
+  // loadImportedFiles();
+
+  // mapLayerGroup
+
+  for (int i = 0; i < mapLayers->size(); ++i) {
+    mapLayerGroup->removeMapLayer(mapLayers->at(i));
+  }
+
+  loadImportedFiles();
+
+  qDebug("airspaces reloaded");
+
+  // deinitialize();
+  // initialize();
 }
 
 void Airspaces::deinitialize() {
-  delete engine;
-  engine = NULL;
-
+  // delete engine;
+  // engine = NULL;
+  if (mapLayers) {
+    for (QVector<MapLayerInterface*>::iterator it =
+      mapLayers->begin(); it < mapLayers->end(); ++it)
+      delete (*it);
+    delete mapLayers;
+    mapLayers = NULL;
+  }
+  if (mapLayerGroup) {
+    delete mapLayerGroup;
+    mapLayerGroup = NULL;
+  }
   qDebug("airspaces unloaded");
 }
 
@@ -65,6 +96,8 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
       }
       delete mapLayers;*/
 
+      oaEngine* engine = new oaEngine(mapLayerGroup);
+
       QString displayName = fileName.left(fileName.indexOf('.'));
       int cuntSlashes = displayName.count('/');
       displayName = displayName.section('/', cuntSlashes, cuntSlashes);
@@ -75,13 +108,25 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
       QVector<MapLayerInterface*>* layers =
         mapLayerGroup->insertMapLayerGroup(mapNodes, displayName);
       if (!layers) return false;
+      if (!mapLayers)
+        mapLayers = new QVector<MapLayerInterface*>();
+      for (int i = 0; i < mapLayers->size(); ++i)
+        mapLayers->append(layers->at(i));
 
       for (int i = 0; i < layers->size(); ++i) {
         layers->at(i)->connectSignalChecked
           (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
       }
 
+      // for (int i = 0; i < layers->size(); ++i) {
+        // mapLayerGroup->removeMapLayer(layers->at(i));
+      // }
+
       delete mapNodes;
+
+      delete engine;
+      engine = NULL;
+
       return true;
       break;
   }

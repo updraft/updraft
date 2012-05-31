@@ -18,9 +18,9 @@ namespace Updraft {
 TaskDeclPanel::TaskDeclPanel(TaskLayer* layer,
   QWidget *parent, Qt::WFlags flags)
   : QWidget(parent, flags),
-  addTpText("Add turnpoint"),
-  taskLayer(layer),
-  ui(new Ui::TaskDeclPanel) {
+  addTpText(tr("Add turnpoint")),
+  ui(new Ui::TaskDeclPanel),
+  taskLayer(layer) {
   // Create the UI
   ui->setupUi(this);
   addButtons = new QButtonGroup(this);
@@ -60,12 +60,24 @@ void TaskDeclPanel::addTpButtonPushed() {
     return;
   }
 
-  // Uncheck all other addTp buttons
+  // Remember check state of the sender button
   QAbstractButton* senderButton = qobject_cast<QAbstractButton*>(sender());
   bool newCheckedState = senderButton->isChecked();
+
+  // Uncheck all other addTp buttons
   uncheckAllAddTpButtons();
+
+  // Toggle sender button and the editing state
   senderButton->setChecked(newCheckedState);
   isBeingEdited = senderButton->isChecked();
+
+  // Set the toggled button in the task data
+  TaskFile* file = taskLayer->getTaskFile();
+  TaskData* data = file->beginEdit(false);
+  int addButtonIndex = ui->taskButtonsLayout->indexOf(senderButton);
+  addButtonIndex = addLayoutPosToIndex(addButtonIndex);
+  data->setAddTaskPointButton(addButtonIndex);
+  file->endEdit();
 }
 
 void TaskDeclPanel::removeTpButtonPushed() {
@@ -88,8 +100,12 @@ void TaskDeclPanel::removeTpButtonPushed() {
   }
 
   // Let's remove the top frame and the plus button now
+  TaskFile* file = taskLayer->getTaskFile();
+
+  TaskData* data = file->beginEdit(true);
   int pos = ui->taskButtonsLayout->indexOf(topFrame);
-  removeTpButtons(tpLayoutPosToIndex(pos));
+  data->deleteTaskPoint(tpLayoutPosToIndex(pos));
+  file->endEdit();
 }
 
 void TaskDeclPanel::saveButtonPushed() {
@@ -115,29 +131,20 @@ void TaskDeclPanel::updateButtons() {
   // Iterate over the task data and update the buttons
   const TaskData* data = file->beginRead();
   int pos = 0;
-  bool newButtonCheckState = false;
-  bool buttonAlreadyToggled = false;
   while (const TaskPoint* point = data->getTaskPoint(pos)) {
     if (!tpButtonExists(pos)) {
       newTurnpointButton(pos, point->getName());
-      if (!buttonAlreadyToggled) {
-        buttonAlreadyToggled = true;
-        newButtonCheckState = isBeingEdited;
-      } else {
-        newButtonCheckState = false;
-      }
-      newAddTpButton(pos+1, newButtonCheckState);
+      newAddTpButton(pos+1, false);
     } else if (!tpButtonCorrect(pos, point)) {
-      if (!buttonAlreadyToggled) {
-        buttonAlreadyToggled = true;
-        newButtonCheckState = isBeingEdited;
-      } else {
-        newButtonCheckState = false;
-      }
       updateTpButton(pos, point);
-      updateAddTpButton(pos+1, newButtonCheckState);
     }
     pos++;
+  }
+
+  // Check the corresponding add button if in editing mode
+  int checkedButton = data->getAddTaskPointButton();
+  if (isBeingEdited && checkedButton != -1) {
+    updateAddTpButton(checkedButton, true);
   }
   file->endRead();
 
@@ -159,14 +166,42 @@ const QWidget* TaskDeclPanel::getTaskPointWidget(int i) const {
 
 void TaskDeclPanel::dataChanged() {
   const TaskData* data = taskLayer->getTaskFile()->beginRead();
+  updateSummaryLabel(data);
+  taskLayer->getTaskFile()->endRead();
 
+  // Enables/disables undo,redo buttons.
+  ui->undoButton->setEnabled(!taskLayer->getTaskFile()->isFirstInHistory());
+  ui->redoButton->setEnabled(!taskLayer->getTaskFile()->isLastInHistory());
+}
+
+void TaskDeclPanel::updateSummaryLabel(const TaskData* data) {
   QString text;
 
-  if (data->isFaiTriangle()) {
-    text = tr("FAI Triangle");
-  } else {
-    text = tr("%1 task points").arg(data->size());
+  bool closedCourse = data->isClosed();
+  int count = data->size();
+  if (closedCourse) {
+    // in closed course we count start and landing as one point
+    count -= 1;
   }
+
+  if (data->isFaiTriangle()) {
+    if (count == 3) {
+      text = tr("FAI Triangle");
+    } else {
+      text = tr("FAI Triangle (4 task points)");
+    }
+  } else if (closedCourse) {
+    if (count == 3) {
+        text = tr("Triangle");
+    } else if (count == 2) {
+        text = tr("Out and Return");
+    } else {
+      text = tr("Closed course") + ", " + tr("%1 task points").arg(count);
+    }
+  } else {
+    text = tr("%1 task points").arg(count);
+  }
+
   text.append(" - ");
 
   qreal officialDistance = data->officialDistance();
@@ -178,12 +213,6 @@ void TaskDeclPanel::dataChanged() {
   }
 
   ui->taskSummaryLabel->setText(text);
-
-  // Enables/disables undo,redo buttons.
-  ui->undoButton->setEnabled(!taskLayer->getTaskFile()->isFirstInHistory());
-  ui->redoButton->setEnabled(!taskLayer->getTaskFile()->isLastInHistory());
-
-  taskLayer->getTaskFile()->endRead();
 }
 
 void TaskDeclPanel::newTurnpointButton(int index, const QString& name) {
@@ -195,6 +224,7 @@ void TaskDeclPanel::newTurnpointButton(int index, const QString& name) {
   }
 
   TaskPointButton* button = new TaskPointButton(index, name);
+  button->connectQuit(this, SLOT(removeTpButtonPushed()));
 
   // Insert the GUI into the panel GUI
   int layoutPos = tpIndexToLayoutPos(index);

@@ -80,16 +80,41 @@ bool TaskData::fromXml(const QString &serialized) {
   return true;
 }
 
-void TaskData::insertTaskPoint(TaskPoint *taskPoint, int position) {
+bool TaskData::insertTaskPoint(TaskPoint *taskPoint, int position) {
   if (taskPoint == NULL) {
-    return;
+    return false;
   }
 
   if (position < 0 || position >= taskPoints.size()) {
     position = taskPoints.size();
   }
 
+  Util::Location loc1 = taskPoint->getLocation();
+
+  // Prevent inserting TaskPoints that are too close to each other
+  if (position != 0) {
+    TaskPoint* prev = taskPoints[position - 1];
+    Util::Location loc2 = prev->getLocation();
+    // TODO(cestmir): Put the tollerance into settings
+    if (g_core->getEllipsoid()->distance(loc1, loc2) < 500) {
+      return false;
+    }
+  }
+
+  if (position != taskPoints.size()) {
+    TaskPoint* next = taskPoints[position];
+    Util::Location loc2 = next->getLocation();
+    if (g_core->getEllipsoid()->distance(loc1, loc2) < 500) {
+      return false;
+    }
+  }
+
   taskPoints.insert(position, taskPoint);
+
+  // The newly selected addTaskPoint Button will be the one after the inserted
+  // TaskPoint. That means it will have the new TaskPoint's position + 1
+  selectedAddButton = position + 1;
+  return true;
 }
 
 void TaskData::moveTaskPoint(int from, int to) {
@@ -113,6 +138,21 @@ void TaskData::deleteTaskPoint(int position) {
   }
 
   taskPoints.erase(taskPoints.begin() + position);
+
+  // We want to set the selected add button to the deleted segment.
+  selectedAddButton = position;
+}
+
+void TaskData::setAddTaskPointButton(int position) {
+  if (position < -1 || position > taskPoints.size()) {
+    return;
+  }
+
+  selectedAddButton = position;
+}
+
+int TaskData::getAddTaskPointButton() const {
+  return selectedAddButton;
 }
 
 TaskData::TaskData(const TaskData& taskData) {
@@ -120,6 +160,8 @@ TaskData::TaskData(const TaskData& taskData) {
   foreach(TaskPoint *point, taskData.taskPoints) {
     taskPoints.push_back(new TaskPoint(*point));
   }
+
+  selectedAddButton = taskData.selectedAddButton;
 }
 
 bool TaskData::isFaiTriangle() const {

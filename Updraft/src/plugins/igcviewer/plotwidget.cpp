@@ -17,15 +17,13 @@ const QPen PlotWidget::GROUND_SPEED_PEN= QPen(Qt::yellow);
 const QPen PlotWidget::MOUSE_LINE_PEN = QPen(QColor(150, 150, 150));
 const QPen PlotWidget::MOUSE_LINE_PICKED_PEN = QPen(QColor(200, 200, 200));
 
-PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
-  IgcInfo *groundSpeedInfo)
-  : altitudeInfo(altitudeInfo), verticalSpeedInfo(verticalSpeedInfo),
-    groundSpeedInfo(groundSpeedInfo) {
+PlotWidget::PlotWidget(TrackData* trackData, IgcInfo* altitudeInfo,
+  IgcInfo* verticalSpeedInfo, IgcInfo *groundSpeedInfo)
+  : trackData(trackData), altitudeInfo(altitudeInfo),
+  verticalSpeedInfo(verticalSpeedInfo), groundSpeedInfo(groundSpeedInfo) {
     // set mouse tracking
   setMouseTracking(true);
   xLine = -1;
-  xLinePicked = -1;
-  timePicked = -1;
   mouseOver = false;
   graphPicture = new QImage();
 
@@ -39,13 +37,14 @@ PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
   layout->setRowStretch(4, 10);
   layout->setRowStretch(5, 1);
   layout->setRowStretch(6, 10);
+  layout->setRowStretch(7, 1);
 
   setLayout(layout);
 
   qreal minTime = altitudeInfo->absoluteMinTime();
   qreal maxTime = altitudeInfo->absoluteMaxTime();
 
-  TextLabel* altLabel = new TextLabel("Altitude [m]");
+  TextLabel* altLabel = new TextLabel(tr("Altitude") + " [m]");
   layout->addItem(altLabel, 0, 1);
   labels.append(altLabel);
 
@@ -65,7 +64,7 @@ PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
   layout->addItem(altitudeTimeLabel, 2, 1);
   labels.append(altitudeTimeLabel);
 
-  TextLabel* gsLabel = new TextLabel("Ground speed [km/h]");
+  TextLabel* gsLabel = new TextLabel(tr("Ground speed") + " [km/h]");
   layout->addItem(gsLabel, 3, 1);
   labels.append(gsLabel);
 
@@ -81,7 +80,7 @@ PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
   layout->addItem(groundSpeedLabel, 4, 0);
   labels.append(groundSpeedLabel);
 
-  TextLabel* vsLabel = new TextLabel("Vertical speed [m/s]");
+  TextLabel* vsLabel = new TextLabel(tr("Vertical speed") + " [m/s]");
   layout->addItem(vsLabel, 5, 1);
   labels.append(vsLabel);
 
@@ -97,6 +96,11 @@ PlotWidget::PlotWidget(IgcInfo* altitudeInfo, IgcInfo* verticalSpeedInfo,
   layout->addItem(verticalSpeedLabel, 6, 0);
   labels.append(verticalSpeedLabel);
 
+  pickedLabel = new PickedLabel(&pickedPoints, &segmentsStatTexts);
+  layout->addItem(pickedLabel, 7, 1);
+  labels.append(pickedLabel);
+
+  segmentsStatTexts.append(createSegmentStatText(-1, 1));
   // ownership of axes is transfered to layout,
   // ownership of layout is transfered to this.
 }
@@ -107,13 +111,17 @@ void PlotWidget::paintEvent(QPaintEvent* paintEvent) {
   painter.setRenderHint(QPainter::Antialiasing);
 
     // draw picked line:
-  if (xLinePicked > -1) {
+  if (!pickedPoints.empty()) {
     painter.setPen(MOUSE_LINE_PICKED_PEN);
-    painter.drawLine(QPoint(xLinePicked, 0), QPoint(xLinePicked, height()));
+    for (int i = 0; i < pickedPoints.size(); i++) {
+      painter.drawLine(QPoint(pickedPoints[i].xLine, 0),
+        QPoint(pickedPoints[i].xLine, pickedLabel->geometry().top()));
+    }
   }
   if (mouseOver) {
     painter.setPen(MOUSE_LINE_PEN);
-    painter.drawLine(QPoint(xLine, 0), QPoint(xLine, height()));
+    painter.drawLine(QPoint(xLine, 0),
+      QPoint(xLine, pickedLabel->geometry().top()));
   }
 }
 
@@ -123,8 +131,10 @@ void PlotWidget::mouseMoveEvent(QMouseEvent* mouseEvent) {
   if ((x >= altitudePlotPainter->getMinX()) &&
     (x <= altitudePlotPainter->getMaxX())) {
     xLine = x;
+
     mouseOver = true;
-    info = getInfoText(x);
+    int secs = altitudePlotPainter->getTimeAtPixelX(x);
+    info = createPointStatText(getTimeFromSecs(secs), x);
   } else {
     mouseOver = false;
   }
@@ -132,32 +142,30 @@ void PlotWidget::mouseMoveEvent(QMouseEvent* mouseEvent) {
   update();
 }
 
-QString PlotWidget::getInfoText(int x) {
+QString PlotWidget::createPointStatText(QTime time, int xLine) {
   QString info;
   QString hrs;
   QString mins;
   QString secs;
-  int timeInSecs = altitudePlotPainter->getTimeAtPixelX(x);
-  int timeHrs = timeInSecs / 3600;
-  int timeMins = (timeInSecs - timeHrs*3600) / 60;
-  mins.setNum(timeMins);
-  if (timeMins < 10) mins = "0" + mins;
-  int timeSecs = timeInSecs - timeHrs*3600 - timeMins*60;
-  secs.setNum(timeSecs);
-  if (timeSecs < 10) secs = "0" + secs;
-    // if the flight went over the midnight
-  if (timeHrs >= 24) timeHrs -= 24;
-  hrs.setNum(timeHrs);
+
+  hrs.setNum(time.hour());
+  mins.setNum(time.minute());
+  if (time.minute() < 10) mins = "0" + mins;
+  secs.setNum(time.second());
+  if (time.second() < 10) secs = "0" + secs;
+
+  int x = xLine;
+
   QString altitude;
   altitude.setNum(altitudePlotPainter->getValueAtPixelX(x), 5, 0);
   QString gspeed;
   gspeed.setNum(groundSpeedPlotPainter->getValueAtPixelX(x), 5, 0);
   QString vspeed;
   vspeed.setNum(verticalSpeedPlotPainter->getValueAtPixelX(x), 5, 1);
-  info = "Time " + hrs + ":" + mins + ":" + secs + "\n"
-    + "Alt " + altitude + " m\n"
-    + "GS " + gspeed + " km/h\n"
-    + "Vario " + vspeed + " m/s";
+  info = tr("Time") + " " + hrs + ":" + mins + ":" + secs + "\n"
+    + tr("Alt") + " " + altitude + " m\n"
+    + tr("GS") + " " + gspeed + " km/h\n"
+    + tr("Vario") + " " + vspeed + " m/s";
   return info;
 }
 
@@ -166,23 +174,16 @@ void PlotWidget::mousePressEvent(QMouseEvent* mouseEvent) {
     int x = mouseEvent->x();
     if ((x >= altitudePlotPainter->getMinX()) &&
       (x <= altitudePlotPainter->getMaxX())) {
-      int time = setPickedLine(x);
-      int timeHrs = time / 3600;
-      int timeMins = (time - timeHrs*3600) / 60;
-      int timeSecs = time - timeHrs*3600 - timeMins*60;
-        // if the flight went over the midnight
-      if (timeHrs >= 24) timeHrs -= 24;
-      QTime timestamp(timeHrs, timeMins, timeSecs);
-      emit timeWasPicked(timestamp);
-      emit displayMarker(true);
-      update();
+      addPickedLine(x);
     }
   } else {
     if (mouseEvent->button() == Qt::RightButton) {
-      xLinePicked = -1;
-      timePicked = -1;
-      emit updatePickedInfo("");
-      emit displayMarker(false);
+      pickedPoints.clear();
+      segmentsStatTexts.clear();
+      segmentsStatTexts.append(createSegmentStatText(-1, 1));
+      redrawGraphPicture();
+      emit updateText();
+      emit clearMarkers();
       update();
     }
   }
@@ -194,7 +195,7 @@ void PlotWidget::leaveEvent(QEvent* leaveEvent) {
   update();
 }
 
-void PlotWidget::resizeEvent(QResizeEvent* resizeEvent) {
+void PlotWidget::redrawGraphPicture() {
   delete(graphPicture);  // delete the old pixel map
   graphPicture = new QImage(width(), height(), QImage::Format_RGB32);
 
@@ -214,51 +215,149 @@ void PlotWidget::resizeEvent(QResizeEvent* resizeEvent) {
 
   mouseOver = false;
 
-  if (timePicked >= 0) {
-    setPickedTime(timePicked);
-  }
   emit updateCurrentInfo("");
   update();
 }
 
-int PlotWidget::setPickedTime(int time) {
-  timePicked = time;
-  xLinePicked = altitudeAxes->placeX(time);
-  emit updatePickedInfo(getInfoText(xLinePicked));
-  update();
-  return xLinePicked;
+void PlotWidget::resizeEvent(QResizeEvent* resizeEvent) {
+  redrawGraphPicture();
 }
 
-int PlotWidget::setPickedLine(int x) {
-  xLinePicked = x;
-  timePicked = altitudePlotPainter->getTimeAtPixelX(x);
-  emit updatePickedInfo(getInfoText(xLinePicked));
-  update();
-  return timePicked;
+QTime PlotWidget::getTimeFromSecs(int timeInSecs) {
+  int timeHrs = timeInSecs / 3600;
+  int timeMins = (timeInSecs - timeHrs*3600) / 60;
+  int timeSecs = timeInSecs - timeHrs*3600 - timeMins*60;
+    // if the flight went over the midnight
+  if (timeHrs >= 24) timeHrs -= 24;
+  QTime timestamp(timeHrs, timeMins, timeSecs);
+  return timestamp;
 }
 
-void IGCTextWidget::setMouseOverText(const QString& text) {
-  mouseOverText = text;
-  updateText();
-}
+void PlotWidget::addPickedLine(int x) {
+  int timeInSecs = altitudePlotPainter->getTimeAtPixelX(x);
 
-void IGCTextWidget::setPickedText(const QString& text) {
-  pickedText = text;
-  updateText();
-}
+  QTime timestamp = getTimeFromSecs(timeInSecs);
 
-void IGCTextWidget::updateText() {
-  QString string;
-  if (!pickedText.isEmpty()) {
-    string = pickedText;
-    if (!mouseOverText.isEmpty()) {
-      string += "\n\n-----------\n\n" +
-        mouseOverText;
-    }
-  } else {
-    string = mouseOverText;
+  int i;
+  for (i = 0; i < pickedPoints.count(); i++) {
+    if (pickedPoints[i].xLine > x) break;
   }
-  setText(string);
+  pickedPoints.insert(i, PickData(x, timestamp));
+  updatePickedTexts(i);
+
+  emit updateText();
+  emit timeWasPicked(timestamp);
+  update();
+}
+
+void PlotWidget::addPickedTime(QTime time) {
+  int timeInSecs = time.hour() * 3600 + time.minute() * 60 + time.second();
+
+  int x = altitudeAxes->placeX(timeInSecs);
+
+  int i;
+  for (i = 0; i < pickedPoints.count(); i++) {
+    if (pickedPoints[i].xLine > x) break;
+  }
+  pickedPoints.insert(i, PickData(x, time));
+  updatePickedTexts(i);
+
+  emit updateText();
+  update();
+}
+
+void PlotWidget::updatePickedTexts(int i) {
+  QString prevStat = createSegmentStatText(i-1, i);
+  QString nextStat = createSegmentStatText(i, i+1);
+
+  segmentsStatTexts.removeAt(i);
+
+  segmentsStatTexts.insert(i, prevStat);
+  segmentsStatTexts.insert(i+1, nextStat);
+
+  QTime time = pickedPoints[i].time;
+  int x = pickedPoints[i].xLine;
+  pickedPointsStatTexts.insert(i, createPointStatText(time, x));
+  redrawGraphPicture();
+}
+
+QString PlotWidget::createSegmentStatText(
+  int startPointIndex, int endPointIndex) {
+  QString text;
+  QTime startTime;
+  QTime endTime;
+  qreal distance;
+  qreal avgSpeed;
+  qreal avgRise;
+  if ((startPointIndex < 0) && (endPointIndex >= pickedPoints.size())) {
+    startTime = trackData->getStartTime();
+    endTime = trackData->getEndTime();
+    distance = trackData->distanceOverall();
+    avgSpeed = trackData->avgSpeedOverall();
+    avgRise = trackData->avgRiseOverall();
+  } else {
+    if (startPointIndex < 0) {
+      startTime = trackData->getStartTime();
+      endTime = pickedPoints[endPointIndex].time;
+      distance = trackData->distanceUntil(endTime);
+      avgSpeed = trackData->avgSpeedUntil(endTime);
+      avgRise = trackData->avgRiseUntil(endTime);
+    } else {
+      if (endPointIndex >= pickedPoints.size()) {
+        startTime = pickedPoints[startPointIndex].time;
+        endTime = trackData->getEndTime();
+        distance = trackData->distanceSince(startTime);
+        avgSpeed = trackData->avgSpeedSince(startTime);
+        avgRise = trackData->avgRiseSince(startTime);
+      } else {
+        startTime = pickedPoints[startPointIndex].time;
+        endTime = pickedPoints[endPointIndex].time;
+        distance = trackData->distance(startTime, endTime);
+        avgSpeed = trackData->avgSpeed(startTime, endTime);
+        avgRise = trackData->avgRise(startTime, endTime);
+      }
+    }
+  }
+    // fill the text
+  QString starthrs;
+  QString startmins;
+  QString startsecs;
+  QString endhrs;
+  QString endmins;
+  QString endsecs;
+
+  starthrs.setNum(startTime.hour());
+  startmins.setNum(startTime.minute());
+  if (startTime.minute() < 10) startmins = "0" + startmins;
+  startsecs.setNum(startTime.second());
+  if (startTime.second() < 10) startsecs = "0" + startsecs;
+
+  endhrs.setNum(endTime.hour());
+  endmins.setNum(endTime.minute());
+  if (endTime.minute() < 10) endmins = "0" + endmins;
+  endsecs.setNum(endTime.second());
+  if (endTime.second() < 10) endsecs = "0" + endsecs;
+
+  QString distancestr;
+  distancestr.setNum(distance, 5, 0);
+  QString avgspeedstr;
+  avgspeedstr.setNum(avgSpeed, 5, 0);
+  QString avgrisestr;
+  avgrisestr.setNum(avgRise, 5, 1);
+  text = starthrs + ":" + startmins + ":" + startsecs
+    + " - " + endhrs + ":" + endmins + ":" + endsecs + "\n"
+    + distancestr + " m\n"
+    + tr("avg GS") + " " + avgspeedstr + " km/h\n"
+    + tr("avg VS") + " " + avgrisestr + " m/s";
+  return text;
+}
+
+QList<QString>* PlotWidget::getSegmentsStatTexts() {
+  return &segmentsStatTexts;
+}
+
+QList<QString>* PlotWidget::getPointsStatTexts() {
+  return &pickedPointsStatTexts;
 }
 
 }  // End namespace IgcViewer

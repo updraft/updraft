@@ -44,10 +44,8 @@ int SettingsItem::rowCount() {
   return children.size();
 }
 
-SettingsModel::SettingsModel(): domDoc("settings") {
-  QDomElement model = domDoc.createElement("model");
-  domDoc.appendChild(model);
-  rootItem = new SettingsItem(model, this);
+SettingsModel::SettingsModel(): domDoc("settings"), rootItem(NULL) {
+  reinitializeData();
 }
 
 SettingsModel::~SettingsModel() {
@@ -55,22 +53,26 @@ SettingsModel::~SettingsModel() {
 }
 
 void SettingsModel::loadSettings(QString filename) {
+  qDebug() << "Loading settings from " << filename;
+
   QFile file(filename);
   bool result;
 
   result = file.open(QIODevice::ReadOnly);
   if (!result) {
+    file.close();
     qDebug() << "Could not load settings file!";
     return;
   }
 
+  reinitializeData();
   result = domDoc.setContent(&file);
   if (!result) {
+    file.close();
+    reinitializeData();
     qDebug() << "Could not load settings into the application!";
     return;
   }
-
-  qDebug() << "Loading settings";
 
   // Traverse the dom document tree and create the internal item structure
   if (rootItem) delete rootItem;
@@ -100,7 +102,7 @@ void SettingsModel::loadSettings(QString filename) {
 }
 
 void SettingsModel::saveSettings(QString filename) {
-  qDebug() << "Saving settings";
+  qDebug() << "Saving settings to " << filename;
 
   QFile file(filename);
   bool result;
@@ -132,9 +134,8 @@ QVariant SettingsModel::data(const QModelIndex& index, int role) const {
         return QVariant(item->getIcon());
       }
       QDomElement element = node.toElement();
-      QVariant ret = QVariant(element.text());
-      ret.convert(
-        QVariant::nameToType(element.attribute("type").toAscii().data()));
+      QVariant ret =
+        variantFromString(element.text(), element.attribute("type"));
       return ret;
     }
     node = node.nextSibling();
@@ -249,7 +250,7 @@ bool SettingsModel::setData(
 
   // Set the data and data type into the element
   QDomElement element = dataNode.toElement();
-  element.setAttribute("type", QVariant::typeToName(value.type()));
+  element.setAttribute("type", value.typeName());
   QString data = variantToString(value);
   element.appendChild(domDoc.createTextNode(data));
 
@@ -319,6 +320,14 @@ void SettingsModel::insertRowInternal(int row, SettingsItem* item) {
     item->getNode().insertBefore(element, next);
     item->insertChild(newItem, row);
   }
+}
+
+void SettingsModel::reinitializeData() {
+  if (rootItem) delete rootItem;
+
+  QDomElement model = domDoc.createElement("model");
+  domDoc.appendChild(model);
+  rootItem = new SettingsItem(model, this);
 }
 
 }  // End namespace Core

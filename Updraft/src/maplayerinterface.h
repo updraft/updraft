@@ -1,40 +1,14 @@
 #ifndef UPDRAFT_SRC_MAPLAYERINTERFACE_H_
 #define UPDRAFT_SRC_MAPLAYERINTERFACE_H_
 
-namespace osg {
-  class Node;
-}
-
-namespace osgEarth {
-  class ImageLayer;
-  class ElevationLayer;
-  class ModelLayer;
-}
-
 class QObject;
 
 namespace Updraft {
 
 namespace Core {
   class MapLayerGroup;
+  class SceneManager;
 }
-
-/// Type of the map layer.
-enum MapLayerType {
-  OSG_NODE_LAYER,
-  IMAGE_LAYER,
-  ELEVATION_LAYER,
-  MODEL_LAYER
-};
-
-/// A structure for storing a pointer to particular map layer.
-/// As it is a union, there is always exactly one value valid.
-union Layer {
-  osg::Node* osgNode;
-  osgEarth::ImageLayer* imageLayer;
-  osgEarth::ElevationLayer* elevationLayer;
-  osgEarth::ModelLayer* modelLayer;
-};
 
 /// An interface to a map layer that is used by plugins.
 /// More about map layers \see class MapLayer.
@@ -71,16 +45,15 @@ class MapLayerInterface {
 
   virtual bool isVisible() = 0;
 
-  virtual Layer getLayer() = 0;
-  virtual void setLayer(Layer l) = 0;
-
-  virtual MapLayerType getType() = 0;
-  virtual void setType(MapLayerType type) = 0;
-
+  friend class Core::SceneManager;
   friend class Core::MapLayerGroup;
 
  private:
   virtual void emitChecked(bool value) = 0;
+  virtual void emitDisplayed(bool value) = 0;
+
+  virtual void addToScene(Core::MapLayerGroup *group) = 0;
+  virtual void removeFromScene(Core::MapLayerGroup *group) = 0;
 };
 
 }  // End namespace Updraft

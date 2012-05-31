@@ -7,7 +7,7 @@
 #include <QTextEdit>
 
 #include <osg/Geometry>
-// #include <osg/PositionAttitudeTransform>
+#include <osg/Geode>
 #include <osg/AutoTransform>
 
 #include "colorings.h"
@@ -61,7 +61,7 @@ class OpenedFile: public QObject {
 
  public slots:
   void timePicked(QTime time);
-  void displayMarker(bool value);
+  void clearMarkers();
 
  private slots:
   /// Slot that gets called when the tab associated with this file is closed.
@@ -73,13 +73,19 @@ class OpenedFile: public QObject {
   /// Fills fixList.
   bool loadIgc(const QString& filename);
 
-  /// Create the track in map.
-  void createTrack();
+  /// Create whole track in map.
+  void createGroup();
+
+  /// Create the track geometry in map.
+  osg::Node* createTrack();
+
+  /// Create the skirt under the track.
+  osg::Node* createSkirt();
 
   /// Set coloring of the track.
   void setColors(Coloring* coloring);
 
-  osg::Node* createMarker();
+  osg::Geode* createMarker(qreal scale);
 
   QFileInfo fileInfo;
 
@@ -98,9 +104,8 @@ class OpenedFile: public QObject {
   osg::Geometry* geom;
   osg::Group* sceneRoot;
   osg::Geode* trackGeode;
-  osg::Node* trackPositionMarker;
-  // osg::PositionAttitudeTransform* currentMarkerTransform;
-  osg::AutoTransform* currentMarkerTransform;
+  osg::ref_ptr<osg::Geode> trackPositionMarker;
+  QList<osg::AutoTransform*> currentMarkers;
 
   Coloring* currentColoring;
 
@@ -118,6 +123,8 @@ class OpenedFile: public QObject {
   IgcInfo* verticalSpeedInfo;
   IgcInfo* groundSpeedInfo;
   IgcInfo* timeInfo;
+
+  TrackData* trackData;
 
   Util::Gradient gradient;
 };

@@ -14,6 +14,7 @@ FUNCTION(GATHER_SOURCES prefix)
   FILE(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/*.h ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp)
   FILE(GLOB_RECURSE forms ${CMAKE_CURRENT_SOURCE_DIR}/*.ui)
   FILE(GLOB_RECURSE resources ${CMAKE_CURRENT_SOURCE_DIR}/*.qrc)
+  FILE(GLOB_RECURSE translations ${CMAKE_CURRENT_SOURCE_DIR}/*.ts)
 
   FOREACH(skipped_dir ${GATHER_SOURCES_SKIP_DIRECTORY})
     SET(skipped_dir_abs ${CMAKE_CURRENT_SOURCE_DIR}/${skipped_dir})
@@ -29,22 +30,34 @@ FUNCTION(GATHER_SOURCES prefix)
 
     FILE(GLOB_RECURSE skipped_resources ${skipped_dir_abs}/*.qrc)
     LIST(REMOVE_ITEM resources ${skipped_resources} "")
+
+    FILE(GLOB_RECURSE translations_resources ${skipped_dir_abs}/*.ts)
+    LIST(REMOVE_ITEM translations ${skipped_resources} "")
   ENDFOREACH()
 
   QT4_WRAP_CPP_FILTERED(headers_wrapped ${headers})
   QT4_WRAP_UI(forms_wrapped ${forms})
   QT4_ADD_RESOURCES(resources_wrapped ${resources})
 
+  IF(UPDATE_TRANSLATIONS)
+    QT4_CREATE_TRANSLATION(translations_wrapped ${sources} ${headers} ${forms} ${translations})
+  ELSE()
+    QT4_ADD_TRANSLATION(translations_wrapped ${translations})
+  ENDIF()
+  
   SET(${prefix}_sources ${sources} PARENT_SCOPE)
   SET(${prefix}_headers ${headers} PARENT_SCOPE)
   SET(${prefix}_forms ${forms} PARENT_SCOPE)
   SET(${prefix}_resources ${resources} PARENT_SCOPE)
+  SET(${prefix}_translations ${translations} PARENT_SCOPE)
+  SET(${prefix}_translations_wrapped ${translations_wrapped} PARENT_SCOPE)
   SET(${prefix}_all_sources
     ${sources}
     ${headers}
     ${headers_wrapped}
     ${forms_wrapped}
     ${resources_wrapped}
+    ${translations_wrapped}
     PARENT_SCOPE)
 ENDFUNCTION(GATHER_SOURCES)
 
@@ -190,6 +203,10 @@ MACRO(PLUGIN_BUILD name)
     DESTINATION ${CMAKE_BINARY_DIR}/plugins/${name}
     OPTIONAL
   )
+  INSTALL(FILES ${${name}_translations_wrapped}
+    DESTINATION ${TRANSLATIONS_DST_DIR}/plugins/${name}
+    OPTIONAL
+  )
 
   IF(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
     ADD_SUBDIRECTORY(tests)
@@ -198,6 +215,10 @@ MACRO(PLUGIN_BUILD name)
 ENDMACRO(PLUGIN_BUILD)
 
 MACRO(TEST_BUILD name)
+  IF(NOT BUILD_TESTS)
+    RETURN()
+  ENDIF()
+
   PROJECT(${name})
 
   FIND_PACKAGE(Qt4 REQUIRED)

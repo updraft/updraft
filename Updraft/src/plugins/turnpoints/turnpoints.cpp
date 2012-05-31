@@ -8,13 +8,6 @@ CoreInterface *g_core = NULL;
 
 TurnPoints::TurnPoints()
   : mapLayerGroup(NULL) {
-  cupTPsReg.category = CATEGORY_PERSISTENT;
-  cupTPsReg.extension = ".cup";
-  cupTPsReg.typeDescription = tr("SeeYou turn-points file");
-  cupTPsReg.roleDescription = tr("Import turn-points");
-  cupTPsReg.importDirectory = "turnpoints";
-  cupTPsReg.roleId = IMPORT_CUP_FILE;
-  cupTPsReg.plugin = this;
 }
 
 TurnPoints::~TurnPoints() {
@@ -25,23 +18,11 @@ QString TurnPoints::getName() {
   return QString("turnpoints");
 }
 
-unsigned TurnPoints::getPriority() {
-  return 0;  // TODO(cestmir): decide on the priority of plugins
-}
-
 void TurnPoints::initialize(CoreInterface *coreInterface) {
   g_core = coreInterface;
 
   g_core->addSettingsGroup(
-    "Turnpoints", "Turnpoints Plugin Settings");
-  settings.push_back(g_core->addSetting("Turnpoints:labelColourR",
-    "Colour of the turnpoint labels - RED", 1.0));
-  settings.push_back(g_core->addSetting("Turnpoints:labelColourG",
-    "Colour of the turnpoint labels - GREEN", 1.0));
-  settings.push_back(g_core->addSetting("Turnpoints:labelColourB",
-    "Colour of the turnpoint labels - BLUE", 1.0));
-  settings.push_back(g_core->addSetting("Turnpoints:labelColourA",
-    "Colour of the turnpoint labels - ALPHA", 1.0));
+    "Turnpoints", tr("Turn-points Options"));
   settings.push_back(g_core->addSetting("Turnpoints:labelMaxScale",
     "Maximum scale for label", 100.0, true));
   settings.push_back(g_core->addSetting("Turnpoints:labelMinScale",
@@ -53,6 +34,13 @@ void TurnPoints::initialize(CoreInterface *coreInterface) {
 
   mapLayerGroup = g_core->createMapLayerGroup(tr("Turn-points"));
 
+  cupTPsReg.category = CATEGORY_PERSISTENT;
+  cupTPsReg.extension = ".cup";
+  cupTPsReg.typeDescription = tr("SeeYou turn-points file");
+  cupTPsReg.roleDescription = tr("Import turn-points");
+  cupTPsReg.importDirectory = "turnpoints";
+  cupTPsReg.roleId = IMPORT_CUP_FILE;
+  cupTPsReg.plugin = this;
   g_core->registerFiletype(cupTPsReg);
 
   loadImportedFiles();
@@ -89,21 +77,12 @@ void TurnPoints::fileIdentification(QStringList *roles,
 }
 
 void TurnPoints::fillContextMenu(MapObject* obj, MenuInterface* menu) {
-  QObject* qObj = obj->asQObject();
-
-  if (!qObj) return;
-
-  TPMapObject* mapObject = qobject_cast<TPMapObject*>(qObj);
-  if (!mapObject) return;
-
   QAction* action = new QAction("Dummy action", NULL);
   menu->appendAction(action, true);
 }
 
 bool TurnPoints::wantsToHandleClick(MapObject* obj) {
-  QObject* qObj = obj->asQObject();
-  if (qObj && qobject_cast<TPMapObject*>(qObj)) return true;
-  return false;
+  return obj->getObjectTypeName() == TPMapObject::getClassName();
 }
 
 void TurnPoints::handleClick(MapObject* obj, const EventInfo* evt) {

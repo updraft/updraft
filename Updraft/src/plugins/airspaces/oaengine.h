@@ -136,6 +136,9 @@ class oaEngine {
   int floor, int ceiling,
   bool floorAgl, bool ceilingAgl);
 
+  /// Find the layer of particular name in Layer Group
+  osg::Geode* FindLayer(const QString& name);
+
   /// Insert the geometry Layer into the array
   void PushLayer(osg::Geode* geode, const QString& displayName);
 

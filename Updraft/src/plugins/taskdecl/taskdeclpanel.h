@@ -17,6 +17,7 @@ class TaskLayer;
 class TaskFile;
 class TaskPoint;
 class TaskAxis;
+class TaskData;
 
 class TaskDeclPanel : public QWidget {
   Q_OBJECT
@@ -65,6 +66,8 @@ class TaskDeclPanel : public QWidget {
   void updateTpButton(int pos, const TaskPoint* point);
   /// Updates the add taskpoint button by changing its check state.
   void updateAddTpButton(int pos, bool checkState);
+  /// Updates the text on task summary label.
+  void updateSummaryLabel(const TaskData* data);
 
   /// Removes TaskPoint buttons for the given position.
   void removeTpButtons(int pos);

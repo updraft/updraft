@@ -18,8 +18,6 @@ class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
 
   QString getName();
 
-  unsigned getPriority();
-
   void initialize(CoreInterface *coreInterface);
 
   void deinitialize();
@@ -31,6 +29,8 @@ class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
  public slots:
   void mapLayerDisplayed(bool value, MapLayerInterface* sender);
 
+  void reloadAirspaces();
+
  private:
   enum FileRole {
     IMPORT_OPENAIRSPACE_FILE = 0
@@ -40,7 +40,7 @@ class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
 
   QVector<MapLayerInterface*>* mapLayers;
   QVector<QPair<osg::Node*, QString> >* mapNodes;
-  oaEngine* engine;
+  // oaEngine* engine;
   MapLayerGroupInterface* mapLayerGroup;
 };
 

@@ -8,6 +8,7 @@
 #include "ui/fileopendialog.h"
 #include "ui/filerolesdialog.h"
 #include "updraft.h"
+#include "ui/mainwindow.h"
 
 namespace Updraft {
 namespace Core {

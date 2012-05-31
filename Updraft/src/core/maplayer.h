@@ -17,26 +17,6 @@ class MapLayer : public QObject, public MapLayerInterface {
   Q_OBJECT
 
  public:
-  /// Creates an empty map layer.
-  MapLayer();
-
-  /// Creates a MapLayer with given values.
-  MapLayer(MapLayerType type, Layer layer);
-
-  /// Constructs a MapLayer and sets its type to OSG_NODE_LAYER.
-  explicit MapLayer(osg::Node* node);
-
-  /// Constructs a MapLayer and sets its type to IMAGE_LAYER.
-  explicit MapLayer(osgEarth::ImageLayer* imageLayer);
-
-  /// Constructs a MapLayer and sets its type to ELEVATION_LAYER.
-  explicit MapLayer(osgEarth::ElevationLayer* elevationLayer);
-
-  /// Constructs a MapLayer and sets its type to MODEL_LAYER.
-  explicit MapLayer(osgEarth::ModelLayer* modelLayer);
-
-  ~MapLayer();
-
   void connectSignalDisplayed(const QObject* receiver,
     const char *method);
   void connectSignalChecked(const QObject* receiver,
@@ -44,14 +24,6 @@ class MapLayer : public QObject, public MapLayerInterface {
   void connectSlotSetVisibility(const QObject* sender,
     const char *method);
   void connectCheckedToVisibility();
-
-  void setVisible(bool value);
-  bool isVisible();
-
-  MapLayerType getType();
-  Layer getLayer();
-  void setLayer(Layer l);
-  void setType(MapLayerType type);
 
  private slots:
   void setVisibility(bool value);
@@ -64,12 +36,7 @@ class MapLayer : public QObject, public MapLayerInterface {
   /// Emits the checked signal.
   /// Is called from MapLayerGroup.
   void emitChecked(bool value);
-
-  /// Determines which value of the union layer is valid.
-  MapLayerType layerType;
-
-  /// The pointer to the appropriate map layer structure.
-  Layer layer;
+  void emitDisplayed(bool value);
 };
 
 }  // End namespace Core

@@ -14,7 +14,10 @@ SettingsTopView::SettingsTopView(QWidget* parent): QListView(parent) {
 
 bool SettingsTopView::setShowHidden(bool show) {
   // If the currently selected group should be hidden, try to change it
-  if (showHidden && !show && groupIsHidden(currentIndex().row())) {
+  if (currentIndex().isValid() &&
+    showHidden &&
+    !show &&
+    groupIsHidden(currentIndex().row())) {
     // Find the first row that doesn't have to be hidden and try to select it
     int row;
     for (row = 0; row < model()->rowCount(); ++row) {
@@ -79,10 +82,10 @@ void SettingsTopView::currentChanged(
   if (!bottom) return;
   if (bottom->editorValuesChanged()) {
     QMessageBox::StandardButton butt =
-      QMessageBox::question(NULL, "Unsaved changes in this tab.",
-      "You have some unsaved changes to the setting values in the current "
+      QMessageBox::question(NULL, tr("Unsaved changes in this tab."),
+      tr("You have some unsaved changes to the setting values in the current "
       "settings group. Do you want to apply these changes or reset the "
-      "settings to their previous values?",
+      "settings to their previous values?"),
       QMessageBox::Reset | QMessageBox::Apply | QMessageBox::Cancel);
     switch (butt) {
       case QMessageBox::Reset:

@@ -24,6 +24,8 @@ class PlotPainter : public QObject {
 
   virtual void draw(QPainter* painter);
   virtual qreal getValueAtPixelX(int x);
+  virtual qreal getMeanValueAtPixels(int start, int end);
+  virtual int getIndexAtPixelX(int x);
 
   /// returns time at pixel x in seconds
   virtual qreal getTimeAtPixelX(int x);
@@ -48,6 +50,7 @@ class PlotPainter : public QObject {
 
   QPolygonF buffer;
   QVector<Data> dataValues;
+  QVector<int> indexes;
 };
 
 class AltitudePlotPainter: public PlotPainter {

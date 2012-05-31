@@ -78,10 +78,10 @@ void TaskLayer::display(bool displayed_) {
 QString TaskLayer::getTitle() const {
   switch (file->getStorageState()) {
     case TaskFile::UNSTORED_EMPTY:
-      return QString("[New Task %1]").arg(newTaskIndex);
+      return "[" + tr("New Task") + QString(" %1]").arg(newTaskIndex);
 
     case TaskFile::UNSTORED_EDITED:
-      return QString("[New Task %1] *").arg(newTaskIndex);
+      return "[" + tr("New Task") + QString(" %1] *").arg(newTaskIndex);
 
     case TaskFile::STORED_SYNCHRONIZED:
       return file->getFileName();
@@ -122,22 +122,28 @@ void TaskLayer::newTaskPoint(const TurnPoint* tp) {
   TaskData* tData = file->beginEdit(true);
   TaskPoint* newPoint = new TaskPoint();
   newPoint->setTP(tp);
-  tData->insertTaskPoint(newPoint, tpIndex);
+
+  // If the task point insertion failed, remove it
+  if (!tData->insertTaskPoint(newPoint, tpIndex)) {
+    delete newPoint;
+  }
+
   file->endEdit();
 }
 
-void TaskLayer::save() {
+bool TaskLayer::save() {
   switch (file->getStorageState()) {
     case TaskFile::UNSTORED_EMPTY:
     case TaskFile::UNSTORED_EDITED:
-      saveAs();
-      break;
+      return saveAs();
 
     case TaskFile::STORED_DIRTY:
     case TaskFile::STORED_SYNCHRONIZED:
       file->save();
       break;
   }
+
+  return true;
 }
 
 void TaskLayer::undo() {
@@ -148,13 +154,16 @@ void TaskLayer::redo() {
   file->redo();
 }
 
-void TaskLayer::saveAs() {
+bool TaskLayer::saveAs() {
   QString filePath = QFileDialog::getSaveFileName(panel, "Save Task As",
     QString(), QString("Task File (*.tsk)"));
 
   if (filePath.length() > 0) {
     file->saveAs(filePath);
+    return true;
   }
+
+  return false;
 }
 
 void TaskLayer::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
@@ -169,7 +178,37 @@ void TaskLayer::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
 }
 
 void TaskLayer::tryCloseLayer() {
-  // TODO(Tom): Ask for close, allow refuse.
+  // TODO(Tom): Ask for close even on application close, allow refuse.
+
+  // When file is modified, ask for save.
+  if (file->getStorageState() == TaskFile::UNSTORED_EDITED
+  || file->getStorageState() == TaskFile::STORED_DIRTY) {
+      QMessageBox msgBox;
+      msgBox.setText(QString(tr("The document ")) + getTitle()
+        + QString(tr("has been modified.")));
+      msgBox.setInformativeText(tr("Do you want to save your changes?"));
+      msgBox.setStandardButtons(QMessageBox::Save |
+        QMessageBox::Discard | QMessageBox::Cancel);
+      msgBox.setDefaultButton(QMessageBox::Save);
+
+      bool refused = false;
+
+      // Show message box.
+      switch (msgBox.exec()) {
+        case QMessageBox::Save:
+          // When select save and it is not succesfull, refuse closing.
+          refused = !(save());
+          break;
+
+        case QMessageBox::Cancel:
+          refused = true;
+          break;
+      }
+
+      if (refused) {
+        return;
+      }
+  }
 
   // Removes layer from list in plugin.
   TTaskLayerList::iterator itLayer = plugin->layers.begin();

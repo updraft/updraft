@@ -13,6 +13,7 @@ class SettingInterface {
 
   virtual QVariant get() = 0;
   virtual void set(const QVariant& value) = 0;
+  virtual void setDescription(const QString& newDescription) = 0;
 
   virtual void callOnValueChanged(QObject* slotOwner, const char* slot) = 0;
 };

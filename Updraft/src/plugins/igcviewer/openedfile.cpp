@@ -2,13 +2,18 @@
 
 #include <QComboBox>
 #include <QHBoxLayout>
+#include <QSplitter>
 #include <QVBoxLayout>
 #include <QDebug>
 
+#include <osg/Depth>
 #include <osg/Geode>
 #include <osg/LineWidth>
 #include <osg/ShapeDrawable>
 #include <osg/Vec3>
+#include <osg/Texture2D>
+#include <osgDB/ReadFile>
+#include <osg/BlendFunc>
 
 #include "pluginbase.h"
 #include "igc/igc.h"
@@ -28,10 +33,12 @@ OpenedFile::~OpenedFile() {
   foreach(IgcInfo* info, igcInfo) {
     delete info;
   }
+  igcInfo.clear();
 
   foreach(Coloring* coloring, colorings) {
     delete coloring;
   }
+  colorings.clear();
 
   viewer->mapLayerGroup->removeMapLayer(track);
 
@@ -85,9 +92,6 @@ bool OpenedFile::init(IgcViewer* viewer,
   }
 
   colorsCombo = new QComboBox();
-  textBox = new IGCTextWidget();
-  textBox->setReadOnly(true);
-  textBox->setFixedSize(100, 300);
 
   gradient = Util::Gradient(Qt::blue, Qt::red, true);
 
@@ -102,6 +106,9 @@ bool OpenedFile::init(IgcViewer* viewer,
   ADD_IGCINFO(verticalSpeedInfo, new VerticalSpeedIgcInfo());
   ADD_IGCINFO(groundSpeedInfo, new GroundSpeedIgcInfo());
   ADD_IGCINFO(timeInfo, new TimeIgcInfo());
+
+  trackData = new TrackData();
+  trackData->init(&fixList);
 
   #define ADD_COLORING(name, pointer) \
     do { \
@@ -122,28 +129,38 @@ bool OpenedFile::init(IgcViewer* viewer,
 
 
   QWidget* tabWidget = new QWidget();
+  QWidget* leftPart = new QWidget();
   QHBoxLayout* layout = new QHBoxLayout();
+  // QSplitter* splitter = new QSplitter(tabWidget);
   QVBoxLayout* verticalLayout = new QVBoxLayout();
 
   layout->setContentsMargins(0, 0, 0, 0);
 
   plotWidget = new PlotWidget(
-    altitudeInfo, verticalSpeedInfo, groundSpeedInfo);
+    trackData, altitudeInfo, verticalSpeedInfo, groundSpeedInfo);
+
+  textBox = new IGCTextWidget(plotWidget->getSegmentsStatTexts(),
+    plotWidget->getPointsStatTexts());
+  textBox->setReadOnly(true);
 
   connect(plotWidget, SIGNAL(updateCurrentInfo(const QString&)),
     textBox, SLOT(setMouseOverText(const QString&)));
-  connect(plotWidget, SIGNAL(updatePickedInfo(const QString&)),
-    textBox, SLOT(setPickedText(const QString&)));
+  connect(plotWidget, SIGNAL(updateText()),
+    textBox, SLOT(updateText()));
   connect(plotWidget, SIGNAL(timeWasPicked(QTime)),
     this, SLOT(timePicked(QTime)));
-  connect(plotWidget, SIGNAL(displayMarker(bool)),
-    this, SLOT(displayMarker(bool)));
+  connect(plotWidget, SIGNAL(clearMarkers()),
+    this, SLOT(clearMarkers()));
 
   tabWidget->setLayout(layout);
   verticalLayout->addWidget(colorsCombo, 0, Qt::AlignTop);
   verticalLayout->addWidget(textBox, 1, Qt::AlignTop);
   layout->addLayout(verticalLayout, 0);
+  // leftPart->setLayout(verticalLayout);
+  // splitter->addWidget(leftPart);
+  // layout->add
   layout->addWidget(plotWidget, 1.0);
+  // splitter->addWidget(plotWidget);
 
   tab = g_core->createTab(tabWidget, fileInfo.fileName());
 
@@ -154,7 +171,7 @@ bool OpenedFile::init(IgcViewer* viewer,
   // Sets automatic tab closing on request (without prompt).
   tab->connectCloseRequestToClose();
 
-  createTrack();
+  createGroup();
 
   coloringChanged();
 
@@ -181,14 +198,24 @@ void OpenedFile::coloringChanged() {
   setColors(colorings[viewer->currentColoring]);
 }
 
-void OpenedFile::createTrack() {
+void OpenedFile::createGroup() {
   sceneRoot = new osg::Group();
+
+  sceneRoot->addChild(createTrack());
+  sceneRoot->addChild(createSkirt());
+  trackPositionMarker = createMarker(25.);
+  trackPositionMarker->setNodeMask(0xffffffff);
+
+  // push the scene
+  track = viewer->mapLayerGroup->insertMapLayer(sceneRoot, fileInfo.fileName());
+  track->connectCheckedToVisibility();
+}
+
+osg::Node* OpenedFile::createTrack() {
   trackGeode = new osg::Geode();
-
   geom = new osg::Geometry();
-  trackGeode->addDrawable(geom);
 
-  sceneRoot->addChild(trackGeode);
+  trackGeode->addDrawable(geom);
 
   osg::DrawArrays* drawArrayLines =
     new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP);
@@ -196,7 +223,6 @@ void OpenedFile::createTrack() {
 
   osg::Vec3Array* vertices = new osg::Vec3Array();
   geom->setVertexArray(vertices);
-
   geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
   foreach(TrackFix fix, fixList) {
@@ -213,22 +239,56 @@ void OpenedFile::createTrack() {
   // stateSet->setAttributeAndModes(
   //   new osg::LineWidth(viewer->lineWidthSetting->get().toFloat()));
 
-    // create the marker
-  trackPositionMarker = createMarker();
-  trackPositionMarker->setNodeMask(0x0);  // make it invisible first
-  // currentMarkerTransform = new osg::PositionAttitudeTransform();
-  currentMarkerTransform = new osg::AutoTransform();
-  // currentMarkerTransform->setAutoScaleToScreen(true);
-  currentMarkerTransform->setMinimumScale(10);
-  currentMarkerTransform->setMaximumScale(500);
-  currentMarkerTransform->setScale(500);
-  currentMarkerTransform->addChild(trackPositionMarker);
-  // currentMarkerTransform->setScale(osg::Vec3d(100., 100., 100.));
-  sceneRoot->addChild(currentMarkerTransform);
+  return trackGeode;
+}
 
-    // push the scene
-  track = viewer->mapLayerGroup->insertMapLayer(sceneRoot, fileInfo.fileName());
-  track->connectCheckedToVisibility();
+osg::Node* OpenedFile::createSkirt() {
+  osg::Geode *geode = new osg::Geode();
+  osg::Geometry *skirtGeom = new osg::Geometry();
+
+  geode->addDrawable(skirtGeom);
+
+  osg::DrawArrays* drawArray =
+    new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP);
+  skirtGeom->addPrimitiveSet(drawArray);
+
+  osg::Vec3Array* vertices = new osg::Vec3Array();
+  skirtGeom->setVertexArray(vertices);
+
+  skirtGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+  const osg::EllipsoidModel* ellipsoid =
+    g_core->getEllipsoid()->getOsgEllipsoidModel();
+  foreach(TrackFix fix, fixList) {
+    double x, y, z;
+    ellipsoid->convertLatLongHeightToXYZ(
+      fix.location.lat_radians(), fix.location.lon_radians(),
+      0,
+      x, y, z);
+    vertices->push_back(osg::Vec3(fix.x, fix.y, fix.z));
+    vertices->push_back(osg::Vec3(x, y, z));
+  }
+
+  drawArray->setFirst(0);
+  drawArray->setCount(vertices->size());
+
+  osg::Vec4Array* color = new osg::Vec4Array();
+  color->push_back(osg::Vec4(0.5, 0.5, 0.5, 0.5));
+  skirtGeom->setColorArray(color);
+
+  osg::StateSet* stateSet = geode->getOrCreateStateSet();
+  stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+  stateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
+  stateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+  stateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
+
+  osg::Depth* depth = new osg::Depth;
+  depth->setWriteMask(false);
+  stateSet->setAttributeAndModes(depth, osg::StateAttribute::ON);
+
+  stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+  return geode;
 }
 
 void OpenedFile::setColors(Coloring *coloring) {
@@ -294,13 +354,20 @@ void OpenedFile::trackClicked(const EventInfo* eventInfo) {
 
   qDebug() << minDistance;
 
-  QTime& time = nearest->timestamp;
-  qreal timeSecs = time.hour()*3600 + time.minute()*60 + time.second();
-  plotWidget->setPickedTime(timeSecs);
+  QTime time = nearest->timestamp;
+  plotWidget->addPickedTime(time);
 
+  osg::AutoTransform* currentMarkerTransform = new osg::AutoTransform();
+  currentMarkerTransform->setAutoRotateMode(
+    osg::AutoTransform::ROTATE_TO_SCREEN);
+  currentMarkerTransform->setAutoScaleToScreen(true);
+  currentMarkerTransform->setMinimumScale(0.1);
+  currentMarkerTransform->setMaximumScale(100);
+  currentMarkerTransform->addChild(trackPositionMarker);
+  sceneRoot->addChild(currentMarkerTransform);
   currentMarkerTransform->setPosition(
-    osg::Vec3d(nearest->x, nearest->y, nearest->z));
-  displayMarker(true);
+    osg::Vec3(nearest->x, nearest->y, nearest->z));
+  currentMarkers.append(currentMarkerTransform);
 }
 
 void OpenedFile::timePicked(QTime time) {
@@ -323,24 +390,69 @@ void OpenedFile::timePicked(QTime time) {
 
     // do the transformation of the marker to the position
     // of the nearest trackFix.
+  // create a new transform node:
+  osg::AutoTransform* currentMarkerTransform = new osg::AutoTransform();
+  currentMarkerTransform->setAutoRotateMode(
+    osg::AutoTransform::ROTATE_TO_SCREEN);
+  currentMarkerTransform->setAutoScaleToScreen(true);
+  currentMarkerTransform->setMinimumScale(0.1);
+  currentMarkerTransform->setMaximumScale(100);
+  currentMarkerTransform->addChild(trackPositionMarker);
+  sceneRoot->addChild(currentMarkerTransform);
   currentMarkerTransform->setPosition(
     osg::Vec3(nearest->x, nearest->y, nearest->z));
+  currentMarkers.append(currentMarkerTransform);
 }
 
-osg::Node* OpenedFile::createMarker() {
-  osg::Sphere* unitSphere = new osg::Sphere(osg::Vec3(0, 0, 0), 1.0);
-  osg::ShapeDrawable* unitSphereDrawable = new osg::ShapeDrawable(unitSphere);
-  osg::Geode* unitSphereGeode = new osg::Geode();
-  unitSphereGeode->addDrawable(unitSphereDrawable);
-  return unitSphereGeode;
+osg::Geode* OpenedFile::createMarker(qreal scale) {
+  osg::Geometry* geometry = new osg::Geometry();
+
+  osg::Vec3Array* vertices = new osg::Vec3Array(4);
+  (*vertices)[0] = osg::Vec3(-scale, -scale, 0.0);
+  (*vertices)[1] = osg::Vec3( scale, -scale, 0.0);
+  (*vertices)[2] = osg::Vec3( scale, scale, 0.0);
+  (*vertices)[3] = osg::Vec3(-scale, scale, 0.0);
+  geometry->setVertexArray(vertices);
+
+  osg::Vec2Array* texCoords = new osg::Vec2Array(4);
+  (*texCoords)[0] = osg::Vec2(0.0, 0.0);
+  (*texCoords)[1] = osg::Vec2(1.0, 0.0);
+  (*texCoords)[2] = osg::Vec2(1.0, 1.0);
+  (*texCoords)[3] = osg::Vec2(0.0, 1.0);
+  geometry->setTexCoordArray(0, texCoords);
+
+  geometry->addPrimitiveSet(new osg::DrawArrays(
+    osg::PrimitiveSet::QUADS, 0, 4));
+
+  osg::Geode* geode = new osg::Geode();
+
+  osg::StateSet* stateSet = geode->getOrCreateStateSet();
+  QString path = QCoreApplication::applicationDirPath()
+    + "/data/igcmarker.png";
+  osg::Image* image = osgDB::readImageFile(path.toStdString());
+  osg::Texture2D* texture = new osg::Texture2D();
+  texture->setImage(image);
+
+  // Turn off lighting for the billboard.
+  stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+  // Turn on texturing, bind texture.
+  stateSet->setTextureAttributeAndModes(0, texture);
+
+  // Turn on blending.
+  stateSet->setAttributeAndModes(new osg::BlendFunc());
+  stateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+
+  geode->addDrawable(geometry);
+
+  return geode;
 }
 
-void OpenedFile::displayMarker(bool value) {
-  if (value) {
-    trackPositionMarker->setNodeMask(0xffffffff);
-  } else {
-    trackPositionMarker->setNodeMask(0x0);
+void OpenedFile::clearMarkers() {
+  for (int i = 0; i < currentMarkers.size(); i++) {
+    sceneRoot->removeChild(currentMarkers[i]);
   }
+  currentMarkers.clear();
 }
 
 }  // End namespace IgcViewer
