@@ -8,6 +8,7 @@
 #include "maplayergroup.h"
 #include "updraft.h"
 #include "filetypemanager.h"
+#include "settingsmanager.h"
 
 namespace Updraft {
 namespace Core {
@@ -160,6 +161,13 @@ void MainWindow::standardMenuItems() {
   QAction* aboutAction = new QAction(tr("&About..."), this);
   menuHelp->insertAction(1, aboutAction);
   connect(aboutAction, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
+
+  QAction* settingsAction = new QAction(QIcon(":/core/icons/configure.png"),
+    tr("&Options..."), this);
+  settingsAction->setIconVisibleInMenu(true);
+  menuTools->insertAction(100, settingsAction);
+  connect(settingsAction, SIGNAL(triggered()),
+    updraft->settingsManager, SLOT(execDialog()));
 }
 
 void MainWindow::tabsVisibility() {

@@ -37,7 +37,6 @@ Updraft::Updraft(int argc, char** argv)
 
   mainWindow->setMapWidget(sceneManager->getWidget());
 
-  settingsManager->finishInit();
   pluginManager->finishInit();
 }
 
