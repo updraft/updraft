@@ -3,6 +3,7 @@
 OpenAirspace::Position OpenAirspace::Airspace::X;
 bool OpenAirspace::Airspace::validX;
 
+// Primary Airspace parser
 namespace OpenAirspace {
   Airspace::Airspace(QTextStream* ts, bool* acOn) {
     QString text("");
@@ -32,7 +33,7 @@ namespace OpenAirspace {
     delete gg;
     */
 
-
+    // init variables
     this->AL        = NULL;
     this->AH        = NULL;
     this->AN        = NULL;
@@ -48,9 +49,7 @@ namespace OpenAirspace {
     this->Wi        = -1;
     this->Z         = -1;
 
-    // int check = ts->pos();
-    // (*ts) >> text;
-    // if (text != "AC") {
+    // Viability check
     if (!acOn) {
       int check = ts->pos();
       return;
@@ -78,63 +77,76 @@ namespace OpenAirspace {
     // return;
 
     while (!(*ts).atEnd()) {
+      // Read the next item
       (*ts) >> text;
-      // int check = ts->pos();
-      // if (check <= 0)
-        // check = ts->status();
 
+      // End the parsing when AC found
       if (text == "AC") {
-        // int check = ts->pos();
-        // ts->seek(check -2);
         *acOn = true;
         return;
       }
+
+      // If the comment found ('*' char) skip
       if (text.size() == 0 || text.at(0) == '*') {
         if (text.size() != 0)
           text = ts->readLine();
         continue;
       }
 
-      QString parse;
+      // Read the related data
       ts->skipWhiteSpace();
-      parse = ts->readLine();
+      QString parse = ts->readLine();
 
+      // Delete end line comment
       int comment = parse.indexOf('*');
       if (comment > -1)
         parse = parse.left(comment);
 
+      // Parse the items
+      // Airspace name
       if (text == "AN") {
         if (this->AN)
           *this->AN = parse;
         else
           this->AN = new QString(parse);
-        // qDebug("%s", AN->toAscii().data());
+
+      // Airspace floor elevation
       } else if (text == "AL") {
         if (this->AL)
           *this->AL = parse;
         else
           this->AL = new QString(parse);  // can be text e.g. Ask on 122.8
+
+      // Airspace ceiling elevation
       } else if (text == "AH") {
         if (this->AH)
           *this->AH = parse;
         else
           // can be text e.g. Ask on 122.8
           this->AH = new QString(parse);
+
+      // Airspace label coord
       } else if (text == "AT") {
         if (!this->AT)
           this->AT = new QVector<Position*>();
         Position* pos = new Position(ParseCoord(parse));
         this->AT->push_back(pos);
+
+      // Terrain open polygon
       } else if (text == "TO") {
         if (this->TO)
           *this->TO = parse;
         else
           this->TO = new QString(parse);
+
+      // Terrain closed polygon
       } else if (text == "TC") {
         if (this->TC)
           *this->TC = parse;
         else
           this->TC = new QString(parse);
+
+      // Pen to be used
       } else if (text == "SP") {
         if (!this->SP)
           this->SP = new SP_str();
@@ -152,6 +164,8 @@ namespace OpenAirspace {
         parse = parse.right(parse.size() - i -1);
         i = parse.indexOf(',');
         this->SP->B = parse.left(i).toInt();
+
+      // Brush to be used
       } else if (text == "SB") {
         if (!this->SB)
           this->SB = new SB_str();
@@ -164,29 +178,44 @@ namespace OpenAirspace {
         i = parse.indexOf(',');
         this->SB->B = parse.left(i).toInt();
         parse = parse.right(parse.size() - i -1);
+
+      // Variable assignment
       } else if (text == "V") {
         QChar ch = parse.at(0);
         parse = parse.right(parse.size() - parse.indexOf('=') -1);
+
+        // center
         if (ch == 'X') {
           X = ParseCoord(parse);
           this->validX = true;
+
+        // direction
         } else if (ch == 'D') {
           if (parse.trimmed().at(0) == '-')
             this->CW = false;
           else
             this->CW = true;
+
+        // airway width
         } else if (ch == 'W') {
           this->Wi = parse.toDouble();
+
+        // visibility zoom lvl
         } else if (ch == 'Z') {
           this->Z = parse.toFloat();
+
           // this->validZ = true;
         }
+
+      // Add polygon point
       }  /* V */      else if (text == "DP") {
         if (!this->geometry) {
           this->geometry = new QVector<Geometry*>();
         }
         Polygon* p = new Polygon(ParseCoord(parse), this->Z);
         this->geometry->push_back(p);
+
+      // Add arc type 1
       } else if (text == "DA") {
         if (!this->geometry)
           this->geometry = new QVector<Geometry*>();
@@ -200,6 +229,8 @@ namespace OpenAirspace {
         ArcI* arc = new
           ArcI(X, R, this->CW, Start, End, this->Z);
         this->geometry->push_back(arc);
+
+      // Add arc type 2
       } else if (text == "DB") {
         if (!this->geometry)
           this->geometry = new QVector<Geometry*>();
@@ -210,11 +241,15 @@ namespace OpenAirspace {
         ArcII* arc = new
           ArcII(X, Start, End, this->CW, this->Z);
         this->geometry->push_back(arc);
+
+      // Draw circle
       } else if (text == "DC") {
         if (!this->geometry)
           this->geometry = new QVector<Geometry*>();
         Circle* cir = new Circle(X, parse.toDouble(), this->Z);
         this->geometry->push_back(cir);
+
+      // Add segment of airway
       } else if (text == "DY") {
         Position* pos = new Position(ParseCoord(parse));
         if (!this->DY)
@@ -230,9 +265,12 @@ namespace OpenAirspace {
     return *this;
   }*/
 
+  // Method for parsing the coords from the string
   Position Airspace::ParseCoord(const QString& text) {
     Position cor;
     int i = 0, j = 0;
+
+    // Find the deliminators
     while (i < text.size() && text.at(i) != 'N' && text.at(i) != 'S'
       && text.at(i) != 'n' && text.at(i) != 's') ++i;
     while (j < text.size() && text.at(j) != 'E' && text.at(j) != 'W'
@@ -242,6 +280,8 @@ namespace OpenAirspace {
       cor.valid = false;
       return cor;
     }
+
+    // Parse the coords
     QString parse = text.left(i);
     int parts = parse.count(':');
     switch (parts) {
@@ -281,6 +321,7 @@ namespace OpenAirspace {
     return cor;
   }
 
+  // Destructor
   Airspace::~Airspace() {
     if (AN) {
       delete AN;
@@ -337,6 +378,7 @@ namespace OpenAirspace {
     }
   }
 
+// Parse the height from string to feet
 int Airspace::ParseHeight(bool floor, bool* agl) {
   // parse the string to number in ft
   // if none of cond hit, return 0
