@@ -7,7 +7,7 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
 
 <map name="Open Street Maps" type="geocentric">
     
-    <cache type="tms">
+    <cache type="filesystem">
       <path>osgearth_cache_osm</path>
     </cache>
     

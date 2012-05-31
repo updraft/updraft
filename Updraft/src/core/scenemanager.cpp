@@ -20,8 +20,6 @@ namespace Core {
 SceneManager::SceneManager() {
   osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
-  manipulator = new MapManipulator();
-
   viewer = new osgViewer::Viewer();
   viewer->setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
 
@@ -57,7 +55,7 @@ SceneManager::SceneManager() {
 
   viewer->setSceneData(sceneRoot);
 
-  manipulator->setNode(mapNode);
+  manipulator = mapManagers[activeMapIndex]->getManipulator();
   manipulator->setHomeViewpoint(getInitialPosition());
 
   viewer->setCameraManipulator(manipulator);
@@ -224,6 +222,14 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
       activeMapIndex = index;
       sceneRoot->removeChild(mapManagers[oldIndex]->getMapNode());
       sceneRoot->addChild(mapManagers[activeMapIndex]->getMapNode());
+
+      osgEarth::Util::Viewpoint viewpoint = manipulator->getViewpoint();
+
+      manipulator = mapManagers[activeMapIndex]->getManipulator();
+      manipulator->setHomeViewpoint(viewpoint);
+
+      viewer->setCameraManipulator(manipulator);
+
       layers[oldIndex]->emitDisplayed(false);
       layers[activeMapIndex]->emitDisplayed(true);
     }

@@ -13,6 +13,7 @@ namespace Core {
 MapManager::MapManager() {
   this->mapNode = NULL;
   this->map = NULL;
+  this->manipulator = NULL;
 }
 
 MapManager::MapManager(QString earthFile) {
@@ -42,6 +43,9 @@ MapManager::MapManager(QString earthFile) {
     this->map = new osgEarth::Map();
     this->mapNode = new osgEarth::MapNode(this->map);
   }
+    // initialize the manipulator
+  this->manipulator = new MapManipulator();
+  manipulator->setNode(mapNode);
 }
 
 QVector<osgEarth::ImageLayer*> MapManager::getImageLayers() {
@@ -84,6 +88,10 @@ osgEarth::MapNode* MapManager::getMapNode() {
 
 osgEarth::Map* MapManager::getMap() {
   return map;
+}
+
+MapManipulator* MapManager::getManipulator() {
+  return manipulator;
 }
 
 QString MapManager::getName() {

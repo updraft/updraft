@@ -10,7 +10,6 @@
 #include <QHash>
 #include <string>
 #include "mapmanager.h"
-#include "mapmanipulator.h"
 #include "../mapobject.h"
 
 namespace Updraft {
