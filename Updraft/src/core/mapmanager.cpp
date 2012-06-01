@@ -5,7 +5,6 @@
 #include <osgEarthDrivers/tms/TMSOptions>
 #include <QDebug>
 #include <string>
-#include "maps/updraftarcgistilesource.h"
 
 namespace Updraft {
 namespace Core {
@@ -22,24 +21,6 @@ MapManager::MapManager(QString earthFile, QString mapName) {
     this->mapNode = osgEarth::MapNode::findMapNode(loadedMap);
     this->map = mapNode->getMap();
     this->map->setName(mapName.toStdString());
-
-    // add image layer wih our own driver
-    /*
-    osgEarth::Drivers::ArcGISOptions opt;
-    opt.url() =
-      "http://server.arcgisonline.com/ArcGIS/rest/"
-      "services/ESRI_Imagery_World_2D/MapServer";
-    UpdraftArcGisTileSource* source =
-      new UpdraftArcGisTileSource(opt);
-
-    osgEarth::ImageLayerOptions* imOpt =
-      new osgEarth::ImageLayerOptions("Satellite map", opt);
-
-    osgEarth::ImageLayer* onlineMaps =
-      new osgEarth::ImageLayer(*imOpt, source);
-
-    this->map->insertImageLayer(onlineMaps, 1);
-    */
   } else {
     this->map = new osgEarth::Map();
     this->map->setName("Empty globe");

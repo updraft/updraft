@@ -17,10 +17,6 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
     
     <lighting>false</lighting>
 
-    <image name="Offline map" driver="gdal">
-        <url>world.tif</url>
-    </image>
-
     <image name="OSM on Mapnik Slippy Map" driver="tms">
         <url>http://tile.openstreetmap.org/</url>
         <profile>global-mercator</profile>
