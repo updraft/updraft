@@ -354,6 +354,8 @@ void SceneManager::createMapManagers() {
     new MapManager(updraft->getDataDirectory() + "/initial1.earth"));
   mapManagers.append(
     new MapManager(updraft->getDataDirectory() + "/initial2.earth"));
+  mapManagers.append(
+    new MapManager(updraft->getDataDirectory() + "/initial3.earth"));
 
   activeMapIndex = 0;
 }

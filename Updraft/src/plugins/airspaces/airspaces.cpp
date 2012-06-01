@@ -4,8 +4,8 @@
 namespace Updraft {
 namespace Airspaces {
 
-// Definition of global pointer to coreinterface.
-CoreInterface *g_core = NULL;
+  // Definition of global pointer to coreinterface.
+  CoreInterface *g_core = NULL;
 
 Airspaces::Airspaces() {
   mapLayers = NULL;
@@ -96,7 +96,7 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
       }
       delete mapLayers;*/
 
-      oaEngine* engine = new oaEngine(mapLayerGroup);
+      oaEngine* engine = new oaEngine(mapLayerGroup, g_core);
 
       QString displayName = fileName.left(fileName.indexOf('.'));
       int cuntSlashes = displayName.count('/');

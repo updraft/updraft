@@ -4,7 +4,11 @@
 namespace Updraft {
 namespace Airspaces {
 
-oaEngine::oaEngine(MapLayerGroupInterface* LG) {
+  // Definition of global pointer to coreinterface.
+  // CoreInterface *g_core = NULL;
+
+oaEngine::oaEngine(MapLayerGroupInterface* LG,
+  CoreInterface* g_core) {
   this->mapLayerGroup = LG;
 
   // some defaults
@@ -34,31 +38,15 @@ oaEngine::oaEngine(MapLayerGroupInterface* LG) {
   GND                     = 0;
   ROOF                    = 80000;
 
-  /* Settings :
-  core->addSettingsGroup("testplugin", "Test Plugin Settings");
-  testSetting = core->addSetting("testplugin:testsetting", "Value of PI", 3.14);
-  testSetting2 = core->addSetting("testplugin:testsetting2",
-    "Number of silver squirters", 333);
-  testSetting3 = core->addSetting("testplugin:testsetting3",
-    "Name of the application", "Updraft");
-  hiddenSetting = core->addSetting("testplugin:testsetting", "Not visible",
-    "Blablablabla", true);
-
-  testSetting->callOnValueChanged(this, SLOT(showPi()));
-
-  QMainWindow* win = core->getMainWindow();
-  QString message = "The value of PI is %1";
-  message = message.arg(testSetting->get().toFloat());
-  QMessageBox::information(win, "Value of PI", message);
-  */
-
+  // init
   heightRefPoint  = NULL;
   mapLayers       = NULL;
   OAGeode         = NULL;
 
   // Init the elevation manager
-  osgEarth::Map* map = mapLayerGroup->getMapNode()->getMap();
-  elevationMan = new osgEarth::Util::ElevationManager(map);
+  // osgEarth::Map* map = mapLayerGroup->getMapNode()->getMap();
+  // elevationMan = new osgEarth::Util::ElevationManager(map);
+  elevationMan = g_core->getElevationManager();
 }
 
 QVector<MapLayerInterface*>* oaEngine::DrawII(const QString& fileName) {

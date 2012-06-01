@@ -1,0 +1,19 @@
+<!--
+Updraft initial map file.
+
+Please note that use of ESRI's free maps is subject to certain restrictions:
+http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
+-->
+
+<map name="Terrain Map" type="geocentric">
+    
+    <cache type="tms">
+      <path>osgearth_cache_topographic</path>
+    </cache>
+    
+    <lighting>false</lighting>
+     
+    <image name="Online maps" driver="arcgis">
+        <url>http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer</url>
+    </image>
+</map>

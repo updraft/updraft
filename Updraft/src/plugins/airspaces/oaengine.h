@@ -23,6 +23,7 @@
 namespace Updraft {
 namespace Airspaces {
 
+
 typedef OpenAirspace::Coordinate Position;
 
 /// Init constants
@@ -58,7 +59,7 @@ static const int ROOF = 80000;
 
 class oaEngine {
  public:
-  explicit oaEngine(MapLayerGroupInterface* LG);
+  oaEngine(MapLayerGroupInterface* LG, CoreInterface* g_core);
   QVector<QPair<osg::Node*, QString> > * Draw(const QString&);
   QVector<MapLayerInterface*>* DrawII(const QString&);
   // bool Draw(const QString&);
