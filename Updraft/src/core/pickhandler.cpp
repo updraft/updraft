@@ -79,6 +79,11 @@ void PickHandler::raiseLeftClick(
 
     EventInfo evt(LEFT_CLICK, mapObjectPair.second);
 
+    qDebug("=================");
+    qDebug() << mapObjectPair.second.x();
+    qDebug() << mapObjectPair.second.y();
+    qDebug() << mapObjectPair.second.z();
+
     // Insert the plugins into PickAction only if they want to handle the event
     PickAction* action = new PickAction(mapObjectPair.first, evt);
     foreach(PluginBase* plugin, updraft->pluginManager->getAllPlugins()) {
@@ -204,6 +209,47 @@ QVector<Pair> PickHandler::getIntersectedMapObjects(
   osgUtil::PolytopeIntersector::Intersections& intersections =
     picker->getIntersections();
 
+  /*qDebug(":::::::::::::::::::::::::");
+  std::set<osgUtil::PolytopeIntersector::Intersection>::iterator it;
+  int i = 0;
+  for (it = intersections.begin(); it != intersections.end(); ++it) {
+    qDebug() << "Intersection " << i << ":";
+    qDebug() << "d: " << it->distance << ", max_d: " << it->maxDistance <<
+      ", local_ip: " <<
+      it->localIntersectionPoint.x() << ":" <<
+      it->localIntersectionPoint.y() << ":" <<
+      it->localIntersectionPoint.z() <<
+      ", numIntersectionPoints: " << it->numIntersectionPoints;
+    osg::Vec4f vec(
+      it->localIntersectionPoint.x(),
+      it->localIntersectionPoint.y(),
+      it->localIntersectionPoint.z(),
+      1.0);
+    osg::Matrixf mat = (*it->matrix.get());
+    osg::Matrixf mat_inv = osg::Matrixf::inverse(mat);
+    osg::Matrixf cam_mat = viewer->getCamera()->getProjectionMatrix();
+    cam_mat = osg::Matrixf::inverse(cam_mat);
+    osg::Vec4f w_lip = vec * mat;
+    osg::Vec3f w_lip2 = cam_mat * it->localIntersectionPoint;
+    qDebug() << "Transformed localIntersectionPoint: " <<
+      w_lip.x() << ":" <<
+      w_lip.y() << ":" <<
+      w_lip.z() << ":::" <<
+      w_lip.w();
+    qDebug() << "Transformed localIntersectionPoint 2: " <<
+      w_lip2.x() << ":" <<
+      w_lip2.y() << ":" <<
+      w_lip2.z();
+      for (int p = 0; p < it->numIntersectionPoints; ++p) {
+        qDebug() << "  intersectionPoint[" << p << "]: " <<
+          it->intersectionPoints[p].x() << ":" <<
+          it->intersectionPoints[p].y() << ":" <<
+          it->intersectionPoints[p].z();
+      }
+    ++i;
+  }
+  qDebug(":::::::::::::::::::::::::");*/
+
   QVector<Pair> mapObjects;
 
   std::set<osgUtil::PolytopeIntersector::Intersection>::iterator it;
@@ -213,7 +259,22 @@ QVector<Pair> PickHandler::getIntersectedMapObjects(
     while (idx--) {
       MapObject* mapObject = getMapObject(nodePath[idx]);
       if (mapObject != NULL) {
-        mapObjects.append(Pair(mapObject, it->intersectionPoints[0]));
+        // Transform the intersection coordinates to world coordinates
+        osg::Vec4f vec(
+          it->intersectionPoints[0].x(),
+          it->intersectionPoints[0].y(),
+          it->intersectionPoints[0].z(),
+          1.0);
+        osg::Matrixf mat = (*it->matrix.get());
+        osg::Vec4f w_vec = vec * mat;
+        osg::Vec3f w_vec3f(
+            w_vec.x(),
+            w_vec.y(),
+            w_vec.z());
+
+        mapObjects.append(Pair(mapObject, w_vec3f));
+        qDebug("Distance of intersection point:");
+        qDebug() << it->distance;
       }
     }
   }

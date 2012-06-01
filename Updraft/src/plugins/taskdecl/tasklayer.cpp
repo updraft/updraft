@@ -140,7 +140,7 @@ void TaskLayer::newTaskPoint(const Util::Location& loc) {
   TaskData* tData = file->beginEdit(true);
   TaskPoint* newPoint = new TaskPoint();
   newPoint->setLocation(loc);
-  newPoint->setName(QString("Map location:") + loc.lat + " - " + loc.lon);
+  newPoint->setName(QString("Map location: %1 - %2").arg(loc.lat).arg(loc.lon));
 
   // If the task point insertion failed, remove it
   if (!tData->insertTaskPoint(newPoint, tpIndex)) {

@@ -101,6 +101,9 @@ void TaskDeclaration::handleClick(MapObject* obj, const EventInfo* evt) {
       mapLoc.lon,
       mapLoc.alt
     );
+    mapLoc.lat = mapLoc.lat / 3.14 * 180;
+    mapLoc.lon = mapLoc.lon / 3.14 * 180;
+    mapLoc.alt += 500; 
     layer->newTaskPoint(mapLoc);
   }
   return;

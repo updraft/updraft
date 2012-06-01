@@ -54,10 +54,10 @@ SceneManager::SceneManager() {
 
   // add active map
   mapNode = mapManagers[activeMapIndex]->getMapNode();
-  // sceneRoot->addChild(mapNode);
+  sceneRoot->addChild(mapNode);
 
   // Make map node pickable
-  // registerOsgNode(mapNode, mapManagers[activeMapIndex]->getMapObject());
+  registerOsgNode(mapNode, mapManagers[activeMapIndex]->getMapObject());
 
   viewer->setSceneData(sceneRoot);
 
