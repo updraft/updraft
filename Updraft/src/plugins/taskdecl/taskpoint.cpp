@@ -214,6 +214,10 @@ void TaskPoint::setLocation(const Util::Location &location_) {
   location = location_;
 }
 
+void TaskPoint::setName(const QString& name_) {
+  name = name_;
+}
+
 void TaskPoint::setAssignedArea(const AssignedArea &area_) {
   area = area_;
 }

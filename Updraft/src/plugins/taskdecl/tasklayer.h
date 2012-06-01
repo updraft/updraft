@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "taskfile.h"
+#include "util/location.h"
 
 namespace osg {
   class Node;
@@ -64,8 +65,11 @@ class TaskLayer : public QObject {
   /// \return Whether this layer's tab is selected.
   bool isTabSelected();
 
-  /// Creates a new task point.
+  /// Creates a new task point from a turn-point.
   void newTaskPoint(const TurnPoint* tp);
+
+  /// Creates a new task point on the map.
+  void newTaskPoint(const Util::Location& loc);
 
   /// Saves file. If the path is not set, file dialog is invoked.
   /// \return True on success. False on fail or cancell.

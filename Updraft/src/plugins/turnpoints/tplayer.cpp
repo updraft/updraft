@@ -12,6 +12,8 @@
 #include "mapobject.h"
 #include "pluginbase.h"
 
+#include <iostream>
+
 namespace Updraft {
 
 osg::Geometry* TPLayer::createGeometry(qreal scale) {
@@ -153,6 +155,8 @@ osg::Node* TPLayer::createAutoScale(
   at->setMinimumScale(static_cast<double>(minScale));
   at->setMaximumScale(static_cast<double>(maxScale));
   at->setPosition(position);
+
+  //std::cout << position << std::endl;
 
   return at;
 }
