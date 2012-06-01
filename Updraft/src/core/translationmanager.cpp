@@ -14,15 +14,6 @@ namespace Core {
 const QString TranslationManager::defaultLanguage = "english";
 
 TranslationManager::TranslationManager() {
-  coreTranslator = new QTranslator(this);
-  updraft->installTranslator(coreTranslator);
-
-  foreach(PluginBase *plugin, updraft->pluginManager->getAllPlugins()) {
-    QTranslator *translator = new QTranslator(this);
-    pluginTranslators.append(PluginTranslator(plugin, translator));
-    updraft->installTranslator(translator);
-  }
-
   QVariant defaultValue;
   defaultValue.setValue(TranslationLanguage(defaultLanguage));
 
@@ -32,36 +23,28 @@ TranslationManager::TranslationManager() {
     defaultValue,
     false);
 
-  QString language =
-    languageSetting->get().value<TranslationLanguage>().asQString();
-  loadLanguage(language);
+  addTranslations(updraft->getTranslationDirectory());
 
   languageSetting->setDescription(tr("Language"));
 }
 
-void TranslationManager::loadTranslationFile(
-  QTranslator *translator, const QDir &dir, const QString &lang) {
-  QString path = dir.absoluteFilePath(lang + ".qm");
-  if (!translator->load(path)) {
-    qDebug() << "Loading translation file " << path << " failed.";
-  }
-}
+void TranslationManager::addTranslations(const QDir &dir) {
+  QString language =
+    languageSetting->get().value<TranslationLanguage>().asQString();
 
-void TranslationManager::loadLanguage(const QString &lang) {
-  qDebug() << "Loading language " << lang;
+  QTranslator *translator = new QTranslator(this);
+  dirTranslators.append(DirTranslator(dir, translator));
 
-  if (lang == defaultLanguage) {
+  if (language == defaultLanguage) {
     return;
   }
 
-  QDir dir = updraft->getTranslationDirectory();
-  loadTranslationFile(coreTranslator, dir, lang);
-
-  foreach(PluginTranslator pair, pluginTranslators) {
-    QString name = pair.first->getName();
-    dir = updraft->pluginManager->getPluginDir(name);
-    loadTranslationFile(pair.second, dir, lang);
+  QString path = dir.absoluteFilePath(language + ".qm");
+  if (!translator->load(path)) {
+    qDebug() << "Loading translation file " << path << " failed.";
   }
+
+  updraft->installTranslator(translator);
 }
 
 QStringList TranslationManager::availableLanguages() {
@@ -70,13 +53,8 @@ QStringList TranslationManager::availableLanguages() {
 
   QSet<QString> found;
 
-  found.unite(
-    updraft->getTranslationDirectory().entryList(
-      nameFilter, QDir::Files | QDir::Readable).toSet());
-
-  foreach(PluginTranslator pair, pluginTranslators) {
-    QString name = pair.first->getName();
-    QDir dir = updraft->pluginManager->getPluginDir(name);
+  foreach(DirTranslator pair, dirTranslators) {
+    QDir dir = pair.first;
 
     found.unite(dir.entryList(
       nameFilter, QDir::Files | QDir::Readable).toSet());

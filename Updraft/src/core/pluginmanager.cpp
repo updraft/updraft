@@ -7,6 +7,9 @@
 
 #include "../pluginbase.h"
 #include "coreimplementation.h"
+#include "translationmanager.h"
+
+#include "updraft.h"
 
 namespace Updraft {
 namespace Core {
@@ -93,13 +96,12 @@ PluginBase* PluginManager::load(const QString &fileName) {
 
   plugins.insert(plugin->getName(), lp);
 
-  return plugin;
-}
+  updraft->translationManager->addTranslations(
+    QFileInfo(fileName).absoluteDir());
 
-void PluginManager::finishInit() {
-  foreach(LoadedPlugin *lp, plugins.values()) {
-    lp->plugin->initialize(new CoreImplementation(lp->plugin));
-  }
+  plugin->initialize(new CoreImplementation(plugin));
+
+  return plugin;
 }
 
 PluginBase* PluginManager::getPlugin(const QString &name) {

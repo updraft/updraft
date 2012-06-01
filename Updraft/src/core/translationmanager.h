@@ -22,18 +22,13 @@ class TranslationManager: public QObject {
   /// List all available languages
   QStringList availableLanguages();
 
+  /// Add a directory with translation and attempt to load a
+  /// language from it.
+  void addTranslations(const QDir &dir);
  private:
-  /// Load all the languages to the translator.
-  void loadLanguage(const QString &lang);
+  typedef QPair<QDir, QTranslator*> DirTranslator;
 
-  /// Attempt to load a single translation file.
-  void loadTranslationFile(QTranslator *translator,
-    const QDir &dir, const QString &lang);
-
-  typedef QPair<PluginBase *, QTranslator *> PluginTranslator;
-
-  QList<PluginTranslator> pluginTranslators;
-  QTranslator *coreTranslator;
+  QList<DirTranslator> dirTranslators;
 
   SettingInterface *languageSetting;
 
