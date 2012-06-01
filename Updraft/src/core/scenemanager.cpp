@@ -243,7 +243,9 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
 
       osgEarth::Util::Viewpoint viewpoint = manipulator->getViewpoint();
 
-      manipulator = mapManagers[activeMapIndex]->getManipulator();
+      // manipulator = mapManagers[activeMapIndex]->getManipulator();
+      manipulator = new MapManipulator();
+      manipulator->setNode(mapManagers[activeMapIndex]->getMapNode());
       manipulator->setHomeViewpoint(viewpoint);
 
       viewer->setCameraManipulator(manipulator);
