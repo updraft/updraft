@@ -1,0 +1,17 @@
+#!/bin/sh
+
+mypath=`dirname "$0"`
+cd $mypath
+
+export OSG_ROOT=../Frameworks/osg_release
+export OSGEARTH_ROOT=../Frameworks/osgearth_release
+
+export OSGEARTH_USE_PBUFFER_TEST=YES
+
+export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$OSG_ROOT/lib:$OSGEARTH_ROOT/lib:./build
+export LD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$OSG_ROOT/lib:$OSGEARTH_ROOT/lib:./build
+
+export LD_PRINT_LIBRARIES=YES
+export DYLD_PRINT_LIBRARIES=YES
+
+build/updraft
