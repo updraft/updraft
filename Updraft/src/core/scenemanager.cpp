@@ -1,4 +1,6 @@
 #include <osgQt/GraphicsWindowQt>
+#include <osg/CoordinateSystemNode>
+#include <osg/Vec3d>
 #include <osgEarth/Viewpoint>
 #include <osgEarthUtil/ObjectPlacer>
 #include <osgEarth/Map>
@@ -242,6 +244,16 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
       sceneRoot->addChild(mapManagers[activeMapIndex]->getMapNode());
 
       osgEarth::Util::Viewpoint viewpoint = manipulator->getViewpoint();
+
+        // if the active map has a terrain, check whether we're not under
+      if (mapManagers[activeMapIndex]->hasElevation()) {
+        double elevation, resolution;
+        elevationManager->getElevation(viewpoint.x(), viewpoint.y(),
+          0, 0, elevation, resolution);
+        if (viewpoint.getRange() < elevation) {
+          viewpoint.setRange(elevation + 10);
+        }
+      }
 
       // manipulator = mapManagers[activeMapIndex]->getManipulator();
       manipulator = new MapManipulator();
