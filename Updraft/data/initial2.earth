@@ -11,6 +11,10 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
       <path>osgearth_cache_terrain</path>
     </cache>
     
+    <!--
+    <loading_policy mode="preemptive" />
+    -->
+    
     <lighting>true</lighting>
 
     <image name="Offline map" driver="gdal">

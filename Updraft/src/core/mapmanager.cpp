@@ -95,6 +95,7 @@ MapManipulator* MapManager::getManipulator() {
 }
 
 QString MapManager::getName() {
+  map->setName("map");
   return QString::fromStdString(map->getName());
 }
 
