@@ -25,7 +25,6 @@ Updraft::Updraft(int argc, char** argv)
   registerMetaTypes();
 
   settingsManager = new SettingsManager();
-  pluginManager = new PluginManager();
   translationManager = new TranslationManager();
 
   coreSettings();
@@ -37,8 +36,7 @@ Updraft::Updraft(int argc, char** argv)
 
   mainWindow->setMapWidget(sceneManager->getWidget());
 
-  settingsManager->finishInit();
-  pluginManager->finishInit();
+  pluginManager = new PluginManager();
 }
 
 Updraft::~Updraft() {

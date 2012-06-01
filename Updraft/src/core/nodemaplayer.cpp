@@ -12,6 +12,7 @@ NodeMapLayer::NodeMapLayer(osg::Node* node)
 
 void NodeMapLayer::setVisible(bool value) {
   node->setNodeMask(value ? 0xffffffff : 0x0);
+  emit displayed(value, this);
 }
 
 bool NodeMapLayer::isVisible() {

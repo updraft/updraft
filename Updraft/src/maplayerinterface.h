@@ -41,6 +41,8 @@ class MapLayerInterface {
   virtual void connectCheckedToVisibility() = 0;
 
   /// Sets visibility to the layer.
+  /// Implementation of this method must emit the displayed()
+  /// signal.
   virtual void setVisible(bool value) = 0;
 
   virtual bool isVisible() = 0;

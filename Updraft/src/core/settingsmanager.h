@@ -16,7 +16,7 @@ class SettingsModel;
 class SettingsItem;
 
 class SettingsManager: public QObject {
-Q_OBJECT
+  Q_OBJECT
 
  public:
   /// Prepare the settings manager to a state where settings are loaded

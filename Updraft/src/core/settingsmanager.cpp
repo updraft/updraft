@@ -22,23 +22,10 @@ SettingsManager::SettingsManager()
 
   model = new SettingsModel();
   model->loadSettings(settingsFile);
-}
 
-void SettingsManager::finishInit() {
   // Let the manager know whenever the model changes
   connect(model, SIGNAL(itemChanged(SettingsItem*)),
     this, SLOT(itemValueChanged(SettingsItem*)));
-
-  // Create an action that shows the dialog and add it to the menu
-  MainWindow* win = updraft->mainWindow;
-  Menu* toolsMenu = win->getSystemMenu(MENU_TOOLS);
-
-  settingsAction = new QAction(QIcon(":/core/icons/configure.png"),
-    tr("&Options..."), this);
-  settingsAction->setIconVisibleInMenu(true);
-  connect(settingsAction, SIGNAL(triggered()),
-    this, SLOT(execDialog()));
-  toolsMenu->insertAction(100, settingsAction);
 }
 
 SettingsManager::~SettingsManager() {

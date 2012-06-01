@@ -16,18 +16,9 @@ class UpdraftParent;
 class PluginManager {
  public:
   /// Load all the plugins but don't create core interface for them and
-  /// don't initialize them yet.
-  /// \note finishInit(); must be called after both PluginManager and
-  /// TranslationManager are created!
+  /// initialize them.
   PluginManager();
   ~PluginManager();
-
-  /// Finalize the initialization.
-  /// Used to break the circular dependency between plugin manager
-  /// and translation manager.
-  /// This method must be called after all other top level objects
-  /// are ready to avoid problems with not yet working core interface methods.
-  void finishInit();
 
   /// Return pointer to plugin object.
   PluginBase* getPlugin(const QString &name);
