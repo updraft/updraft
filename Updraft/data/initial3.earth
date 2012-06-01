@@ -7,13 +7,13 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
 
 <map name="Terrain Map" type="geocentric">
     
-    <cache type="tms">
+    <cache type="filesystem">
       <path>osgearth_cache_topographic</path>
     </cache>
     
     <lighting>false</lighting>
      
-    <image name="Online maps" driver="arcgis">
+    <image name="OSM topographic maps" driver="arcgis">
         <url>http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer</url>
     </image>
 </map>

@@ -21,7 +21,7 @@ class MapManager {
   MapManager();
 
   /// Creates a new MapManager with map created from the earth file.
-  explicit MapManager(QString earthFile);
+  explicit MapManager(QString earthFile, QString mapName);
 
   QString getName();
 

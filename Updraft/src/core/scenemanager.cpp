@@ -248,10 +248,11 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
         // if the active map has a terrain, check whether we're not under
       if (mapManagers[activeMapIndex]->hasElevation()) {
         double elevation, resolution;
-        elevationManager->getElevation(viewpoint.x(), viewpoint.y(),
-          0, 0, elevation, resolution);
-        if (viewpoint.getRange() < elevation) {
-          viewpoint.setRange(elevation + 10);
+        if (elevationManager->getElevation(viewpoint.x(), viewpoint.y(),
+          0, 0, elevation, resolution)) {
+          if (viewpoint.getRange() < elevation) {
+            viewpoint.setRange(elevation + 10);
+          }
         }
       }
 
@@ -351,11 +352,14 @@ void SceneManager::untilt() {
 
 void SceneManager::createMapManagers() {
   mapManagers.append(
-    new MapManager(updraft->getDataDirectory() + "/initial1.earth"));
+    new MapManager(updraft->getDataDirectory() + "/initial1.earth",
+      tr("OpenStreetMaps")));
   mapManagers.append(
-    new MapManager(updraft->getDataDirectory() + "/initial2.earth"));
+    new MapManager(updraft->getDataDirectory() + "/initial2.earth",
+      tr("ArcGIS, Satellite Imagery")));
   mapManagers.append(
-    new MapManager(updraft->getDataDirectory() + "/initial3.earth"));
+    new MapManager(updraft->getDataDirectory() + "/initial3.earth",
+      tr("ArcGIS, Topographic Map")));
 
   activeMapIndex = 0;
 }

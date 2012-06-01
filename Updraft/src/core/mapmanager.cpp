@@ -16,11 +16,12 @@ MapManager::MapManager() {
   this->manipulator = NULL;
 }
 
-MapManager::MapManager(QString earthFile) {
+MapManager::MapManager(QString earthFile, QString mapName) {
   osg::Node* loadedMap = osgDB::readNodeFile(earthFile.toStdString());
   if (loadedMap != NULL) {
     this->mapNode = osgEarth::MapNode::findMapNode(loadedMap);
     this->map = mapNode->getMap();
+    this->map->setName(mapName.toStdString());
 
     // add image layer wih our own driver
     /*
@@ -41,6 +42,7 @@ MapManager::MapManager(QString earthFile) {
     */
   } else {
     this->map = new osgEarth::Map();
+    this->map->setName("Empty globe");
     this->mapNode = new osgEarth::MapNode(this->map);
   }
     // initialize the manipulator
@@ -95,7 +97,6 @@ MapManipulator* MapManager::getManipulator() {
 }
 
 QString MapManager::getName() {
-  map->setName("map");
   return QString::fromStdString(map->getName());
 }
 
