@@ -77,9 +77,10 @@ void PickHandler::raiseLeftClick(
     if (alreadyAdded.contains(mapObjectPair.first)) continue;
     alreadyAdded.insert(mapObjectPair.first);
 
+    EventInfo evt(LEFT_CLICK, mapObjectPair.second);
+
     // Insert the plugins into PickAction only if they want to handle the event
-    PickAction* action = new PickAction(mapObjectPair.first,
-      new EventInfo(LEFT_CLICK, mapObjectPair.second));
+    PickAction* action = new PickAction(mapObjectPair.first, evt);
     foreach(PluginBase* plugin, updraft->pluginManager->getAllPlugins()) {
       if (plugin->wantsToHandleClick(mapObjectPair.first)) {
         action->pushPlugin(plugin);

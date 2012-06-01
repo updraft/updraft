@@ -5,6 +5,7 @@
 #include <osgEarthDrivers/tms/TMSOptions>
 #include <QDebug>
 #include <string>
+#include "updraft.h"
 #include "maps/updraftarcgistilesource.h"
 
 namespace Updraft {
@@ -121,6 +122,10 @@ osgEarth::MapNode* MapManager::getMapNode() {
 
 osgEarth::Map* MapManager::getMap() {
   return map;
+}
+
+MapObject* MapManager::getMapObject() {
+  return &mapObject;
 }
 
 QString MapManager::getName() {

@@ -3,14 +3,13 @@
 #include "pluginmanager.h"
 #include "../pluginbase.h"
 #include "../mapobject.h"
-#include "../eventinfo.h"
 
 namespace Updraft {
 namespace Core {
 
 PickAction::PickAction(
   MapObject* mapObject,
-  EventInfo* eventInfo):
+  const EventInfo& eventInfo):
   QAction(mapObject->name, NULL),
   mapObject(mapObject),
   eventInfo(eventInfo) {
@@ -23,7 +22,7 @@ void PickAction::pushPlugin(PluginBase* plugin) {
 
 void PickAction::sendEventToPlugins() {
   foreach(PluginBase* plugin, pluginList) {
-    plugin->handleClick(mapObject, eventInfo);
+    plugin->handleClick(mapObject, &eventInfo);
   }
 }
 

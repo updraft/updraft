@@ -114,6 +114,7 @@ bool TaskLayer::isTabSelected() {
   return tabSelectedState;
 }
 
+// TODO(cestmir): Remove redundancy in following two methods
 void TaskLayer::newTaskPoint(const TurnPoint* tp) {
   int tpIndex = panel->getToggledButtonIndex();
   if (tpIndex < 0) return;
@@ -122,6 +123,24 @@ void TaskLayer::newTaskPoint(const TurnPoint* tp) {
   TaskData* tData = file->beginEdit(true);
   TaskPoint* newPoint = new TaskPoint();
   newPoint->setTP(tp);
+
+  // If the task point insertion failed, remove it
+  if (!tData->insertTaskPoint(newPoint, tpIndex)) {
+    delete newPoint;
+  }
+
+  file->endEdit();
+}
+
+void TaskLayer::newTaskPoint(const Util::Location& loc) {
+  int tpIndex = panel->getToggledButtonIndex();
+  if (tpIndex < 0) return;
+
+  // Modify the file data
+  TaskData* tData = file->beginEdit(true);
+  TaskPoint* newPoint = new TaskPoint();
+  newPoint->setLocation(loc);
+  newPoint->setName(QString("Map location:") + loc.lat + " - " + loc.lon);
 
   // If the task point insertion failed, remove it
   if (!tData->insertTaskPoint(newPoint, tpIndex)) {

@@ -1,6 +1,8 @@
 #include "taskdeclaration.h"
 #include "taskdeclpanel.h"
 #include "../turnpoints/tpmapobject.h"
+#include "core/mapmapobject.h"
+#include "eventinfo.h"
 
 namespace Updraft {
 
@@ -71,7 +73,8 @@ void TaskDeclaration::deinitialize() {
 }
 
 bool TaskDeclaration::wantsToHandleClick(MapObject* obj) {
-  if (obj->getObjectTypeName() != TPMapObject::getClassName())
+  if (obj->getObjectTypeName() != TPMapObject::getClassName() &&
+      obj->getObjectTypeName() != MapMapObject::getClassName())
     return false;
 
   TaskLayer* layer = getActiveLayer();
@@ -84,10 +87,22 @@ void TaskDeclaration::handleClick(MapObject* obj, const EventInfo* evt) {
   TaskLayer* layer = getActiveLayer();
   if (!layer) return;
 
-  if (obj->getObjectTypeName() != TPMapObject::getClassName())
-    return;
-
-  layer->newTaskPoint(static_cast<TPMapObject*>(obj)->turnPoint);
+  if (obj->getObjectTypeName() == TPMapObject::getClassName()) {
+    layer->newTaskPoint(static_cast<TPMapObject*>(obj)->turnPoint);
+  } else if (obj->getObjectTypeName() == MapMapObject::getClassName()) {
+    const osg::EllipsoidModel* ellipsoidModel =
+      g_core->getEllipsoid()->getOsgEllipsoidModel();
+    Util::Location mapLoc;
+    ellipsoidModel->convertXYZToLatLongHeight(
+      evt->intersection.x(),
+      evt->intersection.y(),
+      evt->intersection.z(),
+      mapLoc.lat,
+      mapLoc.lon,
+      mapLoc.alt
+    );
+    layer->newTaskPoint(mapLoc);
+  }
   return;
 }
 

@@ -9,6 +9,7 @@
 #include <QVector>
 
 #include "ui/maplayergroup.h"
+#include "mapmapobject.h"
 
 namespace Updraft {
 namespace Core {
@@ -26,6 +27,7 @@ class MapManager {
 
   osgEarth::MapNode* getMapNode();
   osgEarth::Map* getMap();
+  MapObject* getMapObject();
 
   /// Gets all the map layers from the map.
   QVector<MapLayerInterface*> getMapLayers();
@@ -37,6 +39,7 @@ class MapManager {
   osgEarth::Map* map;
   QVector<MapLayerInterface*> mapLayers;
   MapLayerGroupInterface* mapLayerGroup;
+  MapMapObject mapObject;
 
   /// Gets a list of ImageLayers in the map.
   QVector<osgEarth::ImageLayer*> getImageLayers();
