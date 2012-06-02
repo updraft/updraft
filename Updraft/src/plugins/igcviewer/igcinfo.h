@@ -187,6 +187,7 @@ class SegmentInfo {
 
   QTime getStartTime();
   QTime getEndTime();
+
  private:
   const QList<TrackFix>* fixList;
   qreal avgSpeed(int startPosition, int endPosition);
