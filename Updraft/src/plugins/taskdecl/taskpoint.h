@@ -39,6 +39,9 @@ class TaskPoint {
   /// Sets the new location. Deletes information about assigned TurnPoint.
   void setLocation(const Util::Location &location_);
 
+  /// Sets the new name for this task point.
+  void setName(const QString& name_);
+
   /// Sets shape of the assigned area.
   void setAssignedArea(const AssignedArea &assignedArea_);
 

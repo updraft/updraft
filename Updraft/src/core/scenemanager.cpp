@@ -17,6 +17,7 @@
 #include "ui/menu.h"
 #include "../menuinterface.h"
 #include "maps/updraftarcgistilesource.h"
+#include "gimbalcompass.h"
 
 namespace Updraft {
 namespace Core {
@@ -47,7 +48,7 @@ SceneManager::SceneManager() {
 
   // create and add background
   background = new osg::ClearNode();
-  background->setClearColor(osg::Vec4(0.8f, 0.8f, 0.8f, 1.0f));
+  background->setClearColor(osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f));
   sceneRoot->addChild(background);
 
   // add basic group for nodes
@@ -57,6 +58,9 @@ SceneManager::SceneManager() {
   // add active map
   mapNode = mapManagers[activeMapIndex]->getMapNode();
   sceneRoot->addChild(mapNode);
+
+  // Make map node pickable
+  registerOsgNode(mapNode, mapManagers[activeMapIndex]->getMapObject());
 
   viewer->setSceneData(sceneRoot);
 
@@ -71,6 +75,9 @@ SceneManager::SceneManager() {
 
   menuItems();
   mapLayerGroup();
+
+  // Create the gimbal node
+  sceneRoot->addChild(new GimbalCompass());
 
   // start drawing
   timer = new QTimer(this);
@@ -241,6 +248,7 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
     if (value == true) {
       int oldIndex = activeMapIndex;
       activeMapIndex = index;
+      unregisterOsgNode(mapManagers[oldIndex]->getMapNode());
       sceneRoot->removeChild(mapManagers[oldIndex]->getMapNode());
       sceneRoot->addChild(mapManagers[activeMapIndex]->getMapNode());
 
@@ -264,6 +272,7 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
 
       viewer->setCameraManipulator(manipulator);
 
+      registerOsgNode(mapNode, mapManagers[activeMapIndex]->getMapObject());
       layers[oldIndex]->emitDisplayed(false);
       layers[activeMapIndex]->emitDisplayed(true);
     }

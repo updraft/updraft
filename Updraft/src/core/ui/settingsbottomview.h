@@ -36,7 +36,9 @@ class SettingsBottomView: public QAbstractItemView {
   void createEditors();
   QWidget* createEditorForIndex(const QModelIndex& index);
 
-  void paintEvent(QPaintEvent * event);
+  void paintEvent(QPaintEvent* event);
+  void resizeEvent(QResizeEvent* event);
+
   int horizontalOffset() const;
   bool isIndexHidden(const QModelIndex & index) const;
   QModelIndex moveCursor(CursorAction cursorAction,

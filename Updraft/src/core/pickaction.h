@@ -4,10 +4,11 @@
 #include <QtGui>
 #include <QList>
 
+#include "../eventinfo.h"
+
 namespace Updraft {
 
 class MapObject;
-class EventInfo;
 class PluginBase;
 
 namespace Core {
@@ -16,7 +17,7 @@ class PickAction: public QAction {
   Q_OBJECT
 
  public:
-  PickAction(MapObject* mapObject, EventInfo* eventInfo);
+  PickAction(MapObject* mapObject, const EventInfo& eventInfo);
   ~PickAction() {}
 
   int isEmpty() { return pluginList.size() == 0; }
@@ -27,7 +28,7 @@ class PickAction: public QAction {
 
  private:
   MapObject* mapObject;
-  EventInfo* eventInfo;
+  EventInfo eventInfo;
   QList<PluginBase*> pluginList;
 };
 
