@@ -107,8 +107,8 @@ bool OpenedFile::init(IgcViewer* viewer,
   ADD_IGCINFO(groundSpeedInfo, new GroundSpeedIgcInfo());
   ADD_IGCINFO(timeInfo, new TimeIgcInfo());
 
-  trackData = new TrackData();
-  trackData->init(&fixList);
+  segmentInfo = new SegmentInfo();
+  segmentInfo->init(&fixList);
 
   #define ADD_COLORING(name, pointer) \
     do { \
@@ -137,7 +137,7 @@ bool OpenedFile::init(IgcViewer* viewer,
   layout->setContentsMargins(0, 0, 0, 0);
 
   plotWidget = new PlotWidget(
-    trackData, altitudeInfo, verticalSpeedInfo, groundSpeedInfo);
+    segmentInfo, altitudeInfo, verticalSpeedInfo, groundSpeedInfo);
 
   textBox = new IGCTextWidget(plotWidget->getSegmentsStatTexts(),
     plotWidget->getPointsStatTexts());

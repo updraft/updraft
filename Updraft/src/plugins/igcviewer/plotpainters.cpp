@@ -73,55 +73,19 @@ void PlotPainter::computePoints() {
   // don't append to the indexes array: there are the starting indexes.
 }
 
-qreal PlotPainter::getValueAtPixelX(int x) {
+void PlotPainter::getRangeAtPixel(int x,
+  int* startIndex, int* endIndex) {
   int startPixel = axes->placeX(info->absoluteTime(0));
   int i = x - startPixel;
-  if (i < indexes.size()) {
-    return info->value(indexes[i]);
-  } else {
-    return 0;
-  }
-}
 
-int PlotPainter::getIndexAtPixelX(int x) {
-  int startPixel = axes->placeX(info->absoluteTime(0));
-  int i = x - startPixel;
-  if (i < indexes.size()) {
-    return info->value(indexes[i]);
-  } else {
-    return indexes.size();
-  }
-}
-
-qreal PlotPainter::getMeanValueAtPixels(int start, int end) {
-  if (end < start) {
-      // swap the values
-    int x = start;
-    start = end;
-    end = x;
-  }
-  int startPixel = axes->placeX(info->absoluteTime(0));
-  int s = start - startPixel;
-  int e = end - startPixel;
-
-  int startIndex = indexes[s];
-  int endIndex = (e < indexes.size() - 1) ? indexes[e+1]-1 : info->count();
-
-  qreal value = 0;
-  for (int i = startIndex; i <= endIndex; i++) {
-    value += info->value(i);
-  }
-
-  return value / (qreal)(endIndex - startIndex + 1);
-}
-
-qreal PlotPainter::getTimeAtPixelX(int x) {
-  int startPixel = axes->placeX(info->absoluteTime(0));
-  int i = x - startPixel;
-  if (i < indexes.size()) {
-    return info->absoluteTime(indexes[i]);
-  } else {
-    return 0;
+  *startIndex = *endIndex = -1;
+  if ((i < 0) || (i > indexes.size())) return;
+  if (i < indexes.size() - 1) {
+    *startIndex = indexes[i];
+    *endIndex = indexes[i+1];
+  } else {  // if it's the last pixel
+    *startIndex = indexes.last();
+    *endIndex = info->count();
   }
 }
 

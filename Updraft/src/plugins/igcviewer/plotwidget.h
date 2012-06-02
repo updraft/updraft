@@ -20,7 +20,7 @@ class PlotWidget : public QWidget {
   Q_OBJECT
 
  public:
-  PlotWidget(TrackData* trackData, IgcInfo* altitudeInfo,
+  PlotWidget(SegmentInfo* SegmentInfo, IgcInfo* altitudeInfo,
     IgcInfo* verticalSpeedInfo, IgcInfo *groundSpeedInfo);
 
   void addPickedTime(QTime time);
@@ -48,16 +48,13 @@ class PlotWidget : public QWidget {
 
   void redrawGraphPicture();
 
-  QString createPointStatText(QTime time, int xLine);
-  void updatePickedTexts(int i);
+  QString createPointStatText(QTime time, int xLine, int fixListIndex);
   QString createSegmentStatText(int startPointIndex, int endPointIndex);
+  void updatePickedTexts(int i);
   QTime getTimeFromSecs(int timeInSecs);
 
     /// The coordinate to draw the vertical line where the mouse points.
   int xLine;
-
-  /// Time [in seconds] of the picked point.
-  // int timePicked;
 
   /// The coordinate to draw the vertical line at a picked location
   /// - when user clicked on the graph.
@@ -78,7 +75,7 @@ class PlotWidget : public QWidget {
   VerticalSpeedPlotPainter* verticalSpeedPlotPainter;
   GroundSpeedPlotPainter* groundSpeedPlotPainter;
 
-  TrackData* trackData;
+  SegmentInfo* segmentInfo;
   IgcInfo* altitudeInfo;
   IgcInfo* verticalSpeedInfo;
   IgcInfo *groundSpeedInfo;

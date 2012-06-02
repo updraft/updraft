@@ -17,6 +17,8 @@ namespace Core {
 /// Map manager is a class providing functions
 /// to manipulate with the map.
 class MapManager {
+  Q_DECLARE_TR_FUNCTIONS(MapManager)
+
  public:
   MapManager();
 

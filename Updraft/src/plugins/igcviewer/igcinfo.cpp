@@ -82,6 +82,12 @@ qreal IgcInfo::absoluteTime(int i) {
   }
 }
 
+QTime IgcInfo::timestamp(int i) {
+  QTime time;
+  if ((i < 0) || (i > count())) return time;
+  return fixList->at(i).timestamp;
+}
+
 qreal IgcInfo::absoluteMaxTime() {
   return absoluteTime(count()-1);
 }
@@ -98,6 +104,15 @@ void IgcInfo::addGlobalScale(const IgcInfo* other) {
   globalMax_ = qMax(other->globalMax_, globalMax_);
   globalRobustMin_ = qMin(other->globalRobustMin_, globalRobustMin_);
   globalRobustMax_ = qMax(other->globalRobustMax_, globalRobustMax_);
+}
+
+int IgcInfo::indexOfTime(QTime time) {
+  for (int i = 0; i < count(); i++) {
+    if (fixList->at(i).timestamp == time) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 qreal AltitudeIgcInfo::value(int i) const {
@@ -177,11 +192,11 @@ qreal TimeIgcInfo::value(int i) const {
   }
 }
 
-void TrackData::init(const QList<TrackFix>* fixList_) {
+void SegmentInfo::init(const QList<TrackFix>* fixList_) {
   fixList = fixList_;
 }
 
-qreal TrackData::avgSpeed(int startPosition, int endPosition) {
+qreal SegmentInfo::avgSpeed(int startPosition, int endPosition) {
   Util::Location startLocation = fixList->at(startPosition).location;
   Util::Location endLocation = fixList->at(endPosition).location;
   QTime start = fixList->at(startPosition).timestamp;
@@ -198,7 +213,7 @@ qreal TrackData::avgSpeed(int startPosition, int endPosition) {
   return (distance / timeDiff)*3.6;
 }
 
-qreal TrackData::avgSpeed(QTime start, QTime end) {
+qreal SegmentInfo::avgSpeed(QTime start, QTime end) {
   int spos;
   int epos;
   for (int i = 0; i < fixList->count(); i++) {
@@ -212,11 +227,11 @@ qreal TrackData::avgSpeed(QTime start, QTime end) {
   return avgSpeed(spos, epos);
 }
 
-qreal TrackData::avgSpeedOverall() {
+qreal SegmentInfo::avgSpeedOverall() {
   return avgSpeed(0, fixList->count()-1);
 }
 
-qreal TrackData::avgSpeedSince(QTime start) {
+qreal SegmentInfo::avgSpeedSince(QTime start) {
   int spos;
   for (int i = 0; i < fixList->count(); i++) {
     if (fixList->at(i).timestamp == start) {
@@ -226,7 +241,7 @@ qreal TrackData::avgSpeedSince(QTime start) {
   return avgSpeed(spos, fixList->count()-1);
 }
 
-qreal TrackData::avgSpeedUntil(QTime end) {
+qreal SegmentInfo::avgSpeedUntil(QTime end) {
   int epos;
   for (int i = 0; i < fixList->count(); i++) {
     if (fixList->at(i).timestamp == end) {
@@ -236,7 +251,7 @@ qreal TrackData::avgSpeedUntil(QTime end) {
   return avgSpeed(0, epos);
 }
 
-qreal TrackData::avgRise(int startPosition, int endPosition) {
+qreal SegmentInfo::avgRise(int startPosition, int endPosition) {
   qreal startHeight = fixList->at(startPosition).location.alt;
   qreal endHeight = fixList->at(endPosition).location.alt;
   QTime start = fixList->at(startPosition).timestamp;
@@ -251,7 +266,7 @@ qreal TrackData::avgRise(int startPosition, int endPosition) {
   return ((endHeight - startHeight) / timeDiff);
 }
 
-qreal TrackData::avgRise(QTime start, QTime end) {
+qreal SegmentInfo::avgRise(QTime start, QTime end) {
   int spos;
   int epos;
   for (int i = 0; i < fixList->count(); i++) {
@@ -265,11 +280,11 @@ qreal TrackData::avgRise(QTime start, QTime end) {
   return avgRise(spos, epos);
 }
 
-qreal TrackData::avgRiseOverall() {
+qreal SegmentInfo::avgRiseOverall() {
   return avgRise(0, fixList->count()-1);
 }
 
-qreal TrackData::avgRiseSince(QTime start) {
+qreal SegmentInfo::avgRiseSince(QTime start) {
   int spos;
   for (int i = 0; i < fixList->count(); i++) {
     if (fixList->at(i).timestamp == start) {
@@ -279,7 +294,7 @@ qreal TrackData::avgRiseSince(QTime start) {
   return avgRise(spos, fixList->count()-1);
 }
 
-qreal TrackData::avgRiseUntil(QTime end) {
+qreal SegmentInfo::avgRiseUntil(QTime end) {
   int epos;
   for (int i = 0; i < fixList->count(); i++) {
     if (fixList->at(i).timestamp == end) {
@@ -289,7 +304,7 @@ qreal TrackData::avgRiseUntil(QTime end) {
   return avgRise(0, epos);
 }
 
-qreal TrackData::distance(int startPos, int endPos) {
+qreal SegmentInfo::distance(int startPos, int endPos) {
   Util::Location startLocation = fixList->at(startPos).location;
   Util::Location endLocation = fixList->at(endPos).location;
 
@@ -299,7 +314,7 @@ qreal TrackData::distance(int startPos, int endPos) {
   return dist;
 }
 
-qreal TrackData::distance(QTime start, QTime end) {
+qreal SegmentInfo::distance(QTime start, QTime end) {
   int startPos;
   int endPos;
   for (int i = 0; i < fixList->count(); i++) {
@@ -313,11 +328,11 @@ qreal TrackData::distance(QTime start, QTime end) {
   return distance(startPos, endPos);
 }
 
-qreal TrackData::distanceOverall() {
+qreal SegmentInfo::distanceOverall() {
   return distance(0, fixList->count()-1);
 }
 
-qreal TrackData::distanceSince(QTime start) {
+qreal SegmentInfo::distanceSince(QTime start) {
   int startPos;
   for (int i = 0; i < fixList->count(); i++) {
     if (fixList->at(i).timestamp == start) {
@@ -327,7 +342,7 @@ qreal TrackData::distanceSince(QTime start) {
   return distance(startPos, fixList->count()-1);
 }
 
-qreal TrackData::distanceUntil(QTime end) {
+qreal SegmentInfo::distanceUntil(QTime end) {
   int endPos;
   for (int i = 0; i < fixList->count(); i++) {
     if (fixList->at(i).timestamp == end) {
@@ -337,11 +352,55 @@ qreal TrackData::distanceUntil(QTime end) {
   return distance(0, endPos);
 }
 
-QTime TrackData::getStartTime() {
+
+qreal SegmentInfo::heightDifference(int startPos, int endPos) {
+  return fixList->at(endPos).location.alt - fixList->at(endPos).location.alt;
+}
+
+qreal SegmentInfo::heightDifference(QTime start, QTime end) {
+  int startPos;
+  int endPos;
+  for (int i = 0; i < fixList->count(); i++) {
+    if (fixList->at(i).timestamp == start) {
+      startPos = i;
+    }
+    if (fixList->at(i).timestamp == end) {
+      endPos = i;
+    }
+  }
+  return heightDifference(startPos, endPos);
+}
+
+qreal SegmentInfo::heightDifferenceOverall() {
+  return heightDifference(0, fixList->count()-1);
+}
+
+qreal SegmentInfo::heightDifferenceSince(QTime start) {
+  int startPos;
+  for (int i = 0; i < fixList->count(); i++) {
+    if (fixList->at(i).timestamp == start) {
+      startPos = i;
+    }
+  }
+  return heightDifference(startPos, fixList->count()-1);
+}
+
+qreal SegmentInfo::heightDifferenceUntil(QTime end) {
+  int endPos;
+  for (int i = 0; i < fixList->count(); i++) {
+    if (fixList->at(i).timestamp == end) {
+      endPos = i;
+    }
+  }
+  return heightDifference(0, endPos);
+}
+
+
+QTime SegmentInfo::getStartTime() {
   return fixList->first().timestamp;
 }
 
-QTime TrackData::getEndTime() {
+QTime SegmentInfo::getEndTime() {
   return fixList->last().timestamp;
 }
 

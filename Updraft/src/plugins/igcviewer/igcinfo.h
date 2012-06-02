@@ -40,25 +40,31 @@ class IgcInfo {
   /// \param fixList List of fixes, usable for scaling, smoothing, ...
   virtual void init(const QList<TrackFix> *fixList);
 
-  //// Get the raw value of item number i.
-  //// \pre i >= 0 && i < this->count()
+  /// Get the raw value of item number i.
+  /// \pre i >= 0 && i < this->count()
   virtual qreal value(int i) const = 0;
 
-  //// Get the relative time of item i.
+  /// Return the index of the item with the given timestamp.
+  virtual int indexOfTime(QTime time);
+
+  //// Get the relative time in seconds of item i.
   //// \pre i >= 0 && i < this->count()
   qreal time(int i) const;
 
-  /// Return relative time of the last item.
+  /// Return relative time in seconds of the last item.
   qreal maxTime() const { return time(count() - 1); }
 
-  //// Get the absolute time of item i.
+  //// Get the absolute time in seconds of item i.
   //// \pre i >= 0 && i < this->count()
   qreal absoluteTime(int i);
 
-  /// Return absolute time of the last item.
+  /// Get absolute timestamp of item i.
+  QTime timestamp(int i);
+
+  /// Return absolute time in seconds of the last item.
   qreal absoluteMaxTime();
 
-  /// Return absolute time of the first item.
+  /// Return absolute time in seconds of the first item.
   qreal absoluteMinTime();
 
   /// Forget any values previously associated with the global scale.
@@ -159,7 +165,7 @@ class TimeIgcInfo : public IgcInfo {
  private:
 };
 
-class TrackData {
+class SegmentInfo {
  public:
   void init(const QList<TrackFix>* fixList_);
   qreal avgSpeed(QTime start, QTime end);
@@ -174,6 +180,10 @@ class TrackData {
   qreal distanceOverall();
   qreal distanceSince(QTime start);
   qreal distanceUntil(QTime end);
+  qreal heightDifference(QTime start, QTime end);
+  qreal heightDifferenceOverall();
+  qreal heightDifferenceSince(QTime start);
+  qreal heightDifferenceUntil(QTime end);
 
   QTime getStartTime();
   QTime getEndTime();
@@ -182,6 +192,7 @@ class TrackData {
   qreal avgSpeed(int startPosition, int endPosition);
   qreal avgRise(int startPosition, int endPosition);
   qreal distance(int startPosition, int endPosition);
+  qreal heightDifference(int startPosition, int endPosition);
 };
 
 }  // End namespace IgcViewer

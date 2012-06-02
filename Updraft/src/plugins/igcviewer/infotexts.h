@@ -9,9 +9,17 @@ namespace Updraft {
 namespace IgcViewer {
 
 struct PickData {
-  PickData(int x, QTime t): xLine(x), time(t) {}
+  PickData(int xLine_, QTime time_, int infoIndex_)
+    : xLine(xLine_), time(time_), infoIndex(infoIndex_) {}
+
+  /// x-coordinate of the pixel in the graph.
   int xLine;
+
+  /// Time of the picked fix.
   QTime time;
+
+  /// Index of the fix in the fix list.
+  int infoIndex;
 };
 
 class PickedLabel : public Label {

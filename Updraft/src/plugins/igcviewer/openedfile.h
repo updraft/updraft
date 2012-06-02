@@ -124,7 +124,7 @@ class OpenedFile: public QObject {
   IgcInfo* groundSpeedInfo;
   IgcInfo* timeInfo;
 
-  TrackData* trackData;
+  SegmentInfo* segmentInfo;
 
   Util::Gradient gradient;
 };

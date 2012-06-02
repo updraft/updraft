@@ -23,12 +23,10 @@ class PlotPainter : public QObject {
   void init(PlotAxes *axes, IgcInfo *info);
 
   virtual void draw(QPainter* painter);
-  virtual qreal getValueAtPixelX(int x);
-  virtual qreal getMeanValueAtPixels(int start, int end);
-  virtual int getIndexAtPixelX(int x);
 
-  /// returns time at pixel x in seconds
-  virtual qreal getTimeAtPixelX(int x);
+  /// Returns the index range of the igc info for pixel x.
+  virtual void getRangeAtPixel(int x,
+    int* startIndex, int* endIndex);
 
   int getMinX();
   int getMaxX();

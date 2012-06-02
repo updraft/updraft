@@ -11,7 +11,8 @@ namespace Core {
 
 MapManager::MapManager() {
   this->map = new osgEarth::Map();
-  this->map->setName("Empty globe");
+  QString name = tr("Empty globe");
+  this->map->setName(name.toStdString());
   this->mapNode = new osgEarth::MapNode(this->map);
 
   this->manipulator = new MapManipulator();
@@ -26,7 +27,8 @@ MapManager::MapManager(QString earthFile, QString mapName) {
     this->map->setName(mapName.toStdString());
   } else {
     this->map = new osgEarth::Map();
-    this->map->setName("Empty globe");
+    QString name = tr("Empty globe");
+    this->map->setName(name.toStdString());
     this->mapNode = new osgEarth::MapNode(this->map);
   }
     // initialize the manipulator
