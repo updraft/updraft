@@ -10,9 +10,12 @@ namespace Updraft {
 namespace Core {
 
 MapManager::MapManager() {
-  this->mapNode = NULL;
-  this->map = NULL;
-  this->manipulator = NULL;
+  this->map = new osgEarth::Map();
+  this->map->setName("Empty globe");
+  this->mapNode = new osgEarth::MapNode(this->map);
+
+  this->manipulator = new MapManipulator();
+  manipulator->setNode(mapNode);
 }
 
 MapManager::MapManager(QString earthFile, QString mapName) {

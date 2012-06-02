@@ -203,7 +203,7 @@ void SceneManager::unregisterOsgNode(osg::Node* node) {
 }
 
 osgEarth::Util::ElevationManager* SceneManager::createElevationManager() {
-  osgEarth::Util::ElevationManager* e;
+  osgEarth::Util::ElevationManager* e = NULL;
   for (int i = 0; i < mapManagers.size(); i++) {
     if (mapManagers[i]->hasElevation()) {
       e = new osgEarth::Util::ElevationManager(
@@ -355,46 +355,14 @@ void SceneManager::createMapManagers() {
   mapManagers.append(
     new MapManager(updraft->getDataDirectory() + "/initial1.earth",
       tr("OpenStreetMaps")));
-  {
-    MapManager* managerImagery = new MapManager(updraft->getDataDirectory()
-      + "/initial2.earth", tr("ArcGIS, Satellite Imagery"));
-      // add image layer with our own driver:
-    osgEarth::Drivers::ArcGISOptions opt;
-    opt.url() =
-      "http://server.arcgisonline.com/ArcGIS/rest/"
-      "services/ESRI_Imagery_World_2D/MapServer";
-    UpdraftArcGisTileSource* source =
-      new UpdraftArcGisTileSource(opt);
+  mapManagers.append(
+    new MapManager(updraft->getDataDirectory() + "/initial2.earth",
+      tr("ArcGIS, Satellite Imagery")));
+  mapManagers.append(
+    new MapManager(updraft->getDataDirectory() + "/initial3.earth",
+      tr("ArcGIS, Topographic Map")));
 
-    osgEarth::ImageLayerOptions* imOpt =
-      new osgEarth::ImageLayerOptions("Satellite map", opt);
-
-    osgEarth::ImageLayer* onlineMaps =
-      new osgEarth::ImageLayer(*imOpt, source);
-
-    managerImagery->getMap()->insertImageLayer(onlineMaps, 0);
-    mapManagers.append(managerImagery);
-  }
-  {
-    MapManager* managerTopographic = new MapManager(updraft->getDataDirectory()
-      + "/initial3.earth", tr("ArcGIS, Topographic Map"));
-    osgEarth::Drivers::ArcGISOptions opt;
-    opt.url() =
-      "http://server.arcgisonline.com/ArcGIS/rest/"
-      "services/World_Topo_Map/MapServer";
-    UpdraftArcGisTileSource* source =
-      new UpdraftArcGisTileSource(opt);
-
-    osgEarth::ImageLayerOptions* imOpt =
-      new osgEarth::ImageLayerOptions("Satellite map", opt);
-
-    osgEarth::ImageLayer* onlineMaps =
-      new osgEarth::ImageLayer(*imOpt, source);
-
-    managerTopographic->getMap()->insertImageLayer(onlineMaps, 0);
-    mapManagers.append(managerTopographic);
-  }
-
+  // mapManagers.append(new MapManager());
   activeMapIndex = 0;
 }
 

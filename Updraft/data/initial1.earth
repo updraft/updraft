@@ -5,7 +5,7 @@ Please note that use of ESRI's free maps is subject to certain restrictions:
 http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
 -->
 
-<map name="Open Street Maps" type="geocentric">
+<map name="OpenStreetMaps" type="geocentric">
     
     <cache type="filesystem">
       <path>osgearth_cache_osm</path>
@@ -17,12 +17,9 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
     
     <lighting>false</lighting>
 
-    <image name="OSM on Mapnik Slippy Map" driver="tms">
-        <url>http://tile.openstreetmap.org/</url>
-        <profile>global-mercator</profile>
-        <format>png</format>
-        <tile_size>256</tile_size>
-        <tms_type>google</tms_type>
+    <image name="OSM on Mapnik Slippy Map" driver="xyz">
+        <url>http://[abc].tile.openstreetmap.org/{z}/{x}/{y}.png</url>
+        <profile>spherical-mercator</profile>
     </image>    
 </map>
 
