@@ -17,7 +17,6 @@
 #include "ui/menu.h"
 #include "../menuinterface.h"
 #include "maps/updraftarcgistilesource.h"
-#include "gimbalcompass.h"
 
 namespace Updraft {
 namespace Core {
@@ -75,9 +74,6 @@ SceneManager::SceneManager() {
 
   menuItems();
   mapLayerGroup();
-
-  // Create the gimbal node
-  sceneRoot->addChild(new GimbalCompass());
 
   // start drawing
   timer = new QTimer(this);

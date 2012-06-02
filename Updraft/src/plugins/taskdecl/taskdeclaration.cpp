@@ -99,11 +99,10 @@ void TaskDeclaration::handleClick(MapObject* obj, const EventInfo* evt) {
       evt->intersection.z(),
       mapLoc.lat,
       mapLoc.lon,
-      mapLoc.alt
-    );
+      mapLoc.alt);
     mapLoc.lat = mapLoc.lat / 3.14 * 180;
     mapLoc.lon = mapLoc.lon / 3.14 * 180;
-    mapLoc.alt += 500; 
+    mapLoc.alt += 500;
     layer->newTaskPoint(mapLoc);
   }
   return;
