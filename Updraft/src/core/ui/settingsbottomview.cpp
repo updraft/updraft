@@ -11,7 +11,13 @@ SettingsBottomView::SettingsBottomView(QWidget* parent) {
   pal.setColor(QPalette::Base, pal.color(QPalette::Window));
   setPalette(pal);
 
-  stack = new QStackedWidget(this);
+  QVBoxLayout* layout = new QVBoxLayout();
+  layout->setContentsMargins(0, 0, 0, 0);
+
+  stack = new QStackedWidget();
+  layout->addWidget(stack);
+
+  this->setLayout(layout);
 
   createEditors();
 }
@@ -34,7 +40,8 @@ QRect SettingsBottomView::visualRect(const QModelIndex& index) const {
 }
 
 bool SettingsBottomView::editorValuesChanged() {
-  QWidget* page = stack->currentWidget();
+  QScrollArea* scrollArea = qobject_cast<QScrollArea*>(stack->currentWidget());
+  QWidget* page = scrollArea->widget();
   QGridLayout* layout = qobject_cast<QGridLayout*>(page->layout());
   QModelIndex pageIndex = model()->index(stack->currentIndex(), 0);
 
@@ -72,7 +79,8 @@ void SettingsBottomView::commit() {
   int pages = stack->count();
 
   for (int p = 0; p < pages; ++p) {
-    QWidget* page = stack->widget(p);
+    QScrollArea* scrollArea = qobject_cast<QScrollArea*>(stack->widget(p));
+    QWidget* page = scrollArea->widget();
     QGridLayout* layout = qobject_cast<QGridLayout*>(page->layout());
     QModelIndex pageIndex = model()->index(p, 0);
 
@@ -90,7 +98,8 @@ void SettingsBottomView::reset() {
   int pages = stack->count();
 
   for (int p = 0; p < pages; ++p) {
-    QWidget* page = stack->widget(p);
+    QScrollArea* scrollArea = qobject_cast<QScrollArea*>(stack->widget(p));
+    QWidget* page = scrollArea->widget();
     QGridLayout* layout = qobject_cast<QGridLayout*>(page->layout());
     QModelIndex pageIndex = model()->index(p, 0);
 
@@ -119,23 +128,47 @@ void SettingsBottomView::createEditors() {
     layout = new QGridLayout();
 
     index = model()->index(page, 0);
-    for (int row = 0; row < model()->rowCount(index); ++row) {
+    int row;
+    for (row = 0; row < model()->rowCount(index); ++row) {
       QModelIndex child = model()->index(row, 0, index);
 
       QVariant descData = model()->data(child, Qt::DisplayRole);
       QLabel* label = new QLabel(descData.toString(), NULL);
+      label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
       layout->addWidget(label, row, 0);
 
       QWidget* editor = createEditorForIndex(child);
-
+      editor->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
       layout->addWidget(editor, row, 1);
+
       editor->show();
     }
 
-    QWidget* page = new QWidget(NULL);
+    // Adding a stretcher
+    QWidget* dummy = new QWidget();
+    layout->addWidget(dummy, row, 0);
+    layout->setRowStretch(row, 1);
+
+    // Setting space on the page
+    layout->setHorizontalSpacing(5);
+    layout->setVerticalSpacing(5);
+    layout->setContentsMargins(5, 5, 5, 5);
+
+    QScrollArea* scrollArea = new QScrollArea();
+
+    QWidget* page = new QWidget();
     page->setLayout(layout);
-    stack->addWidget(page);
+    page->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+    page->setMinimumSize(0, 0);
+
+    scrollArea->setFrameStyle(QFrame::NoFrame);
+    scrollArea->setWidget(page);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    stack->addWidget(scrollArea);
   }
+
+  this->layout()->addWidget(stack);
 }
 
 QWidget* SettingsBottomView::createEditorForIndex(const QModelIndex& index) {
@@ -151,7 +184,25 @@ QWidget* SettingsBottomView::createEditorForIndex(const QModelIndex& index) {
   return editor;
 }
 
-void SettingsBottomView::paintEvent(QPaintEvent * event) {}
+void SettingsBottomView::paintEvent(QPaintEvent * event) {
+  int pages = stack->count();
+
+  for (int p = 0; p < pages; ++p) {
+    QScrollArea* scrollArea = qobject_cast<QScrollArea*>(stack->widget(p));
+    QWidget* page = scrollArea->widget();
+    page->setFixedWidth(scrollArea->width());
+  }
+}
+
+void SettingsBottomView::resizeEvent(QResizeEvent* event) {
+  int pages = stack->count();
+
+  for (int p = 0; p < pages; ++p) {
+    QScrollArea* scrollArea = qobject_cast<QScrollArea*>(stack->widget(p));
+    QWidget* page = scrollArea->widget();
+    page->setFixedWidth(scrollArea->width());
+  }
+}
 
 int SettingsBottomView::horizontalOffset() const {
   return 0;
@@ -197,7 +248,8 @@ void SettingsBottomView::dataChanged(
     return;
   }
 
-  QWidget* page = stack->widget(parent.row());
+  QScrollArea* scrollArea = qobject_cast<QScrollArea*>(stack->widget(parent.row()));
+  QWidget* page = scrollArea->widget();
   QGridLayout* layout = qobject_cast<QGridLayout*>(page->layout());
   QWidget* widget;
   QLayoutItem* item;
@@ -234,9 +286,23 @@ void SettingsBottomView::rowsInserted(
 
   if (!parent.isValid()) {
     layout = new QGridLayout();
-    page = new QWidget(NULL);
+
+    layout->setHorizontalSpacing(5);
+    layout->setVerticalSpacing(5);
+    layout->setContentsMargins(5, 5, 5, 5);
+
+    QScrollArea* scrollArea = new QScrollArea();
+
+    page = new QWidget();
     page->setLayout(layout);
-    stack->addWidget(page);
+    page->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+    page->setMinimumSize(0, 0);
+
+    scrollArea->setFrameStyle(QFrame::NoFrame);
+    scrollArea->setWidget(page);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    stack->addWidget(scrollArea);
   }
 
   // Invalid insertion index will mark insertion of a group
