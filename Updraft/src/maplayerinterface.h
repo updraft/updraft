@@ -3,6 +3,7 @@
 
 class QObject;
 class QTreeWidgetItem;
+class QPoint;
 
 namespace Updraft {
 
@@ -17,11 +18,16 @@ class MapLayerInterface {
  public:
   virtual ~MapLayerInterface() {}
 
-  /// Connects to a signal checked(MapLayerInterface*, bool):
+  /// Connects to a signal checked(bool, MapLayerInterface*):
   /// map layer is selected / diselected in the left panel.
   /// \see QObject::connect()
   virtual void connectSignalChecked(const QObject* receiver,
     const char *method) = 0;
+
+  /// Connects to a signal contextMenuRequested(QPoint, MapLayerInterface*)
+  /// \see QObject::connect()
+  virtual void connectSignalContextMenuRequested(const QObject* receiver,
+    const char* method) = 0;
 
   /// Connects to a slot setVisibility(bool) -- map layer sets
   /// the visibility to the layer in the scene graph.
@@ -54,6 +60,7 @@ class MapLayerInterface {
 
  protected:
   virtual void emitChecked(bool value) = 0;
+  virtual void emitContextMenuRequested(const QPoint& pos) = 0;
 
   /// Add the map layer to the osg group of the map layer group.
   virtual void addToScene(Core::MapLayerGroup *group) = 0;
