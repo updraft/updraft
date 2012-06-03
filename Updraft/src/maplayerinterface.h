@@ -2,12 +2,13 @@
 #define UPDRAFT_SRC_MAPLAYERINTERFACE_H_
 
 class QObject;
+class QTreeWidgetItem;
 
 namespace Updraft {
 
 namespace Core {
   class MapLayerGroup;
-  class SceneManager;
+  class MainWindow;
 }
 
 /// An interface to a map layer that is used by plugins.
@@ -15,12 +16,6 @@ namespace Core {
 class MapLayerInterface {
  public:
   virtual ~MapLayerInterface() {}
-
-  /// Connects to a signal displayed(MapLayerInterface*, bool):
-  /// map layer shown / hidden state in the scene has been changed.
-  /// \see QObject::connect()
-  virtual void connectSignalDisplayed(const QObject* receiver,
-    const char *method) = 0;
 
   /// Connects to a signal checked(MapLayerInterface*, bool):
   /// map layer is selected / diselected in the left panel.
@@ -40,22 +35,38 @@ class MapLayerInterface {
   /// visibility.
   virtual void connectCheckedToVisibility() = 0;
 
+  /// Change the title of this map layer.
+  virtual void setTitle(const QString& title) = 0;
+
+  /// Check or uncheck the tree view checkbox
+  virtual void setChecked(bool value) = 0;
+
+  /// Allows to disable the check box.
+  virtual void setCheckable(bool value) = 0;
+
   /// Sets visibility to the layer.
-  /// Implementation of this method must emit the displayed()
-  /// signal.
-  virtual void setVisible(bool value) = 0;
+  virtual void setVisibility(bool value) = 0;
 
   virtual bool isVisible() = 0;
 
-  friend class Core::SceneManager;
   friend class Core::MapLayerGroup;
+  friend class Core::MainWindow;
 
- private:
+ protected:
   virtual void emitChecked(bool value) = 0;
-  virtual void emitDisplayed(bool value) = 0;
 
+  /// Add the map layer to the osg group of the map layer group.
   virtual void addToScene(Core::MapLayerGroup *group) = 0;
+
+  /// Remove the layer from the osg group of the map layer group.
   virtual void removeFromScene(Core::MapLayerGroup *group) = 0;
+
+  /// Return the tree widget item corresponding to this map layer.
+  virtual QTreeWidgetItem* getTreeItem() = 0;
+
+  /// Notify the map layer that it was inserted into a group.
+  virtual void inserted(Core::MapLayerGroup* parent) = 0;
+  virtual void setDisabled(bool disabled) = 0;
 };
 
 }  // End namespace Updraft

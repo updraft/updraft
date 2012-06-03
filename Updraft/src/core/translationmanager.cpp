@@ -22,6 +22,7 @@ TranslationManager::TranslationManager() {
     "",  // description is given after a language file is loaded
     defaultValue,
     false);
+  languageSetting->setNeedsRestart(true);
 
   addTranslations(updraft->getTranslationDirectory());
 

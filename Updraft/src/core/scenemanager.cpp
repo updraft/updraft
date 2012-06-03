@@ -51,7 +51,8 @@ SceneManager::SceneManager() {
   sceneRoot->addChild(background);
 
   // add basic group for nodes
-  simpleGroup = new osg::Group();
+  simpleGroup = updraft->mainWindow->getInvisibleRootMapLayerGroup()->
+    getNodeGroup();
   sceneRoot->addChild(simpleGroup);
 
   // add active map
@@ -74,6 +75,8 @@ SceneManager::SceneManager() {
 
   menuItems();
   mapLayerGroup();
+
+  placer = new osgEarth::Util::ObjectPlacer(mapNode, 0, false);
 
   // start drawing
   timer = new QTimer(this);
@@ -105,27 +108,20 @@ void SceneManager::menuItems() {
 }
 
 void SceneManager::mapLayerGroup() {
-  osgEarth::MapNode* map = getMapNode();
-  osg::Group* group = newGroup();
-  // TODO(Maria): Get name from the .earth file.
-  // QString title = QString::fromStdString(map->getMap()->getName());
-  MapLayerGroupInterface* mapLayerGroup =
-    updraft->mainWindow->createMapLayerGroup(tr("Maps"), group, map);
+  MapLayerGroupInterface* mapLayerGroup = updraft->mainWindow->
+    getInvisibleRootMapLayerGroup()->createMapLayerGroup(tr("Maps"));
+  mapLayerGroup->setCheckable(false);
 
   for (int i = 0; i < mapManagers.size(); i++) {
     MapManager *manager = mapManagers[i];
 
-    MapLayerInterface* layer = mapLayerGroup->insertExistingMapLayer(
+    MapLayerInterface* layer = mapLayerGroup->createMapLayerNoInsert(
       manager->getMapNode(), manager->getName());
 
     layer->connectSignalChecked(
       this, SLOT(checkedMap(bool, MapLayerInterface*)));
 
-    if (i == activeMapIndex) {
-      layer->emitDisplayed(true);
-    } else {
-      layer->emitDisplayed(false);
-    }
+    layer->setChecked(i == activeMapIndex);
 
     layers.append(layer);
   }
@@ -141,6 +137,8 @@ SceneManager::~SceneManager() {
   foreach(MapManager *m, mapManagers) {
     delete m;
   }
+
+  delete placer;
 }
 
 QWidget* SceneManager::getWidget() {
@@ -173,12 +171,6 @@ void SceneManager::redrawScene() {
     updateCameraOrtho(camera);
   }
   viewer->frame();
-}
-
-osg::Group* SceneManager::newGroup() {
-  osg::Group* group = new osg::Group();
-  sceneRoot->addChild(group);
-  return group;
 }
 
 bool SceneManager::removeGroup(osg::Group* group) {
@@ -236,7 +228,7 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
       // cannot uncheck the active map
     if (value == false) {
       // force the chcekbox to be visible
-      layers[index]->emitDisplayed(true);
+      layers[index]->setChecked(true);
     }
   } else {
     // checked non active map
@@ -269,8 +261,8 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
       viewer->setCameraManipulator(manipulator);
 
       registerOsgNode(mapNode, mapManagers[activeMapIndex]->getMapObject());
-      layers[oldIndex]->emitDisplayed(false);
-      layers[activeMapIndex]->emitDisplayed(true);
+      layers[oldIndex]->setChecked(false);
+      layers[activeMapIndex]->setChecked(true);
     }
   }
 }
@@ -369,6 +361,10 @@ void SceneManager::createMapManagers() {
 
   // mapManagers.append(new MapManager());
   activeMapIndex = 0;
+}
+
+osgEarth::Util::ObjectPlacer* SceneManager::getObjectPlacer() {
+  return placer;
 }
 
 }  // end namespace Core

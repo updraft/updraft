@@ -33,6 +33,8 @@ class SettingsDialog: public QDialog {
   void buttonBoxClicked(QAbstractButton* button);
   void hideCheckboxToggled();
 
+  void restartNeeded(bool needed);
+
  protected:
   Ui::SettingsDialog* ui;
 

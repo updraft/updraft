@@ -38,21 +38,29 @@ MainWindow::MainWindow(QWidget *parent)
   menuMapObject = new Menu(qContextMenu, true);
 
   standardMenuItems();
+
+  invisibleRootMapLayerGroup = new MapLayerGroup(
+    ui->treeWidget_2->invisibleRootItem());
+  connect(ui->treeWidget_2, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
+    this, SLOT(mapLayerItemChanged(QTreeWidgetItem*)));
 }
 
 MainWindow::~MainWindow() {
-    delete menuHelp;
-    delete menuTools;
-    delete menuView;
-    delete menuFile;
-    delete menuContext;
-    delete menuMapObject;
-    delete ui;
+  delete menuHelp;
+  delete menuTools;
+  delete menuView;
+  delete menuFile;
+  delete menuContext;
+  delete menuMapObject;
 
-    // TODO(Kuba): Delete the built-in menus together with custom menus?
-    foreach(Menu* menu, customMenus) {
-        delete menu;
-    }
+  delete invisibleRootMapLayerGroup;
+
+  delete ui;
+
+  // TODO(Kuba): Delete the built-in menus together with custom menus?
+  foreach(Menu* menu, customMenus) {
+      delete menu;
+  }
 }
 
 Menu* MainWindow::getSystemMenu(SystemMenu menu) {
@@ -121,11 +129,6 @@ Menu* MainWindow::createMenu(QString title) {
   ui->menuBar->addMenu(qMenu);
 
   return newMenu;
-}
-
-MapLayerGroupInterface* MainWindow::createMapLayerGroup(const QString &title,
-  osg::Group* nodeGroup, osgEarth::MapNode* map) {
-  return new MapLayerGroup(ui->treeWidget_2, title, nodeGroup, map);
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
@@ -198,6 +201,23 @@ void MainWindow::setMapWidget(QWidget *widget) {
 
 QWidget* MainWindow::getMapWidget() {
   return (ui->layoutFrame->itemAt(0)->widget());
+}
+
+void MainWindow::mapLayerItemChanged(QTreeWidgetItem *item) {
+  MapLayerInterface *mapLayer = mapLayers[item];
+  mapLayer->emitChecked(item->checkState(0) == Qt::Checked);
+}
+
+MapLayerGroup* MainWindow::getInvisibleRootMapLayerGroup() {
+  return invisibleRootMapLayerGroup;
+}
+
+void MainWindow::registerMapLayer(MapLayerInterface* layer) {
+  mapLayers.insert(layer->getTreeItem(), layer);
+}
+
+void MainWindow::unregisterMapLayer(MapLayerInterface* layer) {
+  mapLayers.remove(layer->getTreeItem());
 }
 
 }  // End namespace Core

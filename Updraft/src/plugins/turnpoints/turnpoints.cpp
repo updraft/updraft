@@ -101,7 +101,7 @@ void TurnPoints::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
   // First try to display/enable layer in Turnpoints plugin.
   // Then if it is displayed, show it also in the map.
   itLayer.value()->display(value);
-  sender->setVisible(itLayer.value()->isDisplayed());
+  sender->setVisibility(itLayer.value()->isDisplayed());
 }
 
 void TurnPoints::loadImportedFiles() {
@@ -140,8 +140,9 @@ void TurnPoints::addLayer(TPFile *file) {
 
   // Create new mapLayer in mapLayerGroup, assign osgNode and file name.
   Updraft::MapLayerInterface* mapLayer =
-    mapLayerGroup->insertMapLayer(turnPointsLayer->getNode(),
+    mapLayerGroup->createMapLayer(turnPointsLayer->getNode(),
       file->getFileName(), -1);
+    mapLayerGroup->connectCheckedToVisibility();
 
   layers.insert(mapLayer, turnPointsLayer);
 

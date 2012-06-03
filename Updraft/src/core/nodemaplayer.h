@@ -14,9 +14,10 @@ class NodeMapLayer: public MapLayer {
   Q_OBJECT
 
  public:
-  explicit NodeMapLayer(osg::Node* node);
+  NodeMapLayer(const QString &title, osg::Node* node);
+  ~NodeMapLayer();
 
-  void setVisible(bool value);
+  void setVisibility(bool value);
   bool isVisible();
 
  private:

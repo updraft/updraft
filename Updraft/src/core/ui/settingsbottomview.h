@@ -32,6 +32,9 @@ class SettingsBottomView: public QAbstractItemView {
   void commit();
   void reset();
 
+ signals:
+  void restartInfo(bool needsRestart);
+
  protected:
   void createEditors();
   QWidget* createEditorForIndex(const QModelIndex& index);
@@ -47,6 +50,8 @@ class SettingsBottomView: public QAbstractItemView {
     QItemSelectionModel::SelectionFlags flags);
   int verticalOffset() const;
   QRegion visualRegionForSelection(const QItemSelection & selection) const;
+
+  bool someSettingNeedsRestart();
 
  protected slots:
   void commitData(QWidget* editor);

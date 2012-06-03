@@ -14,9 +14,10 @@ namespace Ui { class MainWindow; }
 
 namespace Updraft {
 
-class MapLayerGroup;
-
 namespace Core {
+
+class MapLayerGroup;
+class MapLayer;
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
@@ -34,10 +35,14 @@ class MainWindow : public QMainWindow {
   void setMapWidget(QWidget *widget);
   QWidget* getMapWidget();
 
-  /// This method creates new map layer group.
-  /// It is wrapped by CoreInterface::createMapLayerGroup.
-  MapLayerGroupInterface* createMapLayerGroup(const QString &title,
-    osg::Group* nodeGroup, osgEarth::MapNode* map);
+  /// Returns the invisible top level MapLayerGroup.
+  MapLayerGroup* getInvisibleRootMapLayerGroup();
+
+  /// Add a map layer and its tree widget item to the list of map layers.
+  void registerMapLayer(MapLayerInterface* layer);
+
+  /// Remove a map layer and its tree widget item from the list of map layers.
+  void unregisterMapLayer(MapLayerInterface* layer);
 
  private slots:
   /// Called when any tab is about to close.
@@ -62,6 +67,8 @@ class MainWindow : public QMainWindow {
   /// Handles Help->About... menu action.
   void showAboutDialog();
 
+  void mapLayerItemChanged(QTreeWidgetItem *item);
+
  protected:
   // TODO(cestmir): Just a temporary method to test context menu
   void contextMenuEvent(QContextMenuEvent* event);
@@ -70,6 +77,8 @@ class MainWindow : public QMainWindow {
   /// Adds the standard menu items to menu.
   /// This includes Open File, Exit, Help ...
   void standardMenuItems();
+
+  MapLayerGroup *invisibleRootMapLayerGroup;
 
   /// Adjusts the visibility of the bottom pane.
   /// Shows it when there are any tabs to display, otherwise hides it.
@@ -88,6 +97,8 @@ class MainWindow : public QMainWindow {
   Tab* activeTab;
 
   QSet<Menu*> customMenus;
+
+  QMap<QTreeWidgetItem*, MapLayerInterface *> mapLayers;
 };
 
 }  // End namespace Core
