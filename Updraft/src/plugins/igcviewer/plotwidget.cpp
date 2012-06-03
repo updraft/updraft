@@ -17,8 +17,8 @@ const QPen PlotWidget::GROUND_SPEED_PEN= QPen(Qt::yellow);
 const QPen PlotWidget::MOUSE_LINE_PEN = QPen(QColor(150, 150, 150));
 const QPen PlotWidget::MOUSE_LINE_PICKED_PEN = QPen(QColor(200, 200, 200));
 
-PlotWidget::PlotWidget(SegmentInfo* segmentInfo, IgcInfo* altitudeInfo,
-  IgcInfo* verticalSpeedInfo, IgcInfo *groundSpeedInfo)
+PlotWidget::PlotWidget(SegmentInfo* segmentInfo, FixInfo* altitudeInfo,
+  FixInfo* verticalSpeedInfo, FixInfo *groundSpeedInfo)
   :segmentInfo(segmentInfo), altitudeInfo(altitudeInfo),
   verticalSpeedInfo(verticalSpeedInfo), groundSpeedInfo(groundSpeedInfo) {
     // set mouse tracking
@@ -96,7 +96,7 @@ PlotWidget::PlotWidget(SegmentInfo* segmentInfo, IgcInfo* altitudeInfo,
   layout->addItem(verticalSpeedLabel, 6, 0);
   labels.append(verticalSpeedLabel);
 
-  pickedLabel = new PickedLabel(&pickedPoints, &segmentsStatTexts);
+  pickedLabel = new PickedLabel(&pickedFixes, &segmentsStatTexts);
   layout->addItem(pickedLabel, 7, 1);
   labels.append(pickedLabel);
 
@@ -111,11 +111,11 @@ void PlotWidget::paintEvent(QPaintEvent* paintEvent) {
   painter.setRenderHint(QPainter::Antialiasing);
 
     // draw picked line:
-  if (!pickedPoints.empty()) {
+  if (!pickedFixes.empty()) {
     painter.setPen(MOUSE_LINE_PICKED_PEN);
-    for (int i = 0; i < pickedPoints.size(); i++) {
-      painter.drawLine(QPoint(pickedPoints[i].xLine, 0),
-        QPoint(pickedPoints[i].xLine, pickedLabel->geometry().top()));
+    for (int i = 0; i < pickedFixes.size(); i++) {
+      painter.drawLine(QPoint(pickedFixes[i].xLine, 0),
+        QPoint(pickedFixes[i].xLine, pickedLabel->geometry().top()));
     }
   }
   if (mouseOver) {
@@ -204,7 +204,7 @@ void PlotWidget::mousePressEvent(QMouseEvent* mouseEvent) {
     }
   } else {
     if (mouseEvent->button() == Qt::RightButton) {
-      pickedPoints.clear();
+      pickedFixes.clear();
       segmentsStatTexts.clear();
       segmentsStatTexts.append(createSegmentStatText(-1, 1));
       redrawGraphPicture();
@@ -235,6 +235,10 @@ QTime PlotWidget::getTimeFromSecs(int timeInSecs) {
   return timestamp;
 }
 
+int PlotWidget::chooseFixIndex(int start, int end) {
+  return start;
+}
+
 void PlotWidget::addPickedLine(int x) {
   int startIndex, endIndex;
   altitudePlotPainter->getRangeAtPixel(x, &startIndex, &endIndex);
@@ -246,10 +250,10 @@ void PlotWidget::addPickedLine(int x) {
   QTime timestamp = altitudeInfo->timestamp(index);
 
   int i;
-  for (i = 0; i < pickedPoints.count(); i++) {
-    if (pickedPoints[i].xLine > x) break;
+  for (i = 0; i < pickedFixes.count(); i++) {
+    if (pickedFixes[i].xLine > x) break;
   }
-  pickedPoints.insert(i, PickData(x, timestamp, index));
+  pickedFixes.insert(i, PickData(x, timestamp, index));
   updatePickedTexts(i);
 
   emit updateText();
@@ -264,10 +268,10 @@ void PlotWidget::addPickedTime(QTime time) {
   int index = altitudeInfo->indexOfTime(time);
 
   int i;
-  for (i = 0; i < pickedPoints.count(); i++) {
-    if (pickedPoints[i].xLine > x) break;
+  for (i = 0; i < pickedFixes.count(); i++) {
+    if (pickedFixes[i].xLine > x) break;
   }
-  pickedPoints.insert(i, PickData(x, time, index));
+  pickedFixes.insert(i, PickData(x, time, index));
   updatePickedTexts(i);
 
   emit updateText();
@@ -283,10 +287,10 @@ void PlotWidget::updatePickedTexts(int i) {
   segmentsStatTexts.insert(i, prevStat);
   segmentsStatTexts.insert(i+1, nextStat);
 
-  int index = pickedPoints[i].infoIndex;
+  int index = pickedFixes[i].infoIndex;
   QTime time = altitudeInfo->timestamp(index);
-  int x = pickedPoints[i].xLine;
-  pickedPointsStatTexts.insert(i, createPointStatText(time, x, index));
+  int x = pickedFixes[i].xLine;
+  pickedFixesStatTexts.insert(i, createPointStatText(time, x, index));
   redrawGraphPicture();
 }
 
@@ -299,7 +303,7 @@ QString PlotWidget::createSegmentStatText(
   qreal avgSpeed;
   qreal avgRise;
   qreal heightDiff;
-  if ((startPointIndex < 0) && (endPointIndex >= pickedPoints.size())) {
+  if ((startPointIndex < 0) && (endPointIndex >= pickedFixes.size())) {
     startTime = segmentInfo->getStartTime();
     endTime = segmentInfo->getEndTime();
     distance = segmentInfo->distanceOverall();
@@ -309,22 +313,22 @@ QString PlotWidget::createSegmentStatText(
   } else {
     if (startPointIndex < 0) {
       startTime = segmentInfo->getStartTime();
-      endTime = pickedPoints[endPointIndex].time;
+      endTime = pickedFixes[endPointIndex].time;
       distance = segmentInfo->distanceUntil(endTime);
       heightDiff = segmentInfo->heightDifferenceUntil(endTime);
       avgSpeed = segmentInfo->avgSpeedUntil(endTime);
       avgRise = segmentInfo->avgRiseUntil(endTime);
     } else {
-      if (endPointIndex >= pickedPoints.size()) {
-        startTime = pickedPoints[startPointIndex].time;
+      if (endPointIndex >= pickedFixes.size()) {
+        startTime = pickedFixes[startPointIndex].time;
         endTime = segmentInfo->getEndTime();
         distance = segmentInfo->distanceSince(startTime);
         heightDiff = segmentInfo->heightDifferenceSince(startTime);
         avgSpeed = segmentInfo->avgSpeedSince(startTime);
         avgRise = segmentInfo->avgRiseSince(startTime);
       } else {
-        startTime = pickedPoints[startPointIndex].time;
-        endTime = pickedPoints[endPointIndex].time;
+        startTime = pickedFixes[startPointIndex].time;
+        endTime = pickedFixes[endPointIndex].time;
         distance = segmentInfo->distance(startTime, endTime);
         heightDiff = segmentInfo->heightDifference(startTime, endTime);
         avgSpeed = segmentInfo->avgSpeed(startTime, endTime);
@@ -370,7 +374,7 @@ QList<QString>* PlotWidget::getSegmentsStatTexts() {
 }
 
 QList<QString>* PlotWidget::getPointsStatTexts() {
-  return &pickedPointsStatTexts;
+  return &pickedFixesStatTexts;
 }
 
 }  // End namespace IgcViewer

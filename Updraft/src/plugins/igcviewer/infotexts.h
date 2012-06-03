@@ -8,20 +8,6 @@
 namespace Updraft {
 namespace IgcViewer {
 
-struct PickData {
-  PickData(int xLine_, QTime time_, int infoIndex_)
-    : xLine(xLine_), time(time_), infoIndex(infoIndex_) {}
-
-  /// x-coordinate of the pixel in the graph.
-  int xLine;
-
-  /// Time of the picked fix.
-  QTime time;
-
-  /// Index of the fix in the fix list.
-  int infoIndex;
-};
-
 class PickedLabel : public Label {
  public:
   /// Overridden from QLayoutItem
@@ -33,11 +19,11 @@ class PickedLabel : public Label {
   /// \}
   void draw(QPainter* painter);
 
-  PickedLabel(QList<PickData>* p, QList<QString>* t):
+  PickedLabel(QList<int>* p, QList<QString>* t):
     pickedPositions(p), texts(t) {}
 
  private:
-  QList<PickData>* pickedPositions;
+  QList<int>* pickedPositions;
   QList<QString>* texts;
 
   static const int MIN_WIDTH = 100;
@@ -49,12 +35,12 @@ class PickedLabel : public Label {
   static const QPen LABEL_PEN;
 };
 
-class IGCTextWidget : public QTextEdit {
+class IgcTextWidget : public QTextEdit {
   Q_OBJECT
 
  public:
-  IGCTextWidget() : segmentsTexts(NULL), pointsTexts(NULL) {}
-  IGCTextWidget(QList<QString>* s, QList<QString>* p)
+  IgcTextWidget() : segmentsTexts(NULL), pointsTexts(NULL) {}
+  IgcTextWidget(QList<QString>* s, QList<QString>* p)
     : segmentsTexts(s), pointsTexts(p) {updateText();}
 
   Qt::Orientations expandingDirections() const;

@@ -34,7 +34,7 @@ void PickedLabel::draw(QPainter *painter) {
   int epos = rect.right();
   QVector<int> space;
   for (int i = 0; i < pickedPositions->size(); i++) {
-    epos = pickedPositions->at(i).xLine;
+    epos = pickedPositions->at(i);
     space.append(epos - spos);
     spos = epos;
   }
@@ -42,7 +42,7 @@ void PickedLabel::draw(QPainter *painter) {
 
   spos = rect.left();
   for (int i = 0; i < pickedPositions->size(); i++) {
-    epos = pickedPositions->at(i).xLine;
+    epos = pickedPositions->at(i);
     int cspos = spos;
     spos = epos;
     if ((epos - cspos) < TEXT_WIDTH) {
@@ -74,30 +74,30 @@ void PickedLabel::draw(QPainter *painter) {
 
 // IGC Text Info Widget
 
-Qt::Orientations IGCTextWidget::expandingDirections() const {
+Qt::Orientations IgcTextWidget::expandingDirections() const {
   return Qt::Vertical;
 }
 
-QSize IGCTextWidget::sizeHint() const {
+QSize IgcTextWidget::sizeHint() const {
   return QSize(100, 1000);
 }
 
-void IGCTextWidget::setMouseOverText(const QString& text) {
+void IgcTextWidget::setMouseOverText(const QString& text) {
   mouseOverText = text;
   updateText();
 }
 
-void IGCTextWidget::setSegmentsTexts(QList<QString>* text) {
+void IgcTextWidget::setSegmentsTexts(QList<QString>* text) {
   segmentsTexts = text;
   updateText();
 }
 
-void IGCTextWidget::setPointsTexts(QList<QString>* text) {
+void IgcTextWidget::setPointsTexts(QList<QString>* text) {
   pointsTexts = text;
   updateText();
 }
 
-void IGCTextWidget::updateText() {
+void IgcTextWidget::updateText() {
   QFont font("Helvetica", 8);
   setFont(font);
   QString string;

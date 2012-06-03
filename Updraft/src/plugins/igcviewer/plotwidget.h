@@ -16,27 +16,53 @@
 namespace Updraft {
 namespace IgcViewer {
 
+struct PickData {
+  PickData(int xLine_, int infoIndex_)
+    : xLine(xLine_), infoIndex(infoIndex_) {}
+
+  /// x-coordinate of the pixel in the graph.
+  int xLine;
+
+  /// Index of the fix in the fix list.
+  int infoIndex;
+};
+
 class PlotWidget : public QWidget {
   Q_OBJECT
 
  public:
-  PlotWidget(SegmentInfo* SegmentInfo, IgcInfo* altitudeInfo,
-    IgcInfo* verticalSpeedInfo, IgcInfo *groundSpeedInfo);
+  PlotWidget(SegmentInfo* segmentInfo, FixInfo* altitudeInfo,
+    FixInfo* verticalSpeedInfo, FixInfo *groundSpeedInfo);
 
-  void addPickedTime(QTime time);
+  /// A fix of given index was picked. 
+  void addPickedFix(int index);
 
-  /// sets the line to position x, and returns the time of the pick
-  int setPickedLine(int x);
-
+  /// User clicked on position x on the graph, and picked one of the fixes
+  /// that is at that position.
+  /// Which fix is picked if multiple fixes are on that position is
+  /// decided by the method chooseFixIndex(int start, int end);
   void addPickedLine(int x);
 
   QList<QString>* getSegmentsStatTexts();
   QList<QString>* getPointsStatTexts();
 
+ public slots:
+
  signals:
+  /// Sends text statistics of the fix the mouse is pointing at.
   void updateCurrentInfo(const QString& text);
+
+  /// Send a signal that the vectors with the statistics texts
+  /// (for points and segments) has been changed.
   void updateText();
-  void timeWasPicked(QTime time);
+
+  /// A signal when a user pickes out a fix.
+  void fixWasPicked(int index);
+
+  /// A signal upon mouse move over fix.
+  void fixIsPointedAt(int index);
+
+  /// A signal when the users clears the picked fixes.
   void clearMarkers();
 
  private:
@@ -50,17 +76,31 @@ class PlotWidget : public QWidget {
 
   QString createPointStatText(QTime time, int xLine, int fixListIndex);
   QString createSegmentStatText(int startPointIndex, int endPointIndex);
+
+  /// Update picked texts when a new fix was added at the position `i` in
+  /// the `pickedFixes` list.
   void updatePickedTexts(int i);
+
+  /// Create time from secs. The value of secs can be bigger than 24*3600.
   QTime getTimeFromSecs(int timeInSecs);
+
+  /// Pick out which fix of the fixes at given pixel should be picked out.
+  int chooseFixIndex(int start, int end);
 
     /// The coordinate to draw the vertical line where the mouse points.
   int xLine;
 
-  /// The coordinate to draw the vertical line at a picked location
-  /// - when user clicked on the graph.
-  QList<PickData> pickedPoints;
+  /// The set of picked fixes.
+  QList<PickData> pickedFixes;
+
+  /// Ordered list of the x coordinates of the picked positions.
+  QList<int> pickedPositions;
+
+  /// Statistics texts for picked fixes.
   QList<QString> segmentsStatTexts;
-  QList<QString> pickedPointsStatTexts;
+
+  /// Statistics texts for segments between picked fixes.
+  QList<QString> pickedFixesStatTexts;
 
   QImage* graphPicture;
 
@@ -76,9 +116,9 @@ class PlotWidget : public QWidget {
   GroundSpeedPlotPainter* groundSpeedPlotPainter;
 
   SegmentInfo* segmentInfo;
-  IgcInfo* altitudeInfo;
-  IgcInfo* verticalSpeedInfo;
-  IgcInfo *groundSpeedInfo;
+  FixInfo* altitudeInfo;
+  FixInfo* verticalSpeedInfo;
+  FixInfo *groundSpeedInfo;
 
   /// Whether the mouse if over the graph(!) - not widget.
   bool mouseOver;

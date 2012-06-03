@@ -32,9 +32,9 @@ struct TrackFix {
 /// Base for track computing values and scales from igc recording.
 /// For multiple opened tracks the colorings can scale together,
 /// this is called global scale in the code.
-class IgcInfo {
+class FixInfo {
  public:
-  virtual ~IgcInfo() {}
+  virtual ~FixInfo() {}
 
   /// Initialize the coloring.
   /// \param fixList List of fixes, usable for scaling, smoothing, ...
@@ -71,7 +71,7 @@ class IgcInfo {
   virtual void resetGlobalScale();
 
   /// Propagate the global scales from the other igc info.
-  virtual void addGlobalScale(const IgcInfo* other);
+  virtual void addGlobalScale(const FixInfo* other);
 
   /// Number of items in the underlying fix list.
   int count() const { return fixList->count(); }
@@ -113,13 +113,13 @@ class IgcInfo {
 };
 
 /// Returns altitude.
-class AltitudeIgcInfo : public IgcInfo {
+class AltitudeFixInfo : public FixInfo {
  public:
   qreal value(int i) const;
 };
 
 /// Abstract helper for simplifying info classes with speeds.
-class SpeedIgcInfo : public IgcInfo {
+class SpeedFixInfo : public FixInfo {
  public:
   qreal value(int i) const;
 
@@ -134,7 +134,7 @@ class SpeedIgcInfo : public IgcInfo {
 };
 
 /// Calculates GPS speed.
-class GroundSpeedIgcInfo : public SpeedIgcInfo {
+class GroundSpeedFixInfo : public SpeedFixInfo {
  public:
   qreal value(int i) const;
 
@@ -143,14 +143,14 @@ class GroundSpeedIgcInfo : public SpeedIgcInfo {
 };
 
 /// Caclulate vertical speed.
-class VerticalSpeedIgcInfo : public SpeedIgcInfo {
+class VerticalSpeedFixInfo : public SpeedFixInfo {
  private:
   qreal distanceBefore(int i) const;
 };
 
-class TrackIdIgcInfo : public IgcInfo {
+class TrackIdFixInfo : public FixInfo {
  public:
-  explicit TrackIdIgcInfo(int id);
+  explicit TrackIdFixInfo(int id);
 
   qreal value(int i) const;
  private:
@@ -158,7 +158,7 @@ class TrackIdIgcInfo : public IgcInfo {
 };
 
 /// Returns altitude.
-class TimeIgcInfo : public IgcInfo {
+class TimeFixInfo : public FixInfo {
  public:
   void init(const QList<TrackFix> *fixList);
   qreal value(int i) const;

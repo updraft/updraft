@@ -30,10 +30,10 @@ OpenedFile::~OpenedFile() {
     delete tmp;
   }
 
-  foreach(IgcInfo* info, igcInfo) {
+  foreach(FixInfo* info, fixInfo) {
     delete info;
   }
-  igcInfo.clear();
+  fixInfo.clear();
 
   foreach(Coloring* coloring, colorings) {
     delete coloring;
@@ -97,17 +97,17 @@ bool OpenedFile::init(IgcViewer* viewer,
 
   #define ADD_IGCINFO(variable, pointer) \
     do { \
-      igcInfo.append(pointer); \
-      igcInfo[igcInfo.count() - 1]->init(&fixList); \
-      variable = igcInfo[igcInfo.count() - 1]; \
+      fixInfo.append(pointer); \
+      fixInfo[fixInfo.count() - 1]->init(&fixList); \
+      variable = fixInfo[fixInfo.count() - 1]; \
     } while (0)
 
-  ADD_IGCINFO(altitudeInfo, new AltitudeIgcInfo());
-  ADD_IGCINFO(verticalSpeedInfo, new VerticalSpeedIgcInfo());
-  ADD_IGCINFO(groundSpeedInfo, new GroundSpeedIgcInfo());
-  ADD_IGCINFO(timeInfo, new TimeIgcInfo());
+  ADD_IGCINFO(altitudeInfo, new AltitudeFixInfo());
+  ADD_IGCINFO(verticalSpeedInfo, new VerticalSpeedFixInfo());
+  ADD_IGCINFO(groundSpeedInfo, new GroundSpeedFixInfo());
+  ADD_IGCINFO(timeInfo, new TimeFixInfo());
 
-  segmentInfo = new SegmentInfo();
+  SegmentInfo* segmentInfo = new SegmentInfo();
   segmentInfo->init(&fixList);
 
   #define ADD_COLORING(name, pointer) \
@@ -139,7 +139,7 @@ bool OpenedFile::init(IgcViewer* viewer,
   plotWidget = new PlotWidget(
     segmentInfo, altitudeInfo, verticalSpeedInfo, groundSpeedInfo);
 
-  textBox = new IGCTextWidget(plotWidget->getSegmentsStatTexts(),
+  textBox = new IgcTextWidget(plotWidget->getSegmentsStatTexts(),
     plotWidget->getPointsStatTexts());
   textBox->setReadOnly(true);
 
@@ -306,8 +306,8 @@ void OpenedFile::setColors(Coloring *coloring) {
 }
 
 void OpenedFile::updateScales(const OpenedFile *other) {
-  for (int i = 0; i < igcInfo.count(); ++i) {
-    igcInfo[i]->addGlobalScale(other->igcInfo[i]);
+  for (int i = 0; i < fixInfo.count(); ++i) {
+    fixInfo[i]->addGlobalScale(other->fixInfo[i]);
   }
 }
 
@@ -316,8 +316,8 @@ void OpenedFile::selectTab() {
 }
 
 void OpenedFile::resetScales() {
-  for (int i = 0; i < igcInfo.count(); ++i) {
-    igcInfo[i]->resetGlobalScale();
+  for (int i = 0; i < fixInfo.count(); ++i) {
+    fixInfo[i]->resetGlobalScale();
   }
 }
 
@@ -367,7 +367,7 @@ void OpenedFile::trackClicked(const EventInfo* eventInfo) {
   sceneRoot->addChild(currentMarkerTransform);
   currentMarkerTransform->setPosition(
     osg::Vec3(nearest->x, nearest->y, nearest->z));
-  currentMarkers.append(currentMarkerTransform);
+  pickedMarkers.append(currentMarkerTransform);
 }
 
 void OpenedFile::timePicked(QTime time) {
@@ -401,7 +401,7 @@ void OpenedFile::timePicked(QTime time) {
   sceneRoot->addChild(currentMarkerTransform);
   currentMarkerTransform->setPosition(
     osg::Vec3(nearest->x, nearest->y, nearest->z));
-  currentMarkers.append(currentMarkerTransform);
+  pickedMarkers.append(currentMarkerTransform);
 }
 
 osg::Geode* OpenedFile::createMarker(qreal scale) {
@@ -449,10 +449,10 @@ osg::Geode* OpenedFile::createMarker(qreal scale) {
 }
 
 void OpenedFile::clearMarkers() {
-  for (int i = 0; i < currentMarkers.size(); i++) {
-    sceneRoot->removeChild(currentMarkers[i]);
+  for (int i = 0; i < pickedMarkers.size(); i++) {
+    sceneRoot->removeChild(pickedMarkers[i]);
   }
-  currentMarkers.clear();
+  pickedMarkers.clear();
 }
 
 }  // End namespace IgcViewer

@@ -57,10 +57,17 @@ class OpenedFile: public QObject {
 
   osg::Node* getNode();
 
+  /// If the track is clicked, it computes the nearest fix to the click point,
+  /// and places a marker on that fix.
+  /// Afterwards, it emits a signal with the fix-index.
   void trackClicked(const EventInfo* eventInfo);
 
  public slots:
-  void timePicked(QTime time);
+  /// A slot waiting for the signal from the PlotWidget.
+  /// It sets the marker on the position of the fix of given index.
+  void fixPicked(int index);
+
+  /// It clears the markers on the track.
   void clearMarkers();
 
  private slots:
@@ -90,7 +97,7 @@ class OpenedFile: public QObject {
   QFileInfo fileInfo;
 
   QComboBox *colorsCombo;
-  IGCTextWidget* textBox;
+  IgcTextWidget* textBox;
   PlotWidget* plotWidget;
 
   TabInterface *tab;
@@ -104,8 +111,18 @@ class OpenedFile: public QObject {
   osg::Geometry* geom;
   osg::Group* sceneRoot;
   osg::Geode* trackGeode;
+
+  /// The geometry of the track marker.
   osg::ref_ptr<osg::Geode> trackPositionMarker;
-  QList<osg::AutoTransform*> currentMarkers;
+
+  /// The transformations plus the geometry of the
+  /// markers on picked fix positions.
+  QList<osg::AutoTransform*> pickedMarkers;
+
+  /// The transformation plus the marker of the fix
+  /// the user is currently pointing at in the graph widget.
+  /// Mouse pointing on the track is not implemented.
+  osg::AutoTransform* currentMarker;
 
   Coloring* currentColoring;
 
@@ -117,14 +134,12 @@ class OpenedFile: public QObject {
   /// This variable contains all available igc infos accessible for mass
   /// rescaling / deleting / whatever.
   /// There are separate variables for named access to specific info classes.
-  QList<IgcInfo*> igcInfo;
+  QList<FixInfo*> fixInfo;
 
-  IgcInfo* altitudeInfo;
-  IgcInfo* verticalSpeedInfo;
-  IgcInfo* groundSpeedInfo;
-  IgcInfo* timeInfo;
-
-  SegmentInfo* segmentInfo;
+  FixInfo* altitudeInfo;
+  FixInfo* verticalSpeedInfo;
+  FixInfo* groundSpeedInfo;
+  FixInfo* timeInfo;
 
   Util::Gradient gradient;
 };
