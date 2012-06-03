@@ -27,22 +27,24 @@ QSize PickedLabel::minimumSize() const {
 
 void PickedLabel::draw(QPainter *painter) {
   if (texts->empty()) return;
+  if (pickedPositions->empty()) return;
+
   QFont font("Helvetica", 8);
   painter->setPen(LABEL_PEN);
   painter->setFont(font);
-  int spos = rect.left();
-  int epos = rect.right();
+
   QVector<int> space;
-  for (int i = 0; i < pickedPositions->size(); i++) {
-    epos = pickedPositions->at(i).xLine;
+  int spos = pickedPositions->at(0);
+  int epos = 0;
+  for (int i = 0; i < pickedPositions->size()-1; i++) {
+    epos = pickedPositions->at(i+1);
     space.append(epos - spos);
     spos = epos;
   }
-  space.append(rect.right() - spos);
 
-  spos = rect.left();
-  for (int i = 0; i < pickedPositions->size(); i++) {
-    epos = pickedPositions->at(i).xLine;
+  spos = pickedPositions->at(0);
+  for (int i = 0; i < pickedPositions->size()-1; i++) {
+    epos = pickedPositions->at(i+1);
     int cspos = spos;
     spos = epos;
     if ((epos - cspos) < TEXT_WIDTH) {
@@ -55,49 +57,36 @@ void PickedLabel::draw(QPainter *painter) {
 
     QRect textbox(QPoint(center-TEXT_WIDTH/2, rect.top()),
       QPoint(center+TEXT_WIDTH/2, rect.bottom()));
-    painter->drawText(textbox, texts->at(i));
+    painter->drawText(textbox, Qt::AlignHCenter, texts->at(i));
   }
-
-  // draw the last text, if there is space
-  epos = rect.right();
-  int res = (TEXT_WIDTH - (epos - spos)) / 2 - SPACE;
-  if (((epos - spos) < TEXT_WIDTH) &&
-    (space.empty()) || (((space.last() - TEXT_WIDTH) / 2) < res))
-    return;
-
-  int center = (epos - spos)/2 + spos;
-
-  QRect textbox(QPoint(center-TEXT_WIDTH/2, rect.top()),
-    QPoint(center+TEXT_WIDTH/2, rect.bottom()));
-  painter->drawText(textbox, texts->last());
 }
 
 // IGC Text Info Widget
 
-Qt::Orientations IGCTextWidget::expandingDirections() const {
+Qt::Orientations IgcTextWidget::expandingDirections() const {
   return Qt::Vertical;
 }
 
-QSize IGCTextWidget::sizeHint() const {
+QSize IgcTextWidget::sizeHint() const {
   return QSize(100, 1000);
 }
 
-void IGCTextWidget::setMouseOverText(const QString& text) {
+void IgcTextWidget::setMouseOverText(const QString& text) {
   mouseOverText = text;
   updateText();
 }
 
-void IGCTextWidget::setSegmentsTexts(QList<QString>* text) {
+void IgcTextWidget::setSegmentsTexts(QList<QString>* text) {
   segmentsTexts = text;
   updateText();
 }
 
-void IGCTextWidget::setPointsTexts(QList<QString>* text) {
+void IgcTextWidget::setPointsTexts(QList<QString>* text) {
   pointsTexts = text;
   updateText();
 }
 
-void IGCTextWidget::updateText() {
+void IgcTextWidget::updateText() {
   QFont font("Helvetica", 8);
   setFont(font);
   QString string;
@@ -108,18 +97,19 @@ void IGCTextWidget::updateText() {
     string += "<b>" + s + "</b><br>";
     string += "-----------<br>";
   }
-  for (int i = 0; i < segmentsTexts->size()-1; i++) {
-    s = segmentsTexts->at(i);
-    s.replace("\n", "<br>");
-    string += "<i>" + s + "</i><br>";
+  // qAssert(segmentsTexts->size() == pointsTexts->size()-1);
+  for (int i = 0; i < pointsTexts->size()-1; i++) {
     s = pointsTexts->at(i);
     s.replace("\n", "<br>");
     string += "<b>" + s + "</b><br>";
-  }
-  if (!segmentsTexts->isEmpty()) {
-    s = segmentsTexts->last();
+    s = segmentsTexts->at(i);
     s.replace("\n", "<br>");
-    string += "<i>" + s + "</i>";
+    string += "<i>" + s + "</i><br>";
+  }
+  if (!pointsTexts->isEmpty()) {
+    s = pointsTexts->last();
+    s.replace("\n", "<br>");
+    string += "<b>" + s + "</b><br>";
   }
   setHtml(string);
 }

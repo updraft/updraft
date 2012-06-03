@@ -29,6 +29,12 @@ void MapLayer::connectSignalChecked(const QObject *receiver,
   connect(this, SIGNAL(checked(bool, MapLayerInterface*)), receiver, method);
 }
 
+void MapLayer::connectSignalContextMenuRequested(const QObject* receiver,
+  const char* method) {
+  connect(this, SIGNAL(contextMenuRequested(QPoint, MapLayerInterface*)),
+    receiver, method);
+}
+
 void MapLayer::connectSlotSetVisibility(const QObject *sender,
   const char* method) {
   connect(sender, method, this, SLOT(setVisibility(bool)));
@@ -71,6 +77,10 @@ void MapLayer::setCheckable(bool value) {
 
 void MapLayer::emitChecked(bool state) {
   emit checked(state, this);
+}
+
+void MapLayer::emitContextMenuRequested(const QPoint& pos) {
+  emit contextMenuRequested(pos, this);
 }
 
 }  // End namespace Core
