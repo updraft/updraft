@@ -16,6 +16,10 @@ MapManipulator::MapManipulator() {
   // lock azimuth -- north is always on the top
   getSettings()->setLockAzimuthWhilePanning(true);
 
+  // Create a group for map settings
+  updraft->settingsManager->addGroup(
+    "map", tr("Map settings"), ":/core/icons/map.png");
+
   mouseZoomSensitivity = updraft->settingsManager->addSetting(
     "map:mouse_zoom_sensitivity",
     tr("Mouse zoom sensitivity"),
