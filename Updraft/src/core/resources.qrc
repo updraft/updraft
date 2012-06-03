@@ -5,4 +5,25 @@
     <qresource prefix="/core/icons">
         <file alias="configure.png">resources/icons/configure.png</file>
     </qresource>
+    <qresource prefix="/core/icons">
+        <file alias="add.png">resources/icons/add.png</file>
+    </qresource>
+    <qresource prefix="/core/icons">
+        <file alias="close.png">resources/icons/close.png</file>
+    </qresource>
+    <qresource prefix="/core/icons">
+        <file alias="general.png">resources/icons/general.png</file>
+    </qresource>
+    <qresource prefix="/core/icons">
+        <file alias="map.png">resources/icons/map.png</file>
+    </qresource>
+    <qresource prefix="/core/icons">
+        <file alias="redo.png">resources/icons/redo.png</file>
+    </qresource>
+    <qresource prefix="/core/icons">
+        <file alias="save.png">resources/icons/save.png</file>
+    </qresource>
+    <qresource prefix="/core/icons">
+        <file alias="undo.png">resources/icons/undo.png</file>
+    </qresource>
 </RCC>

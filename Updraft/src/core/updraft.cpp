@@ -61,12 +61,15 @@ QDir Updraft::getTranslationDirectory() {
 }
 
 void Updraft::coreSettings() {
+  settingsManager->addGroup(
+    "general", tr("General"), ":/core/icons/general.png");
+
   QDir dataDir = QCoreApplication::applicationDirPath();
   dataDir.cd("data");
   QVariant dataDirVariant;
   dataDirVariant.setValue(dataDir);
   dataDirectory = settingsManager->addSetting(
-    "core:dataDir",
+    "general:dataDir",
     tr("Data directory"),
     dataDirVariant);
 }

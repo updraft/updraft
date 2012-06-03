@@ -17,7 +17,7 @@ namespace Core {
 
 PickHandler::PickHandler(): mX(0), mY(0) {
   mouseEventTolerance = updraft->settingsManager->addSetting(
-    "coreGui:mouseEventTolerance", tr("Mouse click tolerance"), QVariant(10.0));
+    "map:mouseEventTolerance", tr("Mouse click tolerance"), QVariant(10.0));
 }
 
 bool PickHandler::handle(
@@ -109,7 +109,8 @@ void PickHandler::raiseLeftClick(
 
     // The coordinates have to be Y-inverted and mapped to screen
     moMenu->getQMenu()->exec(mapWidget->mapToGlobal(QPoint(mX, mh - mY)));
-  } else {  // If there was only one inserted action, trigger it
+  // If there was only one inserted action, trigger it
+  } else if (moMenu->getQMenu()->actions().size() == 1) {
     moMenu->getQMenu()->actions().first()->trigger();
   }
 }

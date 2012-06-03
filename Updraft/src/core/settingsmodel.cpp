@@ -131,7 +131,11 @@ QVariant SettingsModel::data(const QModelIndex& index, int role) const {
   while (!node.isNull()) {
     if (node.isElement() && node.nodeName() == roleStr) {
       if (role == Qt::DecorationRole) {
-        return QVariant(item->getIcon());
+        if (item->getIcon().isNull()) {
+          return QVariant(QIcon(node.toElement().text()));
+        } else {
+          return QVariant(item->getIcon());
+        }
       }
       QDomElement element = node.toElement();
       QVariant ret =

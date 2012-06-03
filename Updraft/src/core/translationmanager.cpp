@@ -18,7 +18,7 @@ TranslationManager::TranslationManager() {
   defaultValue.setValue(TranslationLanguage(defaultLanguage));
 
   languageSetting = updraft->settingsManager->addSetting(
-    "core:language",
+    "general:language",
     "",  // description is given after a language file is loaded
     defaultValue,
     false);

@@ -28,9 +28,9 @@ TaskPointButton::TaskPointButton(int pos, const QString& name)
   closeFrame->setLayout(closeFrameLayout);
 
   quitButton =
-    new QPushButton(QIcon(":/taskdeclpanel/icons/delete_tp_icon.png"), "");
+    new QPushButton(QIcon(":/core/icons/close.png"), "");
   quitButton->setFlat(true);
-  quitButton->setIconSize(QSize(8, 8));
+  quitButton->setIconSize(QSize(12, 12));
 
   closeFrameLayout->addStretch();
   closeFrameLayout->addWidget(quitButton);

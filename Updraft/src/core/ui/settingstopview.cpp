@@ -12,6 +12,16 @@ SettingsTopView::SettingsTopView(QWidget* parent): QListView(parent) {
   setSelectionMode(QAbstractItemView::SingleSelection);
 }
 
+void SettingsTopView::setModel(QAbstractItemModel* model) {
+  QAbstractItemView::setModel(model);
+
+  for (int row = 0; row < model->rowCount(); ++row) {
+    if (groupIsEmpty(row)) {
+      hideGroup(row);
+    }
+  }
+}
+
 bool SettingsTopView::setShowHidden(bool show) {
   // If the currently selected group should be hidden, try to change it
   if (currentIndex().isValid() &&
@@ -33,12 +43,12 @@ bool SettingsTopView::setShowHidden(bool show) {
 
   if (showHidden) {
     for (int row = 0; row < model()->rowCount(); ++row) {
-      setRowHidden(row, false);
+      displayGroup(row);
     }
   } else {
     for (int row = 0; row < model()->rowCount(); ++row) {
       if (groupIsHidden(row)) {
-        setRowHidden(row, true);
+        hideGroup(row);
       }
     }
   }
@@ -51,13 +61,12 @@ void SettingsTopView::dataChanged(
   QModelIndex parent = topLeft.parent();
 
   // If groups were modified, check whether they should be hidden
-  if (!showHidden && !parent.isValid()) {
+  if (!parent.isValid()) {
     for (int row = topLeft.row(); row <= bottomRight.row(); ++row) {
-      QModelIndex groupIndex = model()->index(row, 0, parent);
-      QVariant groupName = model()->data(groupIndex, Qt::UserRole);
-      // The group name has "_hidden" at the end
-      if (hiddenGroupRegExp.indexIn(groupName.toString()) != -1) {
-        setRowHidden(row, true);
+      // Hide hidden groups (if they should not be shown) or empty groups
+      if ((!showHidden && groupIsHidden(row)) ||
+          (groupIsEmpty(row))) {
+        hideGroup(row);
       }
     }
   }
@@ -66,13 +75,43 @@ void SettingsTopView::dataChanged(
 }
 
 void SettingsTopView::rowsInserted(
-  const QModelIndex& parent, int start, int end) {}
+  const QModelIndex& parent, int start, int end) {
+  // If the data belongs inside of a group, show the group (if allowed)
+  if (parent.isValid()) {
+    int row = parent.row();
+
+    if (!groupIsEmpty(row)) {
+      if (!groupIsHidden(row) || showHidden) {
+        displayGroup(row);
+      }
+    }
+  }
+}
 
 bool SettingsTopView::groupIsHidden(int row) {
   QModelIndex groupIndex = model()->index(row, 0);
   QVariant groupName = model()->data(groupIndex, Qt::UserRole);
   // The group name has "_hidden" at the end
   return hiddenGroupRegExp.indexIn(groupName.toString()) != -1;
+}
+
+bool SettingsTopView::groupIsEmpty(int row) {
+  QModelIndex groupIndex = model()->index(row, 0);
+  if (model()->rowCount(groupIndex) == 0)
+    return true;
+  else
+    return false;
+}
+
+void SettingsTopView::hideGroup(int row) {
+  setRowHidden(row, true);
+}
+
+void SettingsTopView::displayGroup(int row) {
+  // Empty settings groups will stay hidden
+  if (groupIsEmpty(row)) return;
+
+  setRowHidden(row, false);
 }
 
 void SettingsTopView::currentChanged(

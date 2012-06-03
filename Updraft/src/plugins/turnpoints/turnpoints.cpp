@@ -76,10 +76,7 @@ void TurnPoints::fileIdentification(QStringList *roles,
     roles->append(tr("Turn-points file"));
 }
 
-void TurnPoints::fillContextMenu(MapObject* obj, MenuInterface* menu) {
-  QAction* action = new QAction("Dummy action", NULL);
-  menu->appendAction(action, true);
-}
+void TurnPoints::fillContextMenu(MapObject* obj, MenuInterface* menu) {}
 
 bool TurnPoints::wantsToHandleClick(MapObject* obj) {
   return obj->getObjectTypeName() == TPMapObject::getClassName();

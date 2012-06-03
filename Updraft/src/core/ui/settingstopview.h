@@ -15,6 +15,8 @@ Q_OBJECT
   explicit SettingsTopView(QWidget* parent = 0);
   void setBottom(SettingsBottomView* b) { bottom = b; }
 
+  void setModel(QAbstractItemModel* model);
+
  public slots:
   bool setShowHidden(bool show);
 
@@ -27,6 +29,14 @@ Q_OBJECT
  private:
   /// Tells whether the group is a group with hidden settings
   bool groupIsHidden(int row);
+  /// Says whether the group has any data yet
+  bool groupIsEmpty(int row);
+
+  /// Hides the settings group in the given row.
+  void hideGroup(int row);
+  /// Displays the settings grou in the given row.
+  /// If the group does not contain any settings, it stays hidden.
+  void displayGroup(int row);
 
   QRegExp hiddenGroupRegExp;
   bool showHidden;
