@@ -109,7 +109,8 @@ void PickHandler::raiseLeftClick(
 
     // The coordinates have to be Y-inverted and mapped to screen
     moMenu->getQMenu()->exec(mapWidget->mapToGlobal(QPoint(mX, mh - mY)));
-  } else {  // If there was only one inserted action, trigger it
+  // If there was only one inserted action, trigger it
+  } else if (moMenu->getQMenu()->actions().size() == 1) {
     moMenu->getQMenu()->actions().first()->trigger();
   }
 }
