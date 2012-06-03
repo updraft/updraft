@@ -72,7 +72,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>634</width>
+          <width>636</width>
           <height>411</height>
          </rect>
         </property>
@@ -116,6 +116,29 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="restartNeededLabel">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(255, 0, 0);
+</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>0</number>
+       </property>
+       <property name="text">
+        <string>* These options need Updraft to restart</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

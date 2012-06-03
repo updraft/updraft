@@ -130,7 +130,7 @@ QVariant SettingsModel::data(const QModelIndex& index, int role) const {
   node = node.firstChild();
   while (!node.isNull()) {
     if (node.isElement() && node.nodeName() == roleStr) {
-      if (role == Qt::DecorationRole) {
+      if (role == DecorationRole) {
         if (item->getIcon().isNull()) {
           return QVariant(QIcon(node.toElement().text()));
         } else {
@@ -259,7 +259,7 @@ bool SettingsModel::setData(
   element.appendChild(domDoc.createTextNode(data));
 
   // Special handling needs to be done for decorations
-  if (role == Qt::DecorationRole) {
+  if (role == DecorationRole) {
     item->setIcon(QIcon(value.toString()));
   }
 
@@ -288,20 +288,23 @@ QModelIndex SettingsModel::sibling(
 
 QString SettingsModel::dataRoleToString(int role) const {
   switch (role) {
-    case Qt::EditRole:
+    case ValueRole:
       return "value";
     break;
-    case Qt::DecorationRole:
+    case DecorationRole:
       return "decoration";
     break;
-    case Qt::DisplayRole:
+    case DescriptionRole:
       return "description";
     break;
-    case Qt::UserRole:
+    case NameRole:
       return "name";
     break;
-    case Qt::UserRole+1:
+    case DefaultValueRole:
       return "default_value";
+    break;
+    case NeedsRestartRole:
+      return "needs_restart";
     break;
     default:
       return QString("user%1").arg(role-Qt::UserRole);

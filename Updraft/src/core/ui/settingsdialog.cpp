@@ -16,10 +16,14 @@ SettingsDialog::SettingsDialog(QWidget* parent, SettingsManager* manager)
   ui->bottomView->setItemDelegate(settingsDelegate);
   ui->topView->setBottom(ui->bottomView);
 
+  ui->restartNeededLabel->hide();
+
   connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)),
     this, SLOT(buttonBoxClicked(QAbstractButton*)));
   connect(ui->showHidden, SIGNAL(stateChanged(int)),
     this, SLOT(hideCheckboxToggled()));
+  connect(ui->bottomView, SIGNAL(restartInfo(bool)),
+    this, SLOT(restartNeeded(bool)));
 }
 
 SettingsDialog::~SettingsDialog() {
@@ -81,6 +85,14 @@ void SettingsDialog::hideCheckboxToggled() {
   bool state = ui->showHidden->checkState();
   bool showHidden = ui->topView->setShowHidden(state);
   ui->showHidden->setCheckState(showHidden ? Qt::Checked : Qt::Unchecked);
+}
+
+void SettingsDialog::restartNeeded(bool needed) {
+  if (needed) {
+    ui->restartNeededLabel->show();
+  } else {
+    ui->restartNeededLabel->hide();
+  }
 }
 
 }  // End namespace Core

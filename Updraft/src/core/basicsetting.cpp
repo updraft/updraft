@@ -14,7 +14,7 @@ QVariant BasicSetting::get() {
   if (item) {
     SettingsModel* model = item->getModel();
     QModelIndex index = model->indexFromItem(item);
-    return model->data(index, Qt::EditRole);
+    return model->data(index, ValueRole);
   } else {
     return QVariant();
   }
@@ -24,7 +24,7 @@ void BasicSetting::set(const QVariant& newValue) {
   if (item) {
     SettingsModel* model = item->getModel();
     QModelIndex index = model->indexFromItem(item);
-    model->setData(index, newValue, Qt::EditRole);
+    model->setData(index, newValue, ValueRole);
   }
 }
 
@@ -32,7 +32,15 @@ void BasicSetting::setDescription(const QString& newDescription) {
   if (item) {
     SettingsModel* model = item->getModel();
     QModelIndex index = model->indexFromItem(item);
-    model->setData(index, QVariant(newDescription), Qt::DisplayRole);
+    model->setData(index, QVariant(newDescription), DescriptionRole);
+  }
+}
+
+void BasicSetting::setNeedsRestart(bool needsRestart) {
+  if (item) {
+    SettingsModel* model = item->getModel();
+    QModelIndex index = model->indexFromItem(item);
+    model->setData(index, QVariant(needsRestart), NeedsRestartRole);
   }
 }
 
