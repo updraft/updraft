@@ -38,7 +38,7 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   if (file) panel->initFromFile(file);
 
   // Create new mapLayer in mapLayerGroup, assign osgNode and title.
-  mapLayer = plugin->mapLayerGroup->insertMapLayer(getNode(), getTitle(), -1);
+  mapLayer = plugin->mapLayerGroup->createMapLayer(getNode(), getTitle(), -1);
 
   // Connect display and close signals
   mapLayer->connectSignalChecked(this,
@@ -193,7 +193,7 @@ void TaskLayer::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
   // First try to display/enable layer in TaskDeclaration plugin.
   // Then if it is displayed, show it also in the map.
   display(value);
-  mapLayer->setVisible(isDisplayed());
+  mapLayer->setVisibility(isDisplayed());
 }
 
 void TaskLayer::tryCloseLayer() {
@@ -262,7 +262,7 @@ void TaskLayer::taskDataChanged() {
 
 void TaskLayer::taskStorageStateChanged() {
   tab->setTitle(getTitle());
-  plugin->mapLayerGroup->setMapLayerTitle(mapLayer, getTitle());
+  mapLayer->setTitle(getTitle());
 }
 
 void TaskLayer::DrawLines(osg::Geode *geode) {

@@ -219,7 +219,7 @@ void OpenedFile::createGroup() {
   sceneRoot->addChild(currentMarker);
 
   // push the scene
-  track = viewer->mapLayerGroup->insertMapLayer(sceneRoot, fileInfo.fileName());
+  track = viewer->mapLayerGroup->createMapLayer(sceneRoot, fileInfo.fileName());
   track->connectCheckedToVisibility();
 }
 

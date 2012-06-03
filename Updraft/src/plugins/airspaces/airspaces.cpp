@@ -31,6 +31,7 @@ void Airspaces::initialize(CoreInterface *coreInterface) {
 
   // Create map layers items in the left pane.
   mapLayerGroup = g_core->createMapLayerGroup(tr("Airspace"));
+  mapLayerGroup->connectCheckedToVisibility();
   // engine = new oaEngine(mapLayerGroup);
   mapLayers = new QVector<MapLayerInterface*>();
 
@@ -40,7 +41,7 @@ void Airspaces::initialize(CoreInterface *coreInterface) {
 }
 
 void Airspaces::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
-  sender->setVisible(value);
+  sender->setVisibility(value);
   // reloadAirspaces();
 }
 
@@ -105,17 +106,19 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
       mapNodes = engine->Draw(fileName);
       if (!mapNodes) return false;
 
-      QVector<MapLayerInterface*>* layers =
-        mapLayerGroup->insertMapLayerGroup(mapNodes, displayName);
-      if (!layers) return false;
+      MapLayerGroupInterface* fileGroup =
+        mapLayerGroup->createMapLayerGroup(displayName);
+      fileGroup->connectCheckedToVisibility();
+
       if (!mapLayers)
         mapLayers = new QVector<MapLayerInterface*>();
-      for (int i = 0; i < mapLayers->size(); ++i)
-        mapLayers->append(layers->at(i));
 
-      for (int i = 0; i < layers->size(); ++i) {
-        layers->at(i)->connectSignalChecked
-          (this, SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
+      QPair<osg::Node*, QString> pair;
+      foreach(pair, *mapNodes) {
+        MapLayerInterface *layer =
+          fileGroup->createMapLayer(pair.first, pair.second);
+        layer->connectCheckedToVisibility();
+        mapLayers->append(layer);
       }
 
       // for (int i = 0; i < layers->size(); ++i) {

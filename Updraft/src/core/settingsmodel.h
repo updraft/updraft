@@ -36,6 +36,15 @@ class SettingsItem {
   QIcon icon;
 };
 
+enum SettingsDataRole {
+    ValueRole = Qt::EditRole,
+    DecorationRole = Qt::DecorationRole,
+    DescriptionRole = Qt::DisplayRole,
+    NameRole = Qt::UserRole,
+    DefaultValueRole = Qt::UserRole+1,
+    NeedsRestartRole = Qt::UserRole+2
+};
+
 class SettingsModel: public QAbstractItemModel {
   Q_OBJECT
 

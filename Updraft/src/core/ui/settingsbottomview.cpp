@@ -1,4 +1,5 @@
 #include "settingsbottomview.h"
+#include "settingsmodel.h"
 #include "variantfunctions.h"
 
 namespace Updraft {
@@ -72,6 +73,13 @@ void SettingsBottomView::setTopIndex(const QModelIndex& index) {
     stack->setCurrentIndex(index.row());
   }
 
+  // Emit signals that say whether there is a setting that needs a restart
+  if (someSettingNeedsRestart()) {
+    emit restartInfo(true);
+  } else {
+    emit restartInfo(false);
+  }
+
   return;
 }
 
@@ -132,8 +140,20 @@ void SettingsBottomView::createEditors() {
     for (row = 0; row < model()->rowCount(index); ++row) {
       QModelIndex child = model()->index(row, 0, index);
 
-      QVariant descData = model()->data(child, Qt::DisplayRole);
-      QLabel* label = new QLabel(descData.toString(), NULL);
+      // Find out whether the setting needs an application restart
+      QVariant needsRestart = model()->data(child, NeedsRestartRole);
+      bool settingNeedsRestart = false;
+      if (needsRestart.isValid() && needsRestart.toBool()) {
+        settingNeedsRestart = true;
+      }
+
+      // Get the setting description
+      QString description = model()->data(child, DescriptionRole).toString();
+      if (settingNeedsRestart) {
+        description = QString("* ") + description;
+      }
+
+      QLabel* label = new QLabel(description, NULL);
       label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
       layout->addWidget(label, row, 0);
 
@@ -229,6 +249,23 @@ int SettingsBottomView::verticalOffset() const {
 QRegion SettingsBottomView::visualRegionForSelection(
   const QItemSelection & selection) const {
   return QRegion();
+}
+
+bool SettingsBottomView::someSettingNeedsRestart() {
+  QModelIndex pageIndex = model()->index(stack->currentIndex(), 0);
+  if (!pageIndex.isValid()) return false;
+
+  for (int row = 0; row < model()->rowCount(pageIndex); ++row) {
+    QModelIndex settingIndex = model()->index(row, 0, pageIndex);
+    QVariant needsRestart = model()->data(settingIndex, NeedsRestartRole);
+
+    // This setting needs restart
+    if (needsRestart.isValid() && needsRestart.toBool()) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 void SettingsBottomView::commitData(QWidget* editor) {

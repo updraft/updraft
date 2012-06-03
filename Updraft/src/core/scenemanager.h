@@ -1,7 +1,8 @@
 #ifndef UPDRAFT_SRC_CORE_SCENEMANAGER_H_
 #define UPDRAFT_SRC_CORE_SCENEMANAGER_H_
 
-#include <QtGui/QWidget>
+#include <QWidget>
+#include <osg/ref_ptr>
 #include <osgQt/GraphicsWindowQt>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
@@ -72,6 +73,8 @@ class SceneManager: public QObject {
   /// that has elevation layer.
   osgEarth::Util::ElevationManager* getElevationManager();
 
+  osgEarth::Util::ObjectPlacer* getObjectPlacer();
+
  public slots:
   void redrawScene();
   void resetNorth();
@@ -91,6 +94,8 @@ class SceneManager: public QObject {
   void mapLayerGroup();
 
   osgEarth::Util::ElevationManager* createElevationManager();
+
+  osgEarth::Util::ObjectPlacer* placer;
 
   osgViewer::Viewer* viewer;
   osg::Group* sceneRoot;

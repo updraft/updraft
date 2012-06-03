@@ -33,7 +33,7 @@ oaEngine::oaEngine(MapLayerGroupInterface* LG,
   WIRE_OPACITY_BOTTOM     = 0.5;  // 0.6;
   WIRE_OPACITY_TOP        = 0.5;  // 0.2;
   // Elevation resolution setting
-  ELEV_TILE_RESOLUTION    = 0.1;  // 0.01
+  ELEV_TILE_RESOLUTION    = 0.5;  // 0.01 - slow, 0.1 fast
   // Sets the default height of ground and ceiling
   GND                     = 0;
   ROOF                    = 80000;
@@ -55,7 +55,7 @@ QVector<MapLayerInterface*>* oaEngine::DrawII(const QString& fileName) {
 
   QVector<MapLayerInterface*>* layers = new QVector<MapLayerInterface*>();
   for (int i = 0; i < mapLayers->size(); ++i) {
-    layers->push_back(mapLayerGroup->insertMapLayer(
+    layers->push_back(mapLayerGroup->createMapLayer(
       mapLayers->at(i).first, mapLayers->at(i).second));
   }
 
@@ -130,8 +130,9 @@ QVector<QPair<osg::Node*, QString> >* oaEngine::Draw(const QString& fileName) {
       int ceiling = A->ParseHeight(false, &ceilingAgl);
       if (ceiling == 0) ceiling = ROOF;
       int floor = A->ParseHeight(true, &floorAgl);
-      if (!DRAW_UNDERGROUND)
+      if (!DRAW_UNDERGROUND) {
         if (floor == 0) floorAgl = true;
+      }
 
       // To destroy artefacts of two planes in one space
       double rnd = 0.05 * (qrand() % 100);
@@ -250,6 +251,8 @@ QVector<double>* oaEngine::ComputeHeightData(
         heightRefPoint->lat,
         ELEV_TILE_RESOLUTION, 0,
         addGnd, res);
+    if (addGnd < 0)
+      addGnd = 0;
 
     // Get the elevation data for whole airspace
     // or for each and every point of the polygon
@@ -260,6 +263,8 @@ QVector<double>* oaEngine::ComputeHeightData(
           pointsWGS->at(k).lon,
           pointsWGS->at(k).lat,
           ELEV_TILE_RESOLUTION, 0, addGnd, res);
+        if (addGnd < 0)
+          addGnd = 0;
         pointsGnd->push_back(addGnd);
       }
     } else {
