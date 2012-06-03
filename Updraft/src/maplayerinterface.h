@@ -4,6 +4,8 @@
 class QObject;
 class QTreeWidgetItem;
 class QPoint;
+class QAction;
+class QString;
 
 namespace Updraft {
 
@@ -52,6 +54,22 @@ class MapLayerInterface {
 
   /// Sets visibility to the layer.
   virtual void setVisibility(bool value) = 0;
+
+  /// Deleting imported files.
+  /// \{
+
+  /// Sets the path used by getDeleteAction.
+  virtual void setFilePath(const QString& path) = 0;
+
+  /// Return a QAction that will delete the file
+  /// selected by setFilePath.
+  /// Used for deleting imported files.
+  /// Only makes sense after setFilePath was called.
+  /// The action's triggered() signal deletes the selected file and
+  /// this map layer group.
+  virtual QAction* getDeleteAction() = 0;
+
+  /// \}
 
   virtual bool isVisible() = 0;
 

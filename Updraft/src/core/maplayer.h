@@ -42,8 +42,14 @@ class MapLayer : public QObject, virtual public MapLayerInterface {
   void setChecked(bool value);
   void setCheckable(bool value);
 
+  void setFilePath(const QString& path);
+  QAction* getDeleteAction();
+
  public slots:
   void setVisibility(bool value) = 0;
+
+ private slots:
+  void deleteActionSlot();
 
  signals:
   /// Emited when the map layer is checked or unchecked
@@ -58,6 +64,12 @@ class MapLayer : public QObject, virtual public MapLayerInterface {
   void emitContextMenuRequested(const QPoint& pos);
 
   explicit MapLayer(QTreeWidgetItem* item);
+
+  /// Action for getDeleteAction.
+  QAction* deleteAction;
+
+  /// File path for delete action.
+  QString deleteFilePath;
 
   /// Tree item representing this map layer.
   QTreeWidgetItem *treeItem;
