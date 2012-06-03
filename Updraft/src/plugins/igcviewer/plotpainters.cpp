@@ -14,6 +14,8 @@ void PlotPainter::init(PlotAxes *axes, FixInfo *info) {
   this->axes = axes;
   this->info = info;
 
+  updateBuffer();
+
   connect(axes, SIGNAL(geometryChanged()), this, SLOT(updateBuffer()));
 }
 

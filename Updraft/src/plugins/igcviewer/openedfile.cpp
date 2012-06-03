@@ -131,7 +131,6 @@ bool OpenedFile::init(IgcViewer* viewer,
   QWidget* tabWidget = new QWidget();
   QWidget* leftPart = new QWidget();
   QHBoxLayout* layout = new QHBoxLayout();
-  // QSplitter* splitter = new QSplitter(tabWidget);
   QVBoxLayout* verticalLayout = new QVBoxLayout();
 
   layout->setContentsMargins(0, 0, 0, 0);
@@ -143,24 +142,11 @@ bool OpenedFile::init(IgcViewer* viewer,
     plotWidget->getPointsStatTexts());
   textBox->setReadOnly(true);
 
-  connect(plotWidget, SIGNAL(updateCurrentInfo(const QString&)),
-    textBox, SLOT(setMouseOverText(const QString&)));
-  connect(plotWidget, SIGNAL(updateText()),
-    textBox, SLOT(updateText()));
-  connect(plotWidget, SIGNAL(timeWasPicked(QTime)),
-    this, SLOT(timePicked(QTime)));
-  connect(plotWidget, SIGNAL(clearMarkers()),
-    this, SLOT(clearMarkers()));
-
   tabWidget->setLayout(layout);
   verticalLayout->addWidget(colorsCombo, 0, Qt::AlignTop);
   verticalLayout->addWidget(textBox, 1, Qt::AlignTop);
   layout->addLayout(verticalLayout, 0);
-  // leftPart->setLayout(verticalLayout);
-  // splitter->addWidget(leftPart);
-  // layout->add
   layout->addWidget(plotWidget, 1.0);
-  // splitter->addWidget(plotWidget);
 
   tab = g_core->createTab(tabWidget, fileInfo.fileName());
 
@@ -174,6 +160,17 @@ bool OpenedFile::init(IgcViewer* viewer,
   createGroup();
 
   coloringChanged();
+
+  connect(plotWidget, SIGNAL(updateCurrentInfo(const QString&)),
+    textBox, SLOT(setMouseOverText(const QString&)));
+  connect(plotWidget, SIGNAL(updateText()),
+    textBox, SLOT(updateText()));
+  connect(plotWidget, SIGNAL(fixWasPicked(int)),
+    this, SLOT(fixPicked(int)));
+  connect(plotWidget, SIGNAL(fixIsPointedAt(int)),
+    this, SLOT(fixIsPointedAt(int)));
+  connect(plotWidget, SIGNAL(clearMarkers()),
+    this, SLOT(clearMarkers()));
 
   return true;
 }
@@ -203,8 +200,23 @@ void OpenedFile::createGroup() {
 
   sceneRoot->addChild(createTrack());
   sceneRoot->addChild(createSkirt());
+
+  // create marker geometry
   trackPositionMarker = createMarker(25.);
   trackPositionMarker->setNodeMask(0xffffffff);
+
+  // create marker that points to location of the mouse point
+  currentMarker = new osg::AutoTransform();
+  currentMarker->setAutoRotateMode(
+    osg::AutoTransform::ROTATE_TO_SCREEN);
+  currentMarker->setAutoScaleToScreen(true);
+  currentMarker->setMinimumScale(0.1);
+  currentMarker->setMaximumScale(100);
+  currentMarker->addChild(createMarker(25.));
+  currentMarker->setPosition(osg::Vec3d(0, 0, 0));
+  currentMarker->setNodeMask(0x0);
+
+  sceneRoot->addChild(currentMarker);
 
   // push the scene
   track = viewer->mapLayerGroup->insertMapLayer(sceneRoot, fileInfo.fileName());
@@ -333,29 +345,25 @@ void OpenedFile::trackClicked(const EventInfo* eventInfo) {
     // find nearest fix:
   if (fixList.empty()) return;
     // index of nearest trackFix
-  QList<TrackFix>::iterator nearest = fixList.begin();
-  float dx = nearest->x - eventInfo->intersection.x();
-  float dy = nearest->y - eventInfo->intersection.y();
-  float dz = nearest->z - eventInfo->intersection.z();
+  int nearest = 0;
+  float dx = fixList[nearest].x - eventInfo->intersection.x();
+  float dy = fixList[nearest].y - eventInfo->intersection.y();
+  float dz = fixList[nearest].z - eventInfo->intersection.z();
   float distance = dx*dx + dy*dy + dz*dz;
   float minDistance = distance;
 
-  for (QList<TrackFix>::iterator it = fixList.begin();
-    it != fixList.end(); it++) {
-    dx = it->x - eventInfo->intersection.x();
-    dy = it->y - eventInfo->intersection.y();
-    dz = it->z - eventInfo->intersection.z();
+  for (int i = 0; i < fixList.count(); i++) {
+    dx = fixList[i].x - eventInfo->intersection.x();
+    dy = fixList[i].y - eventInfo->intersection.y();
+    dz = fixList[i].z - eventInfo->intersection.z();
     distance = dx*dx + dy*dy + dz*dz;
     if (distance < minDistance) {
       minDistance = distance;
-      nearest = it;
+      nearest = i;
     }
   }
 
-  qDebug() << minDistance;
-
-  QTime time = nearest->timestamp;
-  plotWidget->addPickedTime(time);
+  plotWidget->addPickedFix(nearest);
 
   osg::AutoTransform* currentMarkerTransform = new osg::AutoTransform();
   currentMarkerTransform->setAutoRotateMode(
@@ -366,30 +374,14 @@ void OpenedFile::trackClicked(const EventInfo* eventInfo) {
   currentMarkerTransform->addChild(trackPositionMarker);
   sceneRoot->addChild(currentMarkerTransform);
   currentMarkerTransform->setPosition(
-    osg::Vec3(nearest->x, nearest->y, nearest->z));
+    osg::Vec3(fixList[nearest].x, fixList[nearest].y, fixList[nearest].z));
   pickedMarkers.append(currentMarkerTransform);
 }
 
-void OpenedFile::timePicked(QTime time) {
+void OpenedFile::fixPicked(int index) {
     // find fix with nearest time:
   if (fixList.empty()) return;
-    // index of nearest trackFix
 
-  QList<TrackFix>::iterator nearest = fixList.begin();
-  float distance = qAbs(time.secsTo(nearest->timestamp));
-  float minDistance = distance;
-
-  for (QList<TrackFix>::iterator it = fixList.begin();
-    it != fixList.end(); it++) {
-    distance = qAbs(time.secsTo(it->timestamp));
-    if (distance < minDistance) {
-      minDistance = distance;
-      nearest = it;
-    }
-  }
-
-    // do the transformation of the marker to the position
-    // of the nearest trackFix.
   // create a new transform node:
   osg::AutoTransform* currentMarkerTransform = new osg::AutoTransform();
   currentMarkerTransform->setAutoRotateMode(
@@ -400,8 +392,21 @@ void OpenedFile::timePicked(QTime time) {
   currentMarkerTransform->addChild(trackPositionMarker);
   sceneRoot->addChild(currentMarkerTransform);
   currentMarkerTransform->setPosition(
-    osg::Vec3(nearest->x, nearest->y, nearest->z));
+    osg::Vec3(fixList[index].x, fixList[index].y, fixList[index].z));
   pickedMarkers.append(currentMarkerTransform);
+}
+
+void OpenedFile::fixIsPointedAt(int index) {
+    // find fix with nearest time:
+  if ((index < 0) || (index >= fixList.count())) {
+    // no fix was picked, hide the marker
+    currentMarker->setNodeMask(0x0);
+  } else {
+    currentMarker->setNodeMask(0xffffffff);
+      // set the position of the current marker node:
+    currentMarker->setPosition(
+      osg::Vec3(fixList[index].x, fixList[index].y, fixList[index].z));
+  }
 }
 
 osg::Geode* OpenedFile::createMarker(qreal scale) {

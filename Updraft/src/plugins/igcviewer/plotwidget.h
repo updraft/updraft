@@ -17,14 +17,14 @@ namespace Updraft {
 namespace IgcViewer {
 
 struct PickData {
-  PickData(int xLine_, int infoIndex_)
-    : xLine(xLine_), infoIndex(infoIndex_) {}
+  PickData(int xLine_, int fixIndex_)
+    : xLine(xLine_), fixIndex(fixIndex_) {}
 
   /// x-coordinate of the pixel in the graph.
   int xLine;
 
   /// Index of the fix in the fix list.
-  int infoIndex;
+  int fixIndex;
 };
 
 class PlotWidget : public QWidget {
@@ -34,7 +34,7 @@ class PlotWidget : public QWidget {
   PlotWidget(SegmentInfo* segmentInfo, FixInfo* altitudeInfo,
     FixInfo* verticalSpeedInfo, FixInfo *groundSpeedInfo);
 
-  /// A fix of given index was picked. 
+  /// A fix of given index was picked.
   void addPickedFix(int index);
 
   /// User clicked on position x on the graph, and picked one of the fixes
@@ -45,8 +45,6 @@ class PlotWidget : public QWidget {
 
   QList<QString>* getSegmentsStatTexts();
   QList<QString>* getPointsStatTexts();
-
- public slots:
 
  signals:
   /// Sends text statistics of the fix the mouse is pointing at.
@@ -74,12 +72,15 @@ class PlotWidget : public QWidget {
 
   void redrawGraphPicture();
 
-  QString createPointStatText(QTime time, int xLine, int fixListIndex);
+  QString createPointStatText(int xLine, int fixListIndex);
   QString createSegmentStatText(int startPointIndex, int endPointIndex);
 
   /// Update picked texts when a new fix was added at the position `i` in
   /// the `pickedFixes` list.
   void updatePickedTexts(int i);
+
+  /// Resets the statistics to the default version.
+  void resetStats();
 
   /// Create time from secs. The value of secs can be bigger than 24*3600.
   QTime getTimeFromSecs(int timeInSecs);

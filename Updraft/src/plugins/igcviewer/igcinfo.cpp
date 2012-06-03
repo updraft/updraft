@@ -213,44 +213,6 @@ qreal SegmentInfo::avgSpeed(int startPosition, int endPosition) {
   return (distance / timeDiff)*3.6;
 }
 
-qreal SegmentInfo::avgSpeed(QTime start, QTime end) {
-  int spos;
-  int epos;
-  for (int i = 0; i < fixList->count(); i++) {
-    if (fixList->at(i).timestamp == start) {
-      spos = i;
-    }
-    if (fixList->at(i).timestamp == end) {
-      epos = i;
-    }
-  }
-  return avgSpeed(spos, epos);
-}
-
-qreal SegmentInfo::avgSpeedOverall() {
-  return avgSpeed(0, fixList->count()-1);
-}
-
-qreal SegmentInfo::avgSpeedSince(QTime start) {
-  int spos;
-  for (int i = 0; i < fixList->count(); i++) {
-    if (fixList->at(i).timestamp == start) {
-      spos = i;
-    }
-  }
-  return avgSpeed(spos, fixList->count()-1);
-}
-
-qreal SegmentInfo::avgSpeedUntil(QTime end) {
-  int epos;
-  for (int i = 0; i < fixList->count(); i++) {
-    if (fixList->at(i).timestamp == end) {
-      epos = i;
-    }
-  }
-  return avgSpeed(0, epos);
-}
-
 qreal SegmentInfo::avgRise(int startPosition, int endPosition) {
   qreal startHeight = fixList->at(startPosition).location.alt;
   qreal endHeight = fixList->at(endPosition).location.alt;
@@ -266,44 +228,6 @@ qreal SegmentInfo::avgRise(int startPosition, int endPosition) {
   return ((endHeight - startHeight) / timeDiff);
 }
 
-qreal SegmentInfo::avgRise(QTime start, QTime end) {
-  int spos;
-  int epos;
-  for (int i = 0; i < fixList->count(); i++) {
-    if (fixList->at(i).timestamp == start) {
-      spos = i;
-    }
-    if (fixList->at(i).timestamp == end) {
-      epos = i;
-    }
-  }
-  return avgRise(spos, epos);
-}
-
-qreal SegmentInfo::avgRiseOverall() {
-  return avgRise(0, fixList->count()-1);
-}
-
-qreal SegmentInfo::avgRiseSince(QTime start) {
-  int spos;
-  for (int i = 0; i < fixList->count(); i++) {
-    if (fixList->at(i).timestamp == start) {
-      spos = i;
-    }
-  }
-  return avgRise(spos, fixList->count()-1);
-}
-
-qreal SegmentInfo::avgRiseUntil(QTime end) {
-  int epos;
-  for (int i = 0; i < fixList->count(); i++) {
-    if (fixList->at(i).timestamp == end) {
-      epos = i;
-    }
-  }
-  return avgRise(0, epos);
-}
-
 qreal SegmentInfo::distance(int startPos, int endPos) {
   Util::Location startLocation = fixList->at(startPos).location;
   Util::Location endLocation = fixList->at(endPos).location;
@@ -314,94 +238,12 @@ qreal SegmentInfo::distance(int startPos, int endPos) {
   return dist;
 }
 
-qreal SegmentInfo::distance(QTime start, QTime end) {
-  int startPos;
-  int endPos;
-  for (int i = 0; i < fixList->count(); i++) {
-    if (fixList->at(i).timestamp == start) {
-      startPos = i;
-    }
-    if (fixList->at(i).timestamp == end) {
-      endPos = i;
-    }
-  }
-  return distance(startPos, endPos);
-}
-
-qreal SegmentInfo::distanceOverall() {
-  return distance(0, fixList->count()-1);
-}
-
-qreal SegmentInfo::distanceSince(QTime start) {
-  int startPos;
-  for (int i = 0; i < fixList->count(); i++) {
-    if (fixList->at(i).timestamp == start) {
-      startPos = i;
-    }
-  }
-  return distance(startPos, fixList->count()-1);
-}
-
-qreal SegmentInfo::distanceUntil(QTime end) {
-  int endPos;
-  for (int i = 0; i < fixList->count(); i++) {
-    if (fixList->at(i).timestamp == end) {
-      endPos = i;
-    }
-  }
-  return distance(0, endPos);
-}
-
-
 qreal SegmentInfo::heightDifference(int startPos, int endPos) {
   return fixList->at(endPos).location.alt - fixList->at(endPos).location.alt;
 }
 
-qreal SegmentInfo::heightDifference(QTime start, QTime end) {
-  int startPos;
-  int endPos;
-  for (int i = 0; i < fixList->count(); i++) {
-    if (fixList->at(i).timestamp == start) {
-      startPos = i;
-    }
-    if (fixList->at(i).timestamp == end) {
-      endPos = i;
-    }
-  }
-  return heightDifference(startPos, endPos);
-}
-
-qreal SegmentInfo::heightDifferenceOverall() {
-  return heightDifference(0, fixList->count()-1);
-}
-
-qreal SegmentInfo::heightDifferenceSince(QTime start) {
-  int startPos;
-  for (int i = 0; i < fixList->count(); i++) {
-    if (fixList->at(i).timestamp == start) {
-      startPos = i;
-    }
-  }
-  return heightDifference(startPos, fixList->count()-1);
-}
-
-qreal SegmentInfo::heightDifferenceUntil(QTime end) {
-  int endPos;
-  for (int i = 0; i < fixList->count(); i++) {
-    if (fixList->at(i).timestamp == end) {
-      endPos = i;
-    }
-  }
-  return heightDifference(0, endPos);
-}
-
-
-QTime SegmentInfo::getStartTime() {
-  return fixList->first().timestamp;
-}
-
-QTime SegmentInfo::getEndTime() {
-  return fixList->last().timestamp;
+QTime SegmentInfo::timestamp(int index) {
+  return fixList->at(index).timestamp;
 }
 
 }  // End namespace IgcViewer

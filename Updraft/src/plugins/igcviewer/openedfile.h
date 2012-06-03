@@ -64,8 +64,14 @@ class OpenedFile: public QObject {
 
  public slots:
   /// A slot waiting for the signal from the PlotWidget.
-  /// It sets the marker on the position of the fix of given index.
+  /// It creates a new the marker for the picked fix,
+  /// and places it at the position of the fix.
   void fixPicked(int index);
+
+  /// A slot waiting for the signal from the PlotWidget.
+  /// It sets the position of the marker of the current fix
+  /// the user is pointing at with mouse.
+  void fixIsPointedAt(int index);
 
   /// It clears the markers on the track.
   void clearMarkers();

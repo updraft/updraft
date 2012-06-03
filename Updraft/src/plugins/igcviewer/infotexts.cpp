@@ -27,22 +27,25 @@ QSize PickedLabel::minimumSize() const {
 
 void PickedLabel::draw(QPainter *painter) {
   if (texts->empty()) return;
+  if (pickedPositions->empty()) return;
+
   QFont font("Helvetica", 8);
   painter->setPen(LABEL_PEN);
   painter->setFont(font);
-  int spos = rect.left();
-  int epos = rect.right();
+
   QVector<int> space;
-  for (int i = 0; i < pickedPositions->size(); i++) {
-    epos = pickedPositions->at(i);
+  int spos = pickedPositions->at(0);
+  int epos = 0;
+  for (int i = 0; i < pickedPositions->size()-1; i++) {
+    epos = pickedPositions->at(i+1);
     space.append(epos - spos);
     spos = epos;
   }
   space.append(rect.right() - spos);
 
-  spos = rect.left();
-  for (int i = 0; i < pickedPositions->size(); i++) {
-    epos = pickedPositions->at(i);
+  spos = pickedPositions->at(0);
+  for (int i = 0; i < pickedPositions->size()-1; i++) {
+    epos = pickedPositions->at(i+1);
     int cspos = spos;
     spos = epos;
     if ((epos - cspos) < TEXT_WIDTH) {
@@ -57,19 +60,6 @@ void PickedLabel::draw(QPainter *painter) {
       QPoint(center+TEXT_WIDTH/2, rect.bottom()));
     painter->drawText(textbox, texts->at(i));
   }
-
-  // draw the last text, if there is space
-  epos = rect.right();
-  int res = (TEXT_WIDTH - (epos - spos)) / 2 - SPACE;
-  if (((epos - spos) < TEXT_WIDTH) &&
-    (space.empty()) || (((space.last() - TEXT_WIDTH) / 2) < res))
-    return;
-
-  int center = (epos - spos)/2 + spos;
-
-  QRect textbox(QPoint(center-TEXT_WIDTH/2, rect.top()),
-    QPoint(center+TEXT_WIDTH/2, rect.bottom()));
-  painter->drawText(textbox, texts->last());
 }
 
 // IGC Text Info Widget
