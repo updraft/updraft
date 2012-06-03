@@ -41,7 +41,6 @@ void PickedLabel::draw(QPainter *painter) {
     space.append(epos - spos);
     spos = epos;
   }
-  space.append(rect.right() - spos);
 
   spos = pickedPositions->at(0);
   for (int i = 0; i < pickedPositions->size()-1; i++) {
@@ -98,18 +97,19 @@ void IgcTextWidget::updateText() {
     string += "<b>" + s + "</b><br>";
     string += "-----------<br>";
   }
-  for (int i = 0; i < segmentsTexts->size()-1; i++) {
-    s = segmentsTexts->at(i);
-    s.replace("\n", "<br>");
-    string += "<i>" + s + "</i><br>";
+  // qAssert(segmentsTexts->size() == pointsTexts->size()-1);
+  for (int i = 0; i < pointsTexts->size()-1; i++) {
     s = pointsTexts->at(i);
     s.replace("\n", "<br>");
     string += "<b>" + s + "</b><br>";
-  }
-  if (!segmentsTexts->isEmpty()) {
-    s = segmentsTexts->last();
+    s = segmentsTexts->at(i);
     s.replace("\n", "<br>");
-    string += "<i>" + s + "</i>";
+    string += "<i>" + s + "</i><br>";
+  }
+  if (!pointsTexts->isEmpty()) {
+    s = pointsTexts->last();
+    s.replace("\n", "<br>");
+    string += "<b>" + s + "</b><br>";
   }
   setHtml(string);
 }
