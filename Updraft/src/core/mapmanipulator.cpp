@@ -17,6 +17,7 @@ MapManipulator::MapManipulator() {
   getSettings()->setLockAzimuthWhilePanning(true);
 
   // Create a group for map settings
+  /*
   updraft->settingsManager->addGroup(
     "map", tr("Map settings"), ":/core/icons/map.png");
 
@@ -26,6 +27,7 @@ MapManipulator::MapManipulator() {
     QVariant(0.5));
   mouseZoomSensitivity->callOnValueChanged(
     this, SLOT(mouseZoomSensitivityChanged()));
+  */
 }
 
 void MapManipulator::resetNorth(double duration) {
