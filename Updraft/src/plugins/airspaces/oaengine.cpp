@@ -33,7 +33,7 @@ oaEngine::oaEngine(MapLayerGroupInterface* LG,
   WIRE_OPACITY_BOTTOM     = 0.5;  // 0.6;
   WIRE_OPACITY_TOP        = 0.5;  // 0.2;
   // Elevation resolution setting
-  ELEV_TILE_RESOLUTION    = 0.1;  // 0.01 - slow, 0.1 fast
+  ELEV_TILE_RESOLUTION    = 0.5;  // 0.01 - slow, 0.1 fast
   // Sets the default height of ground and ceiling
   GND                     = 0;
   ROOF                    = 80000;
