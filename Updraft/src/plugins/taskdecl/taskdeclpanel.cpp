@@ -241,7 +241,7 @@ void TaskDeclPanel::newAddTpButton(int index, bool checked) {
 
   // Create the button
   QPushButton* butt = new QPushButton(
-    QIcon(":/taskdeclpanel/icons/add_tp_icon.png"), addTpText, NULL);
+    QIcon(":/core/icons/add.png"), addTpText, NULL);
   butt->setFlat(true);
   butt->setIconSize(QSize(32, 32));
   butt->setCheckable(true);

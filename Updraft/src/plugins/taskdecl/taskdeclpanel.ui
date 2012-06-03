@@ -73,9 +73,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
-         <normalon>:/taskdeclpanel/icons/save_icon_01.png</normalon>
-        </iconset>
+        <iconset resource="../../core/resources.qrc">
+         <normaloff>:/core/icons/save.png</normaloff>:/core/icons/save.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -115,8 +114,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="taskdeclpanel.qrc">
-         <normaloff>:/taskdeclpanel/icons/undo_icon_01.png</normaloff>:/taskdeclpanel/icons/undo_icon_01.png</iconset>
+        <iconset resource="../../core/resources.qrc">
+         <normaloff>:/core/icons/undo.png</normaloff>:/core/icons/undo.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -153,8 +152,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="taskdeclpanel.qrc">
-         <normaloff>:/taskdeclpanel/icons/redo_icon_01.png</normaloff>:/taskdeclpanel/icons/redo_icon_01.png</iconset>
+        <iconset resource="../../core/resources.qrc">
+         <normaloff>:/core/icons/redo.png</normaloff>:/core/icons/redo.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -330,7 +329,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="taskdeclpanel.qrc"/>
+  <include location="../../core/resources.qrc"/>
  </resources>
  <connections/>
 </ui>
