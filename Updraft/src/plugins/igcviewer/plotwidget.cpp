@@ -216,6 +216,7 @@ void PlotWidget::addPickedLine(int x) {
 
   int i;
   for (i = 0; i < pickedFixes.count(); i++) {
+    if (pickedFixes[i].fixIndex == index) return;  // ignore this click
     if (pickedFixes[i].fixIndex > index) break;
   }
   pickedFixes.insert(i, PickData(x, index));
@@ -234,6 +235,7 @@ void PlotWidget::addPickedFix(int index) {
 
   int i;
   for (i = 0; i < pickedFixes.count(); i++) {
+    if (pickedFixes[i].fixIndex == index) return;  // ignore this click
     if (pickedFixes[i].fixIndex > index) break;
   }
   pickedFixes.insert(i, PickData(x, index));
@@ -354,12 +356,12 @@ QString PlotWidget::createSegmentStatText(
   avgspeedstr.setNum(avgSpeed, 5, 0);
   QString avgrisestr;
   avgrisestr.setNum(avgRise, 5, 1);
-  text = tr("duration") + " "
+  text = tr("dT:") + " "
     + durationhrs + ":" + durationmins + ":" + durationsecs + "\n"
-    + tr("distance") + " " + distancestr + " km | "
-    + tr("alt diff") + " " + heightstr + " m\n"
-    + tr("avg GS") + " " + avgspeedstr + " km/h\n"
-    + tr("avg VS") + " " + avgrisestr + " m/s";
+    + tr("d:") + " " + distancestr + " km\n"
+    + tr("dH") + " " + heightstr + " m\n"
+    + tr("GS") + " " + avgspeedstr + " km/h\n"
+    + tr("VS") + " " + avgrisestr + " m/s";
   return text;
 }
 

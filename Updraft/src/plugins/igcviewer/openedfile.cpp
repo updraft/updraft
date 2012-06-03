@@ -199,7 +199,6 @@ void OpenedFile::createGroup() {
   sceneRoot = new osg::Group();
 
   sceneRoot->addChild(createTrack());
-  sceneRoot->addChild(createSkirt());
 
   // create marker geometry
   trackPositionMarker = createMarker(25.);
@@ -217,6 +216,8 @@ void OpenedFile::createGroup() {
   currentMarker->setNodeMask(0x0);
 
   sceneRoot->addChild(currentMarker);
+
+  sceneRoot->addChild(createSkirt());
 
   // push the scene
   track = viewer->mapLayerGroup->createMapLayer(sceneRoot, fileInfo.fileName());
@@ -433,7 +434,7 @@ osg::Geode* OpenedFile::createMarker(qreal scale) {
 
   osg::StateSet* stateSet = geode->getOrCreateStateSet();
   QString path = QCoreApplication::applicationDirPath()
-    + "/data/igcmarker.svg";
+    + "/data/igcmarker.png";
   osg::Image* image = osgDB::readImageFile(path.toStdString());
   osg::Texture2D* texture = new osg::Texture2D();
   texture->setImage(image);

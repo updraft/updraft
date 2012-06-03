@@ -197,6 +197,7 @@ void SegmentInfo::init(const QList<TrackFix>* fixList_) {
 }
 
 qreal SegmentInfo::avgSpeed(int startPosition, int endPosition) {
+  if (endPosition <= startPosition) return 0;
   Util::Location startLocation = fixList->at(startPosition).location;
   Util::Location endLocation = fixList->at(endPosition).location;
   QTime start = fixList->at(startPosition).timestamp;
@@ -214,6 +215,7 @@ qreal SegmentInfo::avgSpeed(int startPosition, int endPosition) {
 }
 
 qreal SegmentInfo::avgRise(int startPosition, int endPosition) {
+  if (endPosition <= startPosition) return 0;
   qreal startHeight = fixList->at(startPosition).location.alt;
   qreal endHeight = fixList->at(endPosition).location.alt;
   QTime start = fixList->at(startPosition).timestamp;
@@ -228,9 +230,10 @@ qreal SegmentInfo::avgRise(int startPosition, int endPosition) {
   return ((endHeight - startHeight) / timeDiff);
 }
 
-qreal SegmentInfo::distance(int startPos, int endPos) {
-  Util::Location startLocation = fixList->at(startPos).location;
-  Util::Location endLocation = fixList->at(endPos).location;
+qreal SegmentInfo::distance(int startPosition, int endPosition) {
+  if (endPosition <= startPosition) return 0;
+  Util::Location startLocation = fixList->at(startPosition).location;
+  Util::Location endLocation = fixList->at(endPosition).location;
 
   qreal dist = g_core->getEllipsoid()->
     distance(startLocation, endLocation);
@@ -238,8 +241,10 @@ qreal SegmentInfo::distance(int startPos, int endPos) {
   return dist;
 }
 
-qreal SegmentInfo::heightDifference(int startPos, int endPos) {
-  return fixList->at(endPos).location.alt - fixList->at(endPos).location.alt;
+qreal SegmentInfo::heightDifference(int startPosition, int endPosition) {
+  if (endPosition <= startPosition) return 0;
+  return fixList->at(endPosition).location.alt -
+    fixList->at(endPosition).location.alt;
 }
 
 QTime SegmentInfo::timestamp(int index) {

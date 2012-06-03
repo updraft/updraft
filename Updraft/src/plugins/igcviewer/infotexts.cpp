@@ -57,7 +57,7 @@ void PickedLabel::draw(QPainter *painter) {
 
     QRect textbox(QPoint(center-TEXT_WIDTH/2, rect.top()),
       QPoint(center+TEXT_WIDTH/2, rect.bottom()));
-    painter->drawText(textbox, texts->at(i));
+    painter->drawText(textbox, Qt::AlignHCenter, texts->at(i));
   }
 }
 
