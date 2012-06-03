@@ -5,7 +5,7 @@
 namespace Updraft {
 namespace IgcViewer {
 
-DefaultColoring::DefaultColoring(const IgcInfo *info,
+DefaultColoring::DefaultColoring(const FixInfo *info,
   const Util::Gradient *gradient)
   : info(info), gradient(gradient) {}
 
@@ -16,7 +16,7 @@ QColor DefaultColoring::color(int i) {
 }
 
 SymmetricColoring::SymmetricColoring(
-  const IgcInfo *info, const Util::Gradient *gradient)
+  const FixInfo *info, const Util::Gradient *gradient)
   : DefaultColoring(info, gradient) {}
 
 QColor SymmetricColoring::color(int i) {
@@ -27,7 +27,7 @@ QColor SymmetricColoring::color(int i) {
 }
 
 LocalColoring::LocalColoring(
-  const IgcInfo *info, const Util::Gradient *gradient)
+  const FixInfo *info, const Util::Gradient *gradient)
   : DefaultColoring(info, gradient) {}
 
 QColor LocalColoring::color(int i) {

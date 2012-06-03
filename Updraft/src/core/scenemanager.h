@@ -132,11 +132,7 @@ class SceneManager: public QObject {
 
   void insertMenuItems();
 
-  bool isCameraPerspective;
-
   double getAspectRatio();
-  void updateCameraOrtho(osg::Camera* camera);
-  void updateCameraPerspective(osg::Camera* camera);
 };
 
 }  // end namespace Core

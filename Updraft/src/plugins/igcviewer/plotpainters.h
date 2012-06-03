@@ -20,7 +20,7 @@ class PlotPainter : public QObject {
 
  public:
   virtual ~PlotPainter() {}
-  void init(PlotAxes *axes, IgcInfo *info);
+  void init(PlotAxes *axes, FixInfo *info);
 
   virtual void draw(QPainter* painter);
 
@@ -44,7 +44,7 @@ class PlotPainter : public QObject {
 
   QPainter *painter;
   PlotAxes *axes;
-  IgcInfo *info;
+  FixInfo *info;
 
   QPolygonF buffer;
   QVector<Data> dataValues;

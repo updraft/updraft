@@ -44,5 +44,18 @@ void MapManipulator::mouseZoomSensitivityChanged() {
   getSettings()->setScrollSensitivity(mouseZoomSensitivity->get().toDouble());
 }
 
+void MapManipulator::updateCameraProjection() {
+  bool isTilted = (getViewpoint().getPitch() > -88);
+  bool isFar = (getDistance() > 7e6);
+
+  osgEarth::Util::EarthManipulator::CameraProjection projection;
+  if (isTilted || isFar) {
+    projection = osgEarth::Util::EarthManipulator::PROJ_PERSPECTIVE;
+  } else {
+    projection = osgEarth::Util::EarthManipulator::PROJ_ORTHOGRAPHIC;
+  }
+  getSettings()->setCameraProjection(projection);
+}
+
 }  // End namespace Core
 }  // End namespace Updraft

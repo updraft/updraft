@@ -34,8 +34,7 @@ MapManager::MapManager(QString earthFile, QString mapName) {
     this->mapNode = new osgEarth::MapNode(this->map);
   }
     // initialize the manipulator
-  this->manipulator = new MapManipulator();
-  manipulator->setNode(mapNode);
+  setManipulator(new MapManipulator());
 }
 
 QVector<osgEarth::ImageLayer*> MapManager::getImageLayers() {
@@ -82,6 +81,11 @@ osgEarth::Map* MapManager::getMap() {
 
 MapManipulator* MapManager::getManipulator() {
   return manipulator;
+}
+
+void MapManager::setManipulator(MapManipulator* newManipulator) {
+    newManipulator->setNode(mapNode);
+    manipulator = newManipulator;
 }
 
 MapObject* MapManager::getMapObject() {
