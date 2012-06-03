@@ -33,6 +33,7 @@ void TurnPoints::initialize(CoreInterface *coreInterface) {
     "Labels font size", 20.0, true));
 
   mapLayerGroup = g_core->createMapLayerGroup(tr("Turn-points"));
+  mapLayerGroup->connectCheckedToVisibility();
 
   cupTPsReg.category = CATEGORY_PERSISTENT;
   cupTPsReg.extension = ".cup";
@@ -142,7 +143,6 @@ void TurnPoints::addLayer(TPFile *file) {
   Updraft::MapLayerInterface* mapLayer =
     mapLayerGroup->createMapLayer(turnPointsLayer->getNode(),
       file->getFileName(), -1);
-    mapLayerGroup->connectCheckedToVisibility();
 
   layers.insert(mapLayer, turnPointsLayer);
 
