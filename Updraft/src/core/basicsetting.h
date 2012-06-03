@@ -19,6 +19,8 @@ class BasicSetting: public QObject, public SettingInterface {
   void set(const QVariant& newValue);
   void setDescription(const QString& newDescription);
 
+  void setNeedsRestart(bool needsRestart);
+
   void callOnValueChanged(QObject* slotOwner, const char* slot);
 
   friend class SettingsManager;

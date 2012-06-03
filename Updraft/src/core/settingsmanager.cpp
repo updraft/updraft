@@ -84,10 +84,10 @@ SettingInterface* SettingsManager::addSetting(
     settingIndex = model->index(groupRows, 0, groupIndex);
 
     // Set the data
-    model->setData(settingIndex, defaultValue, Qt::EditRole);
-    model->setData(settingIndex, defaultValue, Qt::UserRole+1);
-    model->setData(settingIndex, settingIdPart, Qt::UserRole);
-    model->setData(settingIndex, description, Qt::DisplayRole);
+    model->setData(settingIndex, defaultValue, ValueRole);
+    model->setData(settingIndex, defaultValue, DefaultValueRole);
+    model->setData(settingIndex, settingIdPart, NameRole);
+    model->setData(settingIndex, description, DescriptionRole);
   }
 
   SettingsItem* settingItem = model->itemFromIndex(settingIndex);
@@ -123,11 +123,11 @@ void SettingsManager::resetToDefaults() {
     QModelIndex groupIndex = model->index(i, 0);
     for (int j = 0; j < model->rowCount(groupIndex); ++j) {
       QModelIndex itemIndex = model->index(j, 0, groupIndex);
-      QVariant defaultData = model->data(itemIndex, Qt::UserRole+1);
-      QVariant currentData = model->data(itemIndex, Qt::EditRole);
+      QVariant defaultData = model->data(itemIndex, DefaultValueRole);
+      QVariant currentData = model->data(itemIndex, ValueRole);
       // Only set the default data if it differs from the current data
       if (!variantsEqual(defaultData, currentData)) {
-        model->setData(itemIndex, defaultData, Qt::EditRole);
+        model->setData(itemIndex, defaultData, ValueRole);
       }
     }
   }
@@ -152,7 +152,7 @@ QModelIndex SettingsManager::getGroup(const QString& groupId) {
   int i;
   for (i = 0; i < model->rowCount(); i++) {
     groupIndex = model->index(i, 0);
-    QVariant modelGroupId = model->data(groupIndex, Qt::UserRole);
+    QVariant modelGroupId = model->data(groupIndex, NameRole);
     if (modelGroupId.toString() == groupId) {
       break;
     }
@@ -172,7 +172,8 @@ QModelIndex SettingsManager::getSetting(
   int i;
   for (i = 0; i < model->rowCount(groupIndex); i++) {
     settingIndex = model->index(i, 0, groupIndex);
-    QVariant modelSettingId = model->data(settingIndex, Qt::UserRole);
+    QVariant modelSettingId =
+      model->data(settingIndex, NameRole);
     if (modelSettingId.toString() == settingId)
       break;
   }
@@ -202,12 +203,12 @@ QModelIndex SettingsManager::addGroupInternal(
     model->insertRow(rows);
 
     groupIndex = model->index(rows, 0);
-    model->setData(groupIndex, description, Qt::DisplayRole);
-    model->setData(groupIndex, groupId, Qt::UserRole);
-    model->setData(groupIndex, icon, Qt::DecorationRole);
+    model->setData(groupIndex, description, DescriptionRole);
+    model->setData(groupIndex, groupId, NameRole);
+    model->setData(groupIndex, icon, DecorationRole);
   } else {
-    model->setData(groupIndex, description, Qt::DisplayRole);
-    model->setData(groupIndex, icon, Qt::DecorationRole);
+    model->setData(groupIndex, description, DescriptionRole);
+    model->setData(groupIndex, icon, DecorationRole);
   }
 
   return groupIndex;
