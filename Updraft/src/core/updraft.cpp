@@ -37,6 +37,11 @@ Updraft::Updraft(int argc, char** argv)
   mainWindow->setMapWidget(sceneManager->getWidget());
 
   pluginManager = new PluginManager();
+
+  QStringList args = arguments();
+  for (int i = 1; i < args.count(); ++i) {
+    fileTypeManager->openFile(args[i]);
+  }
 }
 
 Updraft::~Updraft() {
