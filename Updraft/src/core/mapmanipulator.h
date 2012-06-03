@@ -17,6 +17,7 @@ class MapManipulator: public QObject, public osgEarth::Util::EarthManipulator {
   MapManipulator();
   void resetNorth(double duration);
   void untilt(double duration);
+  void updateCameraProjection();
 
  private slots:
   void mouseZoomSensitivityChanged();

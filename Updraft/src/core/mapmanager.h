@@ -31,6 +31,7 @@ class MapManager {
   osgEarth::MapNode* getMapNode();
   osgEarth::Map* getMap();
   MapManipulator* getManipulator();
+  void setManipulator(MapManipulator* newManipulator);
   bool hasElevation();
   MapObject* getMapObject();
 
