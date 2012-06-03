@@ -41,6 +41,9 @@ class MapLayerInterface {
   /// Check or uncheck the tree view checkbox
   virtual void setChecked(bool value) = 0;
 
+  /// Allows to disable the check box.
+  virtual void setCheckable(bool value) = 0;
+
   /// Sets visibility to the layer.
   virtual void setVisibility(bool value) = 0;
 

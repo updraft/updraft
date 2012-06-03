@@ -110,6 +110,7 @@ void SceneManager::menuItems() {
 void SceneManager::mapLayerGroup() {
   MapLayerGroupInterface* mapLayerGroup = updraft->mainWindow->
     getInvisibleRootMapLayerGroup()->createMapLayerGroup(tr("Maps"));
+  mapLayerGroup->setCheckable(false);
 
   for (int i = 0; i < mapManagers.size(); i++) {
     MapManager *manager = mapManagers[i];

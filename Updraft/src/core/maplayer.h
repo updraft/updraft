@@ -37,6 +37,7 @@ class MapLayer : public QObject, virtual public MapLayerInterface {
   void inserted(MapLayerGroup* parent);
   void setDisabled(bool disabled);
   void setChecked(bool value);
+  void setCheckable(bool value);
 
  public slots:
   void setVisibility(bool value) = 0;

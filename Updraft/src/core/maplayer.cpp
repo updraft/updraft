@@ -59,6 +59,16 @@ void MapLayer::setChecked(bool value) {
   getTreeItem()->setCheckState(0, value ? Qt::Checked : Qt::Unchecked);
 }
 
+void MapLayer::setCheckable(bool value) {
+  if (value) {
+    getTreeItem()->setFlags(getTreeItem()->flags() | Qt::ItemIsUserCheckable);
+    getTreeItem()->setCheckState(0, Qt::Checked);
+  } else {
+    getTreeItem()->setFlags(getTreeItem()->flags() & ~Qt::ItemIsUserCheckable);
+    getTreeItem()->setData(0, Qt::CheckStateRole, QVariant());
+  }
+}
+
 void MapLayer::emitChecked(bool state) {
   emit checked(state, this);
 }
