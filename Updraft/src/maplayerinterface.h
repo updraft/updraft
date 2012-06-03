@@ -67,6 +67,7 @@ class MapLayerInterface {
   /// Only makes sense after setFilePath was called.
   /// The action's triggered() signal deletes the selected file and
   /// this map layer group.
+  /// For a single map layer, the same QAction is returned every time.
   virtual QAction* getDeleteAction() = 0;
 
   /// \}
