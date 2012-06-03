@@ -433,7 +433,7 @@ osg::Geode* OpenedFile::createMarker(qreal scale) {
 
   osg::StateSet* stateSet = geode->getOrCreateStateSet();
   QString path = QCoreApplication::applicationDirPath()
-    + "/data/igcmarker.png";
+    + "/data/igcmarker.svg";
   osg::Image* image = osgDB::readImageFile(path.toStdString());
   osg::Texture2D* texture = new osg::Texture2D();
   texture->setImage(image);

@@ -44,7 +44,7 @@ PlotWidget::PlotWidget(SegmentInfo* segmentInfo, FixInfo* altitudeInfo,
   qreal minTime = altitudeInfo->absoluteMinTime();
   qreal maxTime = altitudeInfo->absoluteMaxTime();
 
-  TextLabel* altLabel = new TextLabel(tr("Altitude") + " [m]");
+  TextLabel* altLabel = new TextLabel("   " + tr("Altitude") + " [m]");
   layout->addItem(altLabel, 0, 1);
   labels.append(altLabel);
 
@@ -64,7 +64,7 @@ PlotWidget::PlotWidget(SegmentInfo* segmentInfo, FixInfo* altitudeInfo,
   layout->addItem(altitudeTimeLabel, 2, 1);
   labels.append(altitudeTimeLabel);
 
-  TextLabel* gsLabel = new TextLabel(tr("Ground speed") + " [km/h]");
+  TextLabel* gsLabel = new TextLabel("   " + tr("Ground speed") + " [km/h]");
   layout->addItem(gsLabel, 3, 1);
   labels.append(gsLabel);
 
@@ -80,7 +80,7 @@ PlotWidget::PlotWidget(SegmentInfo* segmentInfo, FixInfo* altitudeInfo,
   layout->addItem(groundSpeedLabel, 4, 0);
   labels.append(groundSpeedLabel);
 
-  TextLabel* vsLabel = new TextLabel(tr("Vertical speed") + " [m/s]");
+  TextLabel* vsLabel = new TextLabel("   " + tr("Vertical speed") + " [m/s]");
   layout->addItem(vsLabel, 5, 1);
   labels.append(vsLabel);
 
@@ -158,7 +158,14 @@ void PlotWidget::leaveEvent(QEvent* leaveEvent) {
 }
 
 void PlotWidget::resizeEvent(QResizeEvent* resizeEvent) {
+  for (int i = 0; i < pickedFixes.size(); i++) {
+    qreal secs = altitudeInfo->absoluteTime(pickedFixes[i].fixIndex);
+    int x = altitudeAxes->placeX(secs);
+    pickedFixes[i].xLine = x;
+    pickedPositions[i] = x;
+  }
   redrawGraphPicture();
+  updateText();
 }
 
 void PlotWidget::mouseMoveEvent(QMouseEvent* mouseEvent) {
@@ -209,7 +216,7 @@ void PlotWidget::addPickedLine(int x) {
 
   int i;
   for (i = 0; i < pickedFixes.count(); i++) {
-    if (pickedFixes[i].xLine > x) break;
+    if (pickedFixes[i].fixIndex > index) break;
   }
   pickedFixes.insert(i, PickData(x, index));
   pickedPositions.insert(i, x);
@@ -227,7 +234,7 @@ void PlotWidget::addPickedFix(int index) {
 
   int i;
   for (i = 0; i < pickedFixes.count(); i++) {
-    if (pickedFixes[i].xLine > x) break;
+    if (pickedFixes[i].fixIndex > index) break;
   }
   pickedFixes.insert(i, PickData(x, index));
   pickedPositions.insert(i, x);
@@ -238,6 +245,11 @@ void PlotWidget::addPickedFix(int index) {
 }
 
 void PlotWidget::updatePickedTexts(int i) {
+  int c = pickedFixes.size();
+  int a = pickedFixes[0].xLine;
+  int aa = pickedFixes[1].xLine;
+  int aaa = pickedFixes[2].xLine;
+
   QString prevStat = createSegmentStatText(
     pickedFixes[i-1].fixIndex, pickedFixes[i].fixIndex);
   QString nextStat = createSegmentStatText(
@@ -260,8 +272,8 @@ void PlotWidget::resetStats() {
   segmentsStatTexts.clear();
   pickedFixesStatTexts.clear();
 
-  PickData first(altitudePlotPainter->getMinX(), 0);
-  PickData last(altitudePlotPainter->getMaxX(),
+  PickData first(qMax(0, altitudePlotPainter->getMinX()), 0);
+  PickData last(qMax(0, altitudePlotPainter->getMaxX()),
     altitudeInfo->count()-1);
 
   pickedPositions.append(first.xLine);
