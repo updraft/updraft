@@ -248,7 +248,8 @@ void SettingsBottomView::dataChanged(
     return;
   }
 
-  QScrollArea* scrollArea = qobject_cast<QScrollArea*>(stack->widget(parent.row()));
+  QScrollArea* scrollArea =
+    qobject_cast<QScrollArea*>(stack->widget(parent.row()));
   QWidget* page = scrollArea->widget();
   QGridLayout* layout = qobject_cast<QGridLayout*>(page->layout());
   QWidget* widget;

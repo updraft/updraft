@@ -6,13 +6,12 @@
 #include <osgDB/ReadFile>
 #include <osgEarthUtil/ObjectPlacer>
 #include <osgText/Text>
+
 #include "tplayer.h"
 #include "coreinterface.h"
 #include "turnpoints.h"
 #include "mapobject.h"
 #include "pluginbase.h"
-
-#include <iostream>
 
 namespace Updraft {
 
@@ -156,7 +155,7 @@ osg::Node* TPLayer::createAutoScale(
   at->setMaximumScale(static_cast<double>(maxScale));
   at->setPosition(position);
 
-  //std::cout << position << std::endl;
+  // std::cout << position << std::endl;
 
   return at;
 }

@@ -182,8 +182,6 @@ QString PlotWidget::createPointStatText(QTime time, int xLine, int index) {
   secs.setNum(time.second());
   if (time.second() < 10) secs = "0" + secs;
 
-  int x = xLine;
-
   QString altitude;
   altitude.setNum(altitudeInfo->value(index), 5, 0);
   QString gspeed;
@@ -263,7 +261,6 @@ void PlotWidget::addPickedTime(QTime time) {
   int timeInSecs = time.hour() * 3600 + time.minute() * 60 + time.second();
 
   int x = altitudeAxes->placeX(timeInSecs);
-  int startIndex, endIndex;
   int index = altitudeInfo->indexOfTime(time);
 
   int i;
@@ -301,10 +298,12 @@ QString PlotWidget::createSegmentStatText(
   qreal distance;
   qreal avgSpeed;
   qreal avgRise;
+  qreal heightDiff;
   if ((startPointIndex < 0) && (endPointIndex >= pickedPoints.size())) {
     startTime = segmentInfo->getStartTime();
     endTime = segmentInfo->getEndTime();
     distance = segmentInfo->distanceOverall();
+    heightDiff = segmentInfo->heightDifferenceOverall();
     avgSpeed = segmentInfo->avgSpeedOverall();
     avgRise = segmentInfo->avgRiseOverall();
   } else {
@@ -312,6 +311,7 @@ QString PlotWidget::createSegmentStatText(
       startTime = segmentInfo->getStartTime();
       endTime = pickedPoints[endPointIndex].time;
       distance = segmentInfo->distanceUntil(endTime);
+      heightDiff = segmentInfo->heightDifferenceUntil(endTime);
       avgSpeed = segmentInfo->avgSpeedUntil(endTime);
       avgRise = segmentInfo->avgRiseUntil(endTime);
     } else {
@@ -319,46 +319,47 @@ QString PlotWidget::createSegmentStatText(
         startTime = pickedPoints[startPointIndex].time;
         endTime = segmentInfo->getEndTime();
         distance = segmentInfo->distanceSince(startTime);
+        heightDiff = segmentInfo->heightDifferenceSince(startTime);
         avgSpeed = segmentInfo->avgSpeedSince(startTime);
         avgRise = segmentInfo->avgRiseSince(startTime);
       } else {
         startTime = pickedPoints[startPointIndex].time;
         endTime = pickedPoints[endPointIndex].time;
         distance = segmentInfo->distance(startTime, endTime);
+        heightDiff = segmentInfo->heightDifference(startTime, endTime);
         avgSpeed = segmentInfo->avgSpeed(startTime, endTime);
         avgRise = segmentInfo->avgRise(startTime, endTime);
       }
     }
   }
     // fill the text
-  QString starthrs;
-  QString startmins;
-  QString startsecs;
-  QString endhrs;
-  QString endmins;
-  QString endsecs;
+  QString durationhrs;
+  QString durationmins;
+  QString durationsecs;
 
-  starthrs.setNum(startTime.hour());
-  startmins.setNum(startTime.minute());
-  if (startTime.minute() < 10) startmins = "0" + startmins;
-  startsecs.setNum(startTime.second());
-  if (startTime.second() < 10) startsecs = "0" + startsecs;
+  int durationSecs = startTime.secsTo(endTime);
+  if (durationSecs < 0) durationSecs += 24 * 3600;
 
-  endhrs.setNum(endTime.hour());
-  endmins.setNum(endTime.minute());
-  if (endTime.minute() < 10) endmins = "0" + endmins;
-  endsecs.setNum(endTime.second());
-  if (endTime.second() < 10) endsecs = "0" + endsecs;
+  QTime durationTime = getTimeFromSecs(durationSecs);
+
+  durationhrs.setNum(durationTime.hour());
+  durationmins.setNum(durationTime.minute());
+  if (durationTime.minute() < 10) durationmins = "0" + durationmins;
+  durationsecs.setNum(durationTime.second());
+  if (durationTime.second() < 10) durationsecs = "0" + durationsecs;
 
   QString distancestr;
-  distancestr.setNum(distance, 5, 0);
+  distancestr.setNum(distance/1000.0, 1, 0);
+  QString heightstr;
+  heightstr.setNum(heightDiff, 5, 0);
   QString avgspeedstr;
   avgspeedstr.setNum(avgSpeed, 5, 0);
   QString avgrisestr;
   avgrisestr.setNum(avgRise, 5, 1);
-  text = starthrs + ":" + startmins + ":" + startsecs
-    + " - " + endhrs + ":" + endmins + ":" + endsecs + "\n"
-    + distancestr + " m\n"
+  text = tr("time") + " "
+    + durationhrs + ":" + durationmins + ":" + durationsecs + "\n"
+    + tr("dist") + " " + distancestr + " km "
+    + tr("height") + " " + heightstr + " m\n"
     + tr("avg GS") + " " + avgspeedstr + " km/h\n"
     + tr("avg VS") + " " + avgrisestr + " m/s";
   return text;
