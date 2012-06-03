@@ -7,12 +7,21 @@
 namespace Updraft {
 namespace Core {
 
-NodeMapLayer::NodeMapLayer(osg::Node* node)
-  : node(node) {}
+NodeMapLayer::NodeMapLayer(const QString &title, osg::Node* node)
+  : MapLayer(title), node(node) {}
 
-void NodeMapLayer::setVisible(bool value) {
+NodeMapLayer::~NodeMapLayer() {
+  // The following code must be in the same class that defines
+  // removeFromScene instead of in the common ancestor,
+  // because of how virtual calls are disabled in destructors.
+  // Pure magic :-)
+  if (parent) {
+    parent->removeMapLayer(this);
+  }
+}
+
+void NodeMapLayer::setVisibility(bool value) {
   node->setNodeMask(value ? 0xffffffff : 0x0);
-  emit displayed(value, this);
 }
 
 bool NodeMapLayer::isVisible() {

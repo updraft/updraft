@@ -25,6 +25,7 @@ void TaskDeclaration::initialize(CoreInterface *coreInterface) {
   g_core = coreInterface;
 
   mapLayerGroup = g_core->createMapLayerGroup(tr("Tasks"));
+  mapLayerGroup->connectCheckedToVisibility();
 
   // Menu - separator
   QAction* sepAction = new QAction(this);

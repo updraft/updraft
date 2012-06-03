@@ -35,9 +35,8 @@ const Util::Ellipsoid* CoreImplementation::getEllipsoid() const {
 
 MapLayerGroupInterface* CoreImplementation::createMapLayerGroup
   (const QString &title) {
-  osg::Group* group = updraft->sceneManager->newGroup();
-  osgEarth::MapNode* map = updraft->sceneManager->getMapNode();
-  return updraft->mainWindow->createMapLayerGroup(title, group, map);
+  return updraft->mainWindow->getInvisibleRootMapLayerGroup()->
+    createMapLayerGroup(title);
 }
 
 TabInterface* CoreImplementation::createTab(QWidget* content, QString title) {

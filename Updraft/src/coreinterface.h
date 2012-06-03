@@ -53,7 +53,9 @@ class CoreInterface {
   virtual const Util::Ellipsoid* getEllipsoid() const = 0;
 
   /// Creates map layer group and adds it to the tree view in the left pane.
-  /// To remove MapLayerGroup use C++ delete.
+  /// The group returned by this function is a root group; for sub groups
+  /// use MapLayerGroupInterface::createMapLayerGroup.
+  /// To remove MapLayerGroup use C++ operator delete.
   /// \param title label for the item in the tree view
   /// \return Pointer to the new MapLayerGroup
   virtual MapLayerGroupInterface* createMapLayerGroup(const QString &title) = 0;

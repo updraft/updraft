@@ -207,7 +207,7 @@ void OpenedFile::createGroup() {
   trackPositionMarker->setNodeMask(0xffffffff);
 
   // push the scene
-  track = viewer->mapLayerGroup->insertMapLayer(sceneRoot, fileInfo.fileName());
+  track = viewer->mapLayerGroup->createMapLayer(sceneRoot, fileInfo.fileName());
   track->connectCheckedToVisibility();
 }
 

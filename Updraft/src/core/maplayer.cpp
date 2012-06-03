@@ -1,11 +1,27 @@
 #include "maplayer.h"
 
+#include <QTreeWidgetItem>
+
+#include "ui/maplayergroup.h"
+
 namespace Updraft {
 namespace Core {
 
-void MapLayer::connectSignalDisplayed(const QObject *receiver,
-  const char *method) {
-  connect(this, SIGNAL(displayed(bool, MapLayerInterface*)), receiver, method);
+MapLayer::MapLayer(const QString &title)
+  : ownsTreeItem(true), parent(0) {
+  treeItem = new QTreeWidgetItem();
+  treeItem->setText(0, title);
+  treeItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+  treeItem->setCheckState(0, Qt::Checked);
+}
+
+MapLayer::MapLayer(QTreeWidgetItem *item)
+  : treeItem(item), ownsTreeItem(false), parent(0) {}
+
+MapLayer::~MapLayer() {
+  if (ownsTreeItem) {
+    delete treeItem;
+  }
 }
 
 void MapLayer::connectSignalChecked(const QObject *receiver,
@@ -23,16 +39,28 @@ void MapLayer::connectCheckedToVisibility() {
     this, SLOT(setVisibility(bool)));
 }
 
-void MapLayer::emitDisplayed(bool value) {
-  emit displayed(value, this);
+QTreeWidgetItem *MapLayer::getTreeItem() {
+  return treeItem;
 }
 
-void MapLayer::emitChecked(bool value) {
-  emit checked(value, this);
+void MapLayer::inserted(MapLayerGroup* parent) {
+  this->parent = parent;
 }
 
-void MapLayer::setVisibility(bool value) {
-  this->setVisible(value);
+void MapLayer::setDisabled(bool disabled) {
+  treeItem->setDisabled(disabled);
+}
+
+void MapLayer::setTitle(const QString& title) {
+  treeItem->setText(0, title);
+}
+
+void MapLayer::setChecked(bool value) {
+  getTreeItem()->setCheckState(0, value ? Qt::Checked : Qt::Unchecked);
+}
+
+void MapLayer::emitChecked(bool state) {
+  emit checked(state, this);
 }
 
 }  // End namespace Core

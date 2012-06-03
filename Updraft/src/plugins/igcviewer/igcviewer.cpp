@@ -38,6 +38,7 @@ void IgcViewer::initialize(CoreInterface *coreInterface) {
   g_core->registerFiletype(registration);
 
   mapLayerGroup = g_core->createMapLayerGroup(tr("IGC files"));
+  mapLayerGroup->connectCheckedToVisibility();
 
   automaticColors.append(QPair<QColor, int>(Qt::red, 0));
   automaticColors.append(QPair<QColor, int>(Qt::green, 0));

@@ -55,7 +55,7 @@ QVector<MapLayerInterface*>* oaEngine::DrawII(const QString& fileName) {
 
   QVector<MapLayerInterface*>* layers = new QVector<MapLayerInterface*>();
   for (int i = 0; i < mapLayers->size(); ++i) {
-    layers->push_back(mapLayerGroup->insertMapLayer(
+    layers->push_back(mapLayerGroup->createMapLayer(
       mapLayers->at(i).first, mapLayers->at(i).second));
   }
 
