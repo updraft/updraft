@@ -44,6 +44,9 @@ class SettingsBottomView: public QAbstractItemView {
 
   int horizontalOffset() const;
   bool isIndexHidden(const QModelIndex & index) const;
+  QString getSettingDescription(const QModelIndex& settingIndex) const;
+  bool settingNeedsRestart(const QModelIndex& settingIndex) const;
+
   QModelIndex moveCursor(CursorAction cursorAction,
     Qt::KeyboardModifiers modifiers);
   void setSelection(const QRect & rect,

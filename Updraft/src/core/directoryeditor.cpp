@@ -1,5 +1,8 @@
 #include "directoryeditor.h"
 
+// Only debug!
+#include <QtGui>
+
 #include <QFileDialog>
 
 namespace Updraft {
@@ -22,10 +25,13 @@ void DirectoryEditor::onClick() {
   QDir dir = directory();
   QString d = QFileDialog::getExistingDirectory(
     this,
-    "Select a directory",
-    dir.absolutePath());
+    tr("Select a directory"),
+    dir.absolutePath(),
+    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+  qDebug() << d;
   if (d != "") {
-    this->setText(dir.absolutePath());
+    this->setText(d);
+    dirProp = d;
   }
 }
 
