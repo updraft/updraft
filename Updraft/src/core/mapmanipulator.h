@@ -24,6 +24,8 @@ class MapManipulator: public QObject, public osgEarth::Util::EarthManipulator {
 
  private:
   SettingInterface* mouseZoomSensitivity;
+  void bindKeyboardEvents(Settings* settings);
+  void bindMouseEvents(Settings* settings);
 };
 
 }  // End namespace Core
