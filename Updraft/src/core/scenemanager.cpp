@@ -243,7 +243,10 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
       activeMapIndex = index;
       unregisterOsgNode(mapManagers[oldIndex]->getMapNode());
       sceneRoot->removeChild(mapManagers[oldIndex]->getMapNode());
-      sceneRoot->addChild(mapManagers[activeMapIndex]->getMapNode());
+
+        // set current map node
+      mapNode = mapManagers[activeMapIndex]->getMapNode();
+      sceneRoot->addChild(mapNode);
 
       osgEarth::Util::Viewpoint viewpoint = manipulator->getViewpoint();
 
