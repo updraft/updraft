@@ -23,6 +23,7 @@ PlotWidget::PlotWidget(SegmentInfo* segmentInfo, FixInfo* altitudeInfo,
   verticalSpeedInfo(verticalSpeedInfo), groundSpeedInfo(groundSpeedInfo) {
     // set mouse tracking
   setMouseTracking(true);
+  setContextMenuPolicy(Qt::PreventContextMenu);
   xLine = -1;
   mouseOver = false;
   graphPicture = new QImage();
@@ -257,7 +258,7 @@ void PlotWidget::updatePickedTexts(int i) {
   QString nextStat = createSegmentStatText(
     pickedFixes[i].fixIndex, pickedFixes[i+1].fixIndex);
 
-  segmentsStatTexts.removeAt(i);
+  segmentsStatTexts.removeAt(i-1);
 
   segmentsStatTexts.insert(i-1, prevStat);
   segmentsStatTexts.insert(i, nextStat);
