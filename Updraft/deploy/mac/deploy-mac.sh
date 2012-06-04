@@ -24,7 +24,6 @@ NEW_FRAMEWORKS_PATH=@executable_path/../../Frameworks
 }
 
 function init {
-
 rm -rf dmg
 mkdir dmg
 cp -R bundle-template dmg/Updraft.app
