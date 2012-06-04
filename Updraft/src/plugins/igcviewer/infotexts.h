@@ -27,7 +27,7 @@ class PickedLabel : public Label {
   QList<QString>* texts;
 
   static const int MIN_WIDTH = 100;
-  static const int MIN_HEIGHT = 80;
+  static const int MIN_HEIGHT = 70;
 
   static const int TEXT_WIDTH = 65;
   static const int SPACE = 2;

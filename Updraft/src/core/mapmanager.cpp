@@ -84,8 +84,8 @@ MapManipulator* MapManager::getManipulator() {
 }
 
 void MapManager::setManipulator(MapManipulator* newManipulator) {
-    newManipulator->setNode(mapNode);
-    manipulator = newManipulator;
+  newManipulator->setNode(mapNode);
+  manipulator = newManipulator;
 }
 
 MapObject* MapManager::getMapObject() {

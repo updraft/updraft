@@ -15,9 +15,16 @@ namespace Core {
 class FileOpenDialog : public QFileDialog {
   Q_OBJECT
  public:
-  static void openIt(const QString &caption);
+  /// Display a file open dialog, and open the selected files.
+  /// \param caption Title of the file open dialog.
+  /// \param dir Directory first shown in the dialog.
+  /// \return First selected file. This is only used to retrieve the dir
+  ///   for the next appearance of the file dialog.
+  static QString openIt(const QString& caption, const QString& dir = QString());
 
  private:
+  /// Returns a list of file name filters suitable
+  /// for QFileDialog::setNameFilters().
   static QStringList getFilters();
 };
 

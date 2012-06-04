@@ -14,6 +14,7 @@ MapManipulator::MapManipulator() {
   applySettings(settings);
 
   // Create a group for map settings
+  /*
   updraft->settingsManager->addGroup(
     "map", tr("Map settings"), ":/core/icons/map.png");
 
@@ -23,6 +24,7 @@ MapManipulator::MapManipulator() {
     QVariant(1.0));
   mouseZoomSensitivity->callOnValueChanged(
     this, SLOT(mouseZoomSensitivityChanged()));
+  */
 }
 
 void MapManipulator::bindKeyboardEvents(Settings* settings) {

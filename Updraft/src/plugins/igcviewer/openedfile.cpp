@@ -199,6 +199,7 @@ void OpenedFile::createGroup() {
   sceneRoot = new osg::Group();
 
   sceneRoot->addChild(createTrack());
+  sceneRoot->addChild(createSkirt());
 
   // create marker geometry
   trackPositionMarker = createMarker(25.);
@@ -216,8 +217,6 @@ void OpenedFile::createGroup() {
   currentMarker->setNodeMask(0x0);
 
   sceneRoot->addChild(currentMarker);
-
-  sceneRoot->addChild(createSkirt());
 
   // push the scene
   track = viewer->mapLayerGroup->createMapLayer(sceneRoot, fileInfo.fileName());
@@ -427,6 +426,11 @@ osg::Geode* OpenedFile::createMarker(qreal scale) {
   (*texCoords)[3] = osg::Vec2(0.0, 1.0);
   geometry->setTexCoordArray(0, texCoords);
 
+  osg::Vec4Array* color = new osg::Vec4Array();
+  color->push_back(osg::Vec4(1.0, 1.0, 1.0, 0.0));
+  geometry->setColorArray(color);
+  geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+
   geometry->addPrimitiveSet(new osg::DrawArrays(
     osg::PrimitiveSet::QUADS, 0, 4));
 
@@ -441,6 +445,8 @@ osg::Geode* OpenedFile::createMarker(qreal scale) {
 
   // Turn off lighting for the billboard.
   stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+  stateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
+  stateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
 
   // Turn on texturing, bind texture.
   stateSet->setTextureAttributeAndModes(0, texture);
