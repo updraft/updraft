@@ -33,6 +33,10 @@ TaskDeclPanel::TaskDeclPanel(TaskLayer* layer,
   taskAxis = new TaskAxis(this, taskLayer->getTaskFile());
   ui->gridLayout_3->addWidget(taskAxis);
 
+  QFont font;
+  font.setPixelSize(18);
+  ui->taskSummaryLabel->setFont(font);
+
   newAddTpButton(0);
 }
 

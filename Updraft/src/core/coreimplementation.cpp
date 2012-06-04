@@ -29,8 +29,7 @@ MenuInterface* CoreImplementation::getSystemMenu(SystemMenu menu) {
 }
 
 const Util::Ellipsoid* CoreImplementation::getEllipsoid() const {
-  // TODO(Tom): Return ellipsoid chosen in settings.
-  return updraft->ellipsoids.first();
+  return updraft->getUsedEllipsoid();
 }
 
 MapLayerGroupInterface* CoreImplementation::createMapLayerGroup

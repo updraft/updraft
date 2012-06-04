@@ -12,8 +12,8 @@
 #include "mapmanipulator.h"
 #include "pickhandler.h"
 
-
 #include "updraft.h"
+#include "settingsmanager.h"
 #include "ui/mainwindow.h"
 #include "ui/menu.h"
 #include "../menuinterface.h"
@@ -23,6 +23,10 @@ namespace Updraft {
 namespace Core {
 
 SceneManager::SceneManager() {
+  // Create a group for map settings
+  updraft->settingsManager->addGroup(
+    "map", tr("Map settings"), ":/core/icons/map.png");
+
   osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
   viewer = new osgViewer::Viewer();
@@ -302,6 +306,10 @@ osg::Camera* SceneManager::createCamera(osg::GraphicsContext::Traits* traits) {
 
   camera->setClearColor(osg::Vec4(0.2, 0.2, 0.6, 1.0));
   camera->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
+
+  camera->setProjectionMatrixAsPerspective(
+    30.0f, getAspectRatio(),
+    1.0f, 10000.0f);
 
   return camera;
 }

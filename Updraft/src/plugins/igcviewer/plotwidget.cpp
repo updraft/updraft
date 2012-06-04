@@ -23,6 +23,7 @@ PlotWidget::PlotWidget(SegmentInfo* segmentInfo, FixInfo* altitudeInfo,
   verticalSpeedInfo(verticalSpeedInfo), groundSpeedInfo(groundSpeedInfo) {
     // set mouse tracking
   setMouseTracking(true);
+  setContextMenuPolicy(Qt::PreventContextMenu);
   xLine = -1;
   mouseOver = false;
   graphPicture = new QImage();
@@ -257,7 +258,7 @@ void PlotWidget::updatePickedTexts(int i) {
   QString nextStat = createSegmentStatText(
     pickedFixes[i].fixIndex, pickedFixes[i+1].fixIndex);
 
-  segmentsStatTexts.removeAt(i);
+  segmentsStatTexts.removeAt(i-1);
 
   segmentsStatTexts.insert(i-1, prevStat);
   segmentsStatTexts.insert(i, nextStat);
@@ -271,8 +272,8 @@ void PlotWidget::updatePickedTexts(int i) {
 void PlotWidget::resetStats() {
   pickedFixesStatTexts.clear();
   pickedPositions.clear();
+  pickedFixes.clear();
   segmentsStatTexts.clear();
-  pickedFixesStatTexts.clear();
 
   PickData first(qMax(0, altitudePlotPainter->getMinX()), 0);
   PickData last(qMax(0, altitudePlotPainter->getMaxX()),
@@ -349,19 +350,19 @@ QString PlotWidget::createSegmentStatText(
   if (durationTime.second() < 10) durationsecs = "0" + durationsecs;
 
   QString distancestr;
-  distancestr.setNum(distance/1000.0, 1, 0);
+  distancestr.setNum(distance/1000.0, 1, 1);
   QString heightstr;
   heightstr.setNum(heightDiff, 5, 0);
   QString avgspeedstr;
-  avgspeedstr.setNum(avgSpeed, 5, 0);
+  avgspeedstr.setNum(avgSpeed, 5, 1);
   QString avgrisestr;
   avgrisestr.setNum(avgRise, 5, 1);
-  text = tr("dT:") + " "
+  text = "dT: "
     + durationhrs + ":" + durationmins + ":" + durationsecs + "\n"
-    + tr("d:") + " " + distancestr + " km\n"
-    + tr("dH") + " " + heightstr + " m\n"
-    + tr("GS") + " " + avgspeedstr + " km/h\n"
-    + tr("VS") + " " + avgrisestr + " m/s";
+    + "dS: " + distancestr + " km\n"
+    + "dH: " + heightstr + " m\n"
+    + "GS: " + avgspeedstr + " km/h\n"
+    + "VS: " + avgrisestr + " m/s";
   return text;
 }
 

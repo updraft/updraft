@@ -13,6 +13,8 @@
 #include "scenemanager.h"
 #include "settingsmanager.h"
 #include "translationmanager.h"
+#include "util/ellipsoid.h"
+#include "ellipsoidname.h"
 
 namespace Updraft {
 namespace Core {
@@ -27,8 +29,8 @@ Updraft::Updraft(int argc, char** argv)
   settingsManager = new SettingsManager();
   translationManager = new TranslationManager();
 
-  coreSettings();
   createEllipsoids();
+  coreSettings();
 
   mainWindow = new MainWindow(NULL);
   fileTypeManager = new FileTypeManager();
@@ -65,6 +67,24 @@ QDir Updraft::getTranslationDirectory() {
   return QDir(applicationDirPath());
 }
 
+Util::Ellipsoid* Updraft::getUsedEllipsoid() {
+  foreach(Util::Ellipsoid* ellipsoid, ellipsoids) {
+    if (ellipsoid->getName() ==
+        usedEllipsoid->get().value<EllipsoidName>().asQString()) {
+      return ellipsoid;
+    }
+  }
+
+  return ellipsoids.first();
+}
+
+void Updraft::dataDirectoryChanged() {
+  QMessageBox::information(
+    this->mainWindow,
+    tr("Information"),
+    tr("Change to data directory won't take effect until the next restart."));
+}
+
 void Updraft::coreSettings() {
   settingsManager->addGroup(
     "general", tr("General"), ":/core/icons/general.png");
@@ -77,6 +97,18 @@ void Updraft::coreSettings() {
     "general:dataDir",
     tr("Data directory"),
     dataDirVariant);
+
+  currentDataDirectory = dataDirectory->get().value<QDir>();
+  dataDirectory->setNeedsRestart(true);
+  dataDirectory->callOnValueChanged(this, SLOT(dataDirectoryChanged()));
+
+  QVariant ellipsoidVariant;
+  ellipsoidVariant.setValue(EllipsoidName(ellipsoids.first()->getName()));
+  usedEllipsoid = settingsManager->addSetting(
+    "general:ellipsoid",
+    tr("Ellipsoid model"),
+    ellipsoidVariant);
+  usedEllipsoid->setNeedsRestart(true);
 }
 
 void Updraft::createEllipsoids() {

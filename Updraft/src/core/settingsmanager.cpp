@@ -140,7 +140,7 @@ void SettingsManager::resetToDefaults() {
 void SettingsManager::itemValueChanged(SettingsItem* item) {
   QHash<SettingsItem*, BasicSetting*>::const_iterator it =
     settings.find(item);
-  while (it != settings.end()) {
+  while (it != settings.end() && it.key() == item) {
     it.value()->emitValueChanged();
     ++it;
   }
