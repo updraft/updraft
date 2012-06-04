@@ -65,6 +65,13 @@ QDir Updraft::getTranslationDirectory() {
   return QDir(applicationDirPath());
 }
 
+void Updraft::dataDirectoryChanged() {
+  QMessageBox::information(
+    this->mainWindow,
+    tr("Information"),
+    tr("Change to data directory won't take effect until the next restart."));
+}
+
 void Updraft::coreSettings() {
   settingsManager->addGroup(
     "general", tr("General"), ":/core/icons/general.png");
@@ -77,6 +84,10 @@ void Updraft::coreSettings() {
     "general:dataDir",
     tr("Data directory"),
     dataDirVariant);
+
+  currentDataDirectory = dataDirectory->get().value<QDir>();
+  dataDirectory->setNeedsRestart(true);
+  dataDirectory->callOnValueChanged(this, SLOT(dataDirectoryChanged()));
 }
 
 void Updraft::createEllipsoids() {
