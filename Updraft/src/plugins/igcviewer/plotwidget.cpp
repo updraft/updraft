@@ -349,11 +349,11 @@ QString PlotWidget::createSegmentStatText(
   if (durationTime.second() < 10) durationsecs = "0" + durationsecs;
 
   QString distancestr;
-  distancestr.setNum(distance/1000.0, 1, 0);
+  distancestr.setNum(distance/1000.0, 1, 1);
   QString heightstr;
   heightstr.setNum(heightDiff, 5, 0);
   QString avgspeedstr;
-  avgspeedstr.setNum(avgSpeed, 5, 0);
+  avgspeedstr.setNum(avgSpeed, 5, 1);
   QString avgrisestr;
   avgrisestr.setNum(avgRise, 5, 1);
   text = "dT: "
