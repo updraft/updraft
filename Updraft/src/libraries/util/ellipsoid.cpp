@@ -5,14 +5,19 @@
 namespace Updraft {
 namespace Util {
 
-Ellipsoid::Ellipsoid(const QString &name_, qreal eqRadius, qreal flattening_)
-  : name(name_), equatRadius(eqRadius), flattening(flattening_) {
-  geodesic = new GeographicLib::Geodesic(equatRadius, flattening);
-  osgEllipsoidModel = new osg::EllipsoidModel(equatRadius, getPolarRadius());
-}
+Ellipsoid::Ellipsoid(const QString& name_, EllipsoidType type_)
+  : type(type_), name(name_) {
+  switch (type_) {
+    case ELLIPSOID_WGS84:
+      equatRadius = Util::Units::WGS84EquatRadius();
+      flattening  = Util::Units::WGS84Flattening();
+    break;
+    case ELLIPSOID_FAI_SPHERE:
+      equatRadius = Util::Units::FAISphereRadius();
+      flattening = 0.0;
+    break;
+  }
 
-Ellipsoid::Ellipsoid(const QString &name_, qreal radius)
-  : name(name_), equatRadius(radius), flattening(0.0) {
   geodesic = new GeographicLib::Geodesic(equatRadius, flattening);
   osgEllipsoidModel = new osg::EllipsoidModel(equatRadius, getPolarRadius());
 }
@@ -24,6 +29,33 @@ Ellipsoid::~Ellipsoid() {
 
 QString Ellipsoid::getName() const {
   return name;
+}
+
+EllipsoidType Ellipsoid::getType() const {
+  return type;
+}
+
+QString Ellipsoid::getEllipsoidTypeName(EllipsoidType type) {
+  switch (type) {
+    case ELLIPSOID_FAI_SPHERE:
+      return QString("FAI Sphere");
+    break;
+    default:
+    case ELLIPSOID_WGS84:
+      return QString("WGS84");
+    break;
+  }
+}
+
+EllipsoidType getEllipsoidType(const QString& typeName) {
+  if (typeName == "WGS84") {
+    return ELLIPSOID_WGS84;
+  } else if (typeName == "FAI Sphere") {
+    return ELLIPSOID_FAI_SPHERE;
+  }
+
+  // WGS84 will be default
+  return ELLIPSOID_WGS84;
 }
 
 qreal Ellipsoid::getEquatRadius() const {

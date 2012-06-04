@@ -5,7 +5,6 @@
 #include "../maplayerinterface.h"
 #include "../settinginterface.h"
 #include "ui/maplayergroup.h"
-#include "util/util.h"
 #include "variantfunctions.h"
 #include "ui/mainwindow.h"
 #include "filetypemanager.h"
@@ -103,7 +102,9 @@ void Updraft::coreSettings() {
   dataDirectory->callOnValueChanged(this, SLOT(dataDirectoryChanged()));
 
   QVariant ellipsoidVariant;
-  ellipsoidVariant.setValue(EllipsoidName(ellipsoids.first()->getName()));
+  ellipsoidVariant.setValue(
+    EllipsoidName(
+      Util::Ellipsoid::getEllipsoidTypeName(ellipsoids.first()->getType())));
   usedEllipsoid = settingsManager->addSetting(
     "general:ellipsoid",
     tr("Ellipsoid model"),
@@ -112,10 +113,10 @@ void Updraft::coreSettings() {
 }
 
 void Updraft::createEllipsoids() {
-  ellipsoids.append(new Util::Ellipsoid(tr("WGS84 Ellipsoid"),
-    Util::Units::WGS84EquatRadius(), Util::Units::WGS84Flattening()));
-  ellipsoids.append(new Util::Ellipsoid(tr("FAI Sphere"),
-    Util::Units::FAISphereRadius()));
+  ellipsoids.append(
+    new Util::Ellipsoid(tr("WGS84 Ellipsoid"), Util::ELLIPSOID_WGS84));
+  ellipsoids.append(
+    new Util::Ellipsoid(tr("FAI Sphere"), Util::ELLIPSOID_FAI_SPHERE));
 }
 
 /// Pull the lever.
