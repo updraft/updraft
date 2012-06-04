@@ -13,18 +13,19 @@ MapManipulator::MapManipulator() {
   settings->setLockAzimuthWhilePanning(true);
   applySettings(settings);
 
-  // Create a group for map settings
-  /*
-  updraft->settingsManager->addGroup(
-    "map", tr("Map settings"), ":/core/icons/map.png");
-
   mouseZoomSensitivity = updraft->settingsManager->addSetting(
     "map:mouse_zoom_sensitivity",
     tr("Mouse zoom sensitivity"),
-    QVariant(1.0));
+    QVariant(1.0),
+    true);
+
   mouseZoomSensitivity->callOnValueChanged(
     this, SLOT(mouseZoomSensitivityChanged()));
-  */
+}
+
+MapManipulator::~MapManipulator() {
+  // We have to delete the interfaces to settings
+  delete mouseZoomSensitivity;
 }
 
 void MapManipulator::bindKeyboardEvents(Settings* settings) {
