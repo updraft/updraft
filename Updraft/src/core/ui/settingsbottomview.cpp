@@ -135,23 +135,12 @@ void SettingsBottomView::createEditors() {
   for (int page = 0; page < model()->rowCount(); ++page) {
     layout = new QGridLayout();
 
+    // Create labels and editors
     index = model()->index(page, 0);
     int row;
     for (row = 0; row < model()->rowCount(index); ++row) {
       QModelIndex child = model()->index(row, 0, index);
-
-      // Find out whether the setting needs an application restart
-      QVariant needsRestart = model()->data(child, NeedsRestartRole);
-      bool settingNeedsRestart = false;
-      if (needsRestart.isValid() && needsRestart.toBool()) {
-        settingNeedsRestart = true;
-      }
-
-      // Get the setting description
-      QString description = model()->data(child, DescriptionRole).toString();
-      if (settingNeedsRestart) {
-        description = QString("* ") + description;
-      }
+      QString description = getSettingDescription(child);
 
       QLabel* label = new QLabel(description, NULL);
       label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
@@ -164,7 +153,7 @@ void SettingsBottomView::createEditors() {
       editor->show();
     }
 
-    // Adding a stretcher
+    // Adding a stretcher at the bottom of all settings
     QWidget* dummy = new QWidget();
     layout->addWidget(dummy, row, 0);
     layout->setRowStretch(row, 1);
@@ -232,6 +221,30 @@ bool SettingsBottomView::isIndexHidden(const QModelIndex & index) const {
   return false;
 }
 
+QString SettingsBottomView::getSettingDescription(
+  const QModelIndex& settingIndex) const {
+  // Get the setting description and append "* " if it needs restart
+  QString description =
+    model()->data(settingIndex, DescriptionRole).toString();
+  if (settingNeedsRestart(settingIndex)) {
+    description = QString("* ") + description;
+  }
+
+  return description;
+}
+
+bool SettingsBottomView::settingNeedsRestart(
+  const QModelIndex& settingIndex) const {
+  QVariant needsRestart = model()->data(settingIndex, NeedsRestartRole);
+
+  bool settingNeedsRestart = false;
+  if (needsRestart.isValid() && needsRestart.toBool()) {
+    settingNeedsRestart = true;
+  }
+
+  return settingNeedsRestart;
+}
+
 QModelIndex SettingsBottomView::moveCursor(
   CursorAction cursorAction,
   Qt::KeyboardModifiers modifiers) {
@@ -257,12 +270,7 @@ bool SettingsBottomView::someSettingNeedsRestart() {
 
   for (int row = 0; row < model()->rowCount(pageIndex); ++row) {
     QModelIndex settingIndex = model()->index(row, 0, pageIndex);
-    QVariant needsRestart = model()->data(settingIndex, NeedsRestartRole);
-
-    // This setting needs restart
-    if (needsRestart.isValid() && needsRestart.toBool()) {
-      return true;
-    }
+    if (settingNeedsRestart(settingIndex)) return true;
   }
 
   return false;
@@ -294,13 +302,13 @@ void SettingsBottomView::dataChanged(
 
   // Setting description
   item = layout->itemAtPosition(topLeft.row(), 0);
+  QString description = getSettingDescription(topLeft);
   if (!item) {
-    widget = new QLabel(topLeft.data(Qt::DisplayRole).toString(), NULL);
+    widget = new QLabel(description, NULL);
     layout->addWidget(widget, topLeft.row(), 0);
   } else {
     widget = item->widget();
-    qobject_cast<QLabel*>(widget)->setText(
-      topLeft.data(Qt::DisplayRole).toString());
+    qobject_cast<QLabel*>(widget)->setText(description);
   }
 
   // Setting value
