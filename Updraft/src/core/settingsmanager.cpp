@@ -168,7 +168,6 @@ QModelIndex SettingsManager::getSetting(
   const QString& settingId,
   QModelIndex groupIndex) {
   QModelIndex settingIndex;
-  qDebug() << "Getting setting " << settingId;
 
   int i;
   for (i = 0; i < model->rowCount(groupIndex); i++) {
