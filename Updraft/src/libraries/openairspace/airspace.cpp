@@ -51,7 +51,7 @@ namespace OpenAirspace {
 
     // Viability check
     if (!acOn) {
-      int check = ts->pos();
+      // int check = ts->pos();
       return;
     }
     *acOn = false;
