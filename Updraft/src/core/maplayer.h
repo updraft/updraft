@@ -2,6 +2,7 @@
 #define UPDRAFT_SRC_CORE_MAPLAYER_H_
 
 #include <QObject>
+#include <QPoint>
 #include "../maplayerinterface.h"
 
 class QTreeWidgetItem;
@@ -26,6 +27,8 @@ class MapLayer : public QObject, virtual public MapLayerInterface {
 
   void connectSignalChecked(const QObject* receiver,
     const char *method);
+  void connectSignalContextMenuRequested(const QObject* receiver,
+    const char* method);
   void connectSlotSetVisibility(const QObject* sender,
     const char *method);
   void connectCheckedToVisibility();
@@ -39,20 +42,34 @@ class MapLayer : public QObject, virtual public MapLayerInterface {
   void setChecked(bool value);
   void setCheckable(bool value);
 
+  void setFilePath(const QString& path);
+  QAction* getDeleteAction();
+
  public slots:
   void setVisibility(bool value) = 0;
+
+ private slots:
+  void deleteActionSlot();
 
  signals:
   /// Emited when the map layer is checked or unchecked
   /// (before it is displayed or hidden).
   void checked(bool value, MapLayerInterface* sender);
+  void contextMenuRequested(QPoint pos, MapLayerInterface* sender);
 
  protected:
   /// Emits the checked signal.
-  /// Is called from MapLayerGroup.
+  /// Called from MainWindow.
   void emitChecked(bool value);
+  void emitContextMenuRequested(const QPoint& pos);
 
   explicit MapLayer(QTreeWidgetItem* item);
+
+  /// Action for getDeleteAction.
+  QAction* deleteAction;
+
+  /// File path for delete action.
+  QString deleteFilePath;
 
   /// Tree item representing this map layer.
   QTreeWidgetItem *treeItem;

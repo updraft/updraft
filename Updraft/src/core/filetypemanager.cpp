@@ -186,8 +186,15 @@ void FileTypeManager::getOpenOptions(QString path,
 
 /// Display a file open dialog, and open the selected files.
 /// \param caption Title of the file open dialog.
-void FileTypeManager::openFileDialog(const QString &caption) const {
-  FileOpenDialog::openIt(caption);
+void FileTypeManager::openFileDialog(const QString &caption) {
+  QString fileName = FileOpenDialog::openIt(caption, lastFileOpenDir);
+
+  if (fileName.isEmpty()) {
+    return;
+  }
+
+  QFileInfo info(fileName);
+  lastFileOpenDir = info.dir().absolutePath();
 }
 
 }  // End namespace Core

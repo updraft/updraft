@@ -5,8 +5,6 @@
 namespace Updraft {
 namespace Core {
 
-/// Returns a list of file name filters suitable
-/// for QFileDialog::setNameFilters().
 QStringList FileOpenDialog::getFilters() {
   typedef QMap<QString, QString> TMap;
   TMap mapFilters;
@@ -56,17 +54,21 @@ QStringList FileOpenDialog::getFilters() {
   return ret;
 }
 
-/// Display a file open dialog, and open the selected files.
-/// \param caption Title of the file open dialog.
-void FileOpenDialog::openIt(const QString& caption) {
+QString FileOpenDialog::openIt(const QString& caption, const QString& dir) {
   QStringList files;
 
   files = QFileDialog::getOpenFileNames(
     updraft->mainWindow, caption,
-    QString(), getFilters().join(";;"));
+    dir, getFilters().join(";;"));
 
   foreach(QString file, files) {
     updraft->fileTypeManager->openFile(file, true);
+  }
+
+  if (files.count()) {
+    return files[0];
+  } else {
+    return QString();
   }
 }
 

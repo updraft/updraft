@@ -21,7 +21,7 @@ class FileTypeManager {
 
   bool openFile(const QString &path, bool showDialog = true) const;
 
-  void openFileDialog(const QString &caption) const;
+  void openFileDialog(const QString &caption);
 
  private:
   class FileOpenOption;
@@ -37,6 +37,8 @@ class FileTypeManager {
   QList<FileRegistration> registered;
 
   friend class FileOpenDialog;
+
+  QString lastFileOpenDir;
 };
 
 }  // End namespace Core
