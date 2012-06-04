@@ -70,12 +70,20 @@
         <translation>Vario</translation>
     </message>
     <message>
-        <source>avg GS</source>
-        <translation type="unfinished"></translation>
+        <source>dT:</source>
+        <translation type="unfinished">dT:</translation>
     </message>
     <message>
-        <source>avg VS</source>
-        <translation type="unfinished"></translation>
+        <source>d:</source>
+        <translation type="unfinished">v:</translation>
+    </message>
+    <message>
+        <source>dH</source>
+        <translation type="unfinished">dH</translation>
+    </message>
+    <message>
+        <source>VS</source>
+        <translation type="unfinished">VR</translation>
     </message>
 </context>
 </TS>

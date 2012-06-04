@@ -18,7 +18,7 @@ MapManipulator::MapManipulator() {
 
   // Create a group for map settings
   updraft->settingsManager->addGroup(
-    "map", tr("Map settings"), ":/core/icons/map.png");
+    "map", tr("Map options"), ":/core/icons/map.png");
 
   mouseZoomSensitivity = updraft->settingsManager->addSetting(
     "map:mouse_zoom_sensitivity",
