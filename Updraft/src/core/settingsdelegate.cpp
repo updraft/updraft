@@ -7,6 +7,7 @@
 #include "coloreditor.h"
 #include "directoryeditor.h"
 #include "translationlanguageeditor.h"
+#include "ellipsoidnameeditor.h"
 
 namespace Updraft {
 namespace Core {
@@ -30,6 +31,8 @@ QWidget* SettingsDelegate::createEditor(QWidget* parent,
     widget = new DirectoryEditor(parent);
   } else if (type == QMetaType::type("TranslationLanguage")) {
     widget = new TranslationLanguageEditor(parent);
+  } else if (type == QMetaType::type("EllipsoidName")) {
+    widget = new EllipsoidNameEditor(parent);
   } else {
     widget = QStyledItemDelegate::createEditor(parent, option, index);
   }
