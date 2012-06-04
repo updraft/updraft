@@ -7,14 +7,11 @@ namespace Updraft {
 namespace Core {
 
 MapManipulator::MapManipulator() {
-  // switch the scroll wheel
-  getSettings()->bindScroll(osgEarth::Util::EarthManipulator::ACTION_ZOOM_IN,
-    osgGA::GUIEventAdapter::SCROLL_UP);
-  getSettings()->bindScroll(osgEarth::Util::EarthManipulator::ACTION_ZOOM_OUT,
-    osgGA::GUIEventAdapter::SCROLL_DOWN);
-  // TODO(Maria): change the earth rotating
-  // lock azimuth -- north is always on the top
-  getSettings()->setLockAzimuthWhilePanning(true);
+  Settings* settings = new Settings();
+  bindKeyboardEvents(settings);
+  bindMouseEvents(settings);
+  settings->setLockAzimuthWhilePanning(true);
+  applySettings(settings);
 
   // Create a group for map settings
   /*
@@ -24,10 +21,108 @@ MapManipulator::MapManipulator() {
   mouseZoomSensitivity = updraft->settingsManager->addSetting(
     "map:mouse_zoom_sensitivity",
     tr("Mouse zoom sensitivity"),
-    QVariant(0.5));
+    QVariant(1.0));
   mouseZoomSensitivity->callOnValueChanged(
     this, SLOT(mouseZoomSensitivityChanged()));
   */
+}
+
+void MapManipulator::bindKeyboardEvents(Settings* settings) {
+  ActionOptions options;
+
+  settings->bindKey(ACTION_HOME, osgGA::GUIEventAdapter::KEY_Space);
+
+  // arrow keys: pan around
+  settings->bindKey(ACTION_PAN_LEFT, osgGA::GUIEventAdapter::KEY_Left);
+  settings->bindKey(ACTION_PAN_RIGHT, osgGA::GUIEventAdapter::KEY_Right);
+  settings->bindKey(ACTION_PAN_UP, osgGA::GUIEventAdapter::KEY_Up);
+  settings->bindKey(ACTION_PAN_DOWN, osgGA::GUIEventAdapter::KEY_Down);
+
+  // A, shift + up arrow: zoom in
+  settings->bindKey(ACTION_ZOOM_IN, osgGA::GUIEventAdapter::KEY_A);
+  settings->bindKey(ACTION_ZOOM_IN, osgGA::GUIEventAdapter::KEY_Up,
+    osgGA::GUIEventAdapter::MODKEY_SHIFT);
+
+  // Z,Y, shift + down arrow: zoom out
+  settings->bindKey(ACTION_ZOOM_OUT, osgGA::GUIEventAdapter::KEY_Z);
+  settings->bindKey(ACTION_ZOOM_OUT, osgGA::GUIEventAdapter::KEY_Y);
+  settings->bindKey(ACTION_ZOOM_OUT, osgGA::GUIEventAdapter::KEY_Down,
+    osgGA::GUIEventAdapter::MODKEY_SHIFT);
+
+  // ctrl + arrow keys: rotate
+  settings->bindKey(ACTION_ROTATE_LEFT, osgGA::GUIEventAdapter::KEY_Left,
+    osgGA::GUIEventAdapter::MODKEY_CTRL);
+  settings->bindKey(ACTION_ROTATE_RIGHT, osgGA::GUIEventAdapter::KEY_Right,
+    osgGA::GUIEventAdapter::MODKEY_CTRL);
+  settings->bindKey(ACTION_ROTATE_UP, osgGA::GUIEventAdapter::KEY_Up,
+    osgGA::GUIEventAdapter::MODKEY_CTRL);
+  settings->bindKey(ACTION_ROTATE_DOWN, osgGA::GUIEventAdapter::KEY_Down,
+    osgGA::GUIEventAdapter::MODKEY_CTRL);
+}
+
+void MapManipulator::bindMouseEvents(Settings* settings) {
+  ActionOptions options;
+
+  // left button: pan around
+  settings->bindMouse(ACTION_PAN, osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON);
+
+  // right (or ctrl+left) button: rotate
+  settings->bindMouse(ACTION_ROTATE,
+      osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON);
+  settings->bindMouse(ACTION_ROTATE,
+    osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON,
+    osgGA::GUIEventAdapter::MODKEY_CTRL);
+
+  // middle buttom (or alt+left): continous zoom
+  options.clear();
+  options.add(OPTION_CONTINUOUS, true);
+  settings->bindMouse(ACTION_ZOOM,
+    osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON, 0L, options);
+  settings->bindMouse(ACTION_ZOOM,
+    osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON,
+    osgGA::GUIEventAdapter::MODKEY_ALT, options);
+
+  // left + right buttom (or shift+left): continous panning
+  options.clear();
+  options.add(OPTION_CONTINUOUS, true);
+  settings->bindMouse(ACTION_PAN,
+    osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON
+    | osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON,
+    0L, options);
+  settings->bindMouse(ACTION_PAN,
+    osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON,
+    osgGA::GUIEventAdapter::MODKEY_SHIFT, options);
+
+  // scroll wheel: zoom
+  settings->bindScroll(ACTION_ZOOM_IN, osgGA::GUIEventAdapter::SCROLL_UP);
+  settings->bindScroll(ACTION_ZOOM_OUT, osgGA::GUIEventAdapter::SCROLL_DOWN);
+
+  // ctrl + scroll wheel: tilt
+  settings->bindScroll(ACTION_ROTATE_UP, osgGA::GUIEventAdapter::SCROLL_UP,
+    osgGA::GUIEventAdapter::MODKEY_CTRL);
+  settings->bindScroll(ACTION_ROTATE_DOWN, osgGA::GUIEventAdapter::SCROLL_DOWN,
+    osgGA::GUIEventAdapter::MODKEY_CTRL);
+
+  // shift + scroll wheel: rotate left/right
+  settings->bindScroll(ACTION_ROTATE_LEFT, osgGA::GUIEventAdapter::SCROLL_UP,
+    osgGA::GUIEventAdapter::MODKEY_SHIFT);
+  settings->bindScroll(ACTION_ROTATE_RIGHT, osgGA::GUIEventAdapter::SCROLL_DOWN,
+    osgGA::GUIEventAdapter::MODKEY_SHIFT);
+
+  // double click with left button: zoom in on a point
+  options.clear();
+  options.add(OPTION_GOTO_RANGE_FACTOR, 0.4);
+  settings->bindMouseDoubleClick(ACTION_GOTO,
+    osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON, 0L, options);
+
+  // double click with right (or ctrl+left): zoom out
+  options.clear();
+  options.add(OPTION_GOTO_RANGE_FACTOR, 2.5);
+  settings->bindMouseDoubleClick(ACTION_GOTO,
+    osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON, 0L, options);
+  settings->bindMouseDoubleClick(ACTION_GOTO,
+    osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON,
+    osgGA::GUIEventAdapter::MODKEY_CTRL, options);
 }
 
 void MapManipulator::resetNorth(double duration) {
