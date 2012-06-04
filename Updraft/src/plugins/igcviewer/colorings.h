@@ -23,25 +23,25 @@ class Coloring {
 /// Default coloring just adds together gradient and scaled info.
 class DefaultColoring : public Coloring {
  public:
-  DefaultColoring(const IgcInfo *info, const Util::Gradient *gradient);
+  DefaultColoring(const FixInfo *info, const Util::Gradient *gradient);
   QColor color(int i);
 
  protected:
-  const IgcInfo *info;
+  const FixInfo *info;
   const Util::Gradient *gradient;
 };
 
 /// Same as default coloring, but uses the scale symmetrically.
 class SymmetricColoring : public DefaultColoring {
  public:
-  SymmetricColoring(const IgcInfo *info, const Util::Gradient *gradient);
+  SymmetricColoring(const FixInfo *info, const Util::Gradient *gradient);
   QColor color(int i);
 };
 
 /// Same as default coloring, but doesn't use global scale.
 class LocalColoring : public DefaultColoring {
  public:
-  LocalColoring(const IgcInfo *info, const Util::Gradient *gradient);
+  LocalColoring(const FixInfo *info, const Util::Gradient *gradient);
   QColor color(int i);
 };
 

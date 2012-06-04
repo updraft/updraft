@@ -10,9 +10,11 @@ const QPen VerticalSpeedPlotPainter::POSITIVE_PEN = QPen(QColor(100, 100, 255));
 const QBrush VerticalSpeedPlotPainter::NEGATIVE_BRUSH = QBrush(Qt::red);
 const QPen VerticalSpeedPlotPainter::NEGATIVE_PEN = QPen(Qt::red);
 
-void PlotPainter::init(PlotAxes *axes, IgcInfo *info) {
+void PlotPainter::init(PlotAxes *axes, FixInfo *info) {
   this->axes = axes;
   this->info = info;
+
+  updateBuffer();
 
   connect(axes, SIGNAL(geometryChanged()), this, SLOT(updateBuffer()));
 }

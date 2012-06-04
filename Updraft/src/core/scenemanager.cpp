@@ -12,6 +12,7 @@
 #include "mapmanipulator.h"
 #include "pickhandler.h"
 
+
 #include "updraft.h"
 #include "ui/mainwindow.h"
 #include "ui/menu.h"
@@ -163,13 +164,8 @@ void SceneManager::redrawScene() {
   if (i == 1) startInitialAnimation();
   if (i < 2) ++i;
 
-  bool isTilted = (manipulator->getViewpoint().getPitch() > -88);
-  bool isFar = (manipulator->getDistance() > 7e6);
-  if (isTilted || isFar) {
-    updateCameraPerspective(camera);
-  } else {
-    updateCameraOrtho(camera);
-  }
+  getMapManager()->getManipulator()->updateCameraProjection();
+
   viewer->frame();
 }
 
@@ -234,6 +230,11 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
     // checked non active map
     // replace the map in the scene:
     if (value == true) {
+      osgEarth::Util::EarthManipulator::CameraProjection projection;
+      projection = osgEarth::Util::EarthManipulator::PROJ_PERSPECTIVE;
+      manipulator->getSettings()->setCameraProjection(projection);
+      viewer->frame();
+
       int oldIndex = activeMapIndex;
       activeMapIndex = index;
       unregisterOsgNode(mapManagers[oldIndex]->getMapNode());
@@ -255,8 +256,8 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
 
       // manipulator = mapManagers[activeMapIndex]->getManipulator();
       manipulator = new MapManipulator();
-      manipulator->setNode(mapManagers[activeMapIndex]->getMapNode());
       manipulator->setHomeViewpoint(viewpoint);
+      mapManagers[activeMapIndex]->setManipulator(manipulator);
 
       viewer->setCameraManipulator(manipulator);
 
@@ -301,8 +302,7 @@ osg::Camera* SceneManager::createCamera(osg::GraphicsContext::Traits* traits) {
 
   camera->setClearColor(osg::Vec4(0.2, 0.2, 0.6, 1.0));
   camera->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
-  isCameraPerspective = FALSE;
-  updateCameraPerspective(camera);
+
   return camera;
 }
 
@@ -311,33 +311,6 @@ double SceneManager::getAspectRatio() {
   double aspectRatio = static_cast<double>(traits->width)/
     static_cast<double>(traits->height);
   return aspectRatio;
-}
-
-void SceneManager::updateCameraOrtho(osg::Camera* camera) {
-  static double lastDistance = 0;
-  double distance = manipulator->getDistance();
-  bool hasDistanceChanged = (distance != lastDistance);
-  // no need to update projection matrix
-  if (!hasDistanceChanged && !isCameraPerspective) {
-    return;
-  }
-  lastDistance = distance;
-
-  double hy = distance * 0.2679;  // tan(fovy/2)
-  double hx = hy * getAspectRatio();
-  camera->setProjectionMatrixAsOrtho2D(-hx, hx, -hy, hy);
-  isCameraPerspective = FALSE;
-}
-
-void SceneManager::updateCameraPerspective(osg::Camera* camera) {
-  // no need to update projection matrix
-  if (isCameraPerspective) {
-    return;
-  }
-  camera->setProjectionMatrixAsPerspective(
-    30.0f, getAspectRatio(),
-    1.0f, 10000.0f);
-  isCameraPerspective = TRUE;
 }
 
 void SceneManager::resetNorth() {

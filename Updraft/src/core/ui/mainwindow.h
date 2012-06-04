@@ -67,7 +67,12 @@ class MainWindow : public QMainWindow {
   /// Handles Help->About... menu action.
   void showAboutDialog();
 
+  /// Item in map layer tree widget was changed (= checked / unchecked)
   void mapLayerItemChanged(QTreeWidgetItem *item);
+
+  /// Map layer tree view requested context menu.
+  /// Finds thee map layer and send the event to it.
+  void mapLayerContextMenuRequested(const QPoint& pos);
 
  protected:
   // TODO(cestmir): Just a temporary method to test context menu
