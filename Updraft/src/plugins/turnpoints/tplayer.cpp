@@ -165,8 +165,8 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
   const QVector<SettingInterface*>& settings)
   : group(new osg::Group()), objectPlacer(objectPlacer_),
   file(file_), displayed(displayed_), dataDir(dataDir_), parent(parent_),
-  labelMaxScale(100.0),
   labelMinScale(10.0),
+  labelMaxScale(100.0),
   labelDrawDist(4000.0),
   lblSize(20.0) {
   if (group == NULL || objectPlacer == NULL || file == NULL) {
