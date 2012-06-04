@@ -33,6 +33,7 @@ void TurnPoints::initialize(CoreInterface *coreInterface) {
     "Labels font size", 20.0, true));
 
   mapLayerGroup = g_core->createMapLayerGroup(tr("Turn-points"));
+  mapLayerGroup->connectCheckedToVisibility();
 
   cupTPsReg.category = CATEGORY_PERSISTENT;
   cupTPsReg.extension = ".cup";
@@ -142,12 +143,32 @@ void TurnPoints::addLayer(TPFile *file) {
   Updraft::MapLayerInterface* mapLayer =
     mapLayerGroup->createMapLayer(turnPointsLayer->getNode(),
       file->getFileName(), -1);
-    mapLayerGroup->connectCheckedToVisibility();
 
   layers.insert(mapLayer, turnPointsLayer);
 
   mapLayer->connectSignalChecked(this,
     SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
+  mapLayer->connectSignalContextMenuRequested(this,
+    SLOT(contextMenuRequested(QPoint, MapLayerInterface*)));
+  mapLayer->setFilePath(file->getFilePath());
+  connect(mapLayer->getDeleteAction(), SIGNAL(triggered()),
+    this, SLOT(deleteTpLayer()));
+}
+
+void TurnPoints::contextMenuRequested(QPoint pos, MapLayerInterface* sender) {
+  layerToDelete = sender;
+
+  QMenu menu;
+  menu.addAction(sender->getDeleteAction());
+  menu.exec(pos);
+}
+
+void TurnPoints::deleteTpLayer() {
+  // layerToDelete might be an invalid pointer here, because
+  // it is deleted by the context menu, but this doesn't matter
+  // since we only need the value of the pointer, not the data it points to.
+  delete layers[layerToDelete];
+  layers.remove(layerToDelete);
 }
 
 Q_EXPORT_PLUGIN2(turnpoints, TurnPoints)

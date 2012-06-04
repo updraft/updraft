@@ -43,10 +43,20 @@ class TPS_EXPORT TurnPoints : public QObject, public PluginBase {
  public slots:
   void mapLayerDisplayed(bool value, MapLayerInterface* sender);
 
+ private slots:
+  void contextMenuRequested(QPoint pos, MapLayerInterface *sender);
+
+  /// Slot to delete additional data that belonged to the turn points
+  /// layer deleted from the context menu.
+  void deleteTpLayer();
+
  private:
   enum FileRoles {
     IMPORT_CUP_FILE = 1
   };
+
+  /// Layer to delete if the delete action in context menu is chosen.
+  MapLayerInterface* layerToDelete;
 
   /// List of imported files
   TTPLayerMap layers;

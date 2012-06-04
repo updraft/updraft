@@ -1,10 +1,14 @@
 #ifndef UPDRAFT_SRC_CORE_UI_MAPLAYERGROUP_H_
 #define UPDRAFT_SRC_CORE_UI_MAPLAYERGROUP_H_
 
+#pragma warning(push)
+#pragma warning(disable:4250)
+
 #include <QtGui>
 #include <osg/ref_ptr>
 #include "../../maplayergroupinterface.h"
 #include "../maplayer.h"
+
 
 namespace osg {
   class Group;
@@ -79,6 +83,8 @@ class MapLayerGroup : public MapLayer, public MapLayerGroupInterface {
 
 }  // End namespace Core
 }  // End namespace Updraft
+
+#pragma warning(pop)  // C2450
 
 #endif  // UPDRAFT_SRC_CORE_UI_MAPLAYERGROUP_H_
 

@@ -12,6 +12,7 @@
 #include "mapmanipulator.h"
 #include "pickhandler.h"
 
+
 #include "updraft.h"
 #include "ui/mainwindow.h"
 #include "ui/menu.h"
@@ -229,6 +230,11 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
     // checked non active map
     // replace the map in the scene:
     if (value == true) {
+      osgEarth::Util::EarthManipulator::CameraProjection projection;
+      projection = osgEarth::Util::EarthManipulator::PROJ_PERSPECTIVE;
+      manipulator->getSettings()->setCameraProjection(projection);
+      viewer->frame();
+
       int oldIndex = activeMapIndex;
       activeMapIndex = index;
       unregisterOsgNode(mapManagers[oldIndex]->getMapNode());
