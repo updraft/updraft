@@ -319,12 +319,12 @@ void TaskLayer::DrawLines(osg::Geode *geode) {
 
   // Sets line width.
   osg::LineWidth* linewidth = new osg::LineWidth();
-  linewidth->setWidth(4.0);
+  linewidth->setWidth(5.0);
   stateSet->setAttributeAndModes(linewidth, osg::StateAttribute::ON);
 
   // Sets line color.
   osg::Vec4Array* colors = new osg::Vec4Array;
-  colors->push_back(osg::Vec4(1.0, 1.0, 0.5, 1.0));
+  colors->push_back(osg::Vec4(0.78, 0.64, 0.0, 1.0));
   geom->setColorArray(colors);
   geom->setColorBinding(osg::Geometry::BIND_OVERALL);
 }
