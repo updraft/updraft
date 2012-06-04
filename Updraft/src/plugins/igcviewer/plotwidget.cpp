@@ -248,11 +248,6 @@ void PlotWidget::addPickedFix(int index) {
 }
 
 void PlotWidget::updatePickedTexts(int i) {
-  int c = pickedFixes.size();
-  int a = pickedFixes[0].xLine;
-  int aa = pickedFixes[1].xLine;
-  int aaa = pickedFixes[2].xLine;
-
   QString prevStat = createSegmentStatText(
     pickedFixes[i-1].fixIndex, pickedFixes[i].fixIndex);
   QString nextStat = createSegmentStatText(

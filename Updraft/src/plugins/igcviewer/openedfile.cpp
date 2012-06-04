@@ -129,7 +129,6 @@ bool OpenedFile::init(IgcViewer* viewer,
 
 
   QWidget* tabWidget = new QWidget();
-  QWidget* leftPart = new QWidget();
   QHBoxLayout* layout = new QHBoxLayout();
   QVBoxLayout* verticalLayout = new QVBoxLayout();
 
