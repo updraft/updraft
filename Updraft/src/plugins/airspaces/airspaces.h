@@ -2,6 +2,7 @@
 #define UPDRAFT_SRC_PLUGINS_AIRSPACES_AIRSPACES_H_
 
 #include <QtGui>
+#include <QAction>
 #include "../../pluginbase.h"
 #include "oaengine.h"
 #include "../../maplayerinterface.h"
@@ -31,14 +32,16 @@ class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
 
   void reloadAirspaces();
 
+  void contextMenuRequested(QPoint pos, MapLayerInterface* sender);
+
  private:
   enum FileRole {
     IMPORT_OPENAIRSPACE_FILE = 0
   };
+
   /// Registration for loading Airspaces from OpenAirspace file.
   FileRegistration OAirspaceFileReg;
 
-  QVector<MapLayerInterface*>* mapLayers;
   QVector<QPair<osg::Node*, QString> >* mapNodes;
   // oaEngine* engine;
   MapLayerGroupInterface* mapLayerGroup;

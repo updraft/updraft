@@ -8,7 +8,6 @@ namespace Airspaces {
   CoreInterface *g_core = NULL;
 
 Airspaces::Airspaces() {
-  mapLayers = NULL;
   mapLayerGroup = NULL;
 }
 
@@ -33,7 +32,6 @@ void Airspaces::initialize(CoreInterface *coreInterface) {
   mapLayerGroup = g_core->createMapLayerGroup(tr("Airspace"));
   mapLayerGroup->connectCheckedToVisibility();
   // engine = new oaEngine(mapLayerGroup);
-  mapLayers = new QVector<MapLayerInterface*>();
 
   loadImportedFiles();
 
@@ -53,10 +51,6 @@ void Airspaces::reloadAirspaces() {
 
   // mapLayerGroup
 
-  for (int i = 0; i < mapLayers->size(); ++i) {
-    mapLayerGroup->removeMapLayer(mapLayers->at(i));
-  }
-
   loadImportedFiles();
 
   qDebug("airspaces reloaded");
@@ -68,13 +62,6 @@ void Airspaces::reloadAirspaces() {
 void Airspaces::deinitialize() {
   // delete engine;
   // engine = NULL;
-  if (mapLayers) {
-    for (QVector<MapLayerInterface*>::iterator it =
-      mapLayers->begin(); it < mapLayers->end(); ++it)
-      delete (*it);
-    delete mapLayers;
-    mapLayers = NULL;
-  }
   if (mapLayerGroup) {
     delete mapLayerGroup;
     mapLayerGroup = NULL;
@@ -109,16 +96,15 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
       MapLayerGroupInterface* fileGroup =
         mapLayerGroup->createMapLayerGroup(displayName);
       fileGroup->connectCheckedToVisibility();
-
-      if (!mapLayers)
-        mapLayers = new QVector<MapLayerInterface*>();
+      fileGroup->connectSignalContextMenuRequested(this,
+        SLOT(contextMenuRequested(QPoint, MapLayerInterface*)));
+      fileGroup->setFilePath(fileName);
 
       QPair<osg::Node*, QString> pair;
       foreach(pair, *mapNodes) {
         MapLayerInterface *layer =
           fileGroup->createMapLayer(pair.first, pair.second);
         layer->connectCheckedToVisibility();
-        mapLayers->append(layer);
       }
 
       // for (int i = 0; i < layers->size(); ++i) {
@@ -149,6 +135,12 @@ void Airspaces::loadImportedFiles() {
   foreach(QString fileName, entries) {
     fileOpen(dir.absoluteFilePath(fileName), OAirspaceFileReg.roleId);
   }
+}
+
+void Airspaces::contextMenuRequested(QPoint pos, MapLayerInterface* sender) {
+  QMenu menu;
+  menu.addAction(sender->getDeleteAction());
+  menu.exec(pos);
 }
 
 Q_EXPORT_PLUGIN2(airspaces, Airspaces)
