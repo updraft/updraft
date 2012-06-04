@@ -73,19 +73,25 @@ void MapManipulator::bindMouseEvents(Settings* settings) {
     osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON,
     osgGA::GUIEventAdapter::MODKEY_CTRL);
 
-  // middle buttom: continous zoom
+  // middle buttom (or alt+left): continous zoom
   options.clear();
   options.add(OPTION_CONTINUOUS, true);
   settings->bindMouse(ACTION_ZOOM,
     osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON, 0L, options);
+  settings->bindMouse(ACTION_ZOOM,
+    osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON,
+    osgGA::GUIEventAdapter::MODKEY_ALT, options);
 
-  // left + right buttom: continous panning
+  // left + right buttom (or shift+left): continous panning
   options.clear();
   options.add(OPTION_CONTINUOUS, true);
   settings->bindMouse(ACTION_PAN,
     osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON
     | osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON,
     0L, options);
+  settings->bindMouse(ACTION_PAN,
+    osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON,
+    osgGA::GUIEventAdapter::MODKEY_SHIFT, options);
 
   // scroll wheel: zoom
   settings->bindScroll(ACTION_ZOOM_IN, osgGA::GUIEventAdapter::SCROLL_UP);
