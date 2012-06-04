@@ -242,9 +242,8 @@ qreal SegmentInfo::distance(int startPosition, int endPosition) {
 }
 
 qreal SegmentInfo::heightDifference(int startPosition, int endPosition) {
-  if (endPosition <= startPosition) return 0;
   return fixList->at(endPosition).location.alt -
-    fixList->at(endPosition).location.alt;
+    fixList->at(startPosition).location.alt;
 }
 
 QTime SegmentInfo::timestamp(int index) {
