@@ -159,7 +159,7 @@ void MainWindow::standardMenuItems() {
   exitSepAction->setSeparator(true);
   menuFile->insertAction(99, exitSepAction);
 
-  QAction* userDocAction = new QAction(tr("Updraft Help"), this);
+  QAction* userDocAction = new QAction(tr("User's &Manual..."), this);
   menuHelp->insertAction(0, userDocAction);
   connect(userDocAction, SIGNAL(triggered()), this, SLOT(openUserDoc()));
 
@@ -188,6 +188,14 @@ void MainWindow::appExit() {
 }
 
 void MainWindow::openUserDoc() {
+  QString path = updraft->getDataDirectory() + "/UpdraftUserManual.pdf";
+  QUrl url("file:///" + path);
+
+  if (QDesktopServices::openUrl(url) == false) {
+    QMessageBox::warning(this, tr("Open Documentation Failed"),
+      tr("Application was unable to open User's manual from\n")
+      + url.toString());
+  }
 }
 
 void MainWindow::showAboutDialog() {
