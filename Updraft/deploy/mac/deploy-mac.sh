@@ -36,8 +36,8 @@ OSG_DIR=/Users/User/Desktop/osg_release
 OSGEARTH_DIR=/Users/User/Desktop/osgearth_release
 
 cp -R $BUILD_DIR Contents/MacOS/build
-cp -R $OSG_DIR Contents/Frameworks/
-cp -R $OSGEARTH_DIR Contents/Frameworks/
+cp -R $OSG_DIR Contents/Frameworks/osg_release
+cp -R $OSGEARTH_DIR Contents/Frameworks/osgearth_release
 copy_framework QtCore
 copy_framework QtGui
 copy_framework QtOpenGL
