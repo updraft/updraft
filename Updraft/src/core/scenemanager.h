@@ -40,7 +40,8 @@ class SceneManager: public QObject {
   /// Note that there must be only one map node in the scene.
   osgEarth::MapNode* getMapNode();
 
-  /// Returns the MapManager instance associated with the map.
+  /// Returns the MapManager instance associated with currently
+  /// displayed map.
   MapManager* getMapManager();
 
   /// Creates an empty osg::Group, and adds it to the root.

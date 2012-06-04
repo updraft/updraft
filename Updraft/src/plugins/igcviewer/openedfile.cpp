@@ -410,50 +410,56 @@ void OpenedFile::fixIsPointedAt(int index) {
 }
 
 osg::Geode* OpenedFile::createMarker(qreal scale) {
+  osg::Geode* geode = new osg::Geode();
   osg::Geometry* geometry = new osg::Geometry();
 
-  osg::Vec3Array* vertices = new osg::Vec3Array(4);
-  (*vertices)[0] = osg::Vec3(-scale, -scale, 0.0);
-  (*vertices)[1] = osg::Vec3( scale, -scale, 0.0);
-  (*vertices)[2] = osg::Vec3( scale, scale, 0.0);
-  (*vertices)[3] = osg::Vec3(-scale, scale, 0.0);
+  osg::Vec3Array* vertices = new osg::Vec3Array();
+  osg::Vec3 vertex(scale, 0, 0);
+
+  int nVert = 8;
+  qreal step = 2*M_PI / (qreal)nVert;
+  qreal t = 0;
+  for (int i = 0; i < nVert; i++) {
+    t += step;
+    vertices->push_back(vertex);
+    vertex = osg::Vec3(scale*cos(t), scale*sin(t), 0);
+    vertices->push_back(vertex);
+  }
+
+  vertices->push_back(osg::Vec3(0, scale*1.2, 0.0));
+  vertices->push_back(osg::Vec3(0, -scale*1.2, 0.0));
+  vertices->push_back(osg::Vec3(scale*1.2, 0, 0.0));
+  vertices->push_back(osg::Vec3(-scale*1.2, 0, 0.0));
+
   geometry->setVertexArray(vertices);
 
-  osg::Vec2Array* texCoords = new osg::Vec2Array(4);
-  (*texCoords)[0] = osg::Vec2(0.0, 0.0);
-  (*texCoords)[1] = osg::Vec2(1.0, 0.0);
-  (*texCoords)[2] = osg::Vec2(1.0, 1.0);
-  (*texCoords)[3] = osg::Vec2(0.0, 1.0);
-  geometry->setTexCoordArray(0, texCoords);
-
   osg::Vec4Array* color = new osg::Vec4Array();
-  color->push_back(osg::Vec4(1.0, 1.0, 1.0, 1.0));
+  for (unsigned int i = 0; i < vertices->size()-4; i++) {
+    color->push_back(osg::Vec4(1.0, 1.0, 0.0, 1.0));
+  }
+  for (int i = 0; i < 4; i++) {
+    color->push_back(osg::Vec4(0.0, 0.0, 0.0, 1.0));
+  }
+
   geometry->setColorArray(color);
-  geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+  geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
   geometry->addPrimitiveSet(new osg::DrawArrays(
-    osg::PrimitiveSet::QUADS, 0, 4));
-
-  osg::Geode* geode = new osg::Geode();
+    osg::PrimitiveSet::LINES, 0, vertices->size()));
 
   osg::StateSet* stateSet = geode->getOrCreateStateSet();
-  QString path = QCoreApplication::applicationDirPath()
-    + "/data/igcmarker.png";
-  osg::Image* image = osgDB::readImageFile(path.toStdString());
-  osg::Texture2D* texture = new osg::Texture2D();
-  texture->setImage(image);
 
   // Turn off lighting for the billboard.
   stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
   stateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
   stateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
 
-  // Turn on texturing, bind texture.
-  stateSet->setTextureAttributeAndModes(0, texture);
-
   // Turn on blending.
   stateSet->setAttributeAndModes(new osg::BlendFunc());
   stateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+
+  // Set line width.
+  stateSet->setAttributeAndModes(new osg::LineWidth(2));
 
   geode->addDrawable(geometry);
 
