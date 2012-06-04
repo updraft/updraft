@@ -45,6 +45,7 @@ class Updraft : public QApplication {
   QString getDataDirectory();
   QDir getTranslationDirectory();
 
+  QDir currentDataDirectory;
   SettingInterface* dataDirectory;
 
   MainWindow* mainWindow;
@@ -56,6 +57,9 @@ class Updraft : public QApplication {
 
   // List of ellipsoid models used in Updraft.
   QList<Util::Ellipsoid*> ellipsoids;
+
+ private slots:
+  void dataDirectoryChanged();
 
  private:
   void coreSettings();

@@ -12,8 +12,8 @@
 #include "mapmanipulator.h"
 #include "pickhandler.h"
 
-
 #include "updraft.h"
+#include "settingsmanager.h"
 #include "ui/mainwindow.h"
 #include "ui/menu.h"
 #include "../menuinterface.h"
@@ -23,6 +23,10 @@ namespace Updraft {
 namespace Core {
 
 SceneManager::SceneManager() {
+  // Create a group for map settings
+  updraft->settingsManager->addGroup(
+    "map", tr("Map settings"), ":/core/icons/map.png");
+
   osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
   viewer = new osgViewer::Viewer();

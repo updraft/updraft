@@ -10,7 +10,7 @@
 # number of the volume and  is where the contents to put on the dmg are.
 #
 # The result will be a file called -.dmg
-#
+
 if [ $# != 3 ]; then
 echo "Usage: mkdmg volname vers srcdir"
 exit 0
