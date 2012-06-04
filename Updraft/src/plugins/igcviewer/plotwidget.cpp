@@ -271,8 +271,8 @@ void PlotWidget::updatePickedTexts(int i) {
 void PlotWidget::resetStats() {
   pickedFixesStatTexts.clear();
   pickedPositions.clear();
+  pickedFixes.clear();
   segmentsStatTexts.clear();
-  pickedFixesStatTexts.clear();
 
   PickData first(qMax(0, altitudePlotPainter->getMinX()), 0);
   PickData last(qMax(0, altitudePlotPainter->getMaxX()),
