@@ -168,10 +168,10 @@ class TimeFixInfo : public FixInfo {
 class SegmentInfo {
  public:
   void init(const QList<TrackFix>* fixList_);
-  qreal avgSpeed(int startPosition, int endPosition);
-  qreal avgRise(int startPosition, int endPosition);
-  qreal distance(int startPosition, int endPosition);
-  qreal heightDifference(int startPosition, int endPosition);
+  qreal avgSpeed(int startIndex, int endIndex);
+  qreal avgRise(int startIndex, int endIndex);
+  qreal distance(int startIndex, int endIndex);
+  qreal heightDifference(int startIndex, int endIndex);
 
   QTime timestamp(int index);
 

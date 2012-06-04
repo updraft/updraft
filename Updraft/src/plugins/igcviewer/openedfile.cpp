@@ -427,7 +427,7 @@ osg::Geode* OpenedFile::createMarker(qreal scale) {
   geometry->setTexCoordArray(0, texCoords);
 
   osg::Vec4Array* color = new osg::Vec4Array();
-  color->push_back(osg::Vec4(1.0, 1.0, 1.0, 0.0));
+  color->push_back(osg::Vec4(1.0, 1.0, 1.0, 1.0));
   geometry->setColorArray(color);
   geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
