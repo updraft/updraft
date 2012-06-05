@@ -33,7 +33,7 @@ class CoreImplementation : public CoreInterface {
 
   void registerFiletype(const FileRegistration &registration);
 
-  QString getDataDirectory();
+  QDir getDataDirectory();
 
   void addSettingsGroup(
     const QString& groupId,

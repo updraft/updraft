@@ -29,7 +29,7 @@ class TurnPoints;
 class TPLayer {
  public:
   TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
-    const TPFile *file_, const QString &dataDir, TurnPoints* parent_,
+    const TPFile *file_, TurnPoints* parent_,
     const QVector<SettingInterface*>& settings);
 
   virtual ~TPLayer();
@@ -81,9 +81,6 @@ class TPLayer {
 
   const TPFile *file;
   bool displayed;
-
-  // Path to application data directory.
-  QString dataDir;
 
   TurnPoints* parent;
 

@@ -121,18 +121,14 @@ bool FileTypeManager::openFileInternal(const QString &path,
 /// \return True on success, otherwise returns false.
 bool FileTypeManager::importFile(QString *newPath,
   const QString &importDirectory, const QString &srcPath) const {
-  QString dstPath = updraft->getDataDirectory();
+  QDir dstPath = updraft->getDataDirectory();
 
+  // Create whole branch of directories specified by importDirectory.
   if (importDirectory.length() != 0) {
-    dstPath += "/" + importDirectory;
-  }
-
-  // Create whole branch of directories specified by path.
-  QDir().mkpath(dstPath);
-
-  if (!QDir(dstPath).exists()) {
-    qDebug() << "Import failed. Unable to create directory " << dstPath;
-    return false;
+    if (!dstPath.mkpath(importDirectory)) {
+      qDebug() << "Import failed. Unable to create directory " << dstPath;
+      return false;
+    }
   }
 
   QFileInfo srcInfo(srcPath);
@@ -142,9 +138,7 @@ bool FileTypeManager::importFile(QString *newPath,
     return false;
   }
 
-  dstPath += "/" + srcInfo.fileName();
-
-  QFileInfo dstInfo(dstPath);
+  QFileInfo dstInfo(dstPath, srcInfo.fileName());
 
   // Rename file when exists by appending index.
   // TODO(Tom): Query for replace/rename/cancel

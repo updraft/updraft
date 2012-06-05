@@ -92,9 +92,8 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
 }
 
 void Airspaces::loadImportedFiles() {
-  QDir dir(g_core->getDataDirectory() + "/" + OAirspaceFileReg.importDirectory);
-
-  if (!dir.exists()) {
+  QDir dir = g_core->getDataDirectory();
+  if (!dir.cd(OAirspaceFileReg.importDirectory)) {
     return;
   }
 

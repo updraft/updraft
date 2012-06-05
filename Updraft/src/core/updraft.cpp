@@ -66,10 +66,11 @@ Updraft::~Updraft() {
   }
 }
 
-QString Updraft::getDataDirectory() {
+QDir Updraft::getDataDirectory() {
   QDir dataDir = currentDataDirectory;
   dataDir.cd("data");
-  return dataDir.absolutePath();
+  dataDir.makeAbsolute();
+  return dataDir;
 }
 
 QDir Updraft::getTranslationDirectory() {

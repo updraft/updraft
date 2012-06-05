@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QIcon>
+#include <QDir>
 
 #include <osg/CoordinateSystemNode>
 
@@ -75,8 +76,8 @@ class CoreInterface {
   virtual void registerFiletype(const FileRegistration &registration) = 0;
 
   /// Gets path of the application data directory.
-  /// \return Full path to the application directory
-  virtual QString getDataDirectory() = 0;
+  /// \return QDir with the full path to the application directory
+  virtual QDir getDataDirectory() = 0;
 
   /// Adds a group into the settings dialog.
   /// If a setting group with the given ID already exists, its description
