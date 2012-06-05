@@ -104,6 +104,11 @@ void SettingsManager::addGroup(
   addGroupInternal(groupId + "_hidden", description + tr(" (hidden)"), icon);
 }
 
+QDir SettingsManager::getSettingsDir() {
+  QFileInfo info(settingsFile);
+  return info.absoluteDir();
+}
+
 void SettingsManager::execDialog() {
   dialog = new SettingsDialog(updraft->mainWindow, this);
   dialog->setModel(model);
