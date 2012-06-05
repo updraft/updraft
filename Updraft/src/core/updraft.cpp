@@ -43,6 +43,8 @@ Updraft::Updraft(int argc, char** argv)
   for (int i = 1; i < args.count(); ++i) {
     fileTypeManager->openFile(args[i]);
   }
+
+  dataDirectoryChangeInProgress = false;
 }
 
 Updraft::~Updraft() {
@@ -58,7 +60,8 @@ Updraft::~Updraft() {
 }
 
 QString Updraft::getDataDirectory() {
-  QDir dataDir = dataDirectory->get().value<QDir>();
+  QDir dataDir = currentDataDirectory;
+  dataDir.cd("data");
   return dataDir.absolutePath();
 }
 
@@ -78,10 +81,34 @@ Util::Ellipsoid* Updraft::getUsedEllipsoid() {
 }
 
 void Updraft::dataDirectoryChanged() {
-  QMessageBox::information(
-    this->mainWindow,
-    tr("Information"),
-    tr("Change to data directory won't take effect until the next restart."));
+  // Prevent reentry into this function
+  if (dataDirectoryChangeInProgress) return;
+  dataDirectoryChangeInProgress = true;
+
+  QDir dataDir = currentDataDirectory;
+  QDir newDataDir = dataDirectory->get().value<QDir>();
+
+  if (dataDir.rename(
+    dataDir.absoluteFilePath("data"),
+    newDataDir.absoluteFilePath("data"))) {
+    QMessageBox::information(
+      this->mainWindow,
+      tr("Data directory moved"),
+      tr("The data directory was successfully moved"));
+    currentDataDirectory = newDataDir;
+  } else {
+    QMessageBox::warning(
+      this->mainWindow,
+      tr("Data directory not moved"),
+      tr("The data directory could not be moved"));
+
+    // Set the data directory to the original value
+    QVariant dataDirVariant;
+    dataDirVariant.setValue<QDir>(dataDir);
+    dataDirectory->set(dataDirVariant);
+  }
+
+  dataDirectoryChangeInProgress = false;
 }
 
 void Updraft::coreSettings() {
@@ -89,7 +116,6 @@ void Updraft::coreSettings() {
     "general", tr("General"), ":/core/icons/general.png");
 
   QDir dataDir = QCoreApplication::applicationDirPath();
-  dataDir.cd("data");
   QVariant dataDirVariant;
   dataDirVariant.setValue(dataDir);
   dataDirectory = settingsManager->addSetting(
