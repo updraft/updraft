@@ -173,17 +173,6 @@ TPLayer::TPLayer(bool displayed_, osgEarth::Util::ObjectPlacer* objectPlacer_,
     return;
   }
 
-  // Settings
-  // get stored values
-  if (settings.size() >= 4) {
-    labelMaxScale = settings[0]->get().toFloat();
-    labelMinScale = settings[1]->get().toFloat();
-    labelDrawDist = settings[2]->get().toFloat();
-    lblSize       = settings[3]->get().toFloat();
-  } else {
-    qDebug("Not enough settings params.");
-  }
-
   // Create node for one turn-point.
   // It will be shared among Autotransform nodes.
   osg::Geode *geodeTp = createGeode(25.0, 0);

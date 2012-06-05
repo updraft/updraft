@@ -21,17 +21,6 @@ QString TurnPoints::getName() {
 void TurnPoints::initialize(CoreInterface *coreInterface) {
   g_core = coreInterface;
 
-  g_core->addSettingsGroup(
-    "Turnpoints", tr("Turn-points Options"));
-  settings.push_back(g_core->addSetting("Turnpoints:labelMaxScale",
-    "Maximum scale for label", 100.0, true));
-  settings.push_back(g_core->addSetting("Turnpoints:labelMinScale",
-    "Minimum scale for label", 10.0, true));
-  settings.push_back(g_core->addSetting("Turnpoints:labelDrawDist",
-    "Minimum distance from camera for label to draw.", 4000.0, true));
-  settings.push_back(g_core->addSetting("Turnpoints:labelSize",
-    "Labels font size", 20.0, true));
-
   mapLayerGroup = g_core->createMapLayerGroup(tr("Turn-points"));
   mapLayerGroup->connectCheckedToVisibility();
 

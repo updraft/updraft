@@ -73,6 +73,7 @@ class Updraft : public QApplication {
   SplashScreen splash;
 
   bool dataDirectoryChangeInProgress;
+  bool moveDataDirectory(QDir oldDir, QDir newDir);
 };
 
 }  // End namespace Core

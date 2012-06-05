@@ -88,9 +88,16 @@ void Updraft::dataDirectoryChanged() {
   QDir dataDir = currentDataDirectory;
   QDir newDataDir = dataDirectory->get().value<QDir>();
 
-  if (dataDir.rename(
-    dataDir.absoluteFilePath("data"),
-    newDataDir.absoluteFilePath("data"))) {
+  bool moveSuccessful =
+    dataDir.rename(
+      dataDir.absoluteFilePath("data"),
+      newDataDir.absoluteFilePath("data"));
+
+  if (!moveSuccessful) {
+    moveSuccessful = moveDataDirectory(dataDir, newDataDir);
+  }
+
+  if (moveSuccessful) {
     QMessageBox::information(
       this->mainWindow,
       tr("Data directory moved"),
@@ -155,6 +162,78 @@ int Updraft::exec() {
 
 void Updraft::hideSplash() {
   splash.finish(mainWindow);
+}
+
+bool Updraft::moveDataDirectory(QDir oldDir, QDir newDir) {
+  // We cannot move the directory if the destination already exists
+  if (newDir.exists("data")) {
+    return false;
+  }
+
+  oldDir.makeAbsolute();
+  newDir.makeAbsolute();
+
+  // Try to create the destination directory
+  if (!newDir.mkdir(newDir.filePath("data")))
+      return false;
+
+  // Perform a depth-first search through the data directory and copy it
+  QStack<QDir> dfsStack;
+
+  QDir begin = oldDir;
+  begin.cd("data");
+  dfsStack.push(begin);
+
+  while (!dfsStack.isEmpty()) {
+    QDir srcDir = dfsStack.pop();
+
+    foreach(
+      const QFileInfo &info,
+      srcDir.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot)) {
+      if (info.isDir()) {
+        dfsStack.push(info.absoluteFilePath());
+      } else if (info.isFile()) {
+        QString srcPath = info.absoluteFilePath();
+        QString relFilePath = oldDir.relativeFilePath(srcPath);
+        QString dstPath = newDir.filePath(relFilePath);
+        if (!QFile::copy(srcPath, dstPath)) {
+          qDebug() << "Data directory copying failed!";
+          return false;
+        }
+      } else {
+        qDebug() << "Warning: " << info.filePath() << " was not copied!";
+      }
+    }
+  }
+
+  // If we got here, everything is OK, so we can delete the old directory
+  dfsStack.push(begin);
+  while (!dfsStack.isEmpty()) {
+    QDir srcDir = dfsStack.top();
+    QFileInfoList files =
+      srcDir.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
+
+    // If the directory was emptied already, delete it and remove from stack
+    if (files.empty()) {
+      srcDir.rmdir(srcDir.absolutePath());
+      dfsStack.pop();
+      continue;
+    }
+
+    // Otherwise, remove all the files and directories in the directory
+    foreach(const QFileInfo &info, files) {
+      if (info.isDir()) {
+        dfsStack.push(info.absoluteFilePath());
+      } else {
+        if (!QFile::remove(info.absoluteFilePath())) {
+          qDebug() << "Old data directory could not be removed!";
+          return false;
+        }
+      }
+    }
+  }
+
+  return true;
 }
 
 }  // End namespace Core
