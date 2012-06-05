@@ -26,6 +26,7 @@ class PluginManager;
 class SceneManager;
 class SettingsManager;
 class TranslationManager;
+class StateSaver;
 
 /// Top level object of updraft project.
 class Updraft : public QApplication {
@@ -54,6 +55,7 @@ class Updraft : public QApplication {
   SceneManager* sceneManager;
   SettingsManager* settingsManager;
   TranslationManager* translationManager;
+  StateSaver* stateSaver;
 
   // Returns the currently set ellipsoid for measurements.
   Util::Ellipsoid* getUsedEllipsoid();

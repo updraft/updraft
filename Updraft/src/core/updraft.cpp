@@ -14,6 +14,7 @@
 #include "translationmanager.h"
 #include "util/ellipsoid.h"
 #include "ellipsoidname.h"
+#include "statesaver.h"
 
 namespace Updraft {
 namespace Core {
@@ -35,6 +36,8 @@ Updraft::Updraft(int argc, char** argv)
   fileTypeManager = new FileTypeManager();
   sceneManager = new SceneManager();
 
+  stateSaver = new StateSaver();
+
   mainWindow->setMapWidget(sceneManager->getWidget());
 
   pluginManager = new PluginManager();
@@ -48,11 +51,15 @@ Updraft::Updraft(int argc, char** argv)
 }
 
 Updraft::~Updraft() {
+  stateSaver->save();
+  delete stateSaver;
+
   delete sceneManager;
   delete pluginManager;
   delete fileTypeManager;
   delete settingsManager;
   delete mainWindow;
+
 
   foreach(Util::Ellipsoid *e, ellipsoids) {
     delete e;
@@ -160,7 +167,10 @@ void Updraft::createEllipsoids() {
 /// Pull the lever.
 /// Shows main window, and enters event loop.
 int Updraft::exec() {
-  mainWindow->showMaximized();
+  mainWindow->show();
+
+  stateSaver->load();
+
   hideSplash();
   return QApplication::exec();
 }
