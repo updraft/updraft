@@ -1,8 +1,10 @@
-if [ $# != 1 ]; then
-echo "Usage: deploy-mac version"
+if [ $# != 3 ]; then
+echo "Usage: deploy-mac version osg_dir osgearth_dir"
 exit 0
 fi
 VER="$1"
+OSG_DIR="$2"
+OSGEARTH_DIR="$3"
 
 function copy_framework {
 echo "Copying framework $1"
@@ -31,8 +33,8 @@ cp -R bundle-template dmg/Updraft.app
 cd dmg/Updraft.app
 
 BUILD_DIR=../../../../build
-OSG_DIR=/Users/User/Desktop/osg_release
-OSGEARTH_DIR=/Users/User/Desktop/osgearth_release
+#OSG_DIR=/Users/User/Desktop/osg_release
+#OSGEARTH_DIR=/Users/User/Desktop/osgearth_release
 
 cp -R $BUILD_DIR Contents/MacOS/build
 cp -R $OSG_DIR Contents/Frameworks/osg_release
