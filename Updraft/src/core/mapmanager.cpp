@@ -1,12 +1,9 @@
 #include "mapmanager.h"
 #include <osgDB/ReadFile>
 #include <osgEarthUtil/ElevationManager>
-#include <osgEarthDrivers/arcgis/ArcGISOptions>
-#include <osgEarthDrivers/tms/TMSOptions>
 #include <QDebug>
 #include <string>
 #include "updraft.h"
-#include "maps/updraftarcgistilesource.h"
 
 namespace Updraft {
 namespace Core {
