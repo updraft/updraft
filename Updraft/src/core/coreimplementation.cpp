@@ -86,6 +86,10 @@ osgEarth::Util::ElevationManager* CoreImplementation::getElevationManager() {
   return updraft->sceneManager->getElevationManager();
 }
 
+const osg::EllipsoidModel* CoreImplementation::getCurrentMapEllipsoid() {
+  return updraft->sceneManager->getCurrentMapEllipsoid();
+}
+
 }  // End namespace Core
 }  // End namespace Updraft
 

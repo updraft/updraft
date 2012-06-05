@@ -18,6 +18,7 @@ class QMainWindow;
 
 namespace osg {
   class Group;
+  class EllipsoidModel;
 }
 
 namespace osgEarth {
@@ -122,6 +123,9 @@ class CoreInterface {
 
   /// Returns an elevation manager for the scene, to request elevation data from.
   virtual osgEarth::Util::ElevationManager* getElevationManager() = 0;
+
+  /// Returns the ellipsoid model associated with the active map.
+  virtual const osg::EllipsoidModel* getCurrentMapEllipsoid() = 0;
 };
 
 }  // End namespace Updraft

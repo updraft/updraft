@@ -28,6 +28,12 @@ class UTIL_EXPORT Location {
     return M_PI * lon / 180.0;
   }
 
+  /// Set latitude from radians.
+  void latFromRadians(qreal radians);
+
+  /// Set longitude from radians.
+  void lonFromRadians(qreal radians);
+
   /// Set latitude from degrees, minutes and seconds.
   /// \param sign 'N' for north or 'S' for south.
   void latFromDMS(qreal d, qreal m, qreal s, char sign);
