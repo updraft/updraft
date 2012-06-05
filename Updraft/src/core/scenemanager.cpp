@@ -338,14 +338,15 @@ void SceneManager::untilt() {
 }
 
 void SceneManager::createMapManagers() {
+  QDir dataDir = updraft->getDataDirectory();
   mapManagers.append(
-    new MapManager(updraft->getDataDirectory() + "/initial1.earth",
+    new MapManager(dataDir.absoluteFilePath("/initial1.earth"),
       tr("OpenStreetMaps")));
   mapManagers.append(
-    new MapManager(updraft->getDataDirectory() + "/initial2.earth",
+    new MapManager(dataDir.absoluteFilePath("/initial2.earth"),
       tr("ArcGIS, Satellite Imagery")));
   mapManagers.append(
-    new MapManager(updraft->getDataDirectory() + "/initial3.earth",
+    new MapManager(dataDir.absoluteFilePath("/initial3.earth"),
       tr("ArcGIS, Topographic Map")));
 
   // mapManagers.append(new MapManager());

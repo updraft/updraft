@@ -43,7 +43,7 @@ class Updraft : public QApplication {
 
   // TODO(Tom): Load data directory from settings.
   // TODO(Kuba): Return QDir instead of QString
-  QString getDataDirectory();
+  QDir getDataDirectory();
   QDir getTranslationDirectory();
 
   QDir currentDataDirectory;

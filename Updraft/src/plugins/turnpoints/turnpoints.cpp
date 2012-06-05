@@ -95,9 +95,9 @@ void TurnPoints::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
 }
 
 void TurnPoints::loadImportedFiles() {
-  QDir dir(g_core->getDataDirectory() + "/" + cupTPsReg.importDirectory);
+  QDir dir = g_core->getDataDirectory();
 
-  if (!dir.exists()) {
+  if (!dir.cd(cupTPsReg.importDirectory)) {
     return;
   }
 
@@ -125,8 +125,7 @@ void TurnPoints::addLayer(TPFile *file) {
 
   // Create new layer item, build scene.
   TPLayer *turnPointsLayer = new TPLayer(true,
-    mapLayerGroup->getObjectPlacer(), file,
-    g_core->getDataDirectory(), this, settings);
+    mapLayerGroup->getObjectPlacer(), file, this, settings);
 
   // Create new mapLayer in mapLayerGroup, assign osgNode and file name.
   Updraft::MapLayerInterface* mapLayer =
