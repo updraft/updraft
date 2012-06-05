@@ -42,6 +42,7 @@ class Updraft : public QApplication {
   void hideSplash();
 
   QDir getDataDirectory();
+  QDir getStaticDataDirectory();
   QDir getTranslationDirectory();
 
   QDir currentDataDirectory;

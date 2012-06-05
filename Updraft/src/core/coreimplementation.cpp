@@ -56,6 +56,10 @@ QDir CoreImplementation::getDataDirectory() {
   return updraft->getDataDirectory();
 }
 
+QDir CoreImplementation::getStaticDataDirectory() {
+  return updraft->getStaticDataDirectory();
+}
+
 void CoreImplementation::addSettingsGroup(
     const QString& groupId,
     const QString& description,

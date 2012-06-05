@@ -338,7 +338,7 @@ void SceneManager::untilt() {
 }
 
 void SceneManager::createMapManagers() {
-  QDir dataDir = updraft->getDataDirectory();
+  QDir dataDir = updraft->getStaticDataDirectory();
   mapManagers.append(
     new MapManager(dataDir.absoluteFilePath("initial1.earth"),
       tr("OpenStreetMaps")));

@@ -34,6 +34,7 @@ class CoreImplementation : public CoreInterface {
   void registerFiletype(const FileRegistration &registration);
 
   QDir getDataDirectory();
+  QDir getStaticDataDirectory();
 
   void addSettingsGroup(
     const QString& groupId,

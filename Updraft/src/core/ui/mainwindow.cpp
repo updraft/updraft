@@ -191,7 +191,8 @@ void MainWindow::appExit() {
 
 void MainWindow::openUserDoc() {
   QString path =
-    updraft->getDataDirectory().absoluteFilePath("UpdraftUserManual.pdf");
+    updraft->getStaticDataDirectory().
+    absoluteFilePath("UpdraftUserManual.pdf");
   QUrl url("file:///" + path);
 
   if (QDesktopServices::openUrl(url) == false) {

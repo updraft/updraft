@@ -79,6 +79,10 @@ class CoreInterface {
   /// \return QDir with the full path to the application directory
   virtual QDir getDataDirectory() = 0;
 
+  /// Gets path of the immutable application data directory.
+  /// \return QDir with the full path to the static data directory
+  virtual QDir getStaticDataDirectory() = 0;
+
   /// Adds a group into the settings dialog.
   /// If a setting group with the given ID already exists, its description
   /// and icon are changed to the new ones.

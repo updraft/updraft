@@ -60,7 +60,6 @@ Updraft::~Updraft() {
   delete settingsManager;
   delete mainWindow;
 
-
   foreach(Util::Ellipsoid *e, ellipsoids) {
     delete e;
   }
@@ -70,6 +69,12 @@ QDir Updraft::getDataDirectory() {
   QDir dataDir = currentDataDirectory;
   dataDir.cd("data");
   dataDir.makeAbsolute();
+  return dataDir;
+}
+
+QDir Updraft::getStaticDataDirectory() {
+  QDir dataDir(applicationDirPath());
+  dataDir.cd("data");
   return dataDir;
 }
 
