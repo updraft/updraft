@@ -17,7 +17,6 @@
 #include "ui/mainwindow.h"
 #include "ui/menu.h"
 #include "../menuinterface.h"
-#include "maps/updraftarcgistilesource.h"
 
 namespace Updraft {
 namespace Core {

@@ -85,16 +85,12 @@
         <translation>Nový úkol</translation>
     </message>
     <message>
-        <source>The document </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>has been modified.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Přejete si uložit změny?</translation>
+    </message>
+    <message>
+        <source>The document %1 has been modified.</source>
+        <translation>Dokument %1 se změnil.</translation>
     </message>
 </context>
 </TS>

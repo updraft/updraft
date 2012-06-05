@@ -34,6 +34,8 @@ QString variantToString(const QVariant& var) {
     return var.value<TranslationLanguage>().asQString();
   } else if (type == QMetaType::type("EllipsoidName")) {
     return var.value<EllipsoidName>().asQString();
+  } else if (type == QMetaType::type("QByteArray")) {
+    return var.toByteArray().toBase64();
   } else {
     return var.toString();
   }
@@ -49,6 +51,8 @@ QVariant variantFromString(const QString& data, const QString& typeName) {
     ret.setValue(TranslationLanguage(data));
   } else if (type == QMetaType::type("EllipsoidName")) {
     ret.setValue(EllipsoidName(data));
+  } else if (type == QMetaType::type("QByteArray")) {
+    ret.setValue(QByteArray::fromBase64(data.toAscii()));
   } else {
     ret.setValue(data);
     ret.convert(QVariant::nameToType(typeName.toAscii().data()));
