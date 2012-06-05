@@ -41,8 +41,6 @@ class Updraft : public QApplication {
   /// Hides the splash screen when the application is done loading.
   void hideSplash();
 
-  // TODO(Tom): Load data directory from settings.
-  // TODO(Kuba): Return QDir instead of QString
   QDir getDataDirectory();
   QDir getTranslationDirectory();
 
