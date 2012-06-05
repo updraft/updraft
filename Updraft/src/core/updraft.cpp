@@ -14,6 +14,7 @@
 #include "translationmanager.h"
 #include "util/ellipsoid.h"
 #include "ellipsoidname.h"
+#include "statesaver.h"
 
 namespace Updraft {
 namespace Core {
@@ -35,6 +36,8 @@ Updraft::Updraft(int argc, char** argv)
   fileTypeManager = new FileTypeManager();
   sceneManager = new SceneManager();
 
+  stateSaver = new StateSaver();
+
   mainWindow->setMapWidget(sceneManager->getWidget());
 
   pluginManager = new PluginManager();
@@ -48,11 +51,15 @@ Updraft::Updraft(int argc, char** argv)
 }
 
 Updraft::~Updraft() {
+  stateSaver->save();
+  delete stateSaver;
+
   delete sceneManager;
   delete pluginManager;
   delete fileTypeManager;
   delete settingsManager;
   delete mainWindow;
+
 
   foreach(Util::Ellipsoid *e, ellipsoids) {
     delete e;
@@ -93,8 +100,13 @@ void Updraft::dataDirectoryChanged() {
       dataDir.absoluteFilePath("data"),
       newDataDir.absoluteFilePath("data"));
 
+  // Moving failed we will try to copy
   if (!moveSuccessful) {
-    moveSuccessful = moveDataDirectory(dataDir, newDataDir);
+    QProgressDialog progress(tr("Counting files..."), "", 0, 100, mainWindow);
+    progress.setCancelButton(0);
+    progress.setWindowModality(Qt::WindowModal);
+
+    moveSuccessful = moveDataDirectory(dataDir, newDataDir, &progress);
   }
 
   if (moveSuccessful) {
@@ -155,7 +167,10 @@ void Updraft::createEllipsoids() {
 /// Pull the lever.
 /// Shows main window, and enters event loop.
 int Updraft::exec() {
-  mainWindow->showMaximized();
+  mainWindow->show();
+
+  stateSaver->load();
+
   hideSplash();
   return QApplication::exec();
 }
@@ -164,7 +179,10 @@ void Updraft::hideSplash() {
   splash.finish(mainWindow);
 }
 
-bool Updraft::moveDataDirectory(QDir oldDir, QDir newDir) {
+bool Updraft::moveDataDirectory(
+  QDir oldDir,
+  QDir newDir,
+  QProgressDialog* dialog) {
   // We cannot move the directory if the destination already exists
   if (newDir.exists("data")) {
     return false;
@@ -177,13 +195,38 @@ bool Updraft::moveDataDirectory(QDir oldDir, QDir newDir) {
   if (!newDir.mkdir(newDir.filePath("data")))
       return false;
 
-  // Perform a depth-first search through the data directory and copy it
+  // The directory traversal will be done using DFS
   QStack<QDir> dfsStack;
 
   QDir begin = oldDir;
   begin.cd("data");
   dfsStack.push(begin);
 
+  // Count the total number of files
+  int filenum = 0;
+  dfsStack.push(begin);
+  while (!dfsStack.isEmpty()) {
+    QDir srcDir = dfsStack.pop();
+
+    foreach(
+      const QFileInfo &info,
+      srcDir.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot)) {
+      if (info.isDir()) {
+        dfsStack.push(info.absoluteFilePath());
+      } else {
+        filenum++;  // Only count files
+      }
+    }
+  }
+
+  // Set the progressbar range to double the number of files (copy and move)
+  dialog->setRange(0, filenum*2);
+  int progress = 0;
+
+  // Copy the data directory
+  dialog->setLabelText(tr("Copying the data directory contents..."));
+
+  dfsStack.push(begin);
   while (!dfsStack.isEmpty()) {
     QDir srcDir = dfsStack.pop();
 
@@ -198,14 +241,19 @@ bool Updraft::moveDataDirectory(QDir oldDir, QDir newDir) {
         if (!newDir.mkpath(relFilePath)) {
           qDebug() << "Data directory copying failed! Could not create" <<
             dstPath;
+          dialog->setValue(filenum*2);
           return false;
         }
       } else if (info.isFile()) {
         if (!QFile::copy(srcPath, dstPath)) {
           qDebug() << "Data directory copying failed! Could not copy " <<
             srcPath << " to " << dstPath;
+          dialog->setValue(filenum*2);
           return false;
         }
+
+        progress++;
+        dialog->setValue(progress);
       } else {
         qDebug() << "Warning: " << info.filePath() << " was not copied!";
       }
@@ -213,6 +261,8 @@ bool Updraft::moveDataDirectory(QDir oldDir, QDir newDir) {
   }
 
   // If we got here, everything is OK, so we can delete the old directory
+  dialog->setLabelText(tr("Removing old data directory..."));
+
   dfsStack.push(begin);
   while (!dfsStack.isEmpty()) {
     QDir srcDir = dfsStack.top();
@@ -233,12 +283,17 @@ bool Updraft::moveDataDirectory(QDir oldDir, QDir newDir) {
       } else {
         if (!QFile::remove(info.absoluteFilePath())) {
           qDebug() << "Old data directory could not be removed!";
+          dialog->setValue(filenum*2);
           return false;
         }
+
+        progress++;
+        dialog->setValue(progress);
       }
     }
   }
 
+  dialog->setValue(filenum*2);
   return true;
 }
 

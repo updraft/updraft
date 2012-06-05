@@ -13,7 +13,7 @@
     </message>
     <message>
         <source>Airspace</source>
-        <translation type="unfinished">Vzdušný prostor</translation>
+        <translation>Vzdušný prostor</translation>
     </message>
     <message>
         <source>Airspaces</source>
