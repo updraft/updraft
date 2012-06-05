@@ -71,19 +71,19 @@
     </message>
     <message>
         <source>dT:</source>
-        <translation type="unfinished">dT:</translation>
+        <translation type="obsolete">dT:</translation>
     </message>
     <message>
         <source>d:</source>
-        <translation type="unfinished">v:</translation>
+        <translation type="obsolete">v:</translation>
     </message>
     <message>
         <source>dH</source>
-        <translation type="unfinished">dH</translation>
+        <translation type="obsolete">dH</translation>
     </message>
     <message>
         <source>VS</source>
-        <translation type="unfinished">VR</translation>
+        <translation type="obsolete">VR</translation>
     </message>
 </context>
 </TS>

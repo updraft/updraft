@@ -71,6 +71,8 @@ class Updraft : public QApplication {
   void createEllipsoids();
 
   SplashScreen splash;
+
+  bool dataDirectoryChangeInProgress;
 };
 
 }  // End namespace Core

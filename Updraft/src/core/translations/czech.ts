@@ -103,13 +103,13 @@
         <location filename="../mapmanager.cpp" line="16"/>
         <location filename="../mapmanager.cpp" line="32"/>
         <source>Empty globe</source>
-        <translation type="unfinished"></translation>
+        <translation>Prázdná mapa</translation>
     </message>
 </context>
 <context>
     <name>PickHandler</name>
     <message>
-        <location filename="../pickhandler.cpp" line="20"/>
+        <location filename="../pickhandler.cpp" line="21"/>
         <source>Mouse click tolerance</source>
         <translation>Tolerance kliknutí</translation>
     </message>
@@ -147,6 +147,14 @@
     </message>
 </context>
 <context>
+    <name>Updraft::Core::DirectoryEditor</name>
+    <message>
+        <location filename="../directoryeditor.cpp" line="28"/>
+        <source>Select a directory</source>
+        <translation>Vyberte adresář</translation>
+    </message>
+</context>
+<context>
     <name>Updraft::Core::FileOpenDialog</name>
     <message>
         <location filename="../ui/fileopendialog.cpp" line="53"/>
@@ -167,9 +175,13 @@
         <translation>&amp;Konec</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.cpp" line="162"/>
         <source>Updraft Help</source>
-        <translation>Témata nápovědy</translation>
+        <translation type="obsolete">Témata nápovědy</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.cpp" line="162"/>
+        <source>User&apos;s &amp;Manual...</source>
+        <translation>Uživatelský &amp;Manuál...</translation>
     </message>
     <message>
         <location filename="../ui/mainwindow.cpp" line="166"/>
@@ -186,6 +198,18 @@
         <source>Open</source>
         <translation>Otevřít</translation>
     </message>
+    <message>
+        <location filename="../ui/mainwindow.cpp" line="195"/>
+        <source>Open Documentation Failed</source>
+        <translation>Otevření dokumentace se nezdařilo</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.cpp" line="196"/>
+        <source>Application was unable to open User&apos;s manual from
+</source>
+        <translation>Aplikaci se nepodařilo otevřít uživatelský manuál z
+</translation>
+    </message>
 </context>
 <context>
     <name>Updraft::Core::MapLayer</name>
@@ -198,12 +222,11 @@
 <context>
     <name>Updraft::Core::MapManipulator</name>
     <message>
-        <location filename="../mapmanipulator.cpp" line="21"/>
         <source>Map options</source>
-        <translation>Možnosti mapy</translation>
+        <translation type="obsolete">Možnosti mapy</translation>
     </message>
     <message>
-        <location filename="../mapmanipulator.cpp" line="25"/>
+        <location filename="../mapmanipulator.cpp" line="18"/>
         <source>Mouse zoom sensitivity</source>
         <translation>Citlivost přibližování myší</translation>
     </message>
@@ -211,32 +234,37 @@
 <context>
     <name>Updraft::Core::SceneManager</name>
     <message>
-        <location filename="../scenemanager.cpp" line="102"/>
+        <location filename="../scenemanager.cpp" line="28"/>
+        <source>Map settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../scenemanager.cpp" line="106"/>
         <source>Rotate to north</source>
         <translation>Otočit na sever</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="106"/>
+        <location filename="../scenemanager.cpp" line="110"/>
         <source>Restore 2D View</source>
         <translation>Obnovit 2D zobrazení</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="113"/>
+        <location filename="../scenemanager.cpp" line="117"/>
         <source>Maps</source>
         <translation>Mapy</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="327"/>
+        <location filename="../scenemanager.cpp" line="340"/>
         <source>OpenStreetMaps</source>
         <translation>OpenStreetMaps</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="330"/>
+        <location filename="../scenemanager.cpp" line="343"/>
         <source>ArcGIS, Satellite Imagery</source>
         <translation>ArcGIS, Satelitní mapa</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="333"/>
+        <location filename="../scenemanager.cpp" line="346"/>
         <source>ArcGIS, Topographic Map</source>
         <translation>ArcGIS, Topografická mapa</translation>
     </message>
@@ -302,22 +330,37 @@
         <translation type="obsolete">WGS84</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="70"/>
+        <location filename="../updraft.cpp" line="83"/>
+        <source>Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../updraft.cpp" line="84"/>
+        <source>Change to data directory won&apos;t take effect until the next restart.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../updraft.cpp" line="89"/>
         <source>General</source>
         <translation>Obecné</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="78"/>
+        <location filename="../updraft.cpp" line="97"/>
         <source>Data directory</source>
         <translation>Adresář s daty</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="83"/>
+        <location filename="../updraft.cpp" line="110"/>
+        <source>Ellipsoid model</source>
+        <translation>Elipsoid</translation>
+    </message>
+    <message>
+        <location filename="../updraft.cpp" line="117"/>
         <source>WGS84 Ellipsoid</source>
         <translation>WGS84 Elipsoid</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="85"/>
+        <location filename="../updraft.cpp" line="119"/>
         <source>FAI Sphere</source>
         <translation>FAI Koule</translation>
     </message>
