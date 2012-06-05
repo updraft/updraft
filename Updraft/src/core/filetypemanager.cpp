@@ -191,6 +191,14 @@ void FileTypeManager::openFileDialog(const QString &caption) {
   lastFileOpenDir = info.dir().absolutePath();
 }
 
+QDir FileTypeManager::lastDirectory() {
+  return QDir(lastFileOpenDir);
+}
+
+void FileTypeManager::setLastDirectory(const QDir& dir) {
+  lastFileOpenDir = dir.absolutePath();
+}
+
 }  // End namespace Core
 }  // End namespace Updraft
 

@@ -20,6 +20,7 @@ class StateSaver {
   void load();
  private:
   SettingInterface* windowGeometry;
+  SettingInterface* openDirectory;
 };
 
 }  // End namespace Core
