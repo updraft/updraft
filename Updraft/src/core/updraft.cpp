@@ -95,7 +95,7 @@ void Updraft::dataDirectoryChanged() {
 
   // Moving failed we will try to copy
   if (!moveSuccessful) {
-    QProgressDialog progress(tr("Counting files..."), "", 0, 100);
+    QProgressDialog progress(tr("Counting files..."), "", 0, 100, mainWindow);
     progress.setCancelButton(0);
     progress.setWindowModality(Qt::WindowModal);
 
