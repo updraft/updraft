@@ -29,7 +29,7 @@
     </message>
     <message>
         <source>Turn-points Options</source>
-        <translation>Možnosti otočných bodů</translation>
+        <translation type="obsolete">Možnosti otočných bodů</translation>
     </message>
 </context>
 </TS>

@@ -2,58 +2,64 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="cs">
 <context>
+    <name>AboutDialog</name>
+    <message>
+        <location filename="../ui/aboutdialog.ui" line="14"/>
+        <source>About Updraft</source>
+        <translation>O Updraftu</translation>
+    </message>
+    <message>
+        <location filename="../ui/aboutdialog.ui" line="50"/>
+        <source>Updraft</source>
+        <translation>Updraft</translation>
+    </message>
+    <message>
+        <location filename="../ui/aboutdialog.ui" line="57"/>
+        <source>version</source>
+        <translation>verze</translation>
+    </message>
+</context>
+<context>
     <name>Dialog</name>
     <message>
-        <location filename="../ui/mapdownloaddialog.ui" line="14"/>
         <source>Map Download</source>
-        <translation>Stažení Map</translation>
+        <translation type="obsolete">Stažení Map</translation>
     </message>
     <message>
-        <location filename="../ui/mapdownloaddialog.ui" line="33"/>
         <source>Lattitude</source>
-        <translation>Zeměpisná šířka</translation>
+        <translation type="obsolete">Zeměpisná šířka</translation>
     </message>
     <message>
-        <location filename="../ui/mapdownloaddialog.ui" line="42"/>
-        <location filename="../ui/mapdownloaddialog.ui" line="81"/>
         <source>Min</source>
-        <translation>Min</translation>
+        <translation type="obsolete">Min</translation>
     </message>
     <message>
-        <location filename="../ui/mapdownloaddialog.ui" line="56"/>
-        <location filename="../ui/mapdownloaddialog.ui" line="95"/>
         <source>Max</source>
-        <translation>Max</translation>
+        <translation type="obsolete">Max</translation>
     </message>
     <message>
-        <location filename="../ui/mapdownloaddialog.ui" line="72"/>
         <source>Longitude</source>
-        <translation>Zeměpisná délka</translation>
+        <translation type="obsolete">Zeměpisná délka</translation>
     </message>
     <message>
-        <location filename="../ui/mapdownloaddialog.ui" line="109"/>
         <source>Set current view</source>
-        <translation>Nastavit aktuální pohled</translation>
+        <translation type="obsolete">Nastavit aktuální pohled</translation>
     </message>
     <message>
-        <location filename="../ui/mapdownloaddialog.ui" line="131"/>
         <source>Level of Detail</source>
-        <translation>Úroveň detailu</translation>
+        <translation type="obsolete">Úroveň detailu</translation>
     </message>
     <message>
-        <location filename="../ui/mapdownloaddialog.ui" line="160"/>
         <source>Download</source>
-        <translation>Stáhnout</translation>
+        <translation type="obsolete">Stáhnout</translation>
     </message>
     <message>
-        <location filename="../ui/mapdownloaddialog.ui" line="167"/>
         <source>Stop</source>
-        <translation>Zastavit</translation>
+        <translation type="obsolete">Zastavit</translation>
     </message>
     <message>
-        <location filename="../ui/mapdownloaddialog.ui" line="174"/>
         <source>Close</source>
-        <translation>Zavřít</translation>
+        <translation type="obsolete">Zavřít</translation>
     </message>
 </context>
 <context>
@@ -100,8 +106,8 @@
 <context>
     <name>MapManager</name>
     <message>
-        <location filename="../mapmanager.cpp" line="16"/>
-        <location filename="../mapmanager.cpp" line="32"/>
+        <location filename="../mapmanager.cpp" line="13"/>
+        <location filename="../mapmanager.cpp" line="29"/>
         <source>Empty globe</source>
         <translation>Prázdná mapa</translation>
     </message>
@@ -165,12 +171,12 @@
 <context>
     <name>Updraft::Core::MainWindow</name>
     <message>
-        <location filename="../ui/mainwindow.cpp" line="148"/>
+        <location filename="../ui/mainwindow.cpp" line="150"/>
         <source>&amp;Open...</source>
         <translation>&amp;Otevřít...</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.cpp" line="152"/>
+        <location filename="../ui/mainwindow.cpp" line="154"/>
         <source>E&amp;xit</source>
         <translation>&amp;Konec</translation>
     </message>
@@ -179,32 +185,32 @@
         <translation type="obsolete">Témata nápovědy</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.cpp" line="162"/>
+        <location filename="../ui/mainwindow.cpp" line="164"/>
         <source>User&apos;s &amp;Manual...</source>
         <translation>Uživatelský &amp;Manuál...</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.cpp" line="166"/>
+        <location filename="../ui/mainwindow.cpp" line="168"/>
         <source>&amp;About...</source>
         <translation>&amp;O programu...</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.cpp" line="171"/>
+        <location filename="../ui/mainwindow.cpp" line="173"/>
         <source>&amp;Options...</source>
         <translation>&amp;Možnosti...</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.cpp" line="183"/>
+        <location filename="../ui/mainwindow.cpp" line="185"/>
         <source>Open</source>
         <translation>Otevřít</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.cpp" line="195"/>
+        <location filename="../ui/mainwindow.cpp" line="197"/>
         <source>Open Documentation Failed</source>
         <translation>Otevření dokumentace se nezdařilo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.cpp" line="196"/>
+        <location filename="../ui/mainwindow.cpp" line="198"/>
         <source>Application was unable to open User&apos;s manual from
 </source>
         <translation>Aplikaci se nepodařilo otevřít uživatelský manuál z
@@ -234,37 +240,37 @@
 <context>
     <name>Updraft::Core::SceneManager</name>
     <message>
-        <location filename="../scenemanager.cpp" line="28"/>
-        <source>Map settings</source>
-        <translation type="unfinished"></translation>
+        <location filename="../scenemanager.cpp" line="27"/>
+        <source>Map options</source>
+        <translation>Možnosti mapy</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="106"/>
+        <location filename="../scenemanager.cpp" line="105"/>
         <source>Rotate to north</source>
         <translation>Otočit na sever</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="110"/>
+        <location filename="../scenemanager.cpp" line="109"/>
         <source>Restore 2D View</source>
         <translation>Obnovit 2D zobrazení</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="117"/>
+        <location filename="../scenemanager.cpp" line="116"/>
         <source>Maps</source>
         <translation>Mapy</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="340"/>
+        <location filename="../scenemanager.cpp" line="343"/>
         <source>OpenStreetMaps</source>
         <translation>OpenStreetMaps</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="343"/>
+        <location filename="../scenemanager.cpp" line="346"/>
         <source>ArcGIS, Satellite Imagery</source>
         <translation>ArcGIS, Satelitní mapa</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="346"/>
+        <location filename="../scenemanager.cpp" line="349"/>
         <source>ArcGIS, Topographic Map</source>
         <translation>ArcGIS, Topografická mapa</translation>
     </message>
@@ -330,39 +336,64 @@
         <translation type="obsolete">WGS84</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="83"/>
-        <source>Information</source>
-        <translation type="unfinished"></translation>
+        <location filename="../updraft.cpp" line="105"/>
+        <source>Counting files...</source>
+        <translation>Počítám soubory...</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="84"/>
-        <source>Change to data directory won&apos;t take effect until the next restart.</source>
-        <translation type="unfinished"></translation>
+        <location filename="../updraft.cpp" line="115"/>
+        <source>Data directory moved</source>
+        <translation>Adresář s daty byl přesunut</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="89"/>
+        <location filename="../updraft.cpp" line="116"/>
+        <source>The data directory was successfully moved</source>
+        <translation>Adresář s daty byl úspěšně přesunut</translation>
+    </message>
+    <message>
+        <location filename="../updraft.cpp" line="121"/>
+        <source>Data directory not moved</source>
+        <translation>Adresář s daty nebyl přesunut</translation>
+    </message>
+    <message>
+        <location filename="../updraft.cpp" line="122"/>
+        <source>The data directory could not be moved</source>
+        <translation>Adresář s daty nemohl být přesunut </translation>
+    </message>
+    <message>
+        <location filename="../updraft.cpp" line="135"/>
         <source>General</source>
         <translation>Obecné</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="97"/>
+        <location filename="../updraft.cpp" line="142"/>
         <source>Data directory</source>
         <translation>Adresář s daty</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="110"/>
+        <location filename="../updraft.cpp" line="155"/>
         <source>Ellipsoid model</source>
         <translation>Elipsoid</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="117"/>
+        <location filename="../updraft.cpp" line="162"/>
         <source>WGS84 Ellipsoid</source>
         <translation>WGS84 Elipsoid</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="119"/>
+        <location filename="../updraft.cpp" line="164"/>
         <source>FAI Sphere</source>
         <translation>FAI Koule</translation>
+    </message>
+    <message>
+        <location filename="../updraft.cpp" line="227"/>
+        <source>Copying the data directory contents...</source>
+        <translation>Kopíruji obsah adresáře s daty...</translation>
+    </message>
+    <message>
+        <location filename="../updraft.cpp" line="264"/>
+        <source>Removing old data directory...</source>
+        <translation>Odstraňuji starý adresář s daty...</translation>
     </message>
 </context>
 </TS>

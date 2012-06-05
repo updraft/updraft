@@ -203,8 +203,7 @@ void TaskLayer::tryCloseLayer() {
   if (file->getStorageState() == TaskFile::UNSTORED_EDITED
   || file->getStorageState() == TaskFile::STORED_DIRTY) {
       QMessageBox msgBox;
-      msgBox.setText(QString(tr("The document ")) + getTitle()
-        + QString(tr("has been modified.")));
+      msgBox.setText(tr("The document %1 has been modified.").arg(getTitle()));
       msgBox.setInformativeText(tr("Do you want to save your changes?"));
       msgBox.setStandardButtons(QMessageBox::Save |
         QMessageBox::Discard | QMessageBox::Cancel);
