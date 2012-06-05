@@ -25,7 +25,7 @@ GATHER_SOURCES(core)
 FILE(GLOB_RECURSE lang ${CMAKE_CURRENT_SOURCE_DIR}/*.ts)
 
 
-ADD_EXECUTABLE(updraft ${core_all_sources} ${translations})
+ADD_EXECUTABLE(updraft ${core_all_sources} ${translations} updraft.rc)
 
 # Handling of output filenames and directories on Windows
 IF(WIN32)
