@@ -180,6 +180,69 @@ void Updraft::hideSplash() {
   splash.finish(mainWindow);
 }
 
+bool Updraft::copyDirectory(
+  QDir srcDir,
+  QString dirName,
+  QDir dstDir,
+  int* progress,
+  QProgressDialog* dialog) {
+  // Set the dialog label
+  if (dialog)
+    dialog->setLabelText(QString(tr("Copying directory %1 in %2...")).
+      arg(dirName).arg(srcDir.absolutePath()));
+
+  QStack<QDir> dfsStack;
+
+  // Begin with the copied directory
+  QDir begin = srcDir;
+  if (!begin.cd(dirName)) {
+    return false;
+  }
+  dfsStack.push(begin);
+
+  // Take directories from the stack and copy them
+  while (!dfsStack.isEmpty()) {
+    QDir dir = dfsStack.pop();
+
+    foreach(
+      const QFileInfo &info,
+      dir.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot)) {
+      // Prepare the variables
+      QString srcPath = info.absoluteFilePath();
+      QString relFilePath = srcDir.relativeFilePath(srcPath);
+      QString dstPath = dstDir.filePath(relFilePath);
+
+      // Copy files and directories
+      if (info.isDir()) {
+        dfsStack.push(info.absoluteFilePath());
+        if (!dstDir.mkpath(relFilePath)) {
+          qDebug() << "Data directory copying failed! Could not create" <<
+            dstPath;
+          return false;
+        }
+      } else if (info.isFile()) {
+        if (!QFile::copy(srcPath, dstPath)) {
+          qDebug() << "Data directory copying failed! Could not copy " <<
+            srcPath << " to " << dstPath;
+          return false;
+        }
+
+        // If both the progress indicator and progress dialog contain valid
+        // pointers, update them.
+        if (progress && dialog) {
+          (*progress)++;
+          if ((*progress) % 100 == 0)
+            dialog->setValue(*progress);
+        }
+      } else {
+        qDebug() << "Warning: " << info.filePath() << " was not copied!";
+      }
+    }
+  }
+
+  return true;
+}
+
 bool Updraft::moveDataDirectory(
   QDir oldDir,
   QDir newDir,
@@ -225,41 +288,10 @@ bool Updraft::moveDataDirectory(
   int progress = 0;
 
   // Copy the data directory
-  dialog->setLabelText(tr("Copying the data directory contents..."));
-
-  dfsStack.push(begin);
-  while (!dfsStack.isEmpty()) {
-    QDir srcDir = dfsStack.pop();
-
-    foreach(
-      const QFileInfo &info,
-      srcDir.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot)) {
-      QString srcPath = info.absoluteFilePath();
-      QString relFilePath = oldDir.relativeFilePath(srcPath);
-      QString dstPath = newDir.filePath(relFilePath);
-      if (info.isDir()) {
-        dfsStack.push(info.absoluteFilePath());
-        if (!newDir.mkpath(relFilePath)) {
-          qDebug() << "Data directory copying failed! Could not create" <<
-            dstPath;
-          dialog->setValue(filenum*2);
-          return false;
-        }
-      } else if (info.isFile()) {
-        if (!QFile::copy(srcPath, dstPath)) {
-          qDebug() << "Data directory copying failed! Could not copy " <<
-            srcPath << " to " << dstPath;
-          dialog->setValue(filenum*2);
-          return false;
-        }
-
-        progress++;
-        if (progress % 100 == 0)
-          dialog->setValue(progress);
-      } else {
-        qDebug() << "Warning: " << info.filePath() << " was not copied!";
-      }
-    }
+  bool success = copyDirectory(oldDir, "data", newDir, &progress, dialog);
+  if (!success) {
+    dialog->setValue(filenum*2);  // Dismiss the dialog
+    return false;
   }
 
   // If we got here, everything is OK, so we can delete the old directory
