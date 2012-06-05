@@ -4,6 +4,7 @@
 #include <QFile>
 
 #include "ui/maplayergroup.h"
+#include "updraft.h"
 
 namespace Updraft {
 namespace Core {

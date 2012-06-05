@@ -41,9 +41,8 @@ class Updraft : public QApplication {
   /// Hides the splash screen when the application is done loading.
   void hideSplash();
 
-  // TODO(Tom): Load data directory from settings.
-  // TODO(Kuba): Return QDir instead of QString
-  QString getDataDirectory();
+  QDir getDataDirectory();
+  QDir getStaticDataDirectory();
   QDir getTranslationDirectory();
 
   QDir currentDataDirectory;
@@ -70,11 +69,31 @@ class Updraft : public QApplication {
 
  private:
   void coreSettings();
+
+  /// Checks and possibly creates the data directory.
+  /// \return Whether the data directory exists or it was successfully created
+  bool checkDataDirectory();
   void createEllipsoids();
 
   SplashScreen splash;
 
   bool dataDirectoryChangeInProgress;
+
+  /// Auxilliary method for directory copying. Both arguments should be
+  /// absolute directories. In the example, we want to copy "/home/user/my_dir"
+  /// \param srcDir The directory where the copied directory resides
+  ///               (e.g. "/home/user")
+  /// \param dirName Name of the directory to be copied (e.g. my_dir)
+  /// \param dstDir The destination directory, under which the copied
+  ///               directory should reside (e.g. "/tmp", which will result
+  ///               in "/tmp/my_dir")
+  /// \return Whether the directory was copied successfully
+  bool copyDirectory(
+    QDir srcDir,
+    QString dirName,
+    QDir dstDir,
+    int* progress = NULL,
+    QProgressDialog* dialog = NULL);
   bool moveDataDirectory(QDir oldDir, QDir newDir, QProgressDialog* dialog);
 };
 

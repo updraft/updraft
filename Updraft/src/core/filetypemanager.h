@@ -3,6 +3,7 @@
 
 #include <QList>
 #include <QString>
+#include <QDir>
 #include <QStandardItemModel>
 
 #include "../coreinterface.h"
@@ -22,6 +23,9 @@ class FileTypeManager {
   bool openFile(const QString &path, bool showDialog = true) const;
 
   void openFileDialog(const QString &caption);
+
+  QDir lastDirectory();
+  void setLastDirectory(const QDir& dir);
 
  private:
   class FileOpenOption;

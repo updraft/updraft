@@ -52,9 +52,12 @@ void CoreImplementation::registerFiletype(
   manager->registerFiletype(registration);
 }
 
-QString CoreImplementation::getDataDirectory() {
-  // TODO(Tom): Load data directory from settings.
+QDir CoreImplementation::getDataDirectory() {
   return updraft->getDataDirectory();
+}
+
+QDir CoreImplementation::getStaticDataDirectory() {
+  return updraft->getStaticDataDirectory();
 }
 
 void CoreImplementation::addSettingsGroup(
