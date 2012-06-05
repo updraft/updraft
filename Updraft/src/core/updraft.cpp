@@ -253,7 +253,8 @@ bool Updraft::moveDataDirectory(
         }
 
         progress++;
-        dialog->setValue(progress);
+        if (progress % 100 == 0)
+          dialog->setValue(progress);
       } else {
         qDebug() << "Warning: " << info.filePath() << " was not copied!";
       }
@@ -288,7 +289,8 @@ bool Updraft::moveDataDirectory(
         }
 
         progress++;
-        dialog->setValue(progress);
+        if (progress % 100 == 0)
+          dialog->setValue(progress);
       }
     }
   }
