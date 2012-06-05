@@ -66,10 +66,11 @@ Updraft::~Updraft() {
   }
 }
 
-QString Updraft::getDataDirectory() {
+QDir Updraft::getDataDirectory() {
   QDir dataDir = currentDataDirectory;
   dataDir.cd("data");
-  return dataDir.absolutePath();
+  dataDir.makeAbsolute();
+  return dataDir;
 }
 
 QDir Updraft::getTranslationDirectory() {
@@ -253,7 +254,8 @@ bool Updraft::moveDataDirectory(
         }
 
         progress++;
-        dialog->setValue(progress);
+        if (progress % 100 == 0)
+          dialog->setValue(progress);
       } else {
         qDebug() << "Warning: " << info.filePath() << " was not copied!";
       }
@@ -288,7 +290,8 @@ bool Updraft::moveDataDirectory(
         }
 
         progress++;
-        dialog->setValue(progress);
+        if (progress % 100 == 0)
+          dialog->setValue(progress);
       }
     }
   }
