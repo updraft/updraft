@@ -14,6 +14,11 @@ namespace GeographicLib {
 namespace Updraft {
 namespace Util {
 
+enum EllipsoidType {
+  ELLIPSOID_WGS84,
+  ELLIPSOID_FAI_SPHERE
+};
+
 class Location;
 
 /// Ellipsoid model of Earth
@@ -21,15 +26,21 @@ class Location;
 /// and capabilities of GeographicLib::Geodesic.
 class UTIL_EXPORT Ellipsoid {
  public:
-  Ellipsoid(const QString &name_, qreal eqRadius, qreal flattening_);
-
-  /// Create sphere.
-  Ellipsoid(const QString &name_, qreal radius);
+  Ellipsoid(const QString &name_, EllipsoidType type_);
 
   virtual ~Ellipsoid();
 
   /// \return Name of ellipsoid
   QString getName() const;
+
+  /// \return The type of this ellipsoid
+  EllipsoidType getType() const;
+
+  /// \return The ellipsoid type represented as a string
+  static QString getEllipsoidTypeName(EllipsoidType type);
+
+  /// \return The ellipsoid type corresponding to the given name
+  EllipsoidType getEllipsoidType(const QString& typeName);
 
   /// \return Equatorial radius of ellipsoid
   qreal getEquatRadius() const;
@@ -68,6 +79,7 @@ class UTIL_EXPORT Ellipsoid {
   static qreal countPolarRadius(qreal r, qreal f);
 
  protected:
+  EllipsoidType type;
   QString name;
   qreal equatRadius;
   qreal flattening;

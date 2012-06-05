@@ -5,7 +5,6 @@
 #include "../maplayerinterface.h"
 #include "../settinginterface.h"
 #include "ui/maplayergroup.h"
-#include "util/util.h"
 #include "variantfunctions.h"
 #include "ui/mainwindow.h"
 #include "filetypemanager.h"
@@ -13,6 +12,8 @@
 #include "scenemanager.h"
 #include "settingsmanager.h"
 #include "translationmanager.h"
+#include "util/ellipsoid.h"
+#include "ellipsoidname.h"
 
 namespace Updraft {
 namespace Core {
@@ -27,8 +28,8 @@ Updraft::Updraft(int argc, char** argv)
   settingsManager = new SettingsManager();
   translationManager = new TranslationManager();
 
-  coreSettings();
   createEllipsoids();
+  coreSettings();
 
   mainWindow = new MainWindow(NULL);
   fileTypeManager = new FileTypeManager();
@@ -65,6 +66,17 @@ QDir Updraft::getTranslationDirectory() {
   return QDir(applicationDirPath());
 }
 
+Util::Ellipsoid* Updraft::getUsedEllipsoid() {
+  foreach(Util::Ellipsoid* ellipsoid, ellipsoids) {
+    if (ellipsoid->getName() ==
+        usedEllipsoid->get().value<EllipsoidName>().asQString()) {
+      return ellipsoid;
+    }
+  }
+
+  return ellipsoids.first();
+}
+
 void Updraft::dataDirectoryChanged() {
   QMessageBox::information(
     this->mainWindow,
@@ -88,13 +100,23 @@ void Updraft::coreSettings() {
   currentDataDirectory = dataDirectory->get().value<QDir>();
   dataDirectory->setNeedsRestart(true);
   dataDirectory->callOnValueChanged(this, SLOT(dataDirectoryChanged()));
+
+  QVariant ellipsoidVariant;
+  ellipsoidVariant.setValue(
+    EllipsoidName(
+      Util::Ellipsoid::getEllipsoidTypeName(ellipsoids.first()->getType())));
+  usedEllipsoid = settingsManager->addSetting(
+    "general:ellipsoid",
+    tr("Ellipsoid model"),
+    ellipsoidVariant);
+  usedEllipsoid->setNeedsRestart(true);
 }
 
 void Updraft::createEllipsoids() {
-  ellipsoids.append(new Util::Ellipsoid(tr("WGS84 Ellipsoid"),
-    Util::Units::WGS84EquatRadius(), Util::Units::WGS84Flattening()));
-  ellipsoids.append(new Util::Ellipsoid(tr("FAI Sphere"),
-    Util::Units::FAISphereRadius()));
+  ellipsoids.append(
+    new Util::Ellipsoid(tr("WGS84 Ellipsoid"), Util::ELLIPSOID_WGS84));
+  ellipsoids.append(
+    new Util::Ellipsoid(tr("FAI Sphere"), Util::ELLIPSOID_FAI_SPHERE));
 }
 
 /// Pull the lever.

@@ -55,8 +55,13 @@ class Updraft : public QApplication {
   SettingsManager* settingsManager;
   TranslationManager* translationManager;
 
+  // Returns the currently set ellipsoid for measurements.
+  Util::Ellipsoid* getUsedEllipsoid();
+
   // List of ellipsoid models used in Updraft.
   QList<Util::Ellipsoid*> ellipsoids;
+
+  SettingInterface* usedEllipsoid;
 
  private slots:
   void dataDirectoryChanged();

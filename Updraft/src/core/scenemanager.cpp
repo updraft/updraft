@@ -201,12 +201,14 @@ osgEarth::Util::ElevationManager* SceneManager::createElevationManager() {
   osgEarth::Util::ElevationManager* e = NULL;
   for (int i = 0; i < mapManagers.size(); i++) {
     if (mapManagers[i]->hasElevation()) {
-      e = new osgEarth::Util::ElevationManager(
-        mapManagers[i]->getMap());
-      break;
+      return (new osgEarth::Util::ElevationManager(
+        mapManagers[i]->getMap()));
     }
   }
-  return e;
+    // if no map had the elevation specified
+    // create a dummy elevation manager
+  return (new osgEarth::Util::ElevationManager(
+    mapManagers[activeMapIndex]->getMap()));
 }
 
 MapObject* SceneManager::getNodeMapObject(osg::Node* node) {
@@ -243,7 +245,10 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
       activeMapIndex = index;
       unregisterOsgNode(mapManagers[oldIndex]->getMapNode());
       sceneRoot->removeChild(mapManagers[oldIndex]->getMapNode());
-      sceneRoot->addChild(mapManagers[activeMapIndex]->getMapNode());
+
+        // set current map node
+      mapNode = mapManagers[activeMapIndex]->getMapNode();
+      sceneRoot->addChild(mapNode);
 
       osgEarth::Util::Viewpoint viewpoint = manipulator->getViewpoint();
 

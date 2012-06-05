@@ -1,5 +1,6 @@
 #include "variantfunctions.h"
 #include "translationlanguage.h"
+#include "ellipsoidname.h"
 
 namespace Updraft {
 namespace Core {
@@ -16,6 +17,9 @@ bool variantsEqual(const QVariant& var1, const QVariant& var2) {
   } else if (type1 ==  QMetaType::type("TranslationLanguage")) {
     return var1.value<TranslationLanguage>().asQString() ==
       var2.value<TranslationLanguage>().asQString();
+  } else if (type1 ==  QMetaType::type("EllipsoidName")) {
+    return var1.value<EllipsoidName>().asQString() ==
+      var2.value<EllipsoidName>().asQString();
   } else {
     return var1 == var2;
   }
@@ -28,6 +32,8 @@ QString variantToString(const QVariant& var) {
     return var.value<QDir>().absolutePath();
   } else if (type == QMetaType::type("TranslationLanguage")) {
     return var.value<TranslationLanguage>().asQString();
+  } else if (type == QMetaType::type("EllipsoidName")) {
+    return var.value<EllipsoidName>().asQString();
   } else {
     return var.toString();
   }
@@ -41,6 +47,8 @@ QVariant variantFromString(const QString& data, const QString& typeName) {
     ret.setValue(QDir(data));
   } else if (type == QMetaType::type("TranslationLanguage")) {
     ret.setValue(TranslationLanguage(data));
+  } else if (type == QMetaType::type("EllipsoidName")) {
+    ret.setValue(EllipsoidName(data));
   } else {
     ret.setValue(data);
     ret.convert(QVariant::nameToType(typeName.toAscii().data()));
@@ -52,6 +60,7 @@ QVariant variantFromString(const QString& data, const QString& typeName) {
 void registerMetaTypes() {
   qRegisterMetaType<QDir>("QDir");
   qRegisterMetaType<TranslationLanguage>("TranslationLanguage");
+  qRegisterMetaType<EllipsoidName>("EllipsoidName");
 }
 
 }  // End namespace Core

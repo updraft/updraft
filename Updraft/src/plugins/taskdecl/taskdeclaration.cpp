@@ -1,4 +1,5 @@
 #include "taskdeclaration.h"
+#include <osgEarthUtil/ElevationManager>
 #include "taskdeclpanel.h"
 #include "../turnpoints/tpmapobject.h"
 #include "core/mapmapobject.h"
@@ -103,7 +104,10 @@ void TaskDeclaration::handleClick(MapObject* obj, const EventInfo* evt) {
       mapLoc.alt);
     mapLoc.lat = mapLoc.lat / 3.14 * 180;
     mapLoc.lon = mapLoc.lon / 3.14 * 180;
-    mapLoc.alt += 500;
+    double elevation, resolution;
+    g_core->getElevationManager()->getElevation(
+      mapLoc.lon, mapLoc.lat, 0, NULL, elevation, resolution);
+    mapLoc.alt += elevation + 100;
     layer->newTaskPoint(mapLoc);
   }
   return;
