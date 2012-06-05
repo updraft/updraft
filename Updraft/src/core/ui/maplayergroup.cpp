@@ -128,6 +128,7 @@ void MapLayerGroup::removeFromScene(MapLayerGroup* group) {
 void MapLayerGroup::inserted(Core::MapLayerGroup* parent) {
   MapLayer::inserted(parent);
 
+  treeItem->setExpanded(true);
   treeItem->setHidden(!mapLayers.count());
 }
 
