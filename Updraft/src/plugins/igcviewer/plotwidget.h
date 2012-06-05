@@ -70,6 +70,8 @@ class PlotWidget : public QWidget {
   void leaveEvent(QEvent* leaveEvent);
   void resizeEvent(QResizeEvent* resizeEvent);
 
+  QSize sizeHint() const;
+
   void redrawGraphPicture();
 
   QString createPointStatText(int xLine, int fixListIndex);
