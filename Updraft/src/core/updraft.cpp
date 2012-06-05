@@ -190,14 +190,20 @@ bool Updraft::moveDataDirectory(QDir oldDir, QDir newDir) {
     foreach(
       const QFileInfo &info,
       srcDir.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot)) {
+      QString srcPath = info.absoluteFilePath();
+      QString relFilePath = oldDir.relativeFilePath(srcPath);
+      QString dstPath = newDir.filePath(relFilePath);
       if (info.isDir()) {
         dfsStack.push(info.absoluteFilePath());
+        if (!newDir.mkpath(relFilePath)) {
+          qDebug() << "Data directory copying failed! Could not create" <<
+            dstPath;
+          return false;
+        }
       } else if (info.isFile()) {
-        QString srcPath = info.absoluteFilePath();
-        QString relFilePath = oldDir.relativeFilePath(srcPath);
-        QString dstPath = newDir.filePath(relFilePath);
         if (!QFile::copy(srcPath, dstPath)) {
-          qDebug() << "Data directory copying failed!";
+          qDebug() << "Data directory copying failed! Could not copy " <<
+            srcPath << " to " << dstPath;
           return false;
         }
       } else {
