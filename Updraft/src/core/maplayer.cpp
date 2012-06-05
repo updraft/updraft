@@ -86,7 +86,7 @@ void MapLayer::emitContextMenuRequested(const QPoint& pos) {
 }
 
 void MapLayer::setFilePath(const QString& path) {
-  deleteFilePath = path;
+  deleteFilePath = updraft->getDataDirectory().relativeFilePath(path);
 }
 
 QAction* MapLayer::getDeleteAction() {
@@ -99,7 +99,7 @@ QAction* MapLayer::getDeleteAction() {
 }
 
 void MapLayer::deleteActionSlot() {
-  QFile::remove(deleteFilePath);
+  QFile::remove(updraft->getDataDirectory().filePath(deleteFilePath));
   delete this;
 }
 
