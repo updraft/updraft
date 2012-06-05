@@ -69,6 +69,10 @@ class SceneManager: public QObject {
   /// that has elevation layer.
   osgEarth::Util::ElevationManager* getElevationManager();
 
+  /// Returns the ellipsiod model associated with current
+  /// active map.
+  const osg::EllipsoidModel* getCurrentMapEllipsoid();
+
   osgEarth::Util::ObjectPlacer* getObjectPlacer();
 
  public slots:

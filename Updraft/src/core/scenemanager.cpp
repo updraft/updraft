@@ -162,6 +162,11 @@ void SceneManager::startInitialAnimation() {
   manipulator->setViewpoint(home, 2.0);
 }
 
+const osg::EllipsoidModel* SceneManager::getCurrentMapEllipsoid() {
+  return mapManagers[activeMapIndex]->getManipulator()->
+    getSRS()->getEllipsoid();
+}
+
 void SceneManager::redrawScene() {
   // start initial animation in second frame to prevent jerks
   static int i = 0;
@@ -198,7 +203,6 @@ void SceneManager::unregisterOsgNode(osg::Node* node) {
 }
 
 osgEarth::Util::ElevationManager* SceneManager::createElevationManager() {
-  osgEarth::Util::ElevationManager* e = NULL;
   for (int i = 0; i < mapManagers.size(); i++) {
     if (mapManagers[i]->hasElevation()) {
       return (new osgEarth::Util::ElevationManager(

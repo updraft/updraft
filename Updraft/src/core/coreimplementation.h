@@ -52,6 +52,8 @@ class CoreImplementation : public CoreInterface {
 
   osgEarth::Util::ElevationManager* getElevationManager();
 
+  const osg::EllipsoidModel* getCurrentMapEllipsoid();
+
  private:
   PluginBase* plugin;
 };

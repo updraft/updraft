@@ -7,6 +7,14 @@ Location::Location()
   : lat(0.0), lon(0.0), alt(0.0) {
 }
 
+void Location::latFromRadians(qreal radians) {
+  lat = radians / M_PI * 180;
+}
+
+void Location::lonFromRadians(qreal radians) {
+  lon = radians / M_PI * 180;
+}
+
 void Location::latFromDMS(qreal d, qreal m, qreal s, char sign) {
   lat = d + (m + s / 60.0) / 60.0;
 
