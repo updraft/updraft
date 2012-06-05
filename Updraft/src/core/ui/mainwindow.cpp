@@ -9,6 +9,8 @@
 #include "updraft.h"
 #include "filetypemanager.h"
 #include "settingsmanager.h"
+#include "aboutdialog.h"
+
 
 namespace Updraft {
 namespace Core {
@@ -199,6 +201,9 @@ void MainWindow::openUserDoc() {
 }
 
 void MainWindow::showAboutDialog() {
+  Core::AboutDialog* dialog =
+    new Core::AboutDialog(this, QString(UPDRAFT_VERSION));
+  dialog->exec();
 }
 
 void MainWindow::setMapWidget(QWidget *widget) {
