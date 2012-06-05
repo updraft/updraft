@@ -220,6 +220,11 @@ void MainWindow::mapLayerItemChanged(QTreeWidgetItem *item) {
 
 void MainWindow::mapLayerContextMenuRequested(const QPoint& pos) {
   QTreeWidgetItem *item = ui->treeWidget_2->itemAt(pos);
+
+  if (!item) {
+    return;
+  }
+
   QPoint globalPos = ui->treeWidget_2->mapToGlobal(pos);
 
   MapLayerInterface *mapLayer = mapLayers[item];
