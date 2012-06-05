@@ -1,0 +1,7 @@
+rm CMakeCache.txt
+
+cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=i386 -DOSG_WINDOWING_SYSTEM=Cocoa
+
+#imageio
+# 
+#-DOSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX=imageio
