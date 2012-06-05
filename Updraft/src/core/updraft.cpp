@@ -349,7 +349,8 @@ bool Updraft::moveDataDirectory(
         if (!QFile::remove(info.absoluteFilePath())) {
           qDebug() << "Old data directory could not be removed!";
           dialog->setValue(filenum*2);
-          return false;
+          // todo: show message that old directory could not be deleted
+          // return false;
         }
 
         progress++;
