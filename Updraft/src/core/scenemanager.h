@@ -44,11 +44,6 @@ class SceneManager: public QObject {
   /// displayed map.
   MapManager* getMapManager();
 
-  /// Creates an empty osg::Group, and adds it to the root.
-  /// There is always one group associated with one
-  /// MapLayerGroup.
-  osg::Group* newGroup();
-
   /// Removes the group from the root.
   bool removeGroup(osg::Group* group);
 
