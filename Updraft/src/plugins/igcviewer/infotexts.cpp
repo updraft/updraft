@@ -18,7 +18,7 @@ QSize PickedLabel::maximumSize() const {
 }
 
 QSize PickedLabel::sizeHint() const {
-  return QSize(100, 100);
+  return QSize(100, -1);
 }
 
 QSize PickedLabel::minimumSize() const {
@@ -63,12 +63,8 @@ void PickedLabel::draw(QPainter *painter) {
 
 // IGC Text Info Widget
 
-Qt::Orientations IgcTextWidget::expandingDirections() const {
-  return Qt::Vertical;
-}
-
 QSize IgcTextWidget::sizeHint() const {
-  return QSize(100, 1000);
+  return QSize(100, -1);
 }
 
 void IgcTextWidget::setMouseOverText(const QString& text) {

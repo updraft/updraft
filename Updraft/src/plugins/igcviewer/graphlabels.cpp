@@ -30,7 +30,7 @@ QSize Label::minimumSize() const {
 }
 
 QSize Label::sizeHint() const {
-  return QSize(100, 100);
+  return QSize(100, -1);
 }
 
 void Label::setGeometry(const QRect& rect_) {
@@ -56,7 +56,7 @@ QSize AxisLabel::minimumSize() const {
 }
 
 QSize AxisLabel::sizeHint() const {
-  return QSize(100, 100);
+  return QSize(100, -1);
 }
 
 AxisLabel::AxisLabel(PlotAxes* axis_, QString unitsDescription_) {
@@ -107,7 +107,7 @@ QSize TextLabel::minimumSize() const {
 }
 
 QSize TextLabel::sizeHint() const {
-  return QSize(100, 100);
+  return QSize(100, -1);
 }
 
 TextLabel::TextLabel(QString text_) {
@@ -134,7 +134,7 @@ QSize TimeLabel::minimumSize() const {
 }
 
 QSize TimeLabel::sizeHint() const {
-  return QSize(100, 100);
+  return QSize(100, -1);
 }
 
 TimeLabel::TimeLabel(PlotAxes* axis_) {

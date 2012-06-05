@@ -142,8 +142,8 @@ bool OpenedFile::init(IgcViewer* viewer,
   textBox->setReadOnly(true);
 
   tabWidget->setLayout(layout);
-  verticalLayout->addWidget(colorsCombo, 0, Qt::AlignTop);
-  verticalLayout->addWidget(textBox, 1, Qt::AlignTop);
+  verticalLayout->addWidget(colorsCombo, 0);
+  verticalLayout->addWidget(textBox, 1);
   layout->addLayout(verticalLayout, 0);
   layout->addWidget(plotWidget, 1.0);
 

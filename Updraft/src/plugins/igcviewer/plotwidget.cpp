@@ -17,6 +17,10 @@ const QPen PlotWidget::GROUND_SPEED_PEN= QPen(Qt::yellow);
 const QPen PlotWidget::MOUSE_LINE_PEN = QPen(QColor(150, 150, 150));
 const QPen PlotWidget::MOUSE_LINE_PICKED_PEN = QPen(QColor(200, 200, 200));
 
+QSize PlotWidget::sizeHint() const {
+  return QSize(1000, -1);
+}
+
 PlotWidget::PlotWidget(SegmentInfo* segmentInfo, FixInfo* altitudeInfo,
   FixInfo* verticalSpeedInfo, FixInfo *groundSpeedInfo)
   :segmentInfo(segmentInfo), altitudeInfo(altitudeInfo),

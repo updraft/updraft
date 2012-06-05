@@ -44,11 +44,6 @@ class SceneManager: public QObject {
   /// displayed map.
   MapManager* getMapManager();
 
-  /// Creates an empty osg::Group, and adds it to the root.
-  /// There is always one group associated with one
-  /// MapLayerGroup.
-  osg::Group* newGroup();
-
   /// Removes the group from the root.
   bool removeGroup(osg::Group* group);
 
@@ -73,6 +68,10 @@ class SceneManager: public QObject {
   /// Returns an elevation manager associated with the map
   /// that has elevation layer.
   osgEarth::Util::ElevationManager* getElevationManager();
+
+  /// Returns the ellipsiod model associated with current
+  /// active map.
+  const osg::EllipsoidModel* getCurrentMapEllipsoid();
 
   osgEarth::Util::ObjectPlacer* getObjectPlacer();
 

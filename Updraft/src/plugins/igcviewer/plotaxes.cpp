@@ -48,7 +48,7 @@ QSize PlotAxes::minimumSize() const {
 }
 
 QSize PlotAxes::sizeHint() const {
-  return QSize(65536, 100);
+  return QSize(65536, -1);
 }
 
 void PlotAxes::setGeometry(const QRect& rect) {

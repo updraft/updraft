@@ -43,7 +43,6 @@ class IgcTextWidget : public QTextEdit {
   IgcTextWidget(QList<QString>* s, QList<QString>* p)
     : segmentsTexts(s), pointsTexts(p) {updateText();}
 
-  Qt::Orientations expandingDirections() const;
   QSize sizeHint() const;
 
  public slots:

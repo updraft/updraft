@@ -93,17 +93,19 @@ void TaskDeclaration::handleClick(MapObject* obj, const EventInfo* evt) {
     layer->newTaskPoint(static_cast<TPMapObject*>(obj)->turnPoint);
   } else if (obj->getObjectTypeName() == MapMapObject::getClassName()) {
     const osg::EllipsoidModel* ellipsoidModel =
-      g_core->getEllipsoid()->getOsgEllipsoidModel();
+      g_core->getCurrentMapEllipsoid();
     Util::Location mapLoc;
+    qreal latRad, lonRad, alt;
     ellipsoidModel->convertXYZToLatLongHeight(
       evt->intersection.x(),
       evt->intersection.y(),
       evt->intersection.z(),
-      mapLoc.lat,
-      mapLoc.lon,
-      mapLoc.alt);
-    mapLoc.lat = mapLoc.lat / 3.14 * 180;
-    mapLoc.lon = mapLoc.lon / 3.14 * 180;
+      latRad,
+      lonRad,
+      alt);
+    mapLoc.latFromRadians(latRad);
+    mapLoc.lonFromRadians(lonRad);
+    mapLoc.alt = alt;
     double elevation, resolution;
     g_core->getElevationManager()->getElevation(
       mapLoc.lon, mapLoc.lat, 0, NULL, elevation, resolution);
