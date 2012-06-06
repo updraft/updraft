@@ -104,14 +104,14 @@ class MapLayerInterface {
   /// Return the tree widget item corresponding to this map layer.
   virtual QTreeWidgetItem* getTreeItem() = 0;
   
-  /// Save state of the map layer to the stream.
+  /// Save state of the map layer and possibly its children 
   /// \see Updraft::Core::MapLayerGroup::saveState()
-  virtual void saveState(QDataStream *stream) = 0;
+  virtual QByteArray saveState() = 0;
 
-  /// Load state of the map layer from a stream.
-  /// \see Updraft::Core::MapLayerGroup::restoreState()
-  /// \return Success flag.
-  virtual bool restoreState(QDataStream *stream) = 0;
+  /// Restore the previsously saved state.
+  /// \return success flag.
+  /// \see saveState()
+  virtual bool restoreState(const QByteArray &state) = 0;
 
   /// Notify the map layer that it was inserted into a group.
   virtual void inserted(Core::MapLayerGroup* parent) = 0;

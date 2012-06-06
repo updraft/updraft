@@ -113,22 +113,25 @@ QByteArray MapLayer::getId() {
   return id;
 }
 
-void MapLayer::saveState(QDataStream *stream) {
-  (*stream) << treeItem->isExpanded();
-  (*stream) << (treeItem->checkState(0) == Qt::Checked);
+QByteArray MapLayer::saveState() {
+  QByteArray array;
+  QDataStream stream(&array, QIODevice::WriteOnly);
+
+  stream << treeItem->isExpanded();
+  stream << (treeItem->checkState(0) == Qt::Checked);
+
+  return array;
 }
 
-bool MapLayer::restoreState(QDataStream *stream) {
-  if (stream->status() != QDataStream::Ok) {
-    return false;
-  }
+bool MapLayer::restoreState(const QByteArray& state) {
+  QDataStream stream(state);
 
   bool expanded;
-  (*stream) >> expanded;
+  stream >> expanded;
   treeItem->setExpanded(expanded);
 
   bool checked;
-  (*stream) >> checked;
+  stream >> checked;
   treeItem->setCheckState(0, checked ? Qt::Checked : Qt::Unchecked);
 
   return true;
