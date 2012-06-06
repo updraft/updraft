@@ -8,7 +8,7 @@ AboutDialog::AboutDialog(QWidget* parent, QString version)
 : QDialog(parent),
   ui(new Ui::AboutDialog) {
   ui->setupUi(this);
-  ui->versionLabel->setText(version);
+  ui->versionLabel->setText(tr("Version: ") + version);
 }
 
 AboutDialog::~AboutDialog() {

@@ -15,6 +15,8 @@ MapLayer::MapLayer(const QString &title)
   treeItem->setText(0, title);
   treeItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
   treeItem->setCheckState(0, Qt::Checked);
+
+  id = title.toLocal8Bit();
 }
 
 MapLayer::MapLayer(QTreeWidgetItem *item)
@@ -101,6 +103,35 @@ QAction* MapLayer::getDeleteAction() {
 void MapLayer::deleteActionSlot() {
   QFile::remove(updraft->getDataDirectory().filePath(deleteFilePath));
   delete this;
+}
+
+void MapLayer::setId(const QByteArray& id) {
+  this->id = id;
+}
+
+QByteArray MapLayer::getId() {
+  return id;
+}
+
+void MapLayer::saveState(QDataStream *stream) {
+  (*stream) << treeItem->isExpanded();
+  (*stream) << (treeItem->checkState(0) == Qt::Checked);
+}
+
+bool MapLayer::restoreState(QDataStream *stream) {
+  if (stream->status() != QDataStream::Ok) {
+    return false;
+  }
+
+  bool expanded;
+  (*stream) >> expanded;
+  treeItem->setExpanded(expanded);
+
+  bool checked;
+  (*stream) >> checked;
+  treeItem->setCheckState(0, checked ? Qt::Checked : Qt::Unchecked);
+
+  return true;
 }
 
 }  // End namespace Core

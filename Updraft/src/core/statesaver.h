@@ -21,6 +21,7 @@ class StateSaver {
  private:
   SettingInterface* windowGeometry;
   SettingInterface* openDirectory;
+  SettingInterface* mapLayers;
 };
 
 }  // End namespace Core

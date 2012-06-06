@@ -43,7 +43,17 @@ class MapLayerInterface {
   /// visibility.
   virtual void connectCheckedToVisibility() = 0;
 
+  /// Set the identifier of this map layer.
+  /// Identifiers default to the map title encoded to local 8 bit
+  /// encoding, however when the title may change
+  /// (during runtime or between start ups) or when the id contains characters
+  /// that are not representable in local encoding, a fixed id must be added
+  /// manually.
+  /// Ids only need to be unique between direct descendants of a group.
+  virtual void setId(const QByteArray& id) = 0;
+
   /// Change the title of this map layer.
+  /// If you use setTitle, then you should also be using setId().
   virtual void setTitle(const QString& title) = 0;
 
   /// Check or uncheck the tree view checkbox
@@ -81,6 +91,10 @@ class MapLayerInterface {
   virtual void emitChecked(bool value) = 0;
   virtual void emitContextMenuRequested(const QPoint& pos) = 0;
 
+  /// Return the identifier of the layer.
+  /// \see setId();
+  virtual QByteArray getId() = 0;
+
   /// Add the map layer to the osg group of the map layer group.
   virtual void addToScene(Core::MapLayerGroup *group) = 0;
 
@@ -89,6 +103,15 @@ class MapLayerInterface {
 
   /// Return the tree widget item corresponding to this map layer.
   virtual QTreeWidgetItem* getTreeItem() = 0;
+  
+  /// Save state of the map layer to the stream.
+  /// \see Updraft::Core::MapLayerGroup::saveState()
+  virtual void saveState(QDataStream *stream) = 0;
+
+  /// Load state of the map layer from a stream.
+  /// \see Updraft::Core::MapLayerGroup::restoreState()
+  /// \return Success flag.
+  virtual bool restoreState(QDataStream *stream) = 0;
 
   /// Notify the map layer that it was inserted into a group.
   virtual void inserted(Core::MapLayerGroup* parent) = 0;
