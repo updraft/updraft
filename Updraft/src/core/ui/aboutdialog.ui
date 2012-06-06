@@ -1,72 +1,160 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>AboutDialog</class>
- <widget class="QDialog" name="Dialog">
+ <widget class="QDialog" name="AboutDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>373</width>
-    <height>139</height>
+    <height>311</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>About Updraft</string>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>100</y>
-     <width>341</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>10</y>
-     <width>91</width>
-     <height>54</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QLabel" name="label">
-      <property name="font">
-       <font>
-        <pointsize>20</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Updraft</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="versionLabel">
-      <property name="text">
-       <string>version</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>128</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>128</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap>:/core/icon_128.png</pixmap>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>20</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Updraft</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QLabel" name="versionLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>version</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>&lt;a href=&quot;http://updraft.github.com&quot;&gt;http://updraft.github.com&lt;/a&gt;</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="openExternalLinks">
+            <bool>true</bool>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>AboutDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -82,7 +170,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>AboutDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

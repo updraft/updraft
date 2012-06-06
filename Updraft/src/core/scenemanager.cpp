@@ -96,9 +96,9 @@ SceneManager::SceneManager() {
 }
 
 void SceneManager::saveHomePosition() {
-  QByteArray saved = StateSaver::saveViewpoint(
-    manipulator->getViewpoint());
-  qDebug() << saved;
+  osgEarth::Viewpoint viewpoint = manipulator->getViewpoint();
+  manipulator->setHomeViewpoint(viewpoint);
+  QByteArray saved = StateSaver::saveViewpoint(viewpoint);
   homePositionSetting->set(saved);
 }
 
