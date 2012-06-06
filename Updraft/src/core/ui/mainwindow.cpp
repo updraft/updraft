@@ -148,10 +148,12 @@ void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
 
 void MainWindow::standardMenuItems() {
   QAction* openAction = new QAction(tr("&Open..."), this);
+  openAction->setShortcuts(QKeySequence::Open);
   menuFile->insertAction(0, openAction);
   connect(openAction, SIGNAL(triggered()), this, SLOT(openFile()));
 
   QAction* exitAction = new QAction(tr("E&xit"), this);
+  exitAction->setShortcuts(QKeySequence::Quit);
   // Position Exit action at the end of file menu.
   menuFile->insertAction(100, exitAction);
   connect(exitAction, SIGNAL(triggered()), this, SLOT(appExit()));
@@ -162,6 +164,7 @@ void MainWindow::standardMenuItems() {
   menuFile->insertAction(99, exitSepAction);
 
   QAction* userDocAction = new QAction(tr("User's &Manual..."), this);
+  userDocAction->setShortcuts(QKeySequence::HelpContents);
   menuHelp->insertAction(0, userDocAction);
   connect(userDocAction, SIGNAL(triggered()), this, SLOT(openUserDoc()));
 

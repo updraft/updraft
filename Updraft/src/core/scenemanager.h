@@ -44,6 +44,12 @@ class SceneManager: public QObject {
   /// displayed map.
   MapManager* getMapManager();
 
+  /// Let MapManagers re-create the maps.
+  void createMaps();
+
+  /// Destroy all map nodes.
+  void destroyMaps();
+
   /// Removes the group from the root.
   bool removeGroup(osg::Group* group);
 
@@ -79,6 +85,7 @@ class SceneManager: public QObject {
   void redrawScene();
   void resetNorth();
   void untilt();
+  void saveHomePosition();
 
  private slots:
   void checkedMap(bool value, MapLayerInterface* layer);
@@ -111,6 +118,7 @@ class SceneManager: public QObject {
   osg::Camera* camera;
   MapManipulator* manipulator;
   osgEarth::Util::ElevationManager* elevationManager;
+  osgEarth::Util::Viewpoint saveViewpoint;
   osgQt::GraphicsWindowQt* graphicsWindow;
 
   /// Timer that triggers the drawing procedure.
@@ -133,6 +141,8 @@ class SceneManager: public QObject {
   void insertMenuItems();
 
   double getAspectRatio();
+
+  SettingInterface* homePositionSetting;
 };
 
 }  // end namespace Core

@@ -44,8 +44,6 @@ oaEngine::oaEngine(MapLayerGroupInterface* LG,
   OAGeode         = NULL;
 
   // Init the elevation manager
-  // osgEarth::Map* map = mapLayerGroup->getMapNode()->getMap();
-  // elevationMan = new osgEarth::Util::ElevationManager(map);
   elevationMan = g_core->getElevationManager();
 }
 
@@ -98,9 +96,7 @@ QVector<QPair<osg::Node*, QString> >* oaEngine::Draw(const QString& fileName) {
 
       // get the bundle of airspaces with the same name/class
       QString aName = QString(A->GetClassName());
-        // (A->GetName() == NULL) ?
-        // QString("N/A") : (*A->GetName());
-      if (nameSuffix != aName) {  // A->GetClassName()
+      if (nameSuffix != aName) {
         // if there is a geode initialized
         // insert new into the array of layers
         // or find one of the same name
@@ -207,10 +203,8 @@ QVector<QPair<osg::Node*, QString> >* oaEngine::Draw(const QString& fileName) {
 
     if (OAGeode && OAGeode->getNumDrawables()) {
       // insert the created layer
-      // PushLayer(OAGeode, displayName + nameSuffix);
       PushLayer(OAGeode, nameSuffix);
     }
-    // return mapLayerGroup->insertMapLayer(OAGeode, displayName);
     return mapLayers;
   }
   return NULL;
@@ -344,7 +338,6 @@ osg::Geode* oaEngine::FindLayer(const QString& name) {
   osg::Geode* result = NULL;
   if (!mapLayers) return NULL;
   QVector<QPair<osg::Node*, QString> >::iterator it;
-  // it = mapLayers->begin();
   for (it = mapLayers->begin(); it < mapLayers->end(); ++it) {
     if ((*it).second == name) {
       result = (osg::Geode*)(*it).first;
@@ -387,9 +380,6 @@ void oaEngine::PushLayer(osg::Geode* OAGeode, const QString& displayName) {
   // result in new map layer
   if (!mapLayers)
     mapLayers = new QVector<QPair<osg::Node*, QString> >();
-  // MapLayerInterface* newLayer = new Core::MapLayer((osg::Node*)OAGeode);
-  // newLayer->setVisible(false);
-  // QPair<osg::Node*, QString> toPush
 
   // To sort the airspaces find where to insert
   QVector<QPair<osg::Node*, QString> >::iterator it;
@@ -397,7 +387,6 @@ void oaEngine::PushLayer(osg::Geode* OAGeode, const QString& displayName) {
   while (it < mapLayers->end() && (*it).second < displayName)
     ++it;
 
-  // mapLayers->push_back(QPair<osg::Node*, QString>(OAGeode, displayName));
   mapLayers->insert(it, QPair<osg::Node*, QString>(OAGeode, displayName));
 }
 
@@ -417,7 +406,6 @@ osg::Geometry* oaEngine::DrawPolygon(
     mapLayerGroup->getObjectPlacer();
   // init the geometry
   osg::Geometry* geom = new osg::Geometry();
-  // OAGeode->addDrawable(geom);
   geom->setUseDisplayList(false);
   // we will be drawing polygons
   osg::DrawArrays* drawArrayLines = new
@@ -433,19 +421,6 @@ osg::Geometry* oaEngine::DrawPolygon(
   double addGnd = 0;
 
   // Fill the OGL vertexArray
-  // if polygon face add the center
-  /* if (heightRefPoint &&
-    primitiveMode == osg::PrimitiveSet::POLYGON) {
-    if (pointsGnd) addGnd = pointsGnd->at(0);
-    objectPlacer->createPlacerMatrix(
-      heightRefPoint->lat,
-      heightRefPoint->lon,
-      (height*FT_TO_M) + addGnd,
-      coorTransformation);
-    coord = osg::Vec3(0, 0, 0) * coorTransformation;
-    vertexData->push_back(coord);
-  }*/
-  // fill the array
   for (int k = 0; k < pointsWGS->size(); ++k) {
     if (agl && pointsGnd
       && pointsGnd->size() == pointsWGS->size()) {
@@ -599,7 +574,6 @@ void oaEngine::InsertArcII(const OpenAirspace::ArcII& ab,
   InsertMidArc(centre, a1, a2, cw, r, vertexList);
 
   // insert end
-  // vertexList->push_back(ab.End());
   vertexList->push_back(ComputeArcPoint(centre, r, a2));
 }
 
@@ -627,7 +601,6 @@ void oaEngine::InsertMidArc(const Position& centre, double from,
     if (from < to) from += M_2PI;
     for (double angle = from - ARC_GRANULARITY; angle > to;
       angle -= ARC_GRANULARITY) {
-      // if (angle < M_PI) angle += M_2PI;
       Position arcPoint = ComputeArcPoint(centre, r, angle);
       vertexList->push_back(arcPoint);
     }
@@ -671,7 +644,6 @@ void oaEngine::SetWidthAndColour(const OpenAirspace::Airspace* A) {
 }
 
 bool oaEngine::IsPolyOrientationCW(QVector<Position>* pointsWGS) {
-  // TODO(monkey): finish this
   return true;
   // if not enough geometry
   if (!pointsWGS || pointsWGS->size() < 2)
@@ -700,9 +672,6 @@ bool oaEngine::IsPolyOrientationCW(QVector<Position>* pointsWGS) {
   else if (add < -M_PI)
     add = M_2PI + add;
   sum += add;
-  // if (abs(sum) == 0 || abs(sum) > 7)
-    // qDebug("spatne");
-  // qDebug("%f", sum);
   return (sum > 0) ? true : false;
 }
 

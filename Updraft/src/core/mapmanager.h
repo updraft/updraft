@@ -5,12 +5,15 @@
 #include <osgEarth/ElevationLayer>
 #include <osgEarth/MapNode>
 #include <osgEarth/Map>
+#include <osgEarthUtil/SkyNode>
+#include <osgViewer/Viewer>
 #include <QString>
 #include <QVector>
 
 #include "ui/maplayergroup.h"
 #include "mapmanipulator.h"
 #include "mapmapobject.h"
+#include "updraft.h"
 
 namespace Updraft {
 namespace Core {
@@ -24,7 +27,11 @@ class MapManager {
   MapManager();
 
   /// Creates a new MapManager with map created from the earth file.
-  explicit MapManager(QString earthFile, QString mapName);
+  explicit MapManager(QString earthFile, QString mapName,
+    bool hasSkyNode = false, osgViewer::Viewer* viewer_ = NULL);
+
+  void createMap();
+  void destroyMap();
 
   QString getName();
 
@@ -35,16 +42,28 @@ class MapManager {
   bool hasElevation();
   MapObject* getMapObject();
 
+  void updateCameraProjection();
+
   /// Gets all the map layers from the map.
   QVector<MapLayerInterface*> getMapLayers();
 
+  void attach(osg::Group* scene);
+  void detach(osg::Group* scene);
+
  private:
+  QString earthFileName;
+  QString mapName;
   osg::ref_ptr<osgEarth::MapNode> mapNode;
   osgEarth::Map* map;
   QVector<MapLayerInterface*> mapLayers;
   MapLayerGroupInterface* mapLayerGroup;
   osg::ref_ptr<MapManipulator> manipulator;
   MapMapObject mapObject;
+
+  bool hasSkyNode;
+  osg::ref_ptr<osgEarth::Util::SkyNode> skyNode;
+  osgViewer::Viewer* viewer;
+  bool is3d;
 
   /// Gets a list of ImageLayers in the map.
   QVector<osgEarth::ImageLayer*> getImageLayers();

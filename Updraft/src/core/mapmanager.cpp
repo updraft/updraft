@@ -1,6 +1,8 @@
 #include "mapmanager.h"
 #include <osgDB/ReadFile>
 #include <osgEarthUtil/ElevationManager>
+#include <osgEarth/Cache>
+#include <osgEarthDrivers/cache_filesystem/FileSystemCache>
 #include <QDebug>
 #include <string>
 #include "updraft.h"
@@ -13,13 +15,29 @@ MapManager::MapManager() {
   QString name = tr("Empty globe");
   this->map->setName(name.toStdString());
   this->mapNode = new osgEarth::MapNode(this->map);
+  is3d = true;
 
   this->manipulator = new MapManipulator();
   manipulator->setNode(mapNode);
 }
 
-MapManager::MapManager(QString earthFile, QString mapName) {
-  osg::Node* loadedMap = osgDB::readNodeFile(earthFile.toStdString());
+MapManager::MapManager(QString earthFile, QString mapName_,
+  bool hasSkyNode_, osgViewer::Viewer* viewer_) {
+  earthFileName = earthFile;
+  this->mapName = mapName_;
+  hasSkyNode = hasSkyNode_;
+  viewer = viewer_;
+  mapNode = NULL;
+  createMap();
+}
+
+void MapManager::createMap() {
+  if (mapNode != NULL) destroyMap();
+
+  QDir dataDir = updraft->getDataDirectory();
+  QString earthPath = dataDir.absoluteFilePath(earthFileName);
+
+  osg::Node* loadedMap = osgDB::readNodeFile(earthPath.toStdString());
   if (loadedMap != NULL) {
     this->mapNode = osgEarth::MapNode::findMapNode(loadedMap);
     this->map = mapNode->getMap();
@@ -27,11 +45,23 @@ MapManager::MapManager(QString earthFile, QString mapName) {
   } else {
     this->map = new osgEarth::Map();
     QString name = tr("Empty globe");
-    this->map->setName(name.toStdString());
+    this->map->setName(mapName.toStdString());
     this->mapNode = new osgEarth::MapNode(this->map);
   }
     // initialize the manipulator
   setManipulator(new MapManipulator());
+
+  if (hasSkyNode) {
+    skyNode = new osgEarth::Util::SkyNode(map);
+    skyNode->attach(viewer);
+    skyNode->setSunPosition(14.42046, 50.087811);
+    skyNode->setAmbientBrightness(0.5);
+  }
+}
+
+void MapManager::destroyMap() {
+  mapNode = NULL;
+  skyNode = NULL;
 }
 
 QVector<osgEarth::ImageLayer*> MapManager::getImageLayers() {
@@ -42,6 +72,12 @@ QVector<osgEarth::ImageLayer*> MapManager::getImageLayers() {
     imageLayers.append(outImageLayers[i]);
   }
   return imageLayers;
+}
+
+void MapManager::updateCameraProjection() {
+  if (!hasSkyNode) {
+    getManipulator()->updateCameraProjection();
+  }
 }
 
 QVector<osgEarth::ElevationLayer*> MapManager::getElevationLayers() {
@@ -62,6 +98,20 @@ QVector<osgEarth::ModelLayer*> MapManager::getModelLayers() {
     modelLayers.append(outModelLayers[i]);
   }
   return modelLayers;
+}
+
+void MapManager::attach(osg::Group* scene) {
+  scene->addChild(mapNode);
+  if (hasSkyNode) {
+    scene->addChild(skyNode);
+  }
+}
+
+void MapManager::detach(osg::Group* scene) {
+  scene->removeChild(this->getMapNode());
+  if (hasSkyNode) {
+    scene->removeChild(skyNode);
+  }
 }
 
 QVector<MapLayerInterface*> MapManager::getMapLayers() {

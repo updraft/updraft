@@ -186,8 +186,8 @@ void TaskLayer::redo() {
 }
 
 bool TaskLayer::saveAs() {
-  QString filePath = QFileDialog::getSaveFileName(panel, "Save Task As",
-    QString(), QString("Task File (*.tsk)"));
+  QString filePath = QFileDialog::getSaveFileName(panel, tr("Save Task As"),
+    QString(), tr("Task file") + " (*.tsk)");
 
   if (filePath.length() > 0) {
     file->saveAs(filePath);
