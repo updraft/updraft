@@ -33,17 +33,24 @@ class MapLayer : public QObject, virtual public MapLayerInterface {
     const char *method);
   void connectCheckedToVisibility();
 
-  /// Change the title of this map layer.
+  void setId(const QByteArray& id);
+  QByteArray getId();
+
   void setTitle(const QString& title);
 
   QTreeWidgetItem *getTreeItem();
-  void inserted(MapLayerGroup* parent);
+
   void setDisabled(bool disabled);
   void setChecked(bool value);
   void setCheckable(bool value);
 
+  void inserted(MapLayerGroup* parent);
+
   void setFilePath(const QString& path);
   QAction* getDeleteAction();
+
+  void saveState(QDataStream *stream);
+  bool restoreState(QDataStream *stream);
 
  public slots:
   void setVisibility(bool value) = 0;
@@ -64,6 +71,10 @@ class MapLayer : public QObject, virtual public MapLayerInterface {
   void emitContextMenuRequested(const QPoint& pos);
 
   explicit MapLayer(QTreeWidgetItem* item);
+
+  /// Identificiation of the map layer, used in saving and restoring state.
+  /// by default the id is the title encoded to local 8bit encoding.
+  QByteArray id;
 
   /// Action for getDeleteAction.
   QAction* deleteAction;

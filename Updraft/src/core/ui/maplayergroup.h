@@ -65,6 +65,17 @@ class MapLayerGroup : public MapLayer, public MapLayerGroupInterface {
   void setVisibility(bool value);
   bool isVisible();
 
+  /// Save the state (check state and expanded state)
+  /// of this layer (and possibly all children).
+  QByteArray saveState();
+
+  /// Restore the previsously saved state.
+  /// \see saveState()
+  bool restoreState(const QByteArray &state);
+
+  void saveState(QDataStream *stream);
+  bool restoreState(QDataStream *stream);
+
  private:
   void addToScene(MapLayerGroup* group);
   void removeFromScene(MapLayerGroup* group);
