@@ -12,8 +12,14 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
         <path>osgearth_cache_terrain</path>
       </cache>
       
-      <lighting>true</lighting>
+      <lighting>false</lighting>
     </options>
+    
+    <image name="OnlineMapsCache" driver="arcgis">
+      <url>http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer</url>
+      <nodata_image>http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/100/0/0.jpeg</nodata_image>
+      <cache_policy usage="cache_only"/>
+    </image>
      
     <image name="OnlineMaps" driver="arcgis">
       <url>http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer</url>
