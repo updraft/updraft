@@ -15,14 +15,18 @@ MapManager::MapManager() {
   QString name = tr("Empty globe");
   this->map->setName(name.toStdString());
   this->mapNode = new osgEarth::MapNode(this->map);
+  is3d = true;
 
   this->manipulator = new MapManipulator();
   manipulator->setNode(mapNode);
 }
 
-MapManager::MapManager(QString earthFile, QString mapName_) {
+MapManager::MapManager(QString earthFile, QString mapName_,
+  bool hasSkyNode_, osgViewer::Viewer* viewer_) {
   earthFileName = earthFile;
   this->mapName = mapName_;
+  hasSkyNode = hasSkyNode_;
+  viewer = viewer_;
   mapNode = NULL;
   createMap();
 }
@@ -46,10 +50,18 @@ void MapManager::createMap() {
   }
     // initialize the manipulator
   setManipulator(new MapManipulator());
+
+  if (hasSkyNode) {
+    skyNode = new osgEarth::Util::SkyNode(map);
+    skyNode->attach(viewer);
+    skyNode->setSunPosition(14.42046, 50.087811);
+    skyNode->setAmbientBrightness(0.5);
+  }
 }
 
 void MapManager::destroyMap() {
   mapNode = NULL;
+  skyNode = NULL;
 }
 
 QVector<osgEarth::ImageLayer*> MapManager::getImageLayers() {
@@ -63,9 +75,10 @@ QVector<osgEarth::ImageLayer*> MapManager::getImageLayers() {
 }
 
 void MapManager::updateCameraProjection() {
-  getManipulator()->updateCameraProjection();
+  if (!hasSkyNode) {
+    getManipulator()->updateCameraProjection();
+  }
 }
-
 
 QVector<osgEarth::ElevationLayer*> MapManager::getElevationLayers() {
   QVector<osgEarth::ElevationLayer*> elevationLayers;
@@ -89,10 +102,16 @@ QVector<osgEarth::ModelLayer*> MapManager::getModelLayers() {
 
 void MapManager::attach(osg::Group* scene) {
   scene->addChild(mapNode);
+  if (hasSkyNode) {
+    scene->addChild(skyNode);
+  }
 }
 
 void MapManager::detach(osg::Group* scene) {
   scene->removeChild(this->getMapNode());
+  if (hasSkyNode) {
+    scene->removeChild(skyNode);
+  }
 }
 
 QVector<MapLayerInterface*> MapManager::getMapLayers() {
