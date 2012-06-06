@@ -44,6 +44,11 @@ QVector<osgEarth::ImageLayer*> MapManager::getImageLayers() {
   return imageLayers;
 }
 
+void MapManager::updateCameraProjection() {
+  getManipulator()->updateCameraProjection();
+}
+
+
 QVector<osgEarth::ElevationLayer*> MapManager::getElevationLayers() {
   QVector<osgEarth::ElevationLayer*> elevationLayers;
   osgEarth::ElevationLayerVector outElevationLayers;
@@ -62,6 +67,14 @@ QVector<osgEarth::ModelLayer*> MapManager::getModelLayers() {
     modelLayers.append(outModelLayers[i]);
   }
   return modelLayers;
+}
+
+void MapManager::attach(osg::Group* scene) {
+  scene->addChild(mapNode);
+}
+
+void MapManager::detach(osg::Group* scene) {
+  scene->removeChild(this->getMapNode());
 }
 
 QVector<MapLayerInterface*> MapManager::getMapLayers() {

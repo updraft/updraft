@@ -35,8 +35,13 @@ class MapManager {
   bool hasElevation();
   MapObject* getMapObject();
 
+  void updateCameraProjection();
+
   /// Gets all the map layers from the map.
   QVector<MapLayerInterface*> getMapLayers();
+
+  void MapManager::attach(osg::Group* scene);
+  void MapManager::detach(osg::Group* scene);
 
  private:
   osg::ref_ptr<osgEarth::MapNode> mapNode;
