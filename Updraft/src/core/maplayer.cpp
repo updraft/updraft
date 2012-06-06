@@ -132,7 +132,12 @@ bool MapLayer::restoreState(const QByteArray& state) {
 
   bool checked;
   stream >> checked;
-  treeItem->setCheckState(0, checked ? Qt::Checked : Qt::Unchecked);
+
+  // CheckStateRole data not valid means that there is no checkbox
+  // and we don't want to add one.
+  if (treeItem->data(0, Qt::CheckStateRole).isValid()) {
+    treeItem->setCheckState(0, checked ? Qt::Checked : Qt::Unchecked);
+  }
 
   return true;
 }
