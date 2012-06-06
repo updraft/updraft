@@ -89,8 +89,8 @@ SettingInterface* SettingsManager::addSetting(
     model->setData(settingIndex, defaultValue, ValueRole);
     model->setData(settingIndex, defaultValue, DefaultValueRole);
     model->setData(settingIndex, settingIdPart, NameRole);
-    model->setData(settingIndex, description, DescriptionRole);
   }
+  model->setData(settingIndex, description, DescriptionRole);
 
   SettingsItem* settingItem = model->itemFromIndex(settingIndex);
   BasicSetting* setting = new BasicSetting(settingItem, this);
