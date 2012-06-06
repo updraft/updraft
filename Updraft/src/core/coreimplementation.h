@@ -46,7 +46,7 @@ class CoreImplementation : public CoreInterface {
     const QString& settingId,
     const QString& description,
     QVariant initValue,
-    bool hidden);
+    SettingsGroupType type);
 
   osg::Group* getSimpleGroup();
 

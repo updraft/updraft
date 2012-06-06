@@ -117,7 +117,7 @@ class CoreInterface {
     const QString& settingId,
     const QString& description,
     QVariant initValue,
-    bool hidden = false) = 0;
+    SettingsGroupType type = GROUP_VISIBLE) = 0;
 
   /// Returns the pointer to the basic node group for drawing.
   virtual osg::Group* getSimpleGroup() = 0;

@@ -13,12 +13,12 @@ StateSaver::StateSaver() {
     "state", "Application state", GROUP_HIDDEN, "");
 
   windowGeometry = updraft->settingsManager->addSetting(
-    "state_hidden:geometry", "Main window geometry", QByteArray(), true);
+    "state:geometry", "Main window geometry", QByteArray(), GROUP_HIDDEN);
   openDirectory = updraft->settingsManager->addSetting(
-    "state_hidden:openDirectory", "File open dialog directory",
-    QVariant(), true);
+    "state:openDirectory", "File open dialog directory",
+    QVariant(), GROUP_HIDDEN);
   mapLayers = updraft->settingsManager->addSetting(
-    "state_hidden:maplayers", "Map layers", QByteArray(), true);
+    "state:maplayers", "Map layers", QByteArray(), GROUP_HIDDEN);
 }
 
 void StateSaver::save() {

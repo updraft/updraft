@@ -17,10 +17,10 @@ namespace Core {
 
 PickHandler::PickHandler(): mX(0), mY(0) {
   mouseEventTolerance = updraft->settingsManager->addSetting(
-    "map_advanced:mouseEventTolerance",
+    "map:mouseEventTolerance",
     tr("Mouse click tolerance"),
     QVariant(10.0),
-    true);
+    GROUP_ADVANCED);
 }
 
 bool PickHandler::handle(

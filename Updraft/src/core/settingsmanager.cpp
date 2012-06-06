@@ -37,7 +37,7 @@ SettingInterface* SettingsManager::addSetting(
   const QString& settingId,
   const QString& description,
   QVariant defaultValue,
-  bool hidden) {
+  SettingsGroupType type) {
   QStringList identifiers = settingId.split(':');
   if (identifiers.size() != 2) {
     qDebug() <<
@@ -59,11 +59,13 @@ SettingInterface* SettingsManager::addSetting(
     return NULL;
   }
 
-  // Do we want group for hidden settings or visible ones?
-  if (hidden) {
+  // Fro which type of groups do we want the setting
+  if (type == GROUP_VISIBLE) {
+    groupIdPart = groupIdPart + "_visible";
+  } else if (type == GROUP_HIDDEN) {
     groupIdPart = groupIdPart + "_hidden";
   } else {
-    groupIdPart = groupIdPart + "_visible";
+    groupIdPart = groupIdPart + "_advanced";
   }
 
   QModelIndex groupIndex = getGroup(groupIdPart);
@@ -109,7 +111,8 @@ void SettingsManager::addGroup(
       addGroupInternal(groupId + "_hidden", description, icon);
     break;
     case GROUP_ADVANCED:
-      addGroupInternal(groupId + "_advanced", description, icon);
+      addGroupInternal(
+        groupId + "_advanced", description + tr(" (advanced)"), icon);
     break;
   }
 }

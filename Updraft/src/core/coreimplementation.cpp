@@ -72,9 +72,9 @@ SettingInterface* CoreImplementation::addSetting(
     const QString& settingId,
     const QString& description,
     QVariant initVal,
-    bool hidden) {
+    SettingsGroupType type) {
   return updraft->settingsManager->
-    addSetting(settingId, description, initVal, hidden);
+    addSetting(settingId, description, initVal, type);
 }
 
 osg::Group* CoreImplementation::getSimpleGroup() {

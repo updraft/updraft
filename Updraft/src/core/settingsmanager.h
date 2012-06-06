@@ -36,7 +36,7 @@ class SettingsManager: public QObject {
     const QString& settingId,
     const QString& description,
     QVariant defaultValue,
-    bool hiden = false);
+    SettingsGroupType type = GROUP_VISIBLE);
 
   void addGroup(
     const QString& groupId,
