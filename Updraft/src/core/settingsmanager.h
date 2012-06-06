@@ -42,6 +42,9 @@ class SettingsManager: public QObject {
     const QString& description,
     const QString& icon);
 
+  /// \return Directory where the currently used settings file resides
+  QDir getSettingsDir();
+
   friend class BasicSetting;
 
  public slots:

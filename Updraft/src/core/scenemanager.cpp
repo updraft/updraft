@@ -349,7 +349,6 @@ void SceneManager::createMapManagers() {
     new MapManager(dataDir.absoluteFilePath("initial3.earth"),
       tr("ArcGIS, Topographic Map")));
 
-  // mapManagers.append(new MapManager());
   activeMapIndex = 0;
 }
 

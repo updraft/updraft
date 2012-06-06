@@ -32,6 +32,11 @@ Updraft::Updraft(int argc, char** argv)
   createEllipsoids();
   coreSettings();
 
+  // Initialize the data directory if needed
+  if (!checkDataDirectory()) {
+    qDebug() << "The data directory is invalid and could not be restored";
+  }
+
   mainWindow = new MainWindow(NULL);
   fileTypeManager = new FileTypeManager();
   sceneManager = new SceneManager();
@@ -140,7 +145,7 @@ void Updraft::coreSettings() {
   settingsManager->addGroup(
     "general", tr("General"), ":/core/icons/general.png");
 
-  QDir dataDir = QCoreApplication::applicationDirPath();
+  QDir dataDir = settingsManager->getSettingsDir();
   QVariant dataDirVariant;
   dataDirVariant.setValue(dataDir);
   dataDirectory = settingsManager->addSetting(
@@ -149,6 +154,7 @@ void Updraft::coreSettings() {
     dataDirVariant);
 
   currentDataDirectory = dataDirectory->get().value<QDir>();
+  qDebug() << "Current data directory: " << currentDataDirectory;
   dataDirectory->setNeedsRestart(true);
   dataDirectory->callOnValueChanged(this, SLOT(dataDirectoryChanged()));
 
@@ -168,6 +174,26 @@ void Updraft::createEllipsoids() {
     new Util::Ellipsoid(tr("WGS84 Ellipsoid"), Util::ELLIPSOID_WGS84));
   ellipsoids.append(
     new Util::Ellipsoid(tr("FAI Sphere"), Util::ELLIPSOID_FAI_SPHERE));
+}
+
+bool Updraft::checkDataDirectory() {
+  // First try if the data directory is valid
+  QDir dataDir = currentDataDirectory;
+  qDebug() << "Data directory found in settings: " << dataDir;
+  if (dataDir.cd("data")) {
+    qDebug() << "Data directory correct in settings";
+    return true;
+  }
+
+  // If the data directory is not valid, create it by settings.xml
+  dataDir = settingsManager->getSettingsDir();
+  QDir srcDir = getStaticDataDirectory();
+  if (!copyDirectory(srcDir, "data", dataDir)) {
+    return false;
+  }
+
+  qDebug() << "Data directory created next to settings";
+  return true;
 }
 
 /// Pull the lever.
@@ -205,6 +231,10 @@ bool Updraft::copyDirectory(
   }
   dfsStack.push(begin);
 
+  // Try to create the destination directory
+  if (!dstDir.mkdir(dstDir.filePath(dirName)))
+      return false;
+
   // Take directories from the stack and copy them
   while (!dfsStack.isEmpty()) {
     QDir dir = dfsStack.pop();
@@ -221,13 +251,13 @@ bool Updraft::copyDirectory(
       if (info.isDir()) {
         dfsStack.push(info.absoluteFilePath());
         if (!dstDir.mkpath(relFilePath)) {
-          qDebug() << "Data directory copying failed! Could not create" <<
+          qDebug() << "Directory copying failed! Could not create" <<
             dstPath;
           return false;
         }
       } else if (info.isFile()) {
         if (!QFile::copy(srcPath, dstPath)) {
-          qDebug() << "Data directory copying failed! Could not copy " <<
+          qDebug() << "Directory copying failed! Could not copy " <<
             srcPath << " to " << dstPath;
           return false;
         }
@@ -259,10 +289,6 @@ bool Updraft::moveDataDirectory(
 
   oldDir.makeAbsolute();
   newDir.makeAbsolute();
-
-  // Try to create the destination directory
-  if (!newDir.mkdir(newDir.filePath("data")))
-      return false;
 
   // The directory traversal will be done using DFS
   QStack<QDir> dfsStack;
@@ -323,7 +349,8 @@ bool Updraft::moveDataDirectory(
         if (!QFile::remove(info.absoluteFilePath())) {
           qDebug() << "Old data directory could not be removed!";
           dialog->setValue(filenum*2);
-          return false;
+          // todo: show message that old directory could not be deleted
+          // return false;
         }
 
         progress++;

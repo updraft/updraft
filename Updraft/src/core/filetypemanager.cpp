@@ -129,6 +129,7 @@ bool FileTypeManager::importFile(QString *newPath,
       qDebug() << "Import failed. Unable to create directory " << dstPath;
       return false;
     }
+    dstPath.cd(importDirectory);
   }
 
   QFileInfo srcInfo(srcPath);

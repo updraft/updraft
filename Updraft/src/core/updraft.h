@@ -69,6 +69,10 @@ class Updraft : public QApplication {
 
  private:
   void coreSettings();
+
+  /// Checks and possibly creates the data directory.
+  /// \return Whether the data directory exists or it was successfully created
+  bool checkDataDirectory();
   void createEllipsoids();
 
   SplashScreen splash;
