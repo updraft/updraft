@@ -30,6 +30,7 @@ void Airspaces::initialize(CoreInterface *coreInterface) {
 
   // Create map layers items in the left pane.
   mapLayerGroup = g_core->createMapLayerGroup(tr("Airspace"));
+  mapLayerGroup->setId("airspaces");
   mapLayerGroup->connectCheckedToVisibility();
 
   loadImportedFiles();
