@@ -5,16 +5,18 @@ Please note that use of ESRI's free maps is subject to certain restrictions:
 http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
 -->
 
-<map name="Terrain Map" type="geocentric">
+<map name="Topographic" type="geocentric" version="2">
     
-    <cache type="filesystem">
-      <path>osgearth_cache_topographic</path>
-    </cache>
-    
-    <lighting>false</lighting>
+    <options>
+      <lighting>false</lighting>
+      <cache type="filesystem">
+        <path>osgearth_cache_topographic</path>
+      </cache>
+    </options>
      
-    <image name="OSM topographic maps" driver="arcgis">
+    <image name="OSM-topographic-maps" driver="arcgis">
         <url>http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer</url>
         <nodata_image>http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/100/0/0.jpeg</nodata_image>
+        <cacheid>topo_image_cache</cacheid>
     </image>
 </map>

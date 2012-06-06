@@ -50,6 +50,7 @@ void PickedLabel::draw(QPainter *painter) {
     if ((epos - cspos) < TEXT_WIDTH) {
       int res = (TEXT_WIDTH - (epos - cspos)) / 2 - SPACE;
       if (i < 1) continue;
+      if (i == pickedPositions->size() - 2) continue;
       if (((space[i-1]-TEXT_WIDTH) / 2) < res) continue;
       if (((space[i+1]-TEXT_WIDTH) / 2) < res) continue;
     }
