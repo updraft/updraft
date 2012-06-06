@@ -62,8 +62,7 @@ SceneManager::SceneManager() {
 
   // add active map
   mapNode = mapManagers[activeMapIndex]->getMapNode();
-  sceneRoot->addChild(mapNode);
-
+  mapManagers[activeMapIndex]->attach(sceneRoot);
   // Make map node pickable
   registerOsgNode(mapNode, mapManagers[activeMapIndex]->getMapObject());
 
@@ -174,7 +173,8 @@ void SceneManager::redrawScene() {
   if (i == 1) startInitialAnimation();
   if (i < 2) ++i;
 
-  getMapManager()->getManipulator()->updateCameraProjection();
+
+  getMapManager()->updateCameraProjection();
 
   viewer->frame();
 }
@@ -249,11 +249,11 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
       int oldIndex = activeMapIndex;
       activeMapIndex = index;
       unregisterOsgNode(mapManagers[oldIndex]->getMapNode());
-      sceneRoot->removeChild(mapManagers[oldIndex]->getMapNode());
+      mapManagers[oldIndex]->detach(sceneRoot);
 
-        // set current map node
+      // set current map node
       mapNode = mapManagers[activeMapIndex]->getMapNode();
-      sceneRoot->addChild(mapNode);
+      mapManagers[activeMapIndex]->attach(sceneRoot);
 
       osgEarth::Util::Viewpoint viewpoint = manipulator->getViewpoint();
 
