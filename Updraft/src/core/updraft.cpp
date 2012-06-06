@@ -52,6 +52,8 @@ Updraft::Updraft(int argc, char** argv)
     fileTypeManager->openFile(args[i]);
   }
 
+  // Turn on the data directory slot
+  dataDirectory->callOnValueChanged(this, SLOT(dataDirectoryChanged()));
   dataDirectoryChangeInProgress = false;
 }
 
@@ -161,8 +163,6 @@ void Updraft::coreSettings() {
 
   currentDataDirectory = dataDirectory->get().value<QDir>();
   qDebug() << "Current data directory: " << currentDataDirectory;
-  dataDirectory->setNeedsRestart(true);
-  dataDirectory->callOnValueChanged(this, SLOT(dataDirectoryChanged()));
 
   QVariant ellipsoidVariant;
   ellipsoidVariant.setValue(
