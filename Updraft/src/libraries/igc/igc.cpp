@@ -287,8 +287,12 @@ bool IgcFile::processRecordH() {
     }
   } else if (subtype == "FTY") {
     QList<QByteArray> list = value.split(',');
-    manufacturer_ = activeCodec->toUnicode(list[0]);
-    frType_ = activeCodec->toUnicode(list[1]);
+    if (list.size() == 1) {
+      frType_ = activeCodec->toUnicode(list[0]);
+    } else {
+      manufacturer_ = activeCodec->toUnicode(list[0]);
+      frType_ = activeCodec->toUnicode(list[1]);
+    }
   } else if (subtype == "GID") {
     gliderId_ = activeCodec->toUnicode(value);
   } else if (subtype == "GPS") {

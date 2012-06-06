@@ -24,8 +24,7 @@ GATHER_SOURCES(core)
 
 FILE(GLOB_RECURSE lang ${CMAKE_CURRENT_SOURCE_DIR}/*.ts)
 
-
-ADD_EXECUTABLE(updraft ${core_all_sources} ${translations} updraft.rc)
+ADD_EXECUTABLE(updraft WIN32 ${core_all_sources} ${translations} updraft.rc)
 
 # Handling of output filenames and directories on Windows
 IF(WIN32)
@@ -56,6 +55,7 @@ INCLUDE_DIRECTORIES(SYSTEM
     ${OSGEARTH_INCLUDE_DIRS})
 TARGET_LINK_LIBRARIES(updraft
     ${QT_LIBRARIES}
+    ${QT_QTMAIN_LIBRARY}
     ${OPENSCENEGRAPH_LIBRARIES}
     ${OSGEARTH_LIBRARIES}
     util)
