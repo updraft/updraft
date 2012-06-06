@@ -44,8 +44,8 @@ class MapManager {
   /// Gets all the map layers from the map.
   QVector<MapLayerInterface*> getMapLayers();
 
-  void MapManager::attach(osg::Group* scene);
-  void MapManager::detach(osg::Group* scene);
+  void attach(osg::Group* scene);
+  void detach(osg::Group* scene);
 
  private:
   QString earthFileName;
