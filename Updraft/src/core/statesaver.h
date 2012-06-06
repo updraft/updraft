@@ -3,6 +3,10 @@
 
 #include "settingsmanager.h"
 
+namespace osgEarth {
+  class Viewpoint;
+}
+
 namespace Updraft {
 namespace Core {
 
@@ -18,6 +22,12 @@ class StateSaver {
 
   /// Load values from settings.
   void load();
+
+  /// Save the given view point to byte array.
+  static QByteArray saveViewpoint(const osgEarth::Viewpoint& viewpoint);
+
+  /// Load the viewpoint previously saved by saveViewpoint.
+  static osgEarth::Viewpoint restoreViewpoint(const QByteArray& viewpoint);
  private:
   SettingInterface* windowGeometry;
   SettingInterface* openDirectory;

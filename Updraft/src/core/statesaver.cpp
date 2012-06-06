@@ -1,5 +1,7 @@
 #include "statesaver.h"
 
+#include <osgEarth/Viewpoint>
+
 #include "updraft.h"
 #include "ui/mainwindow.h"
 #include "filetypemanager.h"
@@ -43,6 +45,18 @@ void StateSaver::load() {
 
   updraft->mainWindow->getInvisibleRootMapLayerGroup()->
     restoreState(mapLayers->get().toByteArray());
+}
+
+QByteArray StateSaver::saveViewpoint(const osgEarth::Viewpoint& viewpoint) {
+  std::string json = viewpoint.getConfig().toJSON();
+  return QByteArray(json.data(), json.size());
+}
+
+osgEarth::Viewpoint StateSaver::restoreViewpoint(const QByteArray& viewpoint) {
+  osgEarth::Config config;
+
+  config.fromJSON(std::string(viewpoint.data(), viewpoint.size()));
+  return osgEarth::Viewpoint(config);
 }
 
 }  // End namespace Core

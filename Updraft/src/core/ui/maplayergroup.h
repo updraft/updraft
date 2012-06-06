@@ -73,7 +73,7 @@ class MapLayerGroup : public MapLayer, public MapLayerGroupInterface {
   /// 1) For each child:
   ///   a) Save child's id
   ///   c) Save the child's data as QByteArray
-  /// 3) Empty QByteArray as a separator
+  /// 3) Null QByteArray as a separator
   /// 4) Save this as MapLayer
   QByteArray saveState();
 

@@ -17,6 +17,7 @@
 #include "ui/mainwindow.h"
 #include "ui/menu.h"
 #include "../menuinterface.h"
+#include "statesaver.h"
 
 namespace Updraft {
 namespace Core {
@@ -25,6 +26,11 @@ SceneManager::SceneManager() {
   // Create a group for map settings
   updraft->settingsManager->addGroup(
     "map", tr("Map options"), GROUP_ADVANCED, ":/core/icons/map.png");
+
+  homePositionSetting = updraft->settingsManager->addSetting(
+    "state:homePos", "Home position", StateSaver::saveViewpoint(
+    osgEarth::Util::Viewpoint(14.42046, 50.087811, 0, 0.0, -90.0, 15e5)),
+    GROUP_HIDDEN);
 
   osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
@@ -88,9 +94,18 @@ SceneManager::SceneManager() {
   timer->start(20);
 }
 
+void SceneManager::saveHomePosition() {
+  QByteArray saved = StateSaver::saveViewpoint(
+    getMapManager()->getManipulator()->getViewpoint());
+  qDebug() << saved;
+  homePositionSetting->set(saved);
+}
+
 osgEarth::Util::Viewpoint SceneManager::getHomePosition() {
-  return osgEarth::Util::Viewpoint(14.42046, 50.087811,
-    0, 0.0, -90.0, 15e5);
+  return
+    StateSaver::restoreViewpoint(homePositionSetting->get().toByteArray());
+  // return osgEarth::Util::Viewpoint(14.42046, 50.087811,
+  //   0, 0.0, -90.0, 15e5);
 }
 
 osgEarth::Util::Viewpoint SceneManager::getInitialPosition() {
@@ -103,12 +118,18 @@ void SceneManager::menuItems() {
   Menu* viewMenu = updraft->mainWindow->getSystemMenu(MENU_VIEW);
 
   QAction* resetNorthAction = new QAction(tr("Rotate to north"), this);
+  resetNorthAction->setShortcut(QKeySequence(tr("Ctrl+n")));
   connect(resetNorthAction, SIGNAL(triggered()), this, SLOT(resetNorth()));
   viewMenu->insertAction(200, resetNorthAction);
 
   QAction* untiltAction = new QAction(tr("Restore 2D View"), this);
   connect(untiltAction, SIGNAL(triggered()), this, SLOT(untilt()));
   viewMenu->insertAction(300, untiltAction);
+
+  QAction* setHomePosAction = new QAction(tr("Set &Home Position..."), this);
+  viewMenu->insertAction(400, setHomePosAction);
+  connect(setHomePosAction, SIGNAL(triggered()),
+    this, SLOT(saveHomePosition()));
 }
 
 void SceneManager::mapLayerGroup() {

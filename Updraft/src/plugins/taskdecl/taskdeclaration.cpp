@@ -44,6 +44,7 @@ void TaskDeclaration::initialize(CoreInterface *coreInterface) {
   // Menu - Save
 
   QAction* saveTaskAction = new QAction(tr("Save Task"), this);
+  saveTaskAction->setShortcuts(QKeySequence::Save);
   connect(saveTaskAction, SIGNAL(triggered()), this, SLOT(saveTask()));
 
   g_core->getSystemMenu(MENU_FILE)->insertAction(3, saveTaskAction);
@@ -51,6 +52,7 @@ void TaskDeclaration::initialize(CoreInterface *coreInterface) {
   // Menu - Save As
 
   QAction* saveAsTaskAction = new QAction(tr("Save Task As..."), this);
+  saveAsTaskAction->setShortcuts(QKeySequence::SaveAs);
   connect(saveAsTaskAction, SIGNAL(triggered()), this, SLOT(saveTaskAs()));
 
   g_core->getSystemMenu(MENU_FILE)->insertAction(4, saveAsTaskAction);
