@@ -2,6 +2,9 @@
     <qresource prefix="/core">
         <file alias="splash.jpg">resources/splash.jpg</file>
     </qresource>
+    <qresource prefix="/core">
+        <file alias="icon_128.png">resources/icon_128.png</file>
+    </qresource>
     <qresource prefix="/core/icons">
         <file alias="configure.png">resources/icons/configure.png</file>
     </qresource>
