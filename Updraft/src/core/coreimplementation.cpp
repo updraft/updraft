@@ -56,8 +56,8 @@ QDir CoreImplementation::getDataDirectory() {
   return updraft->getDataDirectory();
 }
 
-QDir CoreImplementation::getStaticDataDirectory() {
-  return updraft->getStaticDataDirectory();
+QDir CoreImplementation::getResourcesDirectory() {
+  return updraft->getResourcesDirectory();
 }
 
 void CoreImplementation::addSettingsGroup(

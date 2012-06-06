@@ -42,7 +42,7 @@ class Updraft : public QApplication {
   void hideSplash();
 
   QDir getDataDirectory();
-  QDir getStaticDataDirectory();
+  QDir getResourcesDirectory();
   QDir getTranslationDirectory();
 
   QDir currentDataDirectory;
@@ -79,18 +79,8 @@ class Updraft : public QApplication {
 
   bool dataDirectoryChangeInProgress;
 
-  /// Auxilliary method for directory copying. Both arguments should be
-  /// absolute directories. In the example, we want to copy "/home/user/my_dir"
-  /// \param srcDir The directory where the copied directory resides
-  ///               (e.g. "/home/user")
-  /// \param dirName Name of the directory to be copied (e.g. my_dir)
-  /// \param dstDir The destination directory, under which the copied
-  ///               directory should reside (e.g. "/tmp", which will result
-  ///               in "/tmp/my_dir")
-  /// \return Whether the directory was copied successfully
   bool copyDirectory(
     QDir srcDir,
-    QString dirName,
     QDir dstDir,
     int* progress = NULL,
     QProgressDialog* dialog = NULL);
