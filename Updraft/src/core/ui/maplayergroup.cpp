@@ -132,6 +132,56 @@ void MapLayerGroup::inserted(Core::MapLayerGroup* parent) {
   treeItem->setHidden(!mapLayers.count());
 }
 
+void MapLayerGroup::saveState(QDataStream *stream) {
+  foreach(MapLayerInterface* layer, mapLayers) {
+    (*stream) << layer->getId();
+    layer->saveState(stream);
+  }
+
+  (*stream) << QString();
+  MapLayer::saveState(stream);
+}
+
+bool MapLayerGroup::restoreState(QDataStream *stream) {
+  if (stream->status() != QDataStream::Ok) {
+    return false;
+  }
+
+  QMap<QString, MapLayerInterface*> map;
+  foreach(MapLayerInterface* layer, mapLayers) {
+    map[layer->getId()] = layer;
+  }
+
+  QByteArray id;  // yes, this shadows this->id.
+  (*stream) >> id;
+
+  while (!id.isEmpty()) {
+    MapLayerInterface* layer = map[id];
+    bool result = layer->restoreState(stream);
+    if (!result) {
+      return false;
+    }
+    (*stream) >> id;
+  };
+
+  return MapLayer::restoreState(stream);
+}
+
+QByteArray MapLayerGroup::saveState() {
+  QByteArray array;
+  QDataStream stream(&array, QIODevice::WriteOnly);
+
+  this->saveState(&stream);
+
+  return array;
+}
+
+bool MapLayerGroup::restoreState(const QByteArray &state) {
+  QDataStream stream(state);
+
+  return this->restoreState(&stream);
+}
+
 
 }  // End namespace Core
 }  // End namespace Updraft
