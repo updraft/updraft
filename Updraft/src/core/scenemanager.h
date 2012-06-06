@@ -79,6 +79,7 @@ class SceneManager: public QObject {
   void redrawScene();
   void resetNorth();
   void untilt();
+  void saveHomePosition();
 
  private slots:
   void checkedMap(bool value, MapLayerInterface* layer);
@@ -133,6 +134,8 @@ class SceneManager: public QObject {
   void insertMenuItems();
 
   double getAspectRatio();
+
+  SettingInterface* homePositionSetting;
 };
 
 }  // end namespace Core
