@@ -8,31 +8,6 @@ namespace OpenAirspace {
   Airspace::Airspace(QTextStream* ts, bool* acOn) {
     QString text("");
 
-    /* testing :
-    Position* pos = new Position();
-    pos->lat = 10;
-    pos->lon = 20;
-    QVector<Geometry*> g;
-    Polygon* pp = new Polygon(*pos, 1);
-    g.push_back(pp);
-    OpenAirspace::ArcI* aa = new OpenAirspace::ArcI(*pos, 10, true,
-      30, 40, 1);
-    g.push_back(aa);
-    Geometry* gg = g.at(0);
-    delete gg;
-    gg = g.at(1);
-    delete gg;
-    OpenAirspace::ArcII* ab = new OpenAirspace::ArcII(
-      *pos, *pos, *pos, true, 1);
-    g.push_back(ab);
-    OpenAirspace::Circle* cc = new OpenAirspace::Circle(*pos, 10, 1);
-    g.push_back(cc);
-    gg = g.at(2);
-    delete gg;
-    gg = g.at(3);
-    delete gg;
-    */
-
     // init variables
     this->AL        = NULL;
     this->AH        = NULL;
@@ -51,7 +26,6 @@ namespace OpenAirspace {
 
     // Viability check
     if (!acOn) {
-      // int check = ts->pos();
       return;
     }
     *acOn = false;
@@ -258,12 +232,6 @@ namespace OpenAirspace {
       }
     }
   }
-
-  /*Airspace::Airspace(const Airspace& par)
-  {
-    this->AN = par.AN;
-    return *this;
-  }*/
 
   // Method for parsing the coords from the string
   Position Airspace::ParseCoord(const QString& text) {
