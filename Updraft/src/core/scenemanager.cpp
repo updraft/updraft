@@ -364,8 +364,7 @@ void SceneManager::createMapManagers() {
   mapManagers.append(
     new MapManager("initial1.earth", tr("OpenStreetMaps")));
   mapManagers.append(
-    new MapManager("initial2.earth", tr("ArcGIS, Satellite Imagery"),
-    true, viewer));
+    new MapManager("initial2.earth", tr("ArcGIS, Satellite Imagery")));
   mapManagers.append(
     new MapManager("initial3.earth", tr("ArcGIS, Topographic Map")));
 }
