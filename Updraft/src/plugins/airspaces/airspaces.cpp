@@ -60,15 +60,12 @@ bool Airspaces::fileOpen(const QString& fileName, int role) {
     case IMPORT_OPENAIRSPACE_FILE:
       oaEngine* engine = new oaEngine(mapLayerGroup, g_core);
 
-      QString displayName = fileName.left(fileName.indexOf('.'));
-      int cuntSlashes = displayName.count('/');
-      displayName = displayName.section('/', cuntSlashes, cuntSlashes);
-
       mapNodes = engine->Draw(fileName);
       if (!mapNodes) return false;
 
+      QFileInfo fileInfo(fileName);
       MapLayerGroupInterface* fileGroup =
-        mapLayerGroup->createMapLayerGroup(displayName);
+        mapLayerGroup->createMapLayerGroup(fileInfo.fileName());
       fileGroup->connectCheckedToVisibility();
       fileGroup->connectSignalContextMenuRequested(this,
         SLOT(contextMenuRequested(QPoint, MapLayerInterface*)));
