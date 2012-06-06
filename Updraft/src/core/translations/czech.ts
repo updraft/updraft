@@ -9,12 +9,12 @@
         <translation>O Updraftu</translation>
     </message>
     <message>
-        <location filename="../ui/aboutdialog.ui" line="50"/>
+        <location filename="../ui/aboutdialog.ui" line="64"/>
         <source>Updraft</source>
         <translation>Updraft</translation>
     </message>
     <message>
-        <location filename="../ui/aboutdialog.ui" line="57"/>
+        <location filename="../ui/aboutdialog.ui" line="77"/>
         <source>version</source>
         <translation>verze</translation>
     </message>
@@ -60,6 +60,18 @@
     <message>
         <source>Close</source>
         <translation type="obsolete">Zavřít</translation>
+    </message>
+    <message>
+        <source>About Updraft</source>
+        <translation type="obsolete">O Updraftu</translation>
+    </message>
+    <message>
+        <source>Updraft</source>
+        <translation type="obsolete">Updraft</translation>
+    </message>
+    <message>
+        <source>version</source>
+        <translation type="obsolete">verze</translation>
     </message>
 </context>
 <context>
@@ -253,42 +265,42 @@
         <translation>Možnosti mapy</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="119"/>
+        <location filename="../scenemanager.cpp" line="120"/>
         <source>Rotate to north</source>
         <translation>Otočit na sever</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="120"/>
+        <location filename="../scenemanager.cpp" line="121"/>
         <source>Ctrl+n</source>
         <translation>Ctrl+n</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="124"/>
+        <location filename="../scenemanager.cpp" line="125"/>
         <source>Restore 2D View</source>
         <translation>Obnovit 2D zobrazení</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="128"/>
+        <location filename="../scenemanager.cpp" line="129"/>
         <source>Set &amp;Home Position...</source>
         <translation>Nastavit &amp;Domácí pozici...</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="136"/>
+        <location filename="../scenemanager.cpp" line="137"/>
         <source>Maps</source>
         <translation>Mapy</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="364"/>
+        <location filename="../scenemanager.cpp" line="365"/>
         <source>OpenStreetMaps</source>
         <translation>OpenStreetMaps</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="366"/>
+        <location filename="../scenemanager.cpp" line="367"/>
         <source>ArcGIS, Satellite Imagery</source>
         <translation>ArcGIS, Satelitní mapa</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="369"/>
+        <location filename="../scenemanager.cpp" line="370"/>
         <source>ArcGIS, Topographic Map</source>
         <translation>ArcGIS, Topografická mapa</translation>
     </message>
