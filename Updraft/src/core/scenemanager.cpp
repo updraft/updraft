@@ -95,8 +95,9 @@ SceneManager::SceneManager() {
 }
 
 void SceneManager::saveHomePosition() {
-  QByteArray saved = StateSaver::saveViewpoint(
-    getMapManager()->getManipulator()->getViewpoint());
+  osgEarth::Viewpoint viewpoint = manipulator->getViewpoint();
+  manipulator->setHomeViewpoint(viewpoint);
+  QByteArray saved = StateSaver::saveViewpoint(viewpoint);
   homePositionSetting->set(saved);
 }
 
@@ -363,8 +364,7 @@ void SceneManager::createMapManagers() {
   mapManagers.append(
     new MapManager("initial1.earth", tr("OpenStreetMaps")));
   mapManagers.append(
-    new MapManager("initial2.earth", tr("ArcGIS, Satellite Imagery"),
-    true, viewer));
+    new MapManager("initial2.earth", tr("ArcGIS, Satellite Imagery")));
   mapManagers.append(
     new MapManager("initial3.earth", tr("ArcGIS, Topographic Map")));
 }
