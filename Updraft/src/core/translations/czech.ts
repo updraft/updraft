@@ -339,7 +339,7 @@
     <message>
         <location filename="../settingsmanager.cpp" line="115"/>
         <source> (advanced)</source>
-        <translation>(pokročilé)</translation>
+        <translation type="unfinished"> (pokročilé)</translation>
     </message>
 </context>
 <context>
