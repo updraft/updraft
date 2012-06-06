@@ -161,7 +161,6 @@ void Updraft::coreSettings() {
 
   currentDataDirectory = dataDirectory->get().value<QDir>();
   qDebug() << "Current data directory: " << currentDataDirectory;
-  dataDirectory->setNeedsRestart(true);
 
   QVariant ellipsoidVariant;
   ellipsoidVariant.setValue(
