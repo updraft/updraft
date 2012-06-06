@@ -1,6 +1,8 @@
 #include "mapmanager.h"
 #include <osgDB/ReadFile>
 #include <osgEarthUtil/ElevationManager>
+#include <osgEarth/Cache>
+#include <osgEarthDrivers/cache_filesystem/FileSystemCache>
 #include <QDebug>
 #include <string>
 #include "updraft.h"
@@ -18,8 +20,20 @@ MapManager::MapManager() {
   manipulator->setNode(mapNode);
 }
 
-MapManager::MapManager(QString earthFile, QString mapName) {
-  osg::Node* loadedMap = osgDB::readNodeFile(earthFile.toStdString());
+MapManager::MapManager(QString earthFile, QString mapName_) {
+  earthFileName = earthFile;
+  this->mapName = mapName_;
+  mapNode = NULL;
+  createMap();
+}
+
+void MapManager::createMap() {
+  if (mapNode != NULL) destroyMap();
+
+  QDir dataDir = updraft->getDataDirectory();
+  QString earthPath = dataDir.absoluteFilePath(earthFileName);
+
+  osg::Node* loadedMap = osgDB::readNodeFile(earthPath.toStdString());
   if (loadedMap != NULL) {
     this->mapNode = osgEarth::MapNode::findMapNode(loadedMap);
     this->map = mapNode->getMap();
@@ -27,11 +41,15 @@ MapManager::MapManager(QString earthFile, QString mapName) {
   } else {
     this->map = new osgEarth::Map();
     QString name = tr("Empty globe");
-    this->map->setName(name.toStdString());
+    this->map->setName(mapName.toStdString());
     this->mapNode = new osgEarth::MapNode(this->map);
   }
     // initialize the manipulator
   setManipulator(new MapManipulator());
+}
+
+void MapManager::destroyMap() {
+  mapNode = NULL;
 }
 
 QVector<osgEarth::ImageLayer*> MapManager::getImageLayers() {
@@ -43,6 +61,11 @@ QVector<osgEarth::ImageLayer*> MapManager::getImageLayers() {
   }
   return imageLayers;
 }
+
+void MapManager::updateCameraProjection() {
+  getManipulator()->updateCameraProjection();
+}
+
 
 QVector<osgEarth::ElevationLayer*> MapManager::getElevationLayers() {
   QVector<osgEarth::ElevationLayer*> elevationLayers;
@@ -62,6 +85,14 @@ QVector<osgEarth::ModelLayer*> MapManager::getModelLayers() {
     modelLayers.append(outModelLayers[i]);
   }
   return modelLayers;
+}
+
+void MapManager::attach(osg::Group* scene) {
+  scene->addChild(mapNode);
+}
+
+void MapManager::detach(osg::Group* scene) {
+  scene->removeChild(this->getMapNode());
 }
 
 QVector<MapLayerInterface*> MapManager::getMapLayers() {
