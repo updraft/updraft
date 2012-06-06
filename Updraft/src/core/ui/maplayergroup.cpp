@@ -158,7 +158,7 @@ bool MapLayerGroup::restoreState(const QByteArray &state) {
   QByteArray id;  // yes, this shadows this->id.
   stream >> id;
 
-  while (!id.isEmpty()) {
+  while (!id.isNull()) {
     QByteArray childState;
     stream >> childState;
 
