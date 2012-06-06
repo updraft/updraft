@@ -150,7 +150,8 @@ void TaskLayer::newTaskPoint(const Util::Location& loc) {
   ss1.setNum(s1, 5, 2);
   ss2.setNum(s2, 5, 2);
 
-  newPoint->setName(QString("Map location:\n%1° %2' %3'' %4\n%5° %6' %7'' %8")
+  newPoint->setName(
+    QString("Map location:\n%1\u00B0 %2' %3'' %4\n%5\u00B0 %6' %7'' %8")
     .arg(d1).arg(m1).arg(ss1).arg(sign1).arg(d2).arg(m2).arg(ss2).arg(sign2));
 
   // If the task point insertion failed, remove it
