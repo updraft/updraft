@@ -49,8 +49,13 @@ class MapLayer : public QObject, virtual public MapLayerInterface {
   void setFilePath(const QString& path);
   QAction* getDeleteAction();
 
-  void saveState(QDataStream *stream);
-  bool restoreState(QDataStream *stream);
+  /// Save the state (check state and expanded state)
+  /// of this layer.
+  QByteArray saveState();
+
+  /// Restore the previsously saved state.
+  /// \see saveState()
+  bool restoreState(const QByteArray &state);
 
  public slots:
   void setVisibility(bool value) = 0;
