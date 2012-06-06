@@ -59,7 +59,7 @@ osg::Geode* TPLayer::createGeode(qreal scale, bool isAirfield) {
     imageName = "turnpoint.png";
   }
   QString texPath =
-    g_core->getStaticDataDirectory().absoluteFilePath(imageName);
+    g_core->getResourcesDirectory().absoluteFilePath(imageName);
   osg::Image *image = osgDB::readImageFile(texPath.toStdString());
   osg::Texture2D *texture = new osg::Texture2D();
   texture->setImage(image);
@@ -111,7 +111,7 @@ osg::Node* TPLayer::createAutoScale(
   // Creates the autoscale transform node
   QString fontName = "LiberationSans-Regular.ttf";
   QString fontPath =
-    g_core->getStaticDataDirectory().absoluteFilePath(fontName);
+    g_core->getResourcesDirectory().absoluteFilePath(fontName);
 
   // set the osgText
   osgText::Text* text = new osgText::Text;
