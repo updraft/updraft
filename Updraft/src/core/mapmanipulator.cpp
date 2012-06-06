@@ -14,7 +14,7 @@ MapManipulator::MapManipulator() {
   applySettings(settings);
 
   mouseZoomSensitivity = updraft->settingsManager->addSetting(
-    "map:mouse_zoom_sensitivity",
+    "map_advanced:mouse_zoom_sensitivity",
     tr("Mouse zoom sensitivity"),
     QVariant(1.0),
     true);

@@ -18,7 +18,7 @@ Q_OBJECT
   void setModel(QAbstractItemModel* model);
 
  public slots:
-  bool setShowHidden(bool show);
+  bool setShowAdvanced(bool show);
 
  protected slots:
   void dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
@@ -27,10 +27,10 @@ Q_OBJECT
     const QModelIndex& current, const QModelIndex& previous);
 
  private:
-  /// Tells whether the group is a group with hidden settings
-  bool groupIsHidden(int row);
-  /// Says whether the group has any data yet
-  bool groupIsEmpty(int row);
+  /// Tells whether the group is a group with advanced settings
+  bool groupIsAdvanced(int row);
+  /// Says whether the group is hidden or empty and should thus not show
+  bool groupShouldBeHidden(int row);
 
   /// Hides the settings group in the given row.
   void hideGroup(int row);
@@ -38,8 +38,9 @@ Q_OBJECT
   /// If the group does not contain any settings, it stays hidden.
   void displayGroup(int row);
 
+  QRegExp advancedGroupRegExp;
   QRegExp hiddenGroupRegExp;
-  bool showHidden;
+  bool showAdvanced;
   SettingsBottomView* bottom;
   bool groupChangeInProgress;
 };

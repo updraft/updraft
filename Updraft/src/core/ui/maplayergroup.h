@@ -67,14 +67,19 @@ class MapLayerGroup : public MapLayer, public MapLayerGroupInterface {
 
   /// Save the state (check state and expanded state)
   /// of this layer (and possibly all children).
+  ///
+  /// \note
+  /// Format of the save is following:
+  /// 1) For each child:
+  ///   a) Save child's id
+  ///   c) Save the child's data as QByteArray
+  /// 3) Empty QByteArray as a separator
+  /// 4) Save this as MapLayer
   QByteArray saveState();
 
   /// Restore the previsously saved state.
   /// \see saveState()
   bool restoreState(const QByteArray &state);
-
-  void saveState(QDataStream *stream);
-  bool restoreState(QDataStream *stream);
 
  private:
   void addToScene(MapLayerGroup* group);
