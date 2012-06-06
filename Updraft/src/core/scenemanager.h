@@ -44,6 +44,12 @@ class SceneManager: public QObject {
   /// displayed map.
   MapManager* getMapManager();
 
+  /// Let MapManagers re-create the maps.
+  void createMaps();
+
+  /// Destroy all map nodes.
+  void destroyMaps();
+
   /// Removes the group from the root.
   bool removeGroup(osg::Group* group);
 
@@ -111,6 +117,7 @@ class SceneManager: public QObject {
   osg::Camera* camera;
   MapManipulator* manipulator;
   osgEarth::Util::ElevationManager* elevationManager;
+  osgEarth::Util::Viewpoint saveViewpoint;
   osgQt::GraphicsWindowQt* graphicsWindow;
 
   /// Timer that triggers the drawing procedure.
