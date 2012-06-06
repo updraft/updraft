@@ -58,8 +58,8 @@ Updraft::Updraft(int argc, char** argv)
 }
 
 Updraft::~Updraft() {
-  QByteArray x = StateSaver::saveViewpoint(sceneManager->getMapManager()->
-    getManipulator()->getViewpoint());
+  QByteArray x = StateSaver::saveViewpoint(
+    sceneManager->getViewpoint());
 
   qDebug() << x;
   qDebug() << StateSaver::saveViewpoint(StateSaver::restoreViewpoint(x));

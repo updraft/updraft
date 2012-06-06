@@ -15,9 +15,6 @@ MapManager::MapManager() {
   QString name = tr("Empty globe");
   this->map->setName(name.toStdString());
   this->mapNode = new osgEarth::MapNode(this->map);
-
-  this->manipulator = new MapManipulator();
-  manipulator->setNode(mapNode);
 }
 
 MapManager::MapManager(QString earthFile, QString mapName_) {
@@ -44,8 +41,6 @@ void MapManager::createMap() {
     this->map->setName(mapName.toStdString());
     this->mapNode = new osgEarth::MapNode(this->map);
   }
-    // initialize the manipulator
-  setManipulator(new MapManipulator());
 }
 
 void MapManager::destroyMap() {
@@ -61,11 +56,6 @@ QVector<osgEarth::ImageLayer*> MapManager::getImageLayers() {
   }
   return imageLayers;
 }
-
-void MapManager::updateCameraProjection() {
-  getManipulator()->updateCameraProjection();
-}
-
 
 QVector<osgEarth::ElevationLayer*> MapManager::getElevationLayers() {
   QVector<osgEarth::ElevationLayer*> elevationLayers;
@@ -107,13 +97,8 @@ osgEarth::Map* MapManager::getMap() {
   return map;
 }
 
-MapManipulator* MapManager::getManipulator() {
-  return manipulator;
-}
-
-void MapManager::setManipulator(MapManipulator* newManipulator) {
+void MapManager::bindManipulator(MapManipulator* newManipulator) {
   newManipulator->setNode(mapNode);
-  manipulator = newManipulator;
 }
 
 MapObject* MapManager::getMapObject() {

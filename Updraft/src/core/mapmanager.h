@@ -34,12 +34,9 @@ class MapManager {
 
   osgEarth::MapNode* getMapNode();
   osgEarth::Map* getMap();
-  MapManipulator* getManipulator();
-  void setManipulator(MapManipulator* newManipulator);
+  void bindManipulator(MapManipulator* newManipulator);
   bool hasElevation();
   MapObject* getMapObject();
-
-  void updateCameraProjection();
 
   /// Gets all the map layers from the map.
   QVector<MapLayerInterface*> getMapLayers();
@@ -54,7 +51,6 @@ class MapManager {
   osgEarth::Map* map;
   QVector<MapLayerInterface*> mapLayers;
   MapLayerGroupInterface* mapLayerGroup;
-  osg::ref_ptr<MapManipulator> manipulator;
   MapMapObject mapObject;
 
   /// Gets a list of ImageLayers in the map.
