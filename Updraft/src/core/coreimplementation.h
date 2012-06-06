@@ -34,18 +34,19 @@ class CoreImplementation : public CoreInterface {
   void registerFiletype(const FileRegistration &registration);
 
   QDir getDataDirectory();
-  QDir getStaticDataDirectory();
+  QDir getResourcesDirectory();
 
   void addSettingsGroup(
     const QString& groupId,
     const QString& description,
+    SettingsGroupType type,
     const QString& icon);
 
   SettingInterface* addSetting(
     const QString& settingId,
     const QString& description,
     QVariant initValue,
-    bool hidden);
+    SettingsGroupType type);
 
   osg::Group* getSimpleGroup();
 

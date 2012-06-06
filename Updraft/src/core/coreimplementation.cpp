@@ -56,24 +56,25 @@ QDir CoreImplementation::getDataDirectory() {
   return updraft->getDataDirectory();
 }
 
-QDir CoreImplementation::getStaticDataDirectory() {
-  return updraft->getStaticDataDirectory();
+QDir CoreImplementation::getResourcesDirectory() {
+  return updraft->getResourcesDirectory();
 }
 
 void CoreImplementation::addSettingsGroup(
     const QString& groupId,
     const QString& description,
+    SettingsGroupType type,
     const QString& icon) {
-  updraft->settingsManager->addGroup(groupId, description, icon);
+  updraft->settingsManager->addGroup(groupId, description, type, icon);
 }
 
 SettingInterface* CoreImplementation::addSetting(
     const QString& settingId,
     const QString& description,
     QVariant initVal,
-    bool hidden) {
+    SettingsGroupType type) {
   return updraft->settingsManager->
-    addSetting(settingId, description, initVal, hidden);
+    addSetting(settingId, description, initVal, type);
 }
 
 osg::Group* CoreImplementation::getSimpleGroup() {

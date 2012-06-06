@@ -12,6 +12,7 @@
 #include "fileregistration.h"
 #include "maplayergroupinterface.h"
 #include "settinginterface.h"
+#include "settingsgrouptype.h"
 #include "mapobject.h"
 
 class QWidget;
@@ -81,7 +82,7 @@ class CoreInterface {
 
   /// Gets path of the immutable application data directory.
   /// \return QDir with the full path to the static data directory
-  virtual QDir getStaticDataDirectory() = 0;
+  virtual QDir getResourcesDirectory() = 0;
 
   /// Adds a group into the settings dialog.
   /// If a setting group with the given ID already exists, its description
@@ -93,6 +94,7 @@ class CoreInterface {
   virtual void addSettingsGroup(
     const QString& groupId,
     const QString& description,
+    SettingsGroupType type = GROUP_VISIBLE,
     const QString& icon = ":/core/icons/configure.png") = 0;
 
   /// Adds a setting into the settings dialog.
@@ -115,7 +117,7 @@ class CoreInterface {
     const QString& settingId,
     const QString& description,
     QVariant initValue,
-    bool hidden = false) = 0;
+    SettingsGroupType type = GROUP_VISIBLE) = 0;
 
   /// Returns the pointer to the basic node group for drawing.
   virtual osg::Group* getSimpleGroup() = 0;

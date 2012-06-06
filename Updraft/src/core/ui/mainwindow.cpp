@@ -191,7 +191,7 @@ void MainWindow::appExit() {
 
 void MainWindow::openUserDoc() {
   QString path =
-    updraft->getStaticDataDirectory().
+    updraft->getResourcesDirectory().
     absoluteFilePath("UpdraftUserManual.pdf");
   QUrl url("file:///" + path);
 

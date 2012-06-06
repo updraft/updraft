@@ -17,7 +17,7 @@ MapManipulator::MapManipulator() {
     "map:mouse_zoom_sensitivity",
     tr("Mouse zoom sensitivity"),
     QVariant(1.0),
-    true);
+    GROUP_ADVANCED);
 
   mouseZoomSensitivity->callOnValueChanged(
     this, SLOT(mouseZoomSensitivityChanged()));

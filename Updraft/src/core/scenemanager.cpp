@@ -24,7 +24,7 @@ namespace Core {
 SceneManager::SceneManager() {
   // Create a group for map settings
   updraft->settingsManager->addGroup(
-    "map", tr("Map options"), ":/core/icons/map.png");
+    "map", tr("Map options"), GROUP_ADVANCED, ":/core/icons/map.png");
 
   osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
@@ -115,6 +115,7 @@ void SceneManager::menuItems() {
 void SceneManager::mapLayerGroup() {
   MapLayerGroupInterface* mapLayerGroup = updraft->mainWindow->
     getInvisibleRootMapLayerGroup()->createMapLayerGroup(tr("Maps"));
+  mapLayerGroup->setId("maps");
   mapLayerGroup->setCheckable(false);
 
   for (int i = 0; i < mapManagers.size(); i++) {
@@ -353,13 +354,6 @@ void SceneManager::destroyMaps() {
   for (int i = 0; i < mapManagers.size(); i++) {
     mapManagers[i]->destroyMap();
   }
-  /*
-  osgEarth::Map* tempMap = new osgEarth::Map();
-  mapNode = osgEarth::MapNode::findMapNode(tempMap);
-  manipulator = new MapManipulator();
-  manipulator->setHomeViewpoint(viewpoint);
-  manipulator->setMapNode(mapNode);
-  */
 }
 
 void SceneManager::createMaps() {

@@ -4,6 +4,7 @@
 #include <QtGui>
 #include "ui/settingsdialog.h"
 #include "variantfunctions.h"
+#include "../settingsgrouptype.h"
 
 namespace Updraft {
 
@@ -35,12 +36,13 @@ class SettingsManager: public QObject {
     const QString& settingId,
     const QString& description,
     QVariant defaultValue,
-    bool hiden = false);
+    SettingsGroupType type = GROUP_VISIBLE);
 
   void addGroup(
     const QString& groupId,
     const QString& description,
-    const QString& icon);
+    SettingsGroupType type = GROUP_VISIBLE,
+    const QString& icon = ":/core/icons/configure.png");
 
   /// \return Directory where the currently used settings file resides
   QDir getSettingsDir();

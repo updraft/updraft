@@ -20,7 +20,7 @@ PickHandler::PickHandler(): mX(0), mY(0) {
     "map:mouseEventTolerance",
     tr("Mouse click tolerance"),
     QVariant(10.0),
-    true);
+    GROUP_ADVANCED);
 }
 
 bool PickHandler::handle(

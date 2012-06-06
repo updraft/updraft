@@ -20,8 +20,7 @@ TranslationManager::TranslationManager() {
   languageSetting = updraft->settingsManager->addSetting(
     "general:language",
     "",  // description is given after a language file is loaded
-    defaultValue,
-    false);
+    defaultValue);
   languageSetting->setNeedsRestart(true);
 
   addTranslations(updraft->getTranslationDirectory());

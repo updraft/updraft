@@ -74,12 +74,13 @@ QDir Updraft::getDataDirectory() {
   QDir dataDir = currentDataDirectory;
   dataDir.cd("data");
   dataDir.makeAbsolute();
+  qDebug() << "getDataDirectory" << dataDir.path();
   return dataDir;
 }
 
-QDir Updraft::getStaticDataDirectory() {
+QDir Updraft::getResourcesDirectory() {
   QDir dataDir(applicationDirPath());
-  dataDir.cd("data");
+  dataDir.cd("resources");
   return dataDir;
 }
 
@@ -118,7 +119,10 @@ void Updraft::dataDirectoryChanged() {
     progress.setCancelButton(0);
     progress.setWindowModality(Qt::WindowModal);
 
-    moveSuccessful = moveDataDirectory(dataDir, newDataDir, &progress);
+    moveSuccessful = moveDataDirectory(
+      dataDir.absoluteFilePath("data"),
+      newDataDir.absoluteFilePath("data"),
+      &progress);
   }
 
   if (moveSuccessful) {
@@ -145,7 +149,7 @@ void Updraft::dataDirectoryChanged() {
 
 void Updraft::coreSettings() {
   settingsManager->addGroup(
-    "general", tr("General"), ":/core/icons/general.png");
+    "general", tr("General"), GROUP_VISIBLE, ":/core/icons/general.png");
 
   QDir dataDir = settingsManager->getSettingsDir();
   QVariant dataDirVariant;
@@ -179,7 +183,7 @@ void Updraft::createEllipsoids() {
 }
 
 bool Updraft::checkDataDirectory() {
-  // First try if the data directory is valid
+  // First try if the data directory exists
   QDir dataDir = currentDataDirectory;
   qDebug() << "Data directory found in settings: " << dataDir;
   if (dataDir.cd("data")) {
@@ -187,15 +191,29 @@ bool Updraft::checkDataDirectory() {
     return true;
   }
 
-  // If the data directory is not valid, create it by settings.xml
-  dataDir = settingsManager->getSettingsDir();
-  QDir srcDir = getStaticDataDirectory();
-  if (!copyDirectory(srcDir, "data", dataDir)) {
-    return false;
+  // Restore data directory to default location (next to settings)
+  QDir defaultDataDir = QDir(settingsManager->getSettingsDir());
+
+  QVariant dirVariant;
+  dirVariant.setValue<QDir>(defaultDataDir);
+  dataDirectory->set(dirVariant);
+
+  currentDataDirectory = defaultDataDir;
+
+  // Check if data directory exists at default location
+  if (dataDir.exists("data")) {
+    qDebug() << "Data directory found next to settings";
+    return true;
   }
 
-  qDebug() << "Data directory created next to settings";
-  return true;
+  // If the data directory is not valid, create it by settings.xml
+  QDir srcDir = getResourcesDirectory();
+  srcDir.cd("data");
+  if (copyDirectory(srcDir, defaultDataDir.absoluteFilePath("data"))) {
+    qDebug() << "Data directory created next to settings";
+    return true;
+  }
+  return false;
 }
 
 /// Pull the lever.
@@ -215,27 +233,24 @@ void Updraft::hideSplash() {
 
 bool Updraft::copyDirectory(
   QDir srcDir,
-  QString dirName,
   QDir dstDir,
   int* progress,
   QProgressDialog* dialog) {
   // Set the dialog label
   if (dialog)
-    dialog->setLabelText(QString(tr("Copying directory %1 in %2...")).
-      arg(dirName).arg(srcDir.absolutePath()));
+    dialog->setLabelText(QString(tr("Copying directory %1 to %2...")).
+    arg(srcDir.absolutePath()).arg(dstDir.absolutePath()));
 
   QStack<QDir> dfsStack;
 
   // Begin with the copied directory
-  QDir begin = srcDir;
-  if (!begin.cd(dirName)) {
-    return false;
-  }
-  dfsStack.push(begin);
+  dfsStack.push(srcDir);
 
   // Try to create the destination directory
-  if (!dstDir.mkdir(dstDir.filePath(dirName)))
+  if (dstDir.exists())
       return false;
+
+  dstDir.mkpath(".");
 
   // Take directories from the stack and copy them
   while (!dfsStack.isEmpty()) {
@@ -285,7 +300,7 @@ bool Updraft::moveDataDirectory(
   QDir newDir,
   QProgressDialog* dialog) {
   // We cannot move the directory if the destination already exists
-  if (newDir.exists("data")) {
+  if (newDir.exists()) {
     return false;
   }
 
@@ -295,13 +310,9 @@ bool Updraft::moveDataDirectory(
   // The directory traversal will be done using DFS
   QStack<QDir> dfsStack;
 
-  QDir begin = oldDir;
-  begin.cd("data");
-  dfsStack.push(begin);
-
   // Count the total number of files
   int filenum = 0;
-  dfsStack.push(begin);
+  dfsStack.push(oldDir);
   while (!dfsStack.isEmpty()) {
     QDir srcDir = dfsStack.pop();
 
@@ -321,7 +332,7 @@ bool Updraft::moveDataDirectory(
   int progress = 0;
 
   // Copy the data directory
-  bool success = copyDirectory(oldDir, "data", newDir, &progress, dialog);
+  bool success = copyDirectory(oldDir, newDir, &progress, dialog);
   if (!success) {
     dialog->setValue(filenum*2);  // Dismiss the dialog
     return false;
@@ -330,7 +341,7 @@ bool Updraft::moveDataDirectory(
   // If we got here, everything is OK, so we can delete the old directory
   dialog->setLabelText(tr("Removing old data directory..."));
 
-  dfsStack.push(begin);
+  dfsStack.push(oldDir);
   while (!dfsStack.isEmpty()) {
     QDir srcDir = dfsStack.top();
     QFileInfoList files =
