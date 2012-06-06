@@ -5,8 +5,6 @@
 #include <osgEarth/ElevationLayer>
 #include <osgEarth/MapNode>
 #include <osgEarth/Map>
-#include <osgEarthUtil/SkyNode>
-#include <osgViewer/Viewer>
 #include <QString>
 #include <QVector>
 
@@ -27,8 +25,7 @@ class MapManager {
   MapManager();
 
   /// Creates a new MapManager with map created from the earth file.
-  explicit MapManager(QString earthFile, QString mapName,
-    bool hasSkyNode = false, osgViewer::Viewer* viewer_ = NULL);
+  explicit MapManager(QString earthFile, QString mapName);
 
   void createMap();
   void destroyMap();
@@ -59,11 +56,6 @@ class MapManager {
   MapLayerGroupInterface* mapLayerGroup;
   osg::ref_ptr<MapManipulator> manipulator;
   MapMapObject mapObject;
-
-  bool hasSkyNode;
-  osg::ref_ptr<osgEarth::Util::SkyNode> skyNode;
-  osgViewer::Viewer* viewer;
-  bool is3d;
 
   /// Gets a list of ImageLayers in the map.
   QVector<osgEarth::ImageLayer*> getImageLayers();
