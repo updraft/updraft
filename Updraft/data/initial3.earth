@@ -17,6 +17,5 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
     <image name="OSM-topographic-maps" driver="arcgis">
         <url>http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer</url>
         <nodata_image>http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/100/0/0.jpeg</nodata_image>
-        <cacheid>topo_image_cache</cacheid>
     </image>
 </map>

@@ -11,6 +11,7 @@
 #include "ui/maplayergroup.h"
 #include "mapmanipulator.h"
 #include "mapmapobject.h"
+#include "updraft.h"
 
 namespace Updraft {
 namespace Core {
@@ -26,6 +27,9 @@ class MapManager {
   /// Creates a new MapManager with map created from the earth file.
   explicit MapManager(QString earthFile, QString mapName);
 
+  void createMap();
+  void destroyMap();
+
   QString getName();
 
   osgEarth::MapNode* getMapNode();
@@ -39,6 +43,8 @@ class MapManager {
   QVector<MapLayerInterface*> getMapLayers();
 
  private:
+  QString earthFileName;
+  QString mapName;
   osg::ref_ptr<osgEarth::MapNode> mapNode;
   osgEarth::Map* map;
   QVector<MapLayerInterface*> mapLayers;

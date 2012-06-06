@@ -44,6 +44,7 @@ SceneManager::SceneManager() {
   viewer->setCamera(camera);
 
   createMapManagers();
+  activeMapIndex = 0;
   elevationManager = createElevationManager();
 
   // create and set scene
@@ -338,18 +339,38 @@ void SceneManager::untilt() {
 }
 
 void SceneManager::createMapManagers() {
-  QDir dataDir = updraft->getStaticDataDirectory();
   mapManagers.append(
-    new MapManager(dataDir.absoluteFilePath("initial1.earth"),
-      tr("OpenStreetMaps")));
+    new MapManager("initial1.earth", tr("OpenStreetMaps")));
   mapManagers.append(
-    new MapManager(dataDir.absoluteFilePath("initial2.earth"),
-      tr("ArcGIS, Satellite Imagery")));
+    new MapManager("initial2.earth", tr("ArcGIS, Satellite Imagery")));
   mapManagers.append(
-    new MapManager(dataDir.absoluteFilePath("initial3.earth"),
-      tr("ArcGIS, Topographic Map")));
+    new MapManager("initial3.earth", tr("ArcGIS, Topographic Map")));
+}
 
-  activeMapIndex = 0;
+void SceneManager::destroyMaps() {
+  saveViewpoint = manipulator->getViewpoint();
+  sceneRoot->removeChild(mapManagers[activeMapIndex]->getMapNode());
+  for (int i = 0; i < mapManagers.size(); i++) {
+    mapManagers[i]->destroyMap();
+  }
+  /*
+  osgEarth::Map* tempMap = new osgEarth::Map();
+  mapNode = osgEarth::MapNode::findMapNode(tempMap);
+  manipulator = new MapManipulator();
+  manipulator->setHomeViewpoint(viewpoint);
+  manipulator->setMapNode(mapNode);
+  */
+}
+
+void SceneManager::createMaps() {
+  for (int i = 0; i < mapManagers.size(); i++) {
+    mapManagers[i]->createMap();
+  }
+  sceneRoot->addChild(mapManagers[activeMapIndex]->getMapNode());
+  manipulator = new MapManipulator();
+  manipulator->setHomeViewpoint(saveViewpoint);
+  mapManagers[activeMapIndex]->setManipulator(manipulator);
+  viewer->setCameraManipulator(manipulator);
 }
 
 osgEarth::Util::ObjectPlacer* SceneManager::getObjectPlacer() {

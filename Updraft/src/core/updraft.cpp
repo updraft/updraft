@@ -106,6 +106,7 @@ void Updraft::dataDirectoryChanged() {
   QDir dataDir = currentDataDirectory;
   QDir newDataDir = dataDirectory->get().value<QDir>();
 
+  sceneManager->destroyMaps();
   bool moveSuccessful =
     dataDir.rename(
       dataDir.absoluteFilePath("data"),
@@ -138,6 +139,7 @@ void Updraft::dataDirectoryChanged() {
     dataDirectory->set(dataDirVariant);
   }
 
+  sceneManager->createMaps();
   dataDirectoryChangeInProgress = false;
 }
 
