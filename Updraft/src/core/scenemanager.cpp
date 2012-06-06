@@ -118,6 +118,7 @@ void SceneManager::menuItems() {
   Menu* viewMenu = updraft->mainWindow->getSystemMenu(MENU_VIEW);
 
   QAction* resetNorthAction = new QAction(tr("Rotate to north"), this);
+  resetNorthAction->setShortcut(QKeySequence(tr("Ctrl+n")));
   connect(resetNorthAction, SIGNAL(triggered()), this, SLOT(resetNorth()));
   viewMenu->insertAction(200, resetNorthAction);
 
