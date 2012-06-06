@@ -143,7 +143,7 @@ void Updraft::dataDirectoryChanged() {
 
 void Updraft::coreSettings() {
   settingsManager->addGroup(
-    "general", tr("General"), ":/core/icons/general.png");
+    "general", tr("General"), GROUP_VISIBLE, ":/core/icons/general.png");
 
   QDir dataDir = settingsManager->getSettingsDir();
   QVariant dataDirVariant;

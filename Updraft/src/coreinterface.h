@@ -12,6 +12,7 @@
 #include "fileregistration.h"
 #include "maplayergroupinterface.h"
 #include "settinginterface.h"
+#include "settingsgrouptype.h"
 #include "mapobject.h"
 
 class QWidget;
@@ -93,6 +94,7 @@ class CoreInterface {
   virtual void addSettingsGroup(
     const QString& groupId,
     const QString& description,
+    SettingsGroupType type = GROUP_VISIBLE,
     const QString& icon = ":/core/icons/configure.png") = 0;
 
   /// Adds a setting into the settings dialog.

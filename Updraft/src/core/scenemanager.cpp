@@ -24,7 +24,7 @@ namespace Core {
 SceneManager::SceneManager() {
   // Create a group for map settings
   updraft->settingsManager->addGroup(
-    "map", tr("Map options"), ":/core/icons/map.png");
+    "map", tr("Map options"), GROUP_ADVANCED, ":/core/icons/map.png");
 
   osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 

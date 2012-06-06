@@ -6,8 +6,9 @@ namespace Core {
 
 SettingsTopView::SettingsTopView(QWidget* parent): QListView(parent) {
   bottom = NULL;
+  advancedGroupRegExp = QRegExp("_advanced$");
   hiddenGroupRegExp = QRegExp("_hidden$");
-  showHidden = false;
+  showAdvanced = false;
   groupChangeInProgress = false;
   setSelectionMode(QAbstractItemView::SingleSelection);
 }
@@ -16,44 +17,44 @@ void SettingsTopView::setModel(QAbstractItemModel* model) {
   QAbstractItemView::setModel(model);
 
   for (int row = 0; row < model->rowCount(); ++row) {
-    if (groupIsEmpty(row)) {
+    if (groupShouldBeHidden(row)) {
       hideGroup(row);
     }
   }
 }
 
-bool SettingsTopView::setShowHidden(bool show) {
+bool SettingsTopView::setShowAdvanced(bool show) {
   // If the currently selected group should be hidden, try to change it
   if (currentIndex().isValid() &&
-    showHidden &&
+    showAdvanced &&
     !show &&
-    groupIsHidden(currentIndex().row())) {
+    groupIsAdvanced(currentIndex().row())) {
     // Find the first row that doesn't have to be hidden and try to select it
     int row;
     for (row = 0; row < model()->rowCount(); ++row) {
-      if (!groupIsHidden(row)) break;
+      if (!groupIsAdvanced(row)) break;
     }
     setCurrentIndex(model()->index(row, 0));
 
     // If the change didn't succeed (i.e. user selected "Cancel"), fail too
-    if (groupIsHidden(currentIndex().row())) return true;
+    if (groupIsAdvanced(currentIndex().row())) return true;
   }
 
-  showHidden = show;
+  showAdvanced = show;
 
-  if (showHidden) {
+  if (showAdvanced) {
     for (int row = 0; row < model()->rowCount(); ++row) {
       displayGroup(row);
     }
   } else {
     for (int row = 0; row < model()->rowCount(); ++row) {
-      if (groupIsHidden(row)) {
+      if (groupIsAdvanced(row)) {
         hideGroup(row);
       }
     }
   }
 
-  return showHidden;
+  return showAdvanced;
 }
 
 void SettingsTopView::dataChanged(
@@ -64,8 +65,8 @@ void SettingsTopView::dataChanged(
   if (!parent.isValid()) {
     for (int row = topLeft.row(); row <= bottomRight.row(); ++row) {
       // Hide hidden groups (if they should not be shown) or empty groups
-      if ((!showHidden && groupIsHidden(row)) ||
-          (groupIsEmpty(row))) {
+      if ((!showAdvanced && groupIsAdvanced(row)) ||
+          (groupShouldBeHidden(row))) {
         hideGroup(row);
       }
     }
@@ -80,27 +81,29 @@ void SettingsTopView::rowsInserted(
   if (parent.isValid()) {
     int row = parent.row();
 
-    if (!groupIsEmpty(row)) {
-      if (!groupIsHidden(row) || showHidden) {
+    if (!groupShouldBeHidden(row)) {
+      if (!groupIsAdvanced(row) || showAdvanced) {
         displayGroup(row);
       }
     }
   }
 }
 
-bool SettingsTopView::groupIsHidden(int row) {
+bool SettingsTopView::groupIsAdvanced(int row) {
   QModelIndex groupIndex = model()->index(row, 0);
   QVariant groupName = model()->data(groupIndex, Qt::UserRole);
-  // The group name has "_hidden" at the end
-  return hiddenGroupRegExp.indexIn(groupName.toString()) != -1;
+  // The group name has "_advanced" at the end
+  return advancedGroupRegExp.indexIn(groupName.toString()) != -1;
 }
 
-bool SettingsTopView::groupIsEmpty(int row) {
+bool SettingsTopView::groupShouldBeHidden(int row) {
   QModelIndex groupIndex = model()->index(row, 0);
   if (model()->rowCount(groupIndex) == 0)
     return true;
-  else
-    return false;
+
+  QVariant groupName = model()->data(groupIndex, Qt::UserRole);
+  // The group name has "_hidden" at the end
+  return hiddenGroupRegExp.indexIn(groupName.toString()) != -1;
 }
 
 void SettingsTopView::hideGroup(int row) {
@@ -108,8 +111,8 @@ void SettingsTopView::hideGroup(int row) {
 }
 
 void SettingsTopView::displayGroup(int row) {
-  // Empty settings groups will stay hidden
-  if (groupIsEmpty(row)) return;
+  // Some settings groups will stay hidden
+  if (groupShouldBeHidden(row)) return;
 
   setRowHidden(row, false);
 }

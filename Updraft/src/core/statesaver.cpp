@@ -9,15 +9,16 @@ namespace Updraft {
 namespace Core {
 
 StateSaver::StateSaver() {
-  updraft->settingsManager->addGroup("state", "Application state", "");
+  updraft->settingsManager->addGroup(
+    "state", "Application state", GROUP_HIDDEN, "");
 
   windowGeometry = updraft->settingsManager->addSetting(
-    "state:geometry", "Main window geometry", QByteArray(), true);
+    "state_hidden:geometry", "Main window geometry", QByteArray(), true);
   openDirectory = updraft->settingsManager->addSetting(
-    "state:openDirectory", "File open dialog directory",
+    "state_hidden:openDirectory", "File open dialog directory",
     QVariant(), true);
   mapLayers = updraft->settingsManager->addSetting(
-    "state:maplayers", "Map layers", QByteArray(), true);
+    "state_hidden:maplayers", "Map layers", QByteArray(), true);
 }
 
 void StateSaver::save() {

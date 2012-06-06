@@ -99,9 +99,19 @@ SettingInterface* SettingsManager::addSetting(
 void SettingsManager::addGroup(
   const QString& groupId,
   const QString& description,
+  SettingsGroupType type,
   const QString& icon) {
-  addGroupInternal(groupId + "_visible", description, icon);
-  addGroupInternal(groupId + "_hidden", description + tr(" (hidden)"), icon);
+  switch (type) {
+    case GROUP_VISIBLE:
+      addGroupInternal(groupId + "_visible", description, icon);
+    break;
+    case GROUP_HIDDEN:
+      addGroupInternal(groupId + "_hidden", description, icon);
+    break;
+    case GROUP_ADVANCED:
+      addGroupInternal(groupId + "_advanced", description, icon);
+    break;
+  }
 }
 
 QDir SettingsManager::getSettingsDir() {

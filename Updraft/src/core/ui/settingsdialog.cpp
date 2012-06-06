@@ -83,8 +83,8 @@ void SettingsDialog::buttonBoxClicked(QAbstractButton* button) {
 
 void SettingsDialog::hideCheckboxToggled() {
   bool state = ui->showHidden->checkState();
-  bool showHidden = ui->topView->setShowHidden(state);
-  ui->showHidden->setCheckState(showHidden ? Qt::Checked : Qt::Unchecked);
+  bool showAdvanced = ui->topView->setShowAdvanced(state);
+  ui->showHidden->setCheckState(showAdvanced ? Qt::Checked : Qt::Unchecked);
 }
 
 void SettingsDialog::restartNeeded(bool needed) {

@@ -63,8 +63,9 @@ QDir CoreImplementation::getStaticDataDirectory() {
 void CoreImplementation::addSettingsGroup(
     const QString& groupId,
     const QString& description,
+    SettingsGroupType type,
     const QString& icon) {
-  updraft->settingsManager->addGroup(groupId, description, icon);
+  updraft->settingsManager->addGroup(groupId, description, type, icon);
 }
 
 SettingInterface* CoreImplementation::addSetting(
