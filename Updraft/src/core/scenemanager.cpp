@@ -74,7 +74,8 @@ SceneManager::SceneManager() {
 
   viewer->setSceneData(sceneRoot);
 
-  manipulator = mapManagers[activeMapIndex]->getManipulator();
+  manipulator = new MapManipulator();
+  mapManagers[activeMapIndex]->bindManipulator(manipulator);
   manipulator->setHomeViewpoint(getInitialPosition());
 
   viewer->setCameraManipulator(manipulator);
@@ -184,8 +185,7 @@ void SceneManager::startInitialAnimation() {
 }
 
 const osg::EllipsoidModel* SceneManager::getCurrentMapEllipsoid() {
-  return mapManagers[activeMapIndex]->getManipulator()->
-    getSRS()->getEllipsoid();
+  return manipulator->getSRS()->getEllipsoid();
 }
 
 void SceneManager::redrawScene() {
@@ -194,10 +194,13 @@ void SceneManager::redrawScene() {
   if (i == 1) startInitialAnimation();
   if (i < 2) ++i;
 
-
-  getMapManager()->updateCameraProjection();
+  updateCameraProjection();
 
   viewer->frame();
+}
+
+void SceneManager::updateCameraProjection() {
+  manipulator->updateCameraProjection();
 }
 
 bool SceneManager::removeGroup(osg::Group* group) {
@@ -262,11 +265,6 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
     // checked non active map
     // replace the map in the scene:
     if (value == true) {
-      osgEarth::Util::EarthManipulator::CameraProjection projection;
-      projection = osgEarth::Util::EarthManipulator::PROJ_PERSPECTIVE;
-      manipulator->getSettings()->setCameraProjection(projection);
-      viewer->frame();
-
       int oldIndex = activeMapIndex;
       activeMapIndex = index;
       unregisterOsgNode(mapManagers[oldIndex]->getMapNode());
@@ -289,12 +287,8 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
         }
       }
 
-      // manipulator = mapManagers[activeMapIndex]->getManipulator();
-      manipulator = new MapManipulator();
-      manipulator->setHomeViewpoint(viewpoint);
-      mapManagers[activeMapIndex]->setManipulator(manipulator);
-
-      viewer->setCameraManipulator(manipulator);
+      manipulator->setViewpoint(viewpoint);
+      mapManagers[activeMapIndex]->bindManipulator(manipulator);
 
       registerOsgNode(mapNode, mapManagers[activeMapIndex]->getMapObject());
       layers[oldIndex]->setChecked(false);
@@ -370,8 +364,7 @@ void SceneManager::createMapManagers() {
 }
 
 void SceneManager::destroyMaps() {
-  saveViewpoint = manipulator->getViewpoint();
-  sceneRoot->removeChild(mapManagers[activeMapIndex]->getMapNode());
+  mapManagers[activeMapIndex]->detach(sceneRoot);
   for (int i = 0; i < mapManagers.size(); i++) {
     mapManagers[i]->destroyMap();
   }
@@ -381,15 +374,16 @@ void SceneManager::createMaps() {
   for (int i = 0; i < mapManagers.size(); i++) {
     mapManagers[i]->createMap();
   }
-  sceneRoot->addChild(mapManagers[activeMapIndex]->getMapNode());
-  manipulator = new MapManipulator();
-  manipulator->setHomeViewpoint(saveViewpoint);
-  mapManagers[activeMapIndex]->setManipulator(manipulator);
-  viewer->setCameraManipulator(manipulator);
+  mapManagers[activeMapIndex]->attach(sceneRoot);
+  mapManagers[activeMapIndex]->bindManipulator(manipulator);
 }
 
 osgEarth::Util::ObjectPlacer* SceneManager::getObjectPlacer() {
   return placer;
+}
+
+osgEarth::Util::Viewpoint SceneManager::getViewpoint() {
+  return manipulator->getViewpoint();
 }
 
 }  // end namespace Core
