@@ -22,8 +22,6 @@
 namespace Updraft {
 namespace Core {
 
-const float SceneManager::flyToHomeDuration = 1.0;
-
 SceneManager::SceneManager() {
   // Create a group for map settings
   updraft->settingsManager->addGroup(
@@ -76,8 +74,7 @@ SceneManager::SceneManager() {
 
   viewer->setSceneData(sceneRoot);
 
-  manipulator = new MapManipulator();
-  mapManagers[activeMapIndex]->bindManipulator(manipulator);
+  manipulator = mapManagers[activeMapIndex]->getManipulator();
   manipulator->setHomeViewpoint(getInitialPosition());
 
   viewer->setCameraManipulator(manipulator);
@@ -98,9 +95,9 @@ SceneManager::SceneManager() {
 }
 
 void SceneManager::saveHomePosition() {
-  osgEarth::Viewpoint viewpoint = manipulator->getViewpoint();
-  manipulator->setHomeViewpoint(viewpoint, flyToHomeDuration);
-  QByteArray saved = StateSaver::saveViewpoint(viewpoint);
+  QByteArray saved = StateSaver::saveViewpoint(
+    getMapManager()->getManipulator()->getViewpoint());
+  qDebug() << saved;
   homePositionSetting->set(saved);
 }
 
@@ -120,16 +117,16 @@ osgEarth::Util::Viewpoint SceneManager::getInitialPosition() {
 void SceneManager::menuItems() {
   Menu* viewMenu = updraft->mainWindow->getSystemMenu(MENU_VIEW);
 
-  QAction* resetNorthAction = new QAction(tr("Rotate to &north"), this);
+  QAction* resetNorthAction = new QAction(tr("Rotate to north"), this);
   resetNorthAction->setShortcut(QKeySequence(tr("Ctrl+n")));
   connect(resetNorthAction, SIGNAL(triggered()), this, SLOT(resetNorth()));
   viewMenu->insertAction(200, resetNorthAction);
 
-  QAction* untiltAction = new QAction(tr("&Restore 2D view"), this);
+  QAction* untiltAction = new QAction(tr("Restore 2D View"), this);
   connect(untiltAction, SIGNAL(triggered()), this, SLOT(untilt()));
   viewMenu->insertAction(300, untiltAction);
 
-  QAction* setHomePosAction = new QAction(tr("Set &home position"), this);
+  QAction* setHomePosAction = new QAction(tr("Set &Home Position..."), this);
   viewMenu->insertAction(400, setHomePosAction);
   connect(setHomePosAction, SIGNAL(triggered()),
     this, SLOT(saveHomePosition()));
@@ -181,13 +178,14 @@ QWidget* SceneManager::getWidget() {
 void SceneManager::startInitialAnimation() {
   osgEarth::Util::Viewpoint home = getHomePosition();
   // set home position for ACTION_HOME
-  manipulator->setHomeViewpoint(home, flyToHomeDuration);
+  manipulator->setHomeViewpoint(home, 1.0);
   // go to home position now
   manipulator->setViewpoint(home, 2.0);
 }
 
 const osg::EllipsoidModel* SceneManager::getCurrentMapEllipsoid() {
-  return manipulator->getSRS()->getEllipsoid();
+  return mapManagers[activeMapIndex]->getManipulator()->
+    getSRS()->getEllipsoid();
 }
 
 void SceneManager::redrawScene() {
@@ -196,13 +194,10 @@ void SceneManager::redrawScene() {
   if (i == 1) startInitialAnimation();
   if (i < 2) ++i;
 
-  updateCameraProjection();
+
+  getMapManager()->updateCameraProjection();
 
   viewer->frame();
-}
-
-void SceneManager::updateCameraProjection() {
-  manipulator->updateCameraProjection();
 }
 
 bool SceneManager::removeGroup(osg::Group* group) {
@@ -267,8 +262,9 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
     // checked non active map
     // replace the map in the scene:
     if (value == true) {
-      manipulator->getSettings()->setCameraProjection(
-      osgEarth::Util::EarthManipulator::PROJ_PERSPECTIVE);
+      osgEarth::Util::EarthManipulator::CameraProjection projection;
+      projection = osgEarth::Util::EarthManipulator::PROJ_PERSPECTIVE;
+      manipulator->getSettings()->setCameraProjection(projection);
       viewer->frame();
 
       int oldIndex = activeMapIndex;
@@ -293,13 +289,12 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
         }
       }
 
+      // manipulator = mapManagers[activeMapIndex]->getManipulator();
       manipulator = new MapManipulator();
-
-      mapManagers[activeMapIndex]->bindManipulator(manipulator);
-
       manipulator->setHomeViewpoint(viewpoint);
+      mapManagers[activeMapIndex]->setManipulator(manipulator);
+
       viewer->setCameraManipulator(manipulator);
-      manipulator->setHomeViewpoint(getHomePosition(), flyToHomeDuration);
 
       registerOsgNode(mapNode, mapManagers[activeMapIndex]->getMapObject());
       layers[oldIndex]->setChecked(false);
@@ -372,16 +367,11 @@ void SceneManager::createMapManagers() {
     new MapManager("initial2.earth", tr("ArcGIS, Satellite Imagery")));
   mapManagers.append(
     new MapManager("initial3.earth", tr("ArcGIS, Topographic Map")));
-  mapManagers.append(
-    new MapManager("initial4.earth", tr("Offline Map")));
 }
 
 void SceneManager::destroyMaps() {
   saveViewpoint = manipulator->getViewpoint();
-  mapManagers[activeMapIndex]->detach(sceneRoot);
-  manipulator->getSettings()->setCameraProjection(
-  osgEarth::Util::EarthManipulator::PROJ_PERSPECTIVE);
-  viewer->frame();
+  sceneRoot->removeChild(mapManagers[activeMapIndex]->getMapNode());
   for (int i = 0; i < mapManagers.size(); i++) {
     mapManagers[i]->destroyMap();
   }
@@ -391,23 +381,15 @@ void SceneManager::createMaps() {
   for (int i = 0; i < mapManagers.size(); i++) {
     mapManagers[i]->createMap();
   }
-  manipulator->getSettings()->setCameraProjection(
-  osgEarth::Util::EarthManipulator::PROJ_PERSPECTIVE);
-  viewer->frame();
-  mapManagers[activeMapIndex]->attach(sceneRoot);
+  sceneRoot->addChild(mapManagers[activeMapIndex]->getMapNode());
   manipulator = new MapManipulator();
   manipulator->setHomeViewpoint(saveViewpoint);
-  mapManagers[activeMapIndex]->bindManipulator(manipulator);
+  mapManagers[activeMapIndex]->setManipulator(manipulator);
   viewer->setCameraManipulator(manipulator);
-  manipulator->setHomeViewpoint(getHomePosition(), flyToHomeDuration);
 }
 
 osgEarth::Util::ObjectPlacer* SceneManager::getObjectPlacer() {
   return placer;
-}
-
-osgEarth::Util::Viewpoint SceneManager::getViewpoint() {
-  return manipulator->getViewpoint();
 }
 
 }  // end namespace Core
