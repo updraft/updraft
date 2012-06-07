@@ -73,7 +73,7 @@
           <x>0</x>
           <y>0</y>
           <width>636</width>
-          <height>411</height>
+          <height>417</height>
          </rect>
         </property>
         <property name="sizePolicy">
@@ -155,7 +155,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Reset|QDialogButtonBox::RestoreDefaults</set>
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Reset</set>
      </property>
      <property name="centerButtons">
       <bool>false</bool>
