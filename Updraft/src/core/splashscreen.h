@@ -9,6 +9,7 @@ namespace Core {
 /// Startup splash window.
 class SplashScreen: public QSplashScreen {
  public:
+  /// Creates the splash screen instance.
   SplashScreen();
  private:
 };

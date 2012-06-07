@@ -18,10 +18,16 @@ class NodeMapLayer: public MapLayer {
   NodeMapLayer(const QString &title, osg::Node* node);
   ~NodeMapLayer();
 
+  /// Displays/hides the map layer by setting/hiding the node.
+  /// \param value Whether the node should be visible.
   void setVisibility(bool value);
+
+  /// Tells whether the node is currently visible.
+  /// \return Whether the node is currently visible.
   bool isVisible();
 
  private:
+  /// The node that contains the map layer geometry.
   osg::ref_ptr<osg::Node> node;
 
   void addToScene(MapLayerGroup *group);

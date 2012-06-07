@@ -17,7 +17,12 @@ class TranslationLanguageEditor: public QComboBox {
  public:
   explicit TranslationLanguageEditor(QWidget *parent);
 
+  /// Gets the translation language property stored in this editor.
+  /// \return The translation language currently in the editor.
   TranslationLanguage lang();
+
+  /// Sets the translation language property of the editor.
+  /// \param l The translation language to be set.
   void setLang(const TranslationLanguage &l);
 };
 

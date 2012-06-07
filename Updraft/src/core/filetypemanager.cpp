@@ -199,10 +199,14 @@ void FileTypeManager::openFileDialog(const QString &caption) {
   lastFileOpenDir = info.dir().absolutePath();
 }
 
+/// Gets the directory from which the last file was opened.
+/// \return The last opened file's directory.
 QDir FileTypeManager::lastDirectory() {
   return QDir(lastFileOpenDir);
 }
 
+/// Sets the directory from which the last file was opened.
+/// \param dir The last opened file's directory
 void FileTypeManager::setLastDirectory(const QDir& dir) {
   lastFileOpenDir = dir.absolutePath();
 }

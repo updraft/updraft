@@ -14,6 +14,8 @@ class TranslationLanguage: public QString {
   TranslationLanguage();
   explicit TranslationLanguage(const QString &str);
 
+  /// Returns this translation language as a string value.
+  /// \return The string representation of this translation language
   QString asQString() const;
 };
 

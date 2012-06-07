@@ -31,17 +31,21 @@ class SceneManager: public QObject {
   ~SceneManager();
 
   /// Returns the drawing widget.
+  /// \return The widget the scene is drawn into
   QWidget* getWidget();
 
   /// Returns the root of the scene.
+  /// \return osg::Group object that represents the root of the scene.
   osg::Group* getRoot();
 
   /// Returns the map node in the scene.
   /// Note that there must be only one map node in the scene.
+  /// \return Map node for the scene.
   osgEarth::MapNode* getMapNode();
 
   /// Returns the MapManager instance associated with currently
   /// displayed map.
+  /// \return The MapManager instance for the currently displayed map.
   MapManager* getMapManager();
 
   /// Let MapManagers re-create the maps.
@@ -73,16 +77,21 @@ class SceneManager: public QObject {
 
   /// Returns an elevation manager associated with the map
   /// that has elevation layer.
+  /// \return pointer to the elevation manager object for the current map.
   osgEarth::Util::ElevationManager* getElevationManager();
 
-  /// Returns the ellipsiod model associated with current
+  /// Returns the ellipsoid model associated with current
   /// active map.
+  /// \return Ellipsoid model used for calculations on the current map.
   const osg::EllipsoidModel* getCurrentMapEllipsoid();
 
   /// Returns the osgEarth placer used to place nodes into the scene.
+  /// \returns Object placer instance used to correctly place nodes onto the
+  ///          map.
   osgEarth::Util::ObjectPlacer* getObjectPlacer();
 
   /// Returns the current viewpoint.
+  /// \return The currently used viewpoint
   osgEarth::Util::Viewpoint getViewpoint();
 
  public slots:

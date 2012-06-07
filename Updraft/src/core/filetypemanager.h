@@ -41,10 +41,12 @@ class FileTypeManager {
   bool openFileInternal(const QString &path,
     QStandardItemModel const* model) const;
 
+  /// The list of known and registered files
   QList<FileRegistration> registered;
 
   friend class FileOpenDialog;
 
+  /// The last opened file's directory
   QString lastFileOpenDir;
 };
 

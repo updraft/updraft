@@ -206,47 +206,6 @@ QVector<Pair> PickHandler::getIntersectedMapObjects(
   osgUtil::PolytopeIntersector::Intersections& intersections =
     picker->getIntersections();
 
-  /*qDebug(":::::::::::::::::::::::::");
-  std::set<osgUtil::PolytopeIntersector::Intersection>::iterator it;
-  int i = 0;
-  for (it = intersections.begin(); it != intersections.end(); ++it) {
-    qDebug() << "Intersection " << i << ":";
-    qDebug() << "d: " << it->distance << ", max_d: " << it->maxDistance <<
-      ", local_ip: " <<
-      it->localIntersectionPoint.x() << ":" <<
-      it->localIntersectionPoint.y() << ":" <<
-      it->localIntersectionPoint.z() <<
-      ", numIntersectionPoints: " << it->numIntersectionPoints;
-    osg::Vec4f vec(
-      it->localIntersectionPoint.x(),
-      it->localIntersectionPoint.y(),
-      it->localIntersectionPoint.z(),
-      1.0);
-    osg::Matrixf mat = (*it->matrix.get());
-    osg::Matrixf mat_inv = osg::Matrixf::inverse(mat);
-    osg::Matrixf cam_mat = viewer->getCamera()->getProjectionMatrix();
-    cam_mat = osg::Matrixf::inverse(cam_mat);
-    osg::Vec4f w_lip = vec * mat;
-    osg::Vec3f w_lip2 = cam_mat * it->localIntersectionPoint;
-    qDebug() << "Transformed localIntersectionPoint: " <<
-      w_lip.x() << ":" <<
-      w_lip.y() << ":" <<
-      w_lip.z() << ":::" <<
-      w_lip.w();
-    qDebug() << "Transformed localIntersectionPoint 2: " <<
-      w_lip2.x() << ":" <<
-      w_lip2.y() << ":" <<
-      w_lip2.z();
-      for (int p = 0; p < it->numIntersectionPoints; ++p) {
-        qDebug() << "  intersectionPoint[" << p << "]: " <<
-          it->intersectionPoints[p].x() << ":" <<
-          it->intersectionPoints[p].y() << ":" <<
-          it->intersectionPoints[p].z();
-      }
-    ++i;
-  }
-  qDebug(":::::::::::::::::::::::::");*/
-
   QVector<Pair> mapObjects;
 
   std::set<osgUtil::PolytopeIntersector::Intersection>::iterator it;
