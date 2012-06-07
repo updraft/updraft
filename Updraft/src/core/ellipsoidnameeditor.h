@@ -8,6 +8,8 @@
 namespace Updraft {
 namespace Core {
 
+/// Editor for reference ellipsoid in settings dialog.
+/// It is a combo box showing list of available ellipsoid models.
 class EllipsoidNameEditor: public QComboBox {
   Q_OBJECT
   Q_PROPERTY

@@ -19,6 +19,7 @@ namespace Core {
 class MapLayerGroup;
 class MapLayer;
 
+/// Main application window.
 class MainWindow : public QMainWindow {
   Q_OBJECT
 

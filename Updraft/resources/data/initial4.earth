@@ -1,0 +1,39 @@
+<!--
+Updraft initial map file.
+
+Please note that use of ESRI's free maps is subject to certain restrictions:
+http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
+-->
+
+<map name="Offline Map" type="geocentric" version="2">   
+    <options>
+      <lighting>false</lighting>
+    </options>
+
+    <image name="world" driver="gdal">
+        <url>world.tif</url>
+    </image>
+    
+        
+    <overlay name="world_boundaries" driver="feature_geom">
+
+        <!-- Configure the OGR feature driver to read the shapefile. -->             
+        <features name="world" driver="ogr">
+            <url>world.shp</url>
+            <build_spatial_index>true</build_spatial_index>
+            <convert type="line"/>
+        </features>
+                
+        <styles>
+            <style type="text/css">
+                world {
+                   stroke: #ffff00;
+                   stroke-opacity: 1.0;
+                   stroke-width: 3.0;
+                }            
+            </style>
+        </styles>    
+    </overlay>
+</map>
+
+

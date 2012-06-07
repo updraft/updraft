@@ -5,16 +5,17 @@
 
 namespace OpenAirspace {
 
-/// Coordinates structure - e.g. 39:29.9 N -119:46.1 E.
-/// \TODO: use Utils when available
+/// Geographic coordinates.
 struct OPENAIRSPACE_EXPORT Coordinate {
-  bool valid;  // validity flag
+  // TODO(Kuba) use Utils::Location
+  bool valid;  /// < validity flag
   qreal lat;
   qreal lon;
 };
 
 typedef Coordinate Position;
 
+/// Abstract geometry in airspace.
 class OPENAIRSPACE_EXPORT Geometry {
  public :
   /// Geometry types
@@ -28,6 +29,7 @@ class OPENAIRSPACE_EXPORT Geometry {
   virtual ~Geometry() {}
 };
 
+/// Polygon.
 class OPENAIRSPACE_EXPORT Polygon : public Geometry {
  public:
   Polygon();
@@ -41,6 +43,7 @@ class OPENAIRSPACE_EXPORT Polygon : public Geometry {
   bool valid;
 };
 
+/// Arc spcified by center point radius, start angle and end angle.
 class OPENAIRSPACE_EXPORT ArcI : public Geometry {
  public:
   ArcI();
@@ -55,14 +58,15 @@ class OPENAIRSPACE_EXPORT ArcI : public Geometry {
   ~ArcI();
  private:
   Position* centre;
-  double r;  // radius in nm
-  bool cw;  // arc direction
-  double start;  // start angle in deg
-  double end;  // end angle in deg
+  double r;  /// < Radius in nm
+  bool cw;  /// < Arc direction
+  double start;  /// < Start angle in deg.
+  double end;  /// < End angle in deg.
   double zoom;
   bool valid;
 };
 
+/// Arc spcified by center point, start point and end point.
 class OPENAIRSPACE_EXPORT ArcII : public Geometry {
  public:
   ArcII();
@@ -83,6 +87,7 @@ class OPENAIRSPACE_EXPORT ArcII : public Geometry {
   bool valid;
 };
 
+/// Full circle.
 class OPENAIRSPACE_EXPORT Circle : public Geometry {
  public:
   Circle();
@@ -93,7 +98,7 @@ class OPENAIRSPACE_EXPORT Circle : public Geometry {
   ~Circle();
  private:
   Position* centre;
-  double r;  // radius
+  double r;  /// < Radius
   double zoom;
   bool valid;
 };

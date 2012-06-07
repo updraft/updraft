@@ -16,6 +16,7 @@ namespace Core {
 
 class MainWindow;
 
+/// Implementation of an opened tab in the bottom pane.
 class Tab : public QWidget, public TabInterface {
   Q_OBJECT
 

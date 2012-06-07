@@ -37,10 +37,6 @@ void Label::setGeometry(const QRect& rect_) {
   this->rect = rect_;
 }
 
-void Label::draw(QPainter *painter) {
-  // do nothing.
-}
-
 // Axis Labels:
 
 Qt::Orientations AxisLabel::expandingDirections() const {
@@ -66,6 +62,8 @@ AxisLabel::AxisLabel(PlotAxes* axis_, QString unitsDescription_) {
 
 void AxisLabel::draw(QPainter *painter) {
   painter->setPen(LABEL_PEN);
+  QFont font("Helvetica", 8);
+  painter->setFont(font);
   qreal step = axis->getStep();
   qreal first = axis->getFirst();
   int nLabels = axis->getVerticalTicks();
@@ -78,18 +76,6 @@ void AxisLabel::draw(QPainter *painter) {
       QPoint(rect.right(), pixelY+TEXT_HEIGHT/2));
     painter->drawText(labelRect, Qt::AlignRight, text);
   }
-
-  // draw the units desription at the position
-  // of the last label:
-  // qreal lastTick = nLabels-1;
-  /*
-  qreal pixelY = axis->placeY(first);
-
-  QString text(unitsDescription);
-  QRect labelRect(QPoint(2, pixelY-TEXT_HEIGHT/2),
-    QPoint(rect.right(), pixelY+TEXT_HEIGHT/2));
-  painter->drawText(labelRect, Qt::AlignLeft, text);
-  */
 }
 
 // Text Label:
@@ -116,6 +102,8 @@ TextLabel::TextLabel(QString text_) {
 
 void TextLabel::draw(QPainter* painter) {
   painter->setPen(LABEL_PEN);
+  QFont font("Helvetica", 10);
+  painter->setFont(font);
   painter->drawText(rect, Qt::AlignLeft | Qt::AlignBottom, text);
 }
 
@@ -143,6 +131,8 @@ TimeLabel::TimeLabel(PlotAxes* axis_) {
 
 void TimeLabel::draw(QPainter* painter) {
   painter->setPen(LABEL_PEN);
+  QFont font("Helvetica", 10);
+  painter->setFont(font);
   int height = rect.height();
   int width = height * TEXT_WIDTH_HEIGHT_RATIO;
     // don't draw the labels if there is no space

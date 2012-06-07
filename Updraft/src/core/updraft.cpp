@@ -41,6 +41,8 @@ Updraft::Updraft(int argc, char** argv)
   fileTypeManager = new FileTypeManager();
   sceneManager = new SceneManager();
 
+  processEvents();
+
   stateSaver = new StateSaver();
 
   mainWindow->setMapWidget(sceneManager->getWidget());
@@ -51,6 +53,8 @@ Updraft::Updraft(int argc, char** argv)
   for (int i = 1; i < args.count(); ++i) {
     fileTypeManager->openFile(args[i]);
   }
+
+  stateSaver->load();
 
   // Turn on the data directory slot
   dataDirectory->callOnValueChanged(this, SLOT(dataDirectoryChanged()));
@@ -220,8 +224,6 @@ bool Updraft::checkDataDirectory() {
 /// Shows main window, and enters event loop.
 int Updraft::exec() {
   mainWindow->show();
-
-  stateSaver->load();
 
   hideSplash();
   return QApplication::exec();

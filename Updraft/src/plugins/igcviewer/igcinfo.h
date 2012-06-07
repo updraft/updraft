@@ -157,7 +157,8 @@ class TrackIdFixInfo : public FixInfo {
   int id;
 };
 
-/// Returns altitude.
+/// Return time in the flight.
+/// 0 is first fix, maximum is number of seconds of the recording.
 class TimeFixInfo : public FixInfo {
  public:
   void init(const QList<TrackFix> *fixList);
@@ -165,6 +166,8 @@ class TimeFixInfo : public FixInfo {
  private:
 };
 
+/// Class calculating information about a segment of
+/// flight between two time points.
 class SegmentInfo {
  public:
   void init(const QList<TrackFix>* fixList_);

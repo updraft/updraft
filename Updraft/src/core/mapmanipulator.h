@@ -10,6 +10,7 @@ class SettingInterface;
 
 namespace Core {
 
+/// Earth manipulator supporting custom settings and keybindings.
 class MapManipulator: public QObject, public osgEarth::Util::EarthManipulator {
   Q_OBJECT
 

@@ -8,6 +8,8 @@
 namespace Updraft {
 namespace Core {
 
+/// Editor for selecting translation language in settings dialog.
+/// Shows a combo box with all available languages.
 class TranslationLanguageEditor: public QComboBox {
   Q_OBJECT
   Q_PROPERTY

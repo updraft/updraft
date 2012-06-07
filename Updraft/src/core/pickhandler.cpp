@@ -68,8 +68,6 @@ bool PickHandler::handle(
 
 void PickHandler::raiseLeftClick(
   QVector<Pair> mapObjects) {
-  qDebug("--- Left click event ---");
-
   Menu* moMenu = updraft->mainWindow->getSystemMenu(MENU_MAPOBJECT);
   moMenu->clear();
 
@@ -83,11 +81,6 @@ void PickHandler::raiseLeftClick(
     alreadyAdded.insert(mapObjectPair.first);
 
     EventInfo evt(LEFT_CLICK, mapObjectPair.second);
-
-    qDebug("=================");
-    qDebug() << mapObjectPair.second.x();
-    qDebug() << mapObjectPair.second.y();
-    qDebug() << mapObjectPair.second.z();
 
     // Insert the plugins into PickAction only if they want to handle the event
     PickAction* action = new PickAction(mapObjectPair.first, evt);
@@ -120,8 +113,6 @@ void PickHandler::raiseLeftClick(
 
 void PickHandler::raiseRightClick(
   QVector<Pair> mapObjects) {
-  qDebug("--- Right click event ---");
-
   // Clear the previous menu
   Menu* moMenu = updraft->mainWindow->getSystemMenu(MENU_MAPOBJECT);
   moMenu->clear();
@@ -279,8 +270,6 @@ QVector<Pair> PickHandler::getIntersectedMapObjects(
             w_vec.z());
 
         mapObjects.append(Pair(mapObject, w_vec3f));
-        qDebug("Distance of intersection point:");
-        qDebug() << it->distance;
       }
     }
   }

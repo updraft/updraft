@@ -79,7 +79,7 @@ void TaskDeclaration::deinitialize() {
 
 bool TaskDeclaration::wantsToHandleClick(MapObject* obj) {
   if (obj->getObjectTypeName() != TPMapObject::getClassName() &&
-      obj->getObjectTypeName() != MapMapObject::getClassName())
+      obj->getObjectTypeName() != Core::MapMapObject::getClassName())
     return false;
 
   TaskLayer* layer = getActiveLayer();
@@ -94,7 +94,7 @@ void TaskDeclaration::handleClick(MapObject* obj, const EventInfo* evt) {
 
   if (obj->getObjectTypeName() == TPMapObject::getClassName()) {
     layer->newTaskPoint(static_cast<TPMapObject*>(obj)->turnPoint);
-  } else if (obj->getObjectTypeName() == MapMapObject::getClassName()) {
+  } else if (obj->getObjectTypeName() == Core::MapMapObject::getClassName()) {
     const osg::EllipsoidModel* ellipsoidModel =
       g_core->getCurrentMapEllipsoid();
     Util::Location mapLoc;

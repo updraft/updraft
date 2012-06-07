@@ -13,6 +13,7 @@
 namespace Updraft {
 namespace Core {
 
+/// Top level object that finds and loads translations.
 class TranslationManager: public QObject {
   Q_OBJECT
 

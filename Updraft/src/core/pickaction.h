@@ -13,6 +13,8 @@ class PluginBase;
 
 namespace Core {
 
+/// Action that gets called when a MapObject is clicked.
+/// Also appears in mouse picking disambiguation menu.
 class PickAction: public QAction {
   Q_OBJECT
 

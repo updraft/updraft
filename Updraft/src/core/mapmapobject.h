@@ -4,7 +4,10 @@
 #include "../mapobject.h"
 
 namespace Updraft {
+namespace Core {
 
+/// Map object of the globe surface.
+/// This is usesd to implement clicking on the map.
 class MapMapObject : public MapObject {
  public:
   MapMapObject(): MapObject("Terrain") {}
@@ -16,6 +19,7 @@ class MapMapObject : public MapObject {
   QString getObjectTypeName() { return getClassName(); }
 };
 
+}  // End namespace Core
 }  // End namespace Updraft
 
 #endif  // UPDRAFT_SRC_CORE_MAPMAPOBJECT_H_

@@ -7,6 +7,7 @@
 
 namespace Updraft {
 
+/// Opened task file.
 class TaskFile : public QObject {
   Q_OBJECT
 
