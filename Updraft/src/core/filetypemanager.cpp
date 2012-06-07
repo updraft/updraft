@@ -103,6 +103,13 @@ bool FileTypeManager::openFileInternal(const QString &path,
       if (!registration.plugin->fileOpen(changedPath, registration.roleId)) {
         qDebug() << "Plugin "
           << registration.plugin->getName() << " failed to open file.";
+
+        QMessageBox::warning(updraft->mainWindow,
+          tr("Error"), tr("Could not open file."));
+        if (registration.category == CATEGORY_PERSISTENT) {
+          QFile importedFile(changedPath);
+          importedFile.remove();
+        }
         success = false;
       }
     }

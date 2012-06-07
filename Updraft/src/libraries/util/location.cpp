@@ -49,5 +49,29 @@ void Location::lonToDMS(int *d, int *m, qreal *s, char *sign) const {
   *s = ((lonAbs - (qreal)*d)*60.0 - (qreal)*m)*60.0;
 }
 
+QString Location::dmsToString(int d, int m, qreal s, char sign) {
+  return QString("%1%2 %3%4 %5%6 %7").
+    arg(d).arg(QChar(0xB0)).
+    arg(m).arg(QChar(0x2032)).
+    arg(s, 0, 'g', 2).arg(QChar(0x2033)).
+    arg(sign);
+}
+
+QString Location::latToString() const {
+  int d, m;
+  qreal s;
+  char sign;
+  latToDMS(&d, &m, &s, &sign);
+  return Location::dmsToString(d, m, s, sign);
+}
+
+QString Location::lonToString() const {
+  int d, m;
+  qreal s;
+  char sign;
+  lonToDMS(&d, &m, &s, &sign);
+  return Location::dmsToString(d, m, s, sign);
+}
+
 }  // End namespace Util
 }  // End namespace Updraft

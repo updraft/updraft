@@ -127,7 +127,7 @@ void SceneManager::menuItems() {
   connect(untiltAction, SIGNAL(triggered()), this, SLOT(untilt()));
   viewMenu->insertAction(300, untiltAction);
 
-  QAction* setHomePosAction = new QAction(tr("Set &Home Position..."), this);
+  QAction* setHomePosAction = new QAction(tr("Set &Home Position"), this);
   viewMenu->insertAction(400, setHomePosAction);
   connect(setHomePosAction, SIGNAL(triggered()),
     this, SLOT(saveHomePosition()));

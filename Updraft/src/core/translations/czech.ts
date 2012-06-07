@@ -9,14 +9,13 @@
         <translation>O Updraftu</translation>
     </message>
     <message>
-        <location filename="../ui/aboutdialog.ui" line="64"/>
+        <location filename="../ui/aboutdialog.ui" line="77"/>
         <source>Updraft</source>
         <translation>Updraft</translation>
     </message>
     <message>
-        <location filename="../ui/aboutdialog.ui" line="77"/>
         <source>version</source>
-        <translation>verze</translation>
+        <translation type="obsolete">verze</translation>
     </message>
 </context>
 <context>
@@ -83,6 +82,19 @@
     </message>
 </context>
 <context>
+    <name>FileTypeManager</name>
+    <message>
+        <location filename="../filetypemanager.cpp" line="108"/>
+        <source>Error</source>
+        <translation>Chyba</translation>
+    </message>
+    <message>
+        <location filename="../filetypemanager.cpp" line="108"/>
+        <source>Could not open file.</source>
+        <translation>Nepodařilo se otevřít soubor.</translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <location filename="../ui/mainwindow.ui" line="20"/>
@@ -119,7 +131,7 @@
     <name>MapManager</name>
     <message>
         <location filename="../mapmanager.cpp" line="15"/>
-        <location filename="../mapmanager.cpp" line="47"/>
+        <location filename="../mapmanager.cpp" line="43"/>
         <source>Empty globe</source>
         <translation>Prázdná mapa</translation>
     </message>
@@ -281,8 +293,12 @@
     </message>
     <message>
         <location filename="../scenemanager.cpp" line="129"/>
+        <source>Set &amp;Home Position</source>
+        <translation>Nastavit &amp;Výchozí Pozici</translation>
+    </message>
+    <message>
         <source>Set &amp;Home Position...</source>
-        <translation>Nastavit &amp;Domácí pozici...</translation>
+        <translation type="obsolete">Nastavit &amp;Domácí pozici...</translation>
     </message>
     <message>
         <location filename="../scenemanager.cpp" line="137"/>
@@ -300,7 +316,7 @@
         <translation>ArcGIS, Satelitní mapa</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="370"/>
+        <location filename="../scenemanager.cpp" line="369"/>
         <source>ArcGIS, Topographic Map</source>
         <translation>ArcGIS, Topografická mapa</translation>
     </message>
@@ -339,7 +355,7 @@
     <message>
         <location filename="../settingsmanager.cpp" line="115"/>
         <source> (advanced)</source>
-        <translation type="unfinished"> (pokročilé)</translation>
+        <translation> (pokročilé)</translation>
     </message>
 </context>
 <context>

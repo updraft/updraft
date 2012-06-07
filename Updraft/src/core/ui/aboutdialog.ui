@@ -89,7 +89,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>version</string>
+            <string notr="true">version</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -105,7 +105,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>&lt;a href=&quot;http://updraft.github.com&quot;&gt;http://updraft.github.com&lt;/a&gt;</string>
+            <string notr="true">&lt;a href=&quot;http://updraft.github.com&quot;&gt;http://updraft.github.com&lt;/a&gt;</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
