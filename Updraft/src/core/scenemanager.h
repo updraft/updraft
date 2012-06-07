@@ -148,6 +148,7 @@ class SceneManager: public QObject {
   double getAspectRatio();
 
   SettingInterface* homePositionSetting;
+  static const float flyToHomeDuration;
 };
 
 }  // end namespace Core

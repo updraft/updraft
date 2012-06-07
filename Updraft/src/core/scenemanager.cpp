@@ -22,6 +22,8 @@
 namespace Updraft {
 namespace Core {
 
+const float SceneManager::flyToHomeDuration = 1.0;
+
 SceneManager::SceneManager() {
   // Create a group for map settings
   updraft->settingsManager->addGroup(
@@ -97,7 +99,7 @@ SceneManager::SceneManager() {
 
 void SceneManager::saveHomePosition() {
   osgEarth::Viewpoint viewpoint = manipulator->getViewpoint();
-  manipulator->setHomeViewpoint(viewpoint);
+  manipulator->setHomeViewpoint(viewpoint, flyToHomeDuration);
   QByteArray saved = StateSaver::saveViewpoint(viewpoint);
   homePositionSetting->set(saved);
 }
@@ -179,7 +181,7 @@ QWidget* SceneManager::getWidget() {
 void SceneManager::startInitialAnimation() {
   osgEarth::Util::Viewpoint home = getHomePosition();
   // set home position for ACTION_HOME
-  manipulator->setHomeViewpoint(home, 1.0);
+  manipulator->setHomeViewpoint(home, flyToHomeDuration);
   // go to home position now
   manipulator->setViewpoint(home, 2.0);
 }
@@ -292,12 +294,12 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
       }
 
       manipulator = new MapManipulator();
-      manipulator->setHomeViewpoint(getHomePosition());
+
       mapManagers[activeMapIndex]->bindManipulator(manipulator);
 
+      manipulator->setHomeViewpoint(viewpoint);
       viewer->setCameraManipulator(manipulator);
-
-      manipulator->setViewpoint(viewpoint);
+      manipulator->setHomeViewpoint(getHomePosition(), flyToHomeDuration);
 
       registerOsgNode(mapNode, mapManagers[activeMapIndex]->getMapObject());
       layers[oldIndex]->setChecked(false);
@@ -392,10 +394,10 @@ void SceneManager::createMaps() {
   viewer->frame();
   mapManagers[activeMapIndex]->attach(sceneRoot);
   manipulator = new MapManipulator();
-  manipulator->setHomeViewpoint(getHomePosition());
+  manipulator->setHomeViewpoint(saveViewpoint);
   mapManagers[activeMapIndex]->bindManipulator(manipulator);
   viewer->setCameraManipulator(manipulator);
-  manipulator->setViewpoint(saveViewpoint);
+  manipulator->setHomeViewpoint(getHomePosition(), flyToHomeDuration);
 }
 
 osgEarth::Util::ObjectPlacer* SceneManager::getObjectPlacer() {
