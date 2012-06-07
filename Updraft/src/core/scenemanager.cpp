@@ -265,6 +265,10 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
     // checked non active map
     // replace the map in the scene:
     if (value == true) {
+      manipulator->getSettings()->setCameraProjection(
+      osgEarth::Util::EarthManipulator::PROJ_PERSPECTIVE);
+      viewer->frame();
+
       int oldIndex = activeMapIndex;
       activeMapIndex = index;
       unregisterOsgNode(mapManagers[oldIndex]->getMapNode());
@@ -287,8 +291,13 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
         }
       }
 
-      manipulator->setViewpoint(viewpoint);
+      manipulator = new MapManipulator();
+      manipulator->setHomeViewpoint(getHomePosition());
       mapManagers[activeMapIndex]->bindManipulator(manipulator);
+
+      viewer->setCameraManipulator(manipulator);
+
+      manipulator->setViewpoint(viewpoint);
 
       registerOsgNode(mapNode, mapManagers[activeMapIndex]->getMapObject());
       layers[oldIndex]->setChecked(false);
@@ -364,7 +373,11 @@ void SceneManager::createMapManagers() {
 }
 
 void SceneManager::destroyMaps() {
+  saveViewpoint = manipulator->getViewpoint();
   mapManagers[activeMapIndex]->detach(sceneRoot);
+  manipulator->getSettings()->setCameraProjection(
+  osgEarth::Util::EarthManipulator::PROJ_PERSPECTIVE);
+  viewer->frame();
   for (int i = 0; i < mapManagers.size(); i++) {
     mapManagers[i]->destroyMap();
   }
@@ -374,8 +387,15 @@ void SceneManager::createMaps() {
   for (int i = 0; i < mapManagers.size(); i++) {
     mapManagers[i]->createMap();
   }
+  manipulator->getSettings()->setCameraProjection(
+  osgEarth::Util::EarthManipulator::PROJ_PERSPECTIVE);
+  viewer->frame();
   mapManagers[activeMapIndex]->attach(sceneRoot);
+  manipulator = new MapManipulator();
+  manipulator->setHomeViewpoint(getHomePosition());
   mapManagers[activeMapIndex]->bindManipulator(manipulator);
+  viewer->setCameraManipulator(manipulator);
+  manipulator->setViewpoint(saveViewpoint);
 }
 
 osgEarth::Util::ObjectPlacer* SceneManager::getObjectPlacer() {
