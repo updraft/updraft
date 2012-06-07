@@ -52,6 +52,8 @@ Updraft::Updraft(int argc, char** argv)
     fileTypeManager->openFile(args[i]);
   }
 
+  stateSaver->load();
+
   // Turn on the data directory slot
   dataDirectory->callOnValueChanged(this, SLOT(dataDirectoryChanged()));
   dataDirectoryChangeInProgress = false;
@@ -220,8 +222,6 @@ bool Updraft::checkDataDirectory() {
 /// Shows main window, and enters event loop.
 int Updraft::exec() {
   mainWindow->show();
-
-  stateSaver->load();
 
   hideSplash();
   return QApplication::exec();
