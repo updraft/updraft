@@ -131,7 +131,7 @@
     <name>MapManager</name>
     <message>
         <location filename="../mapmanager.cpp" line="15"/>
-        <location filename="../mapmanager.cpp" line="43"/>
+        <location filename="../mapmanager.cpp" line="40"/>
         <source>Empty globe</source>
         <translation>Prázdná mapa</translation>
     </message>
@@ -272,51 +272,63 @@
 <context>
     <name>Updraft::Core::SceneManager</name>
     <message>
-        <location filename="../scenemanager.cpp" line="28"/>
+        <location filename="../scenemanager.cpp" line="30"/>
         <source>Map options</source>
         <translation>Možnosti mapy</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="120"/>
         <source>Rotate to north</source>
-        <translation>Otočit na sever</translation>
+        <translation type="obsolete">Otočit na sever</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="121"/>
+        <location filename="../scenemanager.cpp" line="124"/>
         <source>Ctrl+n</source>
         <translation>Ctrl+n</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="125"/>
         <source>Restore 2D View</source>
-        <translation>Obnovit 2D zobrazení</translation>
+        <translation type="obsolete">Obnovit 2D zobrazení</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="129"/>
         <source>Set &amp;Home Position</source>
-        <translation>Nastavit &amp;Výchozí Pozici</translation>
+        <translation type="obsolete">Nastavit &amp;Výchozí Pozici</translation>
     </message>
     <message>
         <source>Set &amp;Home Position...</source>
         <translation type="obsolete">Nastavit &amp;Domácí pozici...</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="137"/>
+        <location filename="../scenemanager.cpp" line="123"/>
+        <source>Rotate to &amp;north</source>
+        <translation>Otočit na &amp;sever</translation>
+    </message>
+    <message>
+        <location filename="../scenemanager.cpp" line="128"/>
+        <source>&amp;Restore 2D view</source>
+        <translation>&amp;Obnovit 2D zobrazení</translation>
+    </message>
+    <message>
+        <location filename="../scenemanager.cpp" line="132"/>
+        <source>Set &amp;home position</source>
+        <translation>Nastavit &amp;výchozí pozici</translation>
+    </message>
+    <message>
+        <location filename="../scenemanager.cpp" line="140"/>
         <source>Maps</source>
         <translation>Mapy</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="365"/>
+        <location filename="../scenemanager.cpp" line="370"/>
         <source>OpenStreetMaps</source>
         <translation>OpenStreetMaps</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="367"/>
+        <location filename="../scenemanager.cpp" line="372"/>
         <source>ArcGIS, Satellite Imagery</source>
         <translation>ArcGIS, Satelitní mapa</translation>
     </message>
     <message>
-        <location filename="../scenemanager.cpp" line="369"/>
+        <location filename="../scenemanager.cpp" line="374"/>
         <source>ArcGIS, Topographic Map</source>
         <translation>ArcGIS, Topografická mapa</translation>
     </message>
@@ -386,52 +398,52 @@
         <translation type="obsolete">WGS84</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="120"/>
+        <location filename="../updraft.cpp" line="122"/>
         <source>Counting files...</source>
         <translation>Počítám soubory...</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="133"/>
+        <location filename="../updraft.cpp" line="135"/>
         <source>Data directory moved</source>
         <translation>Adresář s daty byl přesunut</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="134"/>
+        <location filename="../updraft.cpp" line="136"/>
         <source>The data directory was successfully moved</source>
         <translation>Adresář s daty byl úspěšně přesunut</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="139"/>
+        <location filename="../updraft.cpp" line="141"/>
         <source>Data directory not moved</source>
         <translation>Adresář s daty nebyl přesunut</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="140"/>
+        <location filename="../updraft.cpp" line="142"/>
         <source>The data directory could not be moved</source>
         <translation>Adresář s daty nemohl být přesunut </translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="154"/>
+        <location filename="../updraft.cpp" line="156"/>
         <source>General</source>
         <translation>Obecné</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="161"/>
+        <location filename="../updraft.cpp" line="163"/>
         <source>Data directory</source>
         <translation>Adresář s daty</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="173"/>
+        <location filename="../updraft.cpp" line="175"/>
         <source>Ellipsoid model</source>
         <translation>Elipsoid</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="180"/>
+        <location filename="../updraft.cpp" line="182"/>
         <source>WGS84 Ellipsoid</source>
         <translation>WGS84 Elipsoid</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="182"/>
+        <location filename="../updraft.cpp" line="184"/>
         <source>FAI Sphere</source>
         <translation>FAI Koule</translation>
     </message>
