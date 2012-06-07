@@ -4,6 +4,7 @@
 #include "../mapobject.h"
 
 namespace Updraft {
+namespace Core {
 
 class MapMapObject : public MapObject {
  public:
@@ -16,6 +17,7 @@ class MapMapObject : public MapObject {
   QString getObjectTypeName() { return getClassName(); }
 };
 
+}  // End namespace Core
 }  // End namespace Updraft
 
 #endif  // UPDRAFT_SRC_CORE_MAPMAPOBJECT_H_
