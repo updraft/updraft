@@ -41,6 +41,8 @@ Updraft::Updraft(int argc, char** argv)
   fileTypeManager = new FileTypeManager();
   sceneManager = new SceneManager();
 
+  processEvents();
+
   stateSaver = new StateSaver();
 
   mainWindow->setMapWidget(sceneManager->getWidget());
