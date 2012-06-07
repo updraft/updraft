@@ -65,14 +65,21 @@ class CoreInterface {
 
   /// Open a Tab with any widget.
   /// Takes ownership of content.
+  /// \param content The widget that represents content of the tab.
+  /// \param title Title string of the tab
   virtual TabInterface* createTab(QWidget* content, QString title) = 0;
 
   /// Removes tab from the bottom pane
   /// The tab class given to this function is deleted!
   /// Equivalent to tab->close()
+  /// \param tab The tab to be closed
   virtual void removeTab(TabInterface* tab) = 0;
 
-  /// This plugin knows how to open the file!
+  /// Register a filetype in Updraft.
+  /// Whenever a file with the registered extension is opened by the core, the
+  /// registering plugin will be notified.
+  /// \param registration The structure containing information about the newly
+  ///        registered type.
   /// \return Identifier of the newly registered filetype
   virtual void registerFiletype(const FileRegistration &registration) = 0;
 
@@ -90,6 +97,7 @@ class CoreInterface {
   /// \param groupId An identifier of the group to create or change description.
   /// \param description Description of the group. This is displayed in the
   ///                    dialog next to the settings icon.
+  /// \param type Whether the group should be visible, advanced or hidden.
   /// \param icon The icon of the settings group. Default is a wrench icon.
   virtual void addSettingsGroup(
     const QString& groupId,
@@ -109,8 +117,8 @@ class CoreInterface {
   ///        the settings dialog.
   /// \param initValue This is the initial value for the setting if it is newly
   ///        created.
-  /// \param hidden Whether the setting should be hidden or displayed in the
-  ///        settings dialog.
+  /// \param type Whether the setting is being added to a visible, advanced or
+  ///        hidden group.
   /// \return Interface for setting and reading the setting value. In case of
   ///         failure, NULL is returned.
   virtual SettingInterface* addSetting(
