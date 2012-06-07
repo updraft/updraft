@@ -6,6 +6,7 @@
 
 namespace Updraft {
 
+/// Base class for objects that can be clicked on in the map.
 class MapObject {
  public:
   /// Default constructor for use in QHash.

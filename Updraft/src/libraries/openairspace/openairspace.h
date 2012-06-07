@@ -4,6 +4,8 @@
 #include "airspace.h"
 
 namespace OpenAirspace {
+
+  /// Parsing OpenAirspace file into geometry.
   class OPENAIRSPACE_EXPORT Parser {
  public:
     /// OpenAirspace Parser Ctor

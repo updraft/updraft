@@ -14,6 +14,7 @@ namespace Core {
 
 typedef QPair<MapObject*, osg::Vec3> Pair;
 
+/// Handler of osg events that implements clicking of map objects.
 class PickHandler: public osgGA::GUIEventHandler {
   Q_DECLARE_TR_FUNCTIONS(PickHandler)
 

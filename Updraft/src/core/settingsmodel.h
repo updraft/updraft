@@ -9,6 +9,7 @@ namespace Core {
 
 class SettingsModel;
 
+/// A single setting.
 class SettingsItem {
  public:
   SettingsItem(QDomNode node, SettingsModel* model);
@@ -36,6 +37,7 @@ class SettingsItem {
   QIcon icon;
 };
 
+/// Custom names for data roles in settings.
 enum SettingsDataRole {
     ValueRole = Qt::EditRole,
     DecorationRole = Qt::DecorationRole,
@@ -45,6 +47,7 @@ enum SettingsDataRole {
     NeedsRestartRole = Qt::UserRole+2
 };
 
+/// Model that stores all settings.
 class SettingsModel: public QAbstractItemModel {
   Q_OBJECT
 

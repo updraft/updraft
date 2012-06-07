@@ -73,7 +73,7 @@ UserAirspace parser library.
 
 namespace OpenAirspace {
 
-
+/// A single airspace in the OpenAir file.
 class OPENAIRSPACE_EXPORT Airspace {
  public :
     /// Airspace class type enum.

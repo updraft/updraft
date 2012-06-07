@@ -6,6 +6,7 @@
 namespace Updraft {
 namespace Core {
 
+/// Startup splash window.
 class SplashScreen: public QSplashScreen {
  public:
   SplashScreen();

@@ -16,6 +16,7 @@
 namespace Updraft {
 namespace IgcViewer {
 
+/// One picked point in igc recording.
 struct PickData {
   PickData(int xLine_, int fixIndex_)
     : xLine(xLine_), fixIndex(fixIndex_) {}
@@ -27,6 +28,7 @@ struct PickData {
   int fixIndex;
 };
 
+/// Widget that shows the plot with flight data.
 class PlotWidget : public QWidget {
   Q_OBJECT
 

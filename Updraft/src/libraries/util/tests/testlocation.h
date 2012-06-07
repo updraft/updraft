@@ -9,6 +9,7 @@ namespace Updraft {
 namespace Util {
 namespace Test {
 
+/// Test operations on Location object.
 class TestLocation: public QObject {
   Q_OBJECT
  private slots:

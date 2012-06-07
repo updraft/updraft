@@ -8,6 +8,8 @@
 namespace Updraft {
 namespace Util {
 
+/// Class representing a linear function.
+/// Just a convenience to avoid keeping two qreals all the time.
 class UTIL_EXPORT LinearFunc {
  public:
   LinearFunc()

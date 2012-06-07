@@ -56,7 +56,7 @@ static const int GND = 0;
 static const int ROOF = 80000;
 
 
-
+/// Class representing the opened airspaces file.
 class oaEngine {
  public:
   oaEngine(MapLayerGroupInterface* LG, CoreInterface* g_core);

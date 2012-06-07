@@ -11,8 +11,7 @@ class PluginBase;
 
 namespace Core {
 
-class UpdraftParent;
-
+/// Top level object that handles plugin loading and operations.
 class PluginManager {
  public:
   /// Load all the plugins but don't create core interface for them and
@@ -30,6 +29,7 @@ class PluginManager {
   QVector<PluginBase*> getAllPlugins();
 
  private:
+  /// Data belonging to a single loaded plugin.
   struct LoadedPlugin {
     PluginBase* plugin;
     QDir dir;

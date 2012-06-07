@@ -10,11 +10,14 @@
 namespace Updraft {
 namespace IgcViewer {
 
+/// Value of a pixel in plot.
 struct Data {
   int pixel;
   qreal value;
 };
 
+/// Abstract class that plots FixInfo to PlotAxes.
+/// PlotPainter implements the drawing style.
 class PlotPainter : public QObject {
   Q_OBJECT
 
@@ -51,11 +54,15 @@ class PlotPainter : public QObject {
   QVector<int> indexes;
 };
 
+/// Painter for plotting altitude.
 class AltitudePlotPainter: public PlotPainter {
  protected:
   void flushBuffer();
 };
 
+/// Painter for plotting vertical speed.
+/// Plots positive values as red solid areas and negative values as
+/// blue solid values.
 class VerticalSpeedPlotPainter: public PlotPainter {
  protected:
   void flushBuffer();
@@ -70,6 +77,7 @@ class VerticalSpeedPlotPainter: public PlotPainter {
   static const QPen NEGATIVE_PEN;
 };
 
+/// Painter for plotting ground speed.
 class GroundSpeedPlotPainter: public PlotPainter {
  protected:
   void flushBuffer();

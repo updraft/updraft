@@ -6,6 +6,8 @@
 namespace Updraft {
 namespace Core {
 
+/// Map object of the globe surface.
+/// This is usesd to implement clicking on the map.
 class MapMapObject : public MapObject {
  public:
   MapMapObject(): MapObject("Terrain") {}

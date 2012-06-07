@@ -19,6 +19,7 @@ class TaskPoint;
 class TaskAxis;
 class TaskData;
 
+/// Widget that is shown in the task declaration tab.
 class TaskDeclPanel : public QWidget {
   Q_OBJECT
 

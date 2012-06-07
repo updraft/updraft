@@ -9,6 +9,7 @@ namespace IgcViewer {
 
 class PlotAxes;
 
+/// Abstract label in the plot.
 class Label : public QLayoutItem {
  public:
   /// Overridden from QLayoutItem
@@ -21,11 +22,12 @@ class Label : public QLayoutItem {
   virtual QSize sizeHint() const;
   virtual void setGeometry(const QRect& rect);
   /// \}
-  virtual void draw(QPainter* painter);
+  virtual void draw(QPainter* painter) = 0;
  protected:
   QRect rect;
 };
 
+/// Label marking Y axes in the plot.
 class AxisLabel : public Label {
  public:
   /// Overridden from QLayoutItem
@@ -53,6 +55,7 @@ class AxisLabel : public Label {
   static const QPen LABEL_PEN;
 };
 
+/// Textual label in plot.
 class TextLabel : public Label {
  public:
   /// Overridden from QLayoutItem
@@ -77,6 +80,7 @@ class TextLabel : public Label {
   static const QPen LABEL_PEN;
 };
 
+/// Label marking the X (time) axis in the plot.
 class TimeLabel : public Label {
  public:
   /// Overridden from QLayoutItem

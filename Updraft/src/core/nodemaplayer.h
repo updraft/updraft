@@ -10,6 +10,7 @@
 namespace Updraft {
 namespace Core {
 
+/// Map layer that contains an osg::Node with geometry.
 class NodeMapLayer: public MapLayer {
   Q_OBJECT
 

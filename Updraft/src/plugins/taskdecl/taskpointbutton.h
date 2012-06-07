@@ -10,6 +10,7 @@ class QPushButton;
 
 namespace Updraft {
 
+/// Fancy button thingie for adding and removing turn points.
 class TaskPointButton : public QFrame {
   Q_OBJECT
 

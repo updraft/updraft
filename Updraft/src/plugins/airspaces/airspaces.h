@@ -10,6 +10,7 @@
 namespace Updraft {
 namespace Airspaces {
 
+/// Top level object of airspaces plugin.
 class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
   Q_OBJECT
   Q_INTERFACES(Updraft::PluginBase)

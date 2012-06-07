@@ -12,6 +12,7 @@ namespace IgcViewer {
 
 class OpenedFile;
 
+/// Clickable igc geometry.
 class IGCMapObject : public MapObject {
  private:
   OpenedFile* file;
@@ -28,6 +29,7 @@ class IGCMapObject : public MapObject {
   OpenedFile* getFile();
 };
 
+/// Top leve object of IGC viewer plugin.
 class Q_DECL_EXPORT IgcViewer: public QObject, public PluginBase {
   Q_OBJECT
   Q_INTERFACES(Updraft::PluginBase)

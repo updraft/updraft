@@ -12,6 +12,7 @@ namespace Core {
 class SettingsDelegate;
 class SettingsManager;
 
+/// Dialog window for editing settings.
 class SettingsDialog: public QDialog {
   Q_OBJECT
 

@@ -11,16 +11,18 @@ class QAction;
 namespace Updraft {
 namespace Core {
 
-// TODO(cestmir): We should take care about the destruction of the parent menu.
-// So far, it's not a problem because we don't create the menus dynamically
+
+/// Wrapper around QMenu that can work with item priorities.
 class Menu : public MenuInterface {
+  // TODO(cestmir): We should take care about the destruction of the parent menu.
+  // So far, it's not a problem because we don't create the menus dynamically
  public:
   /// Constructor
   /// \param ownsQMenu Whether the QMenu passed to this constructor should
   //                   be destoryed when the Menu instance is destroyed.
   //                   Default: false
-  explicit Menu(QMenu* setMenu, bool ownsQMenu)
-  : menu(setMenu), ownsMenu(ownsQMenu) {}
+  Menu(QMenu* setMenu, bool ownsQMenu)
+    : menu(setMenu), ownsMenu(ownsQMenu) {}
 
   ~Menu();
 
