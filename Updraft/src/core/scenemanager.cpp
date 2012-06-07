@@ -120,16 +120,16 @@ osgEarth::Util::Viewpoint SceneManager::getInitialPosition() {
 void SceneManager::menuItems() {
   Menu* viewMenu = updraft->mainWindow->getSystemMenu(MENU_VIEW);
 
-  QAction* resetNorthAction = new QAction(tr("Rotate to north"), this);
+  QAction* resetNorthAction = new QAction(tr("Rotate to &north"), this);
   resetNorthAction->setShortcut(QKeySequence(tr("Ctrl+n")));
   connect(resetNorthAction, SIGNAL(triggered()), this, SLOT(resetNorth()));
   viewMenu->insertAction(200, resetNorthAction);
 
-  QAction* untiltAction = new QAction(tr("Restore 2D View"), this);
+  QAction* untiltAction = new QAction(tr("&Restore 2D view"), this);
   connect(untiltAction, SIGNAL(triggered()), this, SLOT(untilt()));
   viewMenu->insertAction(300, untiltAction);
 
-  QAction* setHomePosAction = new QAction(tr("Set &Home Position"), this);
+  QAction* setHomePosAction = new QAction(tr("Set &home position"), this);
   viewMenu->insertAction(400, setHomePosAction);
   connect(setHomePosAction, SIGNAL(triggered()),
     this, SLOT(saveHomePosition()));
