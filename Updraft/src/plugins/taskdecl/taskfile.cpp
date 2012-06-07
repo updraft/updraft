@@ -57,9 +57,11 @@ void TaskFile::saveAs(const QString &filePath_) {
   // Serializes TaskData in Xml format
   QString serialized = dataHistory.getCurrent()->toXml();
 
+  QByteArray utf8 = serialized.toUtf8();
+
   // Saves TaskData to disk
   bool saved = true;
-  if (file.write(serialized.toUtf8()) != (qint64)serialized.length()) {
+  if (file.write(utf8) != (qint64)utf8.length()) {
     saved = false;
     qDebug("TaskFile: file.write() FAILED");
   }
