@@ -14,7 +14,7 @@ namespace Core {
 
 /// Wrapper around QMenu that can work with item priorities.
 class Menu : public MenuInterface {
-  // TODO(cestmir): We should take care about the destruction of the parent menu.
+  // TODO(cestmir): We should take care about destruction of the parent menu.
   // So far, it's not a problem because we don't create the menus dynamically
  public:
   /// Constructor

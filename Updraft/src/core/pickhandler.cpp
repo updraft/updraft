@@ -68,7 +68,6 @@ bool PickHandler::handle(
 
 void PickHandler::raiseLeftClick(
   QVector<Pair> mapObjects) {
-
   Menu* moMenu = updraft->mainWindow->getSystemMenu(MENU_MAPOBJECT);
   moMenu->clear();
 
@@ -114,7 +113,6 @@ void PickHandler::raiseLeftClick(
 
 void PickHandler::raiseRightClick(
   QVector<Pair> mapObjects) {
-
   // Clear the previous menu
   Menu* moMenu = updraft->mainWindow->getSystemMenu(MENU_MAPOBJECT);
   moMenu->clear();
