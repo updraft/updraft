@@ -106,7 +106,7 @@ class OPENAIRSPACE_EXPORT Airspace {
     /// Parses the single airspace record.
     /// \param ts This takes the QTexttream in UseAir free
     /// format.
-    /// \param acOn
+    /// \param acOn AC record read.
     Airspace(QTextStream* ts, bool* acOn);
 
     /// \return The name of the AirSpace.
