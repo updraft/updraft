@@ -30,8 +30,11 @@ class OpenedFile: public QObject {
   /// of opened files in IgcViewer.
   ~OpenedFile();
 
-  /// Open the filename.
+  /// Open the file with the given filename.
+  /// \param viewer The parent IgcViewer object
+  /// \param filename The name of the file which should be opened
   /// \param color Color used for automatic coloring.
+  /// \return Whether the file was successfully opened.
   bool init(IgcViewer* viewer, const QString& filename, QColor color);
 
   /// Force redraw of everything.

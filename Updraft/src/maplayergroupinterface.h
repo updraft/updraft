@@ -36,6 +36,7 @@ class MapLayerGroupInterface: virtual public MapLayerInterface {
   /// Create a map layer group and add it as a sub item to this.
   /// To remove MapLayerGroup use C++ delete.
   /// \param title label for the item in the tree view
+  /// \param pos The position of the newly created group
   /// \return Pointer to the new MapLayerGroup
   virtual MapLayerGroupInterface* createMapLayerGroup(const QString &title,
     int pos = -1) = 0;

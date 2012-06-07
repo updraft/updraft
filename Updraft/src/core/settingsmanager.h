@@ -44,8 +44,8 @@ class SettingsManager: public QObject {
   ///        created with a default icon and name identical to the identifier.
   /// \param description Description of the setting. This will be displayed in
   ///        the settings dialog.
-  /// \param initValue This is the initial value for the setting if it is newly
-  ///        created.
+  /// \param defaultValue This is the initial value for the setting if it is
+  ///        newly created.
   /// \param type Whether the setting is being added to a visible, advanced or
   ///        hidden group.
   /// \return Interface for setting and reading the setting value. In case of

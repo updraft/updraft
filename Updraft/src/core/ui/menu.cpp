@@ -28,9 +28,6 @@ void Menu::clear() {
   ownedActions.clear();
 }
 
-/// Insert action into this menu.
-/// \param position Priority of this action. Actions with
-///   lower value are closer to the top.
 void Menu::insertAction(int position, QAction* action, bool own) {
   actions.insert(position, action);
 

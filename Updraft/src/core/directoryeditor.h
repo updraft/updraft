@@ -15,13 +15,21 @@ class DirectoryEditor: public QPushButton {
  public:
   explicit DirectoryEditor(QWidget *parent = 0);
 
+  /// Gets the directory property value of this editor.
+  /// \return The curently selected directory in the editor.
   const QDir& directory() const;
+
+  /// Sets the directory property displayed in the editor.
+  /// \param dir The directory to be displayed in the editor.
   void setDirectory(const QDir &dir);
 
  private slots:
+  /// Reacts on the button click and displays the standard directory selection
+  /// dialog that allows the user to change the directory property.
   void onClick();
 
  private:
+  /// The property of this editor
   QDir dirProp;
 };
 

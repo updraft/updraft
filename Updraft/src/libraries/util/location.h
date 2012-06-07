@@ -35,18 +35,30 @@ class UTIL_EXPORT Location {
   void lonFromRadians(qreal radians);
 
   /// Set latitude from degrees, minutes and seconds.
+  /// \param d Degrees
+  /// \param m Minutes
+  /// \param s Seconds
   /// \param sign 'N' for north or 'S' for south.
   void latFromDMS(qreal d, qreal m, qreal s, char sign);
 
-  /// Set latitude from degrees, minutes and seconds.
+  /// Set longitude from degrees, minutes and seconds.
+  /// \param d Degrees
+  /// \param m Minutes
+  /// \param s Seconds
   /// \param sign 'E' for east or 'W' for west.
   void lonFromDMS(qreal d, qreal m, qreal s, char sign);
 
   /// Retrieves degrees, minutes and seconds from latitude
+  /// \param d Degrees
+  /// \param m Minutes
+  /// \param s Seconds
   /// \param sign 'N' for north or 'S' for south
   void latToDMS(int *d, int *m, qreal *s, char *sign) const;
 
   /// Retrieves degrees, minutes and seconds from longitude
+  /// \param d Degrees
+  /// \param m Minutes
+  /// \param s Seconds
   /// \param sign 'E' for east or 'W' for west.
   void lonToDMS(int *d, int *m, qreal *s, char *sign) const;
 

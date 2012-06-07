@@ -20,7 +20,7 @@ class BasicSetting: public QObject, public SettingInterface {
   QVariant get();
 
   /// Sets the value of the associated setting.
-  /// \param value The new value of the setting.
+  /// \param newValue The new value of the setting.
   void set(const QVariant& newValue);
 
   /// Sets the description string for the settings dialog.

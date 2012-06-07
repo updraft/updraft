@@ -14,6 +14,8 @@ class EllipsoidName: public QString {
   EllipsoidName();
   explicit EllipsoidName(const QString &str);
 
+  /// Returns the internal textual representation of an ellipsoid
+  /// \return String describing the ellipsoid
   QString asQString() const;
 };
 

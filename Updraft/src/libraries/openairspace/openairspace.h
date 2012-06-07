@@ -9,8 +9,9 @@ namespace OpenAirspace {
   class OPENAIRSPACE_EXPORT Parser {
  public:
     /// OpenAirspace Parser Ctor
-    /// Parses the \param OpenAirspace file
-    explicit Parser(const QString&);
+    /// Parses the gven OpenAirspace file
+    /// \param fileName The file to be parsed
+    explicit Parser(const QString& fileName);
 
     /// Returns Airspace
     inline Airspace* at(const int i) {

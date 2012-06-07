@@ -18,9 +18,10 @@ class Menu : public MenuInterface {
   // So far, it's not a problem because we don't create the menus dynamically
  public:
   /// Constructor
+  /// \param setMenu The QMenu with which the menu is initialized
   /// \param ownsQMenu Whether the QMenu passed to this constructor should
-  //                   be destoryed when the Menu instance is destroyed.
-  //                   Default: false
+  ///                  be destoryed when the Menu instance is destroyed.
+  ///                  Default: false
   Menu(QMenu* setMenu, bool ownsQMenu)
     : menu(setMenu), ownsMenu(ownsQMenu) {}
 
@@ -33,9 +34,24 @@ class Menu : public MenuInterface {
   /// Clears the whole menu and destroys the owned actions
   void clear();
 
+  /// Insert action into this menu.
+  /// \param position Priority of this action. Actions with
+  ///                 lower value are closer to the top.
+  /// \param action The action to be inserted
+  /// \param own Whether the action's ownership should transfer to the menu.
+  ///            If true, the menu destroys the QAction when it is no longer
+  ///            needed.
   void insertAction(int position, QAction* action, bool own = false);
+
+  /// Appends an action into the menu.
+  /// \param action The action to be appended
+  /// \param own Whether the action's ownership should transfer to the menu.
+  ///            If true, the menu destroys the QAction when it is no longer
+  ///            needed.
   void appendAction(QAction* action, bool own = false);
 
+  /// Gets the QMenu wrapped by this menu.
+  /// \return The QMenu wrapped by this menu
   QMenu* getQMenu() { return menu; }
 
   /// Returns the contained QMenu and creates a new empty one.

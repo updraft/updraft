@@ -98,7 +98,8 @@ class SettingsBottomView: public QAbstractItemView {
   bool isIndexHidden(const QModelIndex & index) const;
 
   /// Returns the description of the setting at the given index.
-  /// \param The model index of the setting whose description we want.
+  /// \param settingIndex The model index of the setting whose description we
+  ///                     want.
   /// \return String value that was set as the description for the given
   ///         setting.
   QString getSettingDescription(const QModelIndex& settingIndex) const;

@@ -17,7 +17,12 @@ class EllipsoidNameEditor: public QComboBox {
  public:
   explicit EllipsoidNameEditor(QWidget *parent);
 
+  /// Return the selected ellipsoid's name.
+  /// \return The name of the selected editor.
   EllipsoidName name();
+
+  /// Sets the internal property of the editor.
+  /// \param n The ellipsoid name to set.
   void setName(const EllipsoidName &n);
 };
 

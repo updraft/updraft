@@ -19,7 +19,7 @@ class TaskPoint {
 
   /// Stores TaskPoint to DOM element.
   /// \param doc pointer to DOM element representing document.
-  /// \param parentElem pointer to DOM element representing TaskPoint.
+  /// \param taskPointElem pointer to DOM element representing TaskPoint.
   void toDom(QDomDocument *doc, QDomElement *taskPointElem) const;
 
   /// \return Code of TaskPoint or empty string if it doesn't exist

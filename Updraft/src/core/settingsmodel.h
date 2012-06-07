@@ -114,7 +114,7 @@ class SettingsModel: public QAbstractItemModel {
 
   /// Returns the number of columns under the given index. This is always equal
   /// to 1 in the SettingsModel.
-  /// \param The index whose number of columns should be retrieved
+  /// \param index The index whose number of columns should be retrieved
   /// \return Number of columns for the given index.
   int columnCount(const QModelIndex& index) const { return 1; }
 
@@ -155,7 +155,7 @@ class SettingsModel: public QAbstractItemModel {
   QModelIndex parent(const QModelIndex& index) const;
 
   /// Returns the number of rows under the given index.
-  /// \parent The index whose number of rows we want.
+  /// \param parent The index whose number of rows we want.
   /// \return Number of rows for the given index.
   int rowCount(const QModelIndex& parent = QModelIndex()) const;
 

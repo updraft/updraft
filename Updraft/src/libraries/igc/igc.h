@@ -101,22 +101,26 @@ class IGC_EXPORT IgcFile {
   /// Parse a single record stored in the buffer.
   bool parseOneRecord();
 
-  /// Parse time from IGC encoding.
-  /// HHMMSS
+  /// Parse time from IGC encoding. The time is in the HHMMSS format.
+  /// \param bytes The byte array with the time to be parsed.
   /// \param ok Set to true if parsing was successful, false otherwise.
   QTime parseTimestamp(QByteArray bytes, bool* ok);
 
   /// Parse latitude or longitude from IGC encoding.
+  /// \param bytes The byte array with the latitude/longitude number to be
+  ///              parsed.
   /// \param ok Set to true if parsing was successful, false otherwise.
   /// \return Degrees. Negative values go south and west.
   /// DDMMmmm[NS] or DDDMMmmm[EW]
   qreal parseLatLon(QByteArray bytes, bool* ok);
 
   /// Parse a decimal number in igc format.
+  /// \param bytes The byte array with the decimal number to be parsed.
   /// \param ok Set to true if parsing was successful, false otherwise.
   qreal parseDecimal(QByteArray bytes, bool* ok);
 
   /// Parse date specification.
+  /// \param bytes The byte array with the date to be parsed.
   /// \param ok Set to true if parsing was successful, false otherwise.
   QDate parseDate(QByteArray bytes, bool* ok);
 

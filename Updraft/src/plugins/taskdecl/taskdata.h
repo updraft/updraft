@@ -35,6 +35,7 @@ class TaskData {
 
   /// Inserts new TaskPoint. All TaskPoints are deleted in ~TaskData.
   /// \param position target position of TaskPoint in sequence
+  /// \param taskPoint The task point to be inserted
   /// If position is invalid, TaskPoint is appended to end of sequence.
   bool insertTaskPoint(TaskPoint *taskPoint, int position);
 
@@ -83,6 +84,8 @@ class TaskData {
   /// Returns shortest distance from turn point i to turn point j
   /// and optionally azimuths i to j and j to i.
   /// Doesn't do any checks on the values i,j.
+  /// \param i Index of the first turn-point
+  /// \param j Index of the second turn-point
   /// \param [out] azimuth azimuth from point i to j
   /// \return Length of shortest path from i-th to j-th turn point
   qreal distanceAzimuth(int i, int j, qreal *azimuth) const;
