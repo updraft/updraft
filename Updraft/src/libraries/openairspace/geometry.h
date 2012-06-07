@@ -185,7 +185,7 @@ class OPENAIRSPACE_EXPORT Circle : public Geometry {
   /// \param Z_ The zoom the element is visible.
   Circle(const Position& C_, const double R_, const double& Z_);
 
-  /// \retun The Centre point of the corcle.
+  /// \return The Centre point of the circle.
   inline const Position& Centre() const { return *this->centre; }
 
   /// \return The radius of the circle.

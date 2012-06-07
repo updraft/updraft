@@ -32,9 +32,9 @@ class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
   /// Open File routine.
   /// Processes the imported file according to
   /// the file type calls the correct drawing engine.
-  /// \param QString The filename.
+  /// \param fileName The filename.
   /// \param role The file type.
-  bool fileOpen(const QString&, int role);
+  bool fileOpen(const QString& fileName, int role);
 
   /// Loads allt he files imported to the application.
   void loadImportedFiles();
