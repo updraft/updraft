@@ -121,6 +121,7 @@ class SceneManager: public QObject {
   int activeMapIndex;
   osg::Camera* camera;
   MapManipulator* manipulator;
+  osgEarth::Viewpoint saveViewpoint;
   osgEarth::Util::ElevationManager* elevationManager;
   osgQt::GraphicsWindowQt* graphicsWindow;
 
@@ -147,6 +148,7 @@ class SceneManager: public QObject {
   double getAspectRatio();
 
   SettingInterface* homePositionSetting;
+  static const float flyToHomeDuration;
 };
 
 }  // end namespace Core
