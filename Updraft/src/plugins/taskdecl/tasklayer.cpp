@@ -140,19 +140,9 @@ void TaskLayer::newTaskPoint(const Util::Location& loc) {
   TaskData* tData = file->beginEdit(true);
   TaskPoint* newPoint = new TaskPoint();
   newPoint->setLocation(loc);
-  int d1, d2, m1, m2;
-  qreal s1, s2;
-  char sign1, sign2;
-  loc.latToDMS(&d1, &m1, &s1, &sign1);
-  loc.lonToDMS(&d2, &m2, &s2, &sign2);
-
-  QString ss1, ss2;
-  ss1.setNum(s1, 5, 2);
-  ss2.setNum(s2, 5, 2);
 
   newPoint->setName(
-    QString("Map location:\n%1\u00B0 %2' %3'' %4\n%5\u00B0 %6' %7'' %8")
-    .arg(d1).arg(m1).arg(ss1).arg(sign1).arg(d2).arg(m2).arg(ss2).arg(sign2));
+    tr("Map location:\n%1\n%2").arg(loc.latToString()).arg(loc.lonToString()));
 
   // If the task point insertion failed, remove it
   if (!tData->insertTaskPoint(newPoint, tpIndex)) {
