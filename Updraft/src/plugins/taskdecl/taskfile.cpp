@@ -14,8 +14,10 @@ TaskFile::TaskFile(const QString &filePath_)
   if (!file.open(QIODevice::ReadOnly))
     return;
 
+
   // Loads from file.
-  QString serialized(QByteArray(file.readAll()));
+  QByteArray bytes = file.readAll();
+  QString serialized = QString::fromUtf8(bytes.data(), bytes.size());
   file.close();
 
   // Parses xml. In case of success updates storageState.
