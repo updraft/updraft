@@ -59,18 +59,39 @@ static const int ROOF = 80000;
 /// Class representing the opened airspaces file.
 class oaEngine {
  public:
+  /// Class constructor.
+  /// \param LG The map pointer.
+  /// \param g_core The core pointer.
   oaEngine(MapLayerGroupInterface* LG, CoreInterface* g_core);
-  QVector<QPair<osg::Node*, QString> > * Draw(const QString&);
+
+  /// The main airspace drawing routine.
+  /// This routine calls the OpenAir parser and
+  /// creates the geometry, which is added to the map
+  /// as a layer.
+  /// \param fileName The name of the file containing the data to be
+  /// drawn.
+  /// \return The array of nodes to be drawn.
+  QVector<QPair<osg::Node*, QString> > * Draw(const QString& fileName);
+
+  /// Airspace drawing routines.
+  /// The same as the draw(), but returns the map layers.
+  /// \return The array of map layers.
   QVector<MapLayerInterface*>* DrawII(const QString&);
-  // bool Draw(const QString&);
 
  private:
   /// Map Layer Interface.
   MapLayerGroupInterface *mapLayerGroup;
+
+  /// The tree items.
   QVector<QTreeWidgetItem*> treeItems;
-  // QVector<MapLayerInterface*>* mapLayers;
+
+  /// The osg node, to which the geometry os added.
   osg::Geode* OAGeode;
+
+  /// The elevation manager for height data queries.
   osgEarth::Util::ElevationManager* elevationMan;
+
+  /// Map Layers.
   QVector<QPair<osg::Node*, QString> > * mapLayers;
 
   /// Settings
@@ -122,7 +143,12 @@ class oaEngine {
   int ROOF;
 
 
-  /// Compute the height
+  /// Compute the height for given geometry.
+  /// \param floor The AS floor elevation.
+  /// \param ceiling The AS ceiling elevation.
+  /// \param floorAgl The flag telling if the height
+  /// value is above the ground level or absolute.
+  /// \param ceilingAgl See the floorAgl.
   QVector<double>* ComputeHeightData(
   int* floor, int* ceiling,
   bool* floorAgl, bool* ceilingAgl,

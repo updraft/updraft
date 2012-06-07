@@ -73,7 +73,8 @@ UserAirspace parser library.
 
 namespace OpenAirspace {
 
-/// A single airspace in the OpenAir file.
+/// This class represents a single
+/// airspace in the OpenAir file.
 class OPENAIRSPACE_EXPORT Airspace {
  public :
     /// Airspace class type enum.
@@ -89,76 +90,28 @@ class OPENAIRSPACE_EXPORT Airspace {
     *     W Wave Window */
     enum ACType { R, Q, P, A, B, C, D, E, GP, CTR, W, NA };
 
-
-/* unused
-    /// Coordinates structure - e.g. 39:29.9 N -119:46.1 E.
-    /// \TODO: use Utils when available
-    struct Coordinate {
-      bool valid;  // validity flag
-      qreal lat;
-      qreal lon;
-    };
-
-    /// Polygon point structure
-    struct Poly {
-      GType type;
-      Coordinate* coor;
-    };
-
-    /// Arc structures
-    struct ArcI {
-      GType type;
-      bool valid;
-      unsigned int R;  // radius in nm
-      Coordinate* Centre;  // centre of the arc
-      bool CW;  // clockwise flag
-      unsigned int Start;  // start of the arc in deg
-      unsigned int End;  // end of the arc in deg
-      float Zoom;  // zoom /TODO: float vs int
-    };
-    struct ArcII {
-      GType type;
-      bool valid;
-      Coordinate* Centre;  // centre of the arc
-      Coordinate* Start;  // Starting coord
-      Coordinate* End;  // Ending coord
-      bool CW;  // direction
-      float Zoom;  // zoom /TODO: float vs int
-    };
-
-    /// Circle structure
-    struct Circle {
-      GType type;
-      bool valid;
-      float R;  // radius in nm
-      Coordinate* Centre;  // Centre of the circle in N E
-      float Zoom;  // zoom /TODO: float vs int
-    };
-*/
-    /// Pen style structure
+    /// Pen style structure.
     struct SP_str {
       int style;
       int width;
       int R, G, B;
     };
 
-    /// Brush colour selector
+    /// Brush colour selector structure.
     struct SB_str {
       int R, G, B;
     };
 
     /// UserAirspace class constructor code.
-    /// This takes the filename in Userirspace free format and parses
-    /// the data contained into private variables
+    /// Parses the single airspace record.
+    /// \param ts This takes the QTexttream in UseAir free
+    /// format.
     Airspace(QTextStream* ts, bool* acOn);
 
-    /// copy ctor
-    // Airspace(const Airspace&);
-
-    /// Returns the name of the AirSpace
+    /// \return The name of the AirSpace.
     inline const QString* const GetName() const { return this->AN; }
 
-    /// Returns the class of the AirSpace
+    /// \return The class of the AirSpace
     inline const OpenAirspace::Airspace::ACType& GetClass() {
       return this->AC;
     }
@@ -168,34 +121,35 @@ class OPENAIRSPACE_EXPORT Airspace {
       return *this->ACstring;
     }
 
-    /// Returns the floor of the AirSpace
+    /// \return The height of the floor of the Airspace.
     inline const QString* const GetFloor() const { return this->AL; }
 
-    /// Returns the ceiling of the AirSpace
+    /// \return The height of the ceiling of the Airspace.
     inline const QString* const GetCeiling() const { return this->AH; }
 
-    /// Returns the tag coordinates of the AirSpace
+    /// \return The tag coordinates of the Airspace.
     inline const QVector<Position*>& GetTagCoor() {
       return *this->AT; }
 
-    /// Returns geometry array size
+    /// \return The geometry array size.
     inline int GetGeometrySize() {
       return (geometry) ? this->geometry->size() : 0; }
 
-    /// Returns the geometry array = primitive
+    /// \return the geometry array (a primitive).
     inline const QVector<OpenAirspace::Geometry*>& GetGeometry() {
       return *this->geometry; }
 
-    /// Returns the AirWay
+    /// \return The AirWay.
     inline const QVector<Position*>& GetAirWay() {
       return *this->DY; }
 
-    /// Get Pen & Brush
+    /// \return Pen.
     inline const SP_str* GetPen() const {
       if (this->SP)
         return SP;
       else
         return NULL; }
+    /// \return Brush.
     inline const SB_str* GetBrush() const {
       if (this->SB)
         return SB;
@@ -209,11 +163,19 @@ class OPENAIRSPACE_EXPORT Airspace {
     static Position X;
     static bool validX;
 
-    /// Parse the height data from the text
+    /// Parse the height data from the text to feet.
+    /// \param floor This parameter tells the routine
+    /// whether it is processing the floor data.
+    /// \param agl Returns true if the parsed height is
+    /// above the ground level or absolute.
+    /// \return The elevation in feet.
     int ParseHeight(bool floor, bool* agl);
 
   private :
-    /// Parse the coordinates from string
+    /// Parses the WGS coordinates from string.
+    /// \param parse The string from which the coordinates
+    /// should be parsed.
+    /// \return The coordinates in Possition structure.
     Position ParseCoord(const QString& parse);
 
     /// Airspace class type.

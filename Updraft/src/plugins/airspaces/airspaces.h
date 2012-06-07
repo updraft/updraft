@@ -16,23 +16,37 @@ class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
   Q_INTERFACES(Updraft::PluginBase)
 
  public:
+  /// The class constructor.
   Airspaces();
 
+  /// \return The plug-in name.
   QString getName();
 
+  /// Plug-in initialisation routine.
+  /// \param coreInterface The pointer to the Core.
   void initialize(CoreInterface *coreInterface);
 
+  /// Plug-in unlouad.
   void deinitialize();
 
-  bool fileOpen(const QString&, int);
+  /// Open File routine.
+  /// Processes the imported file according to
+  /// the file type calls the correct drawing engine.
+  /// \param QString The filename.
+  /// \param role The file type.
+  bool fileOpen(const QString&, int role);
 
+  /// Loads allt he files imported to the application.
   void loadImportedFiles();
 
  public slots:
+  /// Changes the visibility of the plug-in.
   void mapLayerDisplayed(bool value, MapLayerInterface* sender);
 
+  /// Reloads the airspaces.
   void reloadAirspaces();
 
+  /// Context menu setup.
   void contextMenuRequested(QPoint pos, MapLayerInterface* sender);
 
  private:
@@ -43,8 +57,10 @@ class Q_DECL_EXPORT Airspaces: public QObject, public PluginBase {
   /// Registration for loading Airspaces from OpenAirspace file.
   FileRegistration OAirspaceFileReg;
 
+  /// Map nodes.
   QVector<QPair<osg::Node*, QString> >* mapNodes;
-  // oaEngine* engine;
+
+  /// Map layers.
   MapLayerGroupInterface* mapLayerGroup;
 };
 
