@@ -100,5 +100,13 @@
         <source>Task file</source>
         <translation>Soubor tratě</translation>
     </message>
+    <message>
+        <source>Map location:
+%1
+%2</source>
+        <translation>Pozice v mapě:
+%1
+%2</translation>
+    </message>
 </context>
 </TS>

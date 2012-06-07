@@ -86,12 +86,12 @@
     <message>
         <location filename="../filetypemanager.cpp" line="108"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba</translation>
     </message>
     <message>
         <location filename="../filetypemanager.cpp" line="108"/>
         <source>Could not open file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepodařilo se otevřít soubor.</translation>
     </message>
 </context>
 <context>
@@ -294,7 +294,7 @@
     <message>
         <location filename="../scenemanager.cpp" line="129"/>
         <source>Set &amp;Home Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavit &amp;Výchozí Pozici</translation>
     </message>
     <message>
         <source>Set &amp;Home Position...</source>
@@ -355,7 +355,7 @@
     <message>
         <location filename="../settingsmanager.cpp" line="115"/>
         <source> (advanced)</source>
-        <translation type="unfinished"> (pokročilé)</translation>
+        <translation> (pokročilé)</translation>
     </message>
 </context>
 <context>
