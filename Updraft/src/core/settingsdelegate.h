@@ -6,6 +6,7 @@
 namespace Updraft {
 namespace Core {
 
+/// Manipulation with setting editors.
 class SettingsDelegate: public QStyledItemDelegate {
  public:
   explicit SettingsDelegate(QObject *parent = 0);

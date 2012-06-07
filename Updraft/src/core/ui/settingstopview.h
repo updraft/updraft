@@ -8,6 +8,7 @@ namespace Core {
 
 class SettingsBottomView;
 
+/// List showing the setting groups.
 class SettingsTopView: public QListView {
 Q_OBJECT
 

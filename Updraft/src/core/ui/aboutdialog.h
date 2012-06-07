@@ -7,6 +7,7 @@
 namespace Updraft {
 namespace Core {
 
+/// "About Updraft..." dialog window.
 class AboutDialog: public QDialog {
   Q_OBJECT
 

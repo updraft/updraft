@@ -82,7 +82,7 @@
     <name>Updraft::TaskLayer</name>
     <message>
         <source>New Task</source>
-        <translation>Nový úkol</translation>
+        <translation>Nová Trať</translation>
     </message>
     <message>
         <source>Do you want to save your changes?</source>
@@ -91,6 +91,22 @@
     <message>
         <source>The document %1 has been modified.</source>
         <translation>Dokument %1 se změnil.</translation>
+    </message>
+    <message>
+        <source>Save Task As</source>
+        <translation>Uložit trať jako</translation>
+    </message>
+    <message>
+        <source>Task file</source>
+        <translation>Soubor tratě</translation>
+    </message>
+    <message>
+        <source>Map location:
+%1
+%2</source>
+        <translation>Pozice v mapě:
+%1
+%2</translation>
     </message>
 </context>
 </TS>

@@ -37,10 +37,6 @@ void Label::setGeometry(const QRect& rect_) {
   this->rect = rect_;
 }
 
-void Label::draw(QPainter *painter) {
-  // do nothing.
-}
-
 // Axis Labels:
 
 Qt::Orientations AxisLabel::expandingDirections() const {

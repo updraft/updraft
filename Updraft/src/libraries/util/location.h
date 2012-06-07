@@ -49,6 +49,17 @@ class UTIL_EXPORT Location {
   /// Retrieves degrees, minutes and seconds from longitude
   /// \param sign 'E' for east or 'W' for west.
   void lonToDMS(int *d, int *m, qreal *s, char *sign) const;
+
+  /// Return latitude as string.
+  /// Uses nice unicode characters for degree marks.
+  QString latToString() const;
+
+  /// Return longitude as string.
+  /// Uses nice unicode characters for degree marks.
+  QString lonToString() const;
+
+ private:
+  static QString dmsToString(int d, int m, qreal s, char sign);
 };
 
 }  // End namespace Util

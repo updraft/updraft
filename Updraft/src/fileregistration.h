@@ -3,6 +3,7 @@
 
 namespace Updraft {
 
+/// Categories of file registration.
 enum FileCategory {
   CATEGORY_PERSISTENT = 1,
   CATEGORY_TEMPORARY = 2
@@ -10,6 +11,7 @@ enum FileCategory {
 
 class PluginBase;
 
+/// Data describing a file type registration.
 struct FileRegistration {
   /// File extension
   QString extension;

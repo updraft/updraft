@@ -17,6 +17,7 @@ namespace Updraft {
 
 typedef QMap<MapLayerInterface*, TPLayer*> TTPLayerMap;
 
+/// Top level object of the turnpoints plugin.
 class TPS_EXPORT TurnPoints : public QObject, public PluginBase {
   Q_OBJECT
   Q_INTERFACES(Updraft::PluginBase)

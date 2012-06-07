@@ -9,6 +9,8 @@ namespace Updraft {
 namespace Igc {
 namespace Test {
 
+/// A few very basic tests for the igc parser.
+/// All of them are expected to pass.
 class TestIgc: public QObject {
   Q_OBJECT
  private slots:

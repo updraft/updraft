@@ -13,6 +13,7 @@ class MapObject;
 
 typedef QList<TaskLayer*> TTaskLayerList;
 
+/// Task declaration plugin top level object.
 class Q_DECL_EXPORT TaskDeclaration: public QObject, public PluginBase {
   Q_OBJECT
   Q_INTERFACES(Updraft::PluginBase)

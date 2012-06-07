@@ -7,6 +7,8 @@
 namespace Updraft {
 namespace Core {
 
+/// Editor for QDir in settings dialog.
+/// Displays a button that opens standard directory select dialog when clicked.
 class DirectoryEditor: public QPushButton {
   Q_OBJECT
   Q_PROPERTY(QDir directory READ directory WRITE setDirectory USER true)

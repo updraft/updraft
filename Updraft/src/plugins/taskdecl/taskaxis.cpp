@@ -52,8 +52,9 @@ void TaskAxis::paintEvent(QPaintEvent *e) {
     qreal dist = 0.0, azimuth = 0.0;
     dist = taskData->distanceAzimuth(legIndex, legIndex+1, &azimuth);
 
-    QString text = QString("%1 km / %2\u00B0")
-      .arg(0.001*dist, 0, 'f', 1).arg(azimuth, 0, 'f', 0);
+    QString text = QString("%1 km / %2%3")
+      .arg(0.001*dist, 0, 'f', 1).arg(azimuth, 0, 'f', 0)
+      .arg(QChar(0xB0));
 
     painter.setRenderHint(QPainter::Antialiasing, true);
 

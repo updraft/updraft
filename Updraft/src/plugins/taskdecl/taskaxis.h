@@ -8,6 +8,7 @@ namespace Updraft {
 class TaskFile;
 class TaskDeclPanel;
 
+/// Graphical representation of task leg distances.
 class TaskAxis : public QWidget {
   Q_OBJECT
 

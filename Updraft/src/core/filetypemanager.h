@@ -5,6 +5,7 @@
 #include <QString>
 #include <QDir>
 #include <QStandardItemModel>
+#include <QCoreApplication>
 
 #include "../coreinterface.h"
 
@@ -17,6 +18,8 @@ namespace Core {
 /// Handles file types, opening of files.
 /// Dispatches file opens to plugins.
 class FileTypeManager {
+  Q_DECLARE_TR_FUNCTIONS(FileTypeManager)
+
  public:
   void registerFiletype(const FileRegistration &registration);
 

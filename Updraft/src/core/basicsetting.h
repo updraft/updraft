@@ -9,6 +9,7 @@
 namespace Updraft {
 namespace Core {
 
+/// Implementation of a setting.
 class BasicSetting: public QObject, public SettingInterface {
   Q_OBJECT
 

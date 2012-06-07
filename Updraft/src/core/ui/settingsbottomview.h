@@ -8,6 +8,7 @@ namespace Core {
 
 // TODO(cestmir): This needs heavy documenting
 
+/// List showing the individual setting items within one group.
 class SettingsBottomView: public QAbstractItemView {
   Q_OBJECT
 

@@ -9,6 +9,7 @@ namespace Updraft {
 
 struct TurnPoint;
 
+/// Turning point in a task.
 class TaskPoint {
  public:
   TaskPoint() {}

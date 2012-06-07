@@ -8,6 +8,7 @@
 namespace Updraft {
 namespace IgcViewer {
 
+/// Label for the vertical picked line.
 class PickedLabel : public Label {
  public:
   /// Overridden from QLayoutItem
@@ -35,6 +36,7 @@ class PickedLabel : public Label {
   static const QPen LABEL_PEN;
 };
 
+/// Text window displaying details of the igc file.
 class IgcTextWidget : public QTextEdit {
   Q_OBJECT
 

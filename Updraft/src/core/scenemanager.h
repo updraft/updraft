@@ -79,12 +79,17 @@ class SceneManager: public QObject {
   /// active map.
   const osg::EllipsoidModel* getCurrentMapEllipsoid();
 
+  /// Returns the osgEarth placer used to place nodes into the scene.
   osgEarth::Util::ObjectPlacer* getObjectPlacer();
+
+  /// Returns the current viewpoint.
+  osgEarth::Util::Viewpoint getViewpoint();
 
  public slots:
   void redrawScene();
   void resetNorth();
   void untilt();
+  void saveHomePosition();
 
  private slots:
   void checkedMap(bool value, MapLayerInterface* layer);
@@ -116,8 +121,8 @@ class SceneManager: public QObject {
   int activeMapIndex;
   osg::Camera* camera;
   MapManipulator* manipulator;
+  osgEarth::Viewpoint saveViewpoint;
   osgEarth::Util::ElevationManager* elevationManager;
-  osgEarth::Util::Viewpoint saveViewpoint;
   osgQt::GraphicsWindowQt* graphicsWindow;
 
   /// Timer that triggers the drawing procedure.
@@ -136,10 +141,14 @@ class SceneManager: public QObject {
   osgEarth::Viewpoint getHomePosition();
   osgEarth::Util::Viewpoint getInitialPosition();
   void startInitialAnimation();
+  void updateCameraProjection();
 
   void insertMenuItems();
 
   double getAspectRatio();
+
+  SettingInterface* homePositionSetting;
+  static const float flyToHomeDuration;
 };
 
 }  // end namespace Core

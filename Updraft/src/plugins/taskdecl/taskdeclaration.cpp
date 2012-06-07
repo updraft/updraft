@@ -44,6 +44,7 @@ void TaskDeclaration::initialize(CoreInterface *coreInterface) {
   // Menu - Save
 
   QAction* saveTaskAction = new QAction(tr("Save Task"), this);
+  saveTaskAction->setShortcuts(QKeySequence::Save);
   connect(saveTaskAction, SIGNAL(triggered()), this, SLOT(saveTask()));
 
   g_core->getSystemMenu(MENU_FILE)->insertAction(3, saveTaskAction);
@@ -51,6 +52,7 @@ void TaskDeclaration::initialize(CoreInterface *coreInterface) {
   // Menu - Save As
 
   QAction* saveAsTaskAction = new QAction(tr("Save Task As..."), this);
+  saveAsTaskAction->setShortcuts(QKeySequence::SaveAs);
   connect(saveAsTaskAction, SIGNAL(triggered()), this, SLOT(saveTaskAs()));
 
   g_core->getSystemMenu(MENU_FILE)->insertAction(4, saveAsTaskAction);
@@ -77,7 +79,7 @@ void TaskDeclaration::deinitialize() {
 
 bool TaskDeclaration::wantsToHandleClick(MapObject* obj) {
   if (obj->getObjectTypeName() != TPMapObject::getClassName() &&
-      obj->getObjectTypeName() != MapMapObject::getClassName())
+      obj->getObjectTypeName() != Core::MapMapObject::getClassName())
     return false;
 
   TaskLayer* layer = getActiveLayer();
@@ -92,7 +94,7 @@ void TaskDeclaration::handleClick(MapObject* obj, const EventInfo* evt) {
 
   if (obj->getObjectTypeName() == TPMapObject::getClassName()) {
     layer->newTaskPoint(static_cast<TPMapObject*>(obj)->turnPoint);
-  } else if (obj->getObjectTypeName() == MapMapObject::getClassName()) {
+  } else if (obj->getObjectTypeName() == Core::MapMapObject::getClassName()) {
     const osg::EllipsoidModel* ellipsoidModel =
       g_core->getCurrentMapEllipsoid();
     Util::Location mapLoc;
