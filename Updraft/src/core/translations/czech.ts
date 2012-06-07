@@ -332,6 +332,11 @@
         <source>ArcGIS, Topographic Map</source>
         <translation>ArcGIS, Topografická mapa</translation>
     </message>
+    <message>
+        <location filename="../scenemanager.cpp" line="376"/>
+        <source>Offline Map</source>
+        <translation type="unfinished">Offline Mapa</translation>
+    </message>
 </context>
 <context>
     <name>Updraft::Core::SettingsDialog</name>
@@ -398,57 +403,57 @@
         <translation type="obsolete">WGS84</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="122"/>
+        <location filename="../updraft.cpp" line="124"/>
         <source>Counting files...</source>
         <translation>Počítám soubory...</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="135"/>
+        <location filename="../updraft.cpp" line="137"/>
         <source>Data directory moved</source>
         <translation>Adresář s daty byl přesunut</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="136"/>
+        <location filename="../updraft.cpp" line="138"/>
         <source>The data directory was successfully moved</source>
         <translation>Adresář s daty byl úspěšně přesunut</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="141"/>
+        <location filename="../updraft.cpp" line="143"/>
         <source>Data directory not moved</source>
         <translation>Adresář s daty nebyl přesunut</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="142"/>
+        <location filename="../updraft.cpp" line="144"/>
         <source>The data directory could not be moved</source>
         <translation>Adresář s daty nemohl být přesunut </translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="156"/>
+        <location filename="../updraft.cpp" line="158"/>
         <source>General</source>
         <translation>Obecné</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="163"/>
+        <location filename="../updraft.cpp" line="165"/>
         <source>Data directory</source>
         <translation>Adresář s daty</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="175"/>
+        <location filename="../updraft.cpp" line="177"/>
         <source>Ellipsoid model</source>
         <translation>Elipsoid</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="182"/>
+        <location filename="../updraft.cpp" line="184"/>
         <source>WGS84 Ellipsoid</source>
         <translation>WGS84 Elipsoid</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="184"/>
+        <location filename="../updraft.cpp" line="186"/>
         <source>FAI Sphere</source>
         <translation>FAI Koule</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="241"/>
+        <location filename="../updraft.cpp" line="243"/>
         <source>Copying directory %1 to %2...</source>
         <translation>Kopíruji adresář %1 do %2...</translation>
     </message>
@@ -457,7 +462,7 @@
         <translation type="obsolete">Kopíruji obsah adresáře s daty...</translation>
     </message>
     <message>
-        <location filename="../updraft.cpp" line="342"/>
+        <location filename="../updraft.cpp" line="344"/>
         <source>Removing old data directory...</source>
         <translation>Odstraňuji starý adresář s daty...</translation>
     </message>
