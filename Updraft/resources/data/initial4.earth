@@ -1,0 +1,18 @@
+<!--
+Updraft initial map file.
+
+Please note that use of ESRI's free maps is subject to certain restrictions:
+http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
+-->
+
+<map name="Offline Map" type="geocentric" version="2">   
+    <options>
+      <lighting>false</lighting>
+    </options>
+
+    <image name="world" driver="gdal">
+        <url>world.tif</url>
+    </image>
+</map>
+
+
