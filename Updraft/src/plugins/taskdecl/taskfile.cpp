@@ -14,8 +14,10 @@ TaskFile::TaskFile(const QString &filePath_)
   if (!file.open(QIODevice::ReadOnly))
     return;
 
+
   // Loads from file.
-  QString serialized(QByteArray(file.readAll()));
+  QByteArray bytes = file.readAll();
+  QString serialized = QString::fromUtf8(bytes.data(), bytes.size());
   file.close();
 
   // Parses xml. In case of success updates storageState.
@@ -57,9 +59,11 @@ void TaskFile::saveAs(const QString &filePath_) {
   // Serializes TaskData in Xml format
   QString serialized = dataHistory.getCurrent()->toXml();
 
+  QByteArray utf8 = serialized.toUtf8();
+
   // Saves TaskData to disk
   bool saved = true;
-  if (file.write(serialized.toUtf8()) != (qint64)serialized.length()) {
+  if (file.write(utf8) != (qint64)utf8.length()) {
     saved = false;
     qDebug("TaskFile: file.write() FAILED");
   }
