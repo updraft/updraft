@@ -372,6 +372,8 @@ void SceneManager::createMapManagers() {
     new MapManager("initial2.earth", tr("ArcGIS, Satellite Imagery")));
   mapManagers.append(
     new MapManager("initial3.earth", tr("ArcGIS, Topographic Map")));
+  mapManagers.append(
+    new MapManager("initial4.earth", tr("Offline Map")));
 }
 
 void SceneManager::destroyMaps() {
