@@ -27,6 +27,7 @@ enum WaypointStyle {
   INTERSECTION    = 17
 };
 
+/// Structure with information about a turn-point.
 struct TurnPoint {
   /// Unique identifier of the turn-point
   QString code;

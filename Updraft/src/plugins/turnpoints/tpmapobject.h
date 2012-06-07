@@ -6,6 +6,7 @@
 
 namespace Updraft {
 
+/// The turnpoint map object that serves for clicking at turnpoints
 class TPMapObject : public MapObject {
  public:
   explicit TPMapObject(const TurnPoint* tp)

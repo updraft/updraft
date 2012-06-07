@@ -142,12 +142,13 @@ class GroundSpeedFixInfo : public SpeedFixInfo {
   qreal distanceBefore(int i) const;
 };
 
-/// Caclulate vertical speed.
+/// Calculates the vertical speed.
 class VerticalSpeedFixInfo : public SpeedFixInfo {
  private:
   qreal distanceBefore(int i) const;
 };
 
+/// Serves for track coloring according to the track id.
 class TrackIdFixInfo : public FixInfo {
  public:
   explicit TrackIdFixInfo(int id);
