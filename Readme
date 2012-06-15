@@ -1,9 +1,10 @@
+Updraft is an oppen source project that aims to create user-friendly application for
+glider flight planning and visualization.
+
+Features include visualization of 3D maps, flight planning and
+visualizations of recorded IGC files, all of that on Windows, Linux and Mac OS X.
 Updraft is a university project that aims to create user-friendly open source
 application for glider flight planning and visualization.
-Features will include visualization of 3D maps, flight planning and
-visualizations of recorded IGC files, all of that on Windows, Linux and Mac OS X.
-In short what SeeYou does, but much cooler and for free.
-
-ETA for the first usable version is June 2012.
 
 Project website: http://updraft.github.com/
+Git repository: http://github.com/updraft/updraft/
