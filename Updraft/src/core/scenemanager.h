@@ -113,6 +113,11 @@ class SceneManager: public QObject {
   /// Create the map layer group and fill it with maps.
   void mapLayerGroup();
 
+  /// Return viewpoint that is either the same as the argument,
+  /// or is moved above ground in case the argument was below.
+  osgEarth::Util::Viewpoint correctedViewpoint(
+    osgEarth::Util::Viewpoint viewpoint);
+
   osgEarth::Util::ElevationManager* createElevationManager();
 
   osgEarth::Util::ObjectPlacer* placer;

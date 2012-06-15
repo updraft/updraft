@@ -105,10 +105,8 @@ void SceneManager::saveHomePosition() {
 }
 
 osgEarth::Util::Viewpoint SceneManager::getHomePosition() {
-  return
-    StateSaver::restoreViewpoint(homePositionSetting->get().toByteArray());
-  // return osgEarth::Util::Viewpoint(14.42046, 50.087811,
-  //   0, 0.0, -90.0, 15e5);
+  return correctedViewpoint(StateSaver::restoreViewpoint(
+    homePositionSetting->get().toByteArray()));
 }
 
 osgEarth::Util::Viewpoint SceneManager::getInitialPosition() {
@@ -282,22 +280,11 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
 
       osgEarth::Util::Viewpoint viewpoint = manipulator->getViewpoint();
 
-        // if the active map has a terrain, check whether we're not under
-      if (mapManagers[activeMapIndex]->hasElevation()) {
-        double elevation, resolution;
-        if (elevationManager->getElevation(viewpoint.x(), viewpoint.y(),
-          0, 0, elevation, resolution)) {
-          if (viewpoint.getRange() < elevation) {
-            viewpoint.setRange(elevation + 10);
-          }
-        }
-      }
-
       manipulator = new MapManipulator();
 
       mapManagers[activeMapIndex]->bindManipulator(manipulator);
 
-      manipulator->setHomeViewpoint(viewpoint);
+      manipulator->setHomeViewpoint(correctedViewpoint(viewpoint));
       viewer->setCameraManipulator(manipulator);
       manipulator->setHomeViewpoint(getHomePosition(), flyToHomeDuration);
 
@@ -408,6 +395,24 @@ osgEarth::Util::ObjectPlacer* SceneManager::getObjectPlacer() {
 
 osgEarth::Util::Viewpoint SceneManager::getViewpoint() {
   return manipulator->getViewpoint();
+}
+
+osgEarth::Util::Viewpoint SceneManager::correctedViewpoint(
+  osgEarth::Util::Viewpoint viewpoint) {
+  if (getMapManager()->hasElevation()) {
+    double elevation, resolution;
+
+    if (!elevationManager->getElevation(viewpoint.x(), viewpoint.y(),
+      0, 0, elevation, resolution)) {
+      return viewpoint;
+    }
+
+    if (viewpoint.getRange() < elevation) {
+      viewpoint.setRange(elevation + 10);
+    }
+  }
+
+  return viewpoint;
 }
 
 }  // end namespace Core
