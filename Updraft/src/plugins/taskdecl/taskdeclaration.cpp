@@ -206,6 +206,16 @@ int TaskDeclaration::getIndexForNewTask() {
   return maxIndex + 1;
 }
 
+bool TaskDeclaration::askClose() {
+  foreach(TaskLayer* layer, layers) {
+      if (!layer->askClose()) {
+        return false;
+      }
+  }
+
+  return true;
+}
+
 Q_EXPORT_PLUGIN2(taskdecl, TaskDeclaration)
 
 }  // End namespace Updraft

@@ -85,6 +85,11 @@ class TaskLayer : public QObject {
   /// \return True on success. False on fail or cancell.
   bool saveAs();
 
+  /// Ask the layer if closing it is Ok.
+  /// This method may display a dialog window asking the user
+  /// and based on the result of this dialog save the file.
+  bool askClose();
+
  public slots:
   void mapLayerDisplayed(bool value, MapLayerInterface* sender);
 

@@ -198,36 +198,35 @@ void TaskLayer::mapLayerDisplayed(bool value, MapLayerInterface* sender) {
   mapLayer->setVisibility(isDisplayed());
 }
 
-void TaskLayer::tryCloseLayer() {
-  // TODO(Tom): Ask for close even on application close, allow refuse.
-
+bool TaskLayer::askClose() {
   // When file is modified, ask for save.
-  if (file->getStorageState() == TaskFile::UNSTORED_EDITED
-  || file->getStorageState() == TaskFile::STORED_DIRTY) {
-      QMessageBox msgBox;
-      msgBox.setText(tr("The document %1 has been modified.").arg(getTitle()));
-      msgBox.setInformativeText(tr("Do you want to save your changes?"));
-      msgBox.setStandardButtons(QMessageBox::Save |
-        QMessageBox::Discard | QMessageBox::Cancel);
-      msgBox.setDefaultButton(QMessageBox::Save);
+  if (file->getStorageState() != TaskFile::UNSTORED_EDITED
+    && file->getStorageState() != TaskFile::STORED_DIRTY) {
+    return true;
+  }
 
-      bool refused = false;
+  QMessageBox msgBox;
+  msgBox.setText(tr("The document %1 has been modified.").arg(getTitle()));
+  msgBox.setInformativeText(tr("Do you want to save your changes?"));
+  msgBox.setStandardButtons(QMessageBox::Save |
+    QMessageBox::Discard | QMessageBox::Cancel);
+  msgBox.setDefaultButton(QMessageBox::Save);
 
-      // Show message box.
-      switch (msgBox.exec()) {
-        case QMessageBox::Save:
-          // When select save and it is not succesfull, refuse closing.
-          refused = !(save());
-          break;
+  // Show message box.
+  switch (msgBox.exec()) {
+    case QMessageBox::Save:
+      // When select save and it is not succesfull, refuse closing.
+      return save();
+    case QMessageBox::Discard:
+      return true;
+    default:
+      return false;
+  }
+}
 
-        case QMessageBox::Cancel:
-          refused = true;
-          break;
-      }
-
-      if (refused) {
-        return;
-      }
+void TaskLayer::tryCloseLayer() {
+  if (!askClose()) {
+    return;
   }
 
   // Removes layer from list in plugin.

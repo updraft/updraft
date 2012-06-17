@@ -79,6 +79,9 @@ class MainWindow : public QMainWindow {
   // TODO(cestmir): Just a temporary method to test context menu
   void contextMenuEvent(QContextMenuEvent* event);
 
+  /// Handle window close.
+  void closeEvent(QCloseEvent *event);
+
  private:
   /// Adds the standard menu items to menu.
   /// This includes Open File, Exit, Help ...

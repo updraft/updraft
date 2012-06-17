@@ -146,6 +146,14 @@ void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
   menuContext->getQMenu()->popup(event->globalPos());
 }
 
+void MainWindow::closeEvent(QCloseEvent *event) {
+  if (updraft->askClose()) {
+    event->accept();
+  } else {
+    event->ignore();
+  }
+}
+
 void MainWindow::standardMenuItems() {
   QAction* openAction = new QAction(tr("&Open..."), this);
   openAction->setShortcuts(QKeySequence::Open);
@@ -189,7 +197,9 @@ void MainWindow::openFile() {
 }
 
 void MainWindow::appExit() {
-  updraft->exit();
+  if (updraft->askClose()) {
+    updraft->exit();
+  }
 }
 
 void MainWindow::openUserDoc() {

@@ -58,6 +58,16 @@ class Updraft : public QApplication {
   /// \return The translation directory
   QDir getTranslationDirectory();
 
+  /// Ask all plug-ins if closing them is Ok.
+  /// \see PluginBase::askClose()
+  bool askClose();
+
+  /// Reimplemented from QApplication.
+  /// Handles behavior on system shutdown.
+  /// If user interaction is allowed then asks all plug-ins what to do
+  /// and possibly cancels the shutdown.
+  void commitData(QSessionManager& sessionManager);  // NOLINT
+
   QDir currentDataDirectory;
   SettingInterface* dataDirectory;
 

@@ -59,6 +59,11 @@ class PluginBase {
   virtual bool fileOpen(const QString &filename, int roleId) {
     return false; }
 
+  /// Callback asking the plugin if closing all files is Ok.
+  /// The plug-in may display a dialog box and ask the user.
+  /// \return true if this plugin has no objections to closing the application.
+  virtual bool askClose() { return true; }
+
  private:
   /// Disallow copying
   PluginBase(const PluginBase& other) {}

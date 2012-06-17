@@ -379,6 +379,29 @@ bool Updraft::moveDataDirectory(
   return true;
 }
 
+bool Updraft::askClose() {
+  foreach(PluginBase* plugin, pluginManager->getAllPlugins()) {
+    if (!plugin->askClose()) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+void Updraft::commitData(QSessionManager& sessionManager) {  // NOLINT
+  if (sessionManager.allowsInteraction()) {
+    bool allowed = askClose();
+
+    // Release the user interaction lock taken by allowsInteraction()
+    sessionManager.release();
+
+    if (!allowed) {
+      sessionManager.cancel();
+    }
+  }
+}
+
 }  // End namespace Core
 }  // End namespace Updraft
 

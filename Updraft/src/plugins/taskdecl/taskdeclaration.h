@@ -35,6 +35,8 @@ class Q_DECL_EXPORT TaskDeclaration: public QObject, public PluginBase {
   void fileIdentification(QStringList *roles,
     QString *importDirectory, const QString &filename);
 
+  bool askClose();
+
  public slots:
   /// Creates empty task.
   void createTask();
