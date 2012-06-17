@@ -399,17 +399,78 @@ osgEarth::Util::Viewpoint SceneManager::getViewpoint() {
 
 osgEarth::Util::Viewpoint SceneManager::correctedViewpoint(
   osgEarth::Util::Viewpoint viewpoint) {
-  if (getMapManager()->hasElevation()) {
-    double elevation, resolution;
+  if (!getMapManager()->hasElevation()) {
+    // If the current map doesn't have a elevation layer, then
+    // there isn't anything to check.
+    return viewpoint;
+  }
 
-    if (!elevationManager->getElevation(viewpoint.x(), viewpoint.y(),
-      0, 0, elevation, resolution)) {
-      return viewpoint;
-    }
+  double elevation;
+  double ignored;
 
-    if (viewpoint.getRange() < elevation) {
-      viewpoint.setRange(elevation + 10);
-    }
+  // First we check if the camera focus is above ground and
+  // move it if it isn't.
+  elevationManager->getElevation(viewpoint.x(), viewpoint.y(),
+    0, 0, elevation, ignored);
+
+  if (viewpoint.z() < elevation) {
+    viewpoint.z() = elevation;
+  }
+
+  // Now comes the tricky part.
+  // We need to check the camera position for terrain collisions,
+  // but we only know azimuth, elevation and range from camera to focal point.
+  //
+  // We go around this by creating a transformation from
+  // local coordinates (at the camera focal point)
+  osg::Matrixd localToWorld;
+  viewpoint.getSRS()->getEllipsoid()->
+    computeLocalToWorldTransformFromLatLongHeight(
+      osg::DegreesToRadians(viewpoint.y()),
+      osg::DegreesToRadians(viewpoint.x()),
+      viewpoint.z(),
+      localToWorld);
+
+  // Next  calculate the camera position in this local coordinate frame.
+  double pitch = osg::DegreesToRadians(viewpoint.getPitch());
+  double heading = osg::DegreesToRadians(viewpoint.getHeading());
+  double range = viewpoint.getRange();
+
+  osg::Vec3d localCameraPos;
+  localCameraPos.z() = - sin(pitch) * range;
+  double dist = cos(pitch) * range;  // horizontal distance between
+    // focal point and camera
+  localCameraPos.x() = - cos(-heading + osg::PI_2) * dist;
+  localCameraPos.y() = - sin(-heading + osg::PI_2) * dist;
+
+  // ... convert it to global coords (ECEF) ...
+  osg::Vec3d globalCameraPos = localCameraPos * localToWorld;
+
+  // ... to Lat/Lon ...
+  double lat;
+  double lon;
+  double height;
+  viewpoint.getSRS()->getEllipsoid()->
+    convertXYZToLatLongHeight(
+      globalCameraPos.x(),
+      globalCameraPos.y(),
+      globalCameraPos.z(),
+      lat, lon, height);
+  lat = osg::RadiansToDegrees(lat);
+  lon = osg::RadiansToDegrees(lon);
+
+  // Now we can query the elevation under the camera. Finally!
+  elevationManager->getElevation(lon, lat, 0, 0, elevation, ignored);
+  elevation += 10;  // camera should be at least 10 meters above terrain.
+
+  if (height < elevation) {
+    // For the conversion back to pitch and range we're taking a shortcut
+    // by assuming flat earth. This won't cause any problems, because
+    // if the camera is below terrain we know it's very close to earth
+    // and earth curvatue is negligible at this scale.
+
+    viewpoint.setRange(sqrt(dist * dist + elevation * elevation));
+    viewpoint.setPitch(atan(elevation / dist));
   }
 
   return viewpoint;
