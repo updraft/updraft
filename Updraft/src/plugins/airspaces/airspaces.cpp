@@ -105,6 +105,7 @@ void Airspaces::loadImportedFiles() {
 
 void Airspaces::contextMenuRequested(QPoint pos, MapLayerInterface* sender) {
   QMenu menu;
+  menu.addAction(sender->getZoomAction());
   menu.addAction(sender->getDeleteAction());
   menu.exec(pos);
 }

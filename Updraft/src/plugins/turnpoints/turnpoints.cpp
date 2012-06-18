@@ -147,6 +147,7 @@ void TurnPoints::contextMenuRequested(QPoint pos, MapLayerInterface* sender) {
   layerToDelete = sender;
 
   QMenu menu;
+  menu.addAction(sender->getZoomAction());
   menu.addAction(sender->getDeleteAction());
   menu.exec(pos);
 }
