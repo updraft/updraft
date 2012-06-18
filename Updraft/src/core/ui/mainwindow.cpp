@@ -41,8 +41,11 @@ MainWindow::MainWindow(QWidget *parent)
 
   standardMenuItems();
 
+  ui->treeWidget_2->invisibleRootItem()->setDisabled(false);
+  ui->treeWidget_2->invisibleRootItem()->setCheckState(0, Qt::Checked);
   invisibleRootMapLayerGroup = new MapLayerGroup(
     ui->treeWidget_2->invisibleRootItem());
+
   connect(ui->treeWidget_2, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
     this, SLOT(mapLayerItemChanged(QTreeWidgetItem*)));
   connect(ui->treeWidget_2, SIGNAL(customContextMenuRequested(const QPoint&)),
@@ -234,6 +237,10 @@ QWidget* MainWindow::getMapWidget() {
 }
 
 void MainWindow::mapLayerItemChanged(QTreeWidgetItem *item) {
+  if (!mapLayers.contains(item)) {
+    return;
+  }
+
   MapLayerInterface *mapLayer = mapLayers[item];
   mapLayer->emitChecked(item->checkState(0) == Qt::Checked);
 }
@@ -246,6 +253,10 @@ void MainWindow::mapLayerContextMenuRequested(const QPoint& pos) {
   }
 
   QPoint globalPos = ui->treeWidget_2->mapToGlobal(pos);
+
+  if (!mapLayers.contains(item)) {
+    return;
+  }
 
   MapLayerInterface *mapLayer = mapLayers[item];
   mapLayer->emitContextMenuRequested(globalPos);

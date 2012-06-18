@@ -51,13 +51,21 @@ void MapLayerGroup::insertMapLayer(MapLayerInterface* layer, int pos) {
     treeItem->addChild(layer->getTreeItem());
   }
   mapLayers.insert(layer);
-  updraft->mainWindow->registerMapLayer(layer);
   layer->addToScene(this);
   layer->inserted(this);
+  if ((treeItem->data(0, Qt::CheckStateRole).isValid() &&
+    treeItem->checkState(0) == Qt::Unchecked) ||
+    treeItem->isDisabled()) {
+    layer->setDisabled(true);
+  }
+
+  updraft->mainWindow->registerMapLayer(layer);
 
   treeItem->setHidden(!mapLayers.count());
 }
 
+// TODO(Kuba): Create a specialised subclass of MapLayer and avoid code
+// duplication within this method.
 MapLayerInterface* MapLayerGroup::createMapLayerNoInsert(osg::Node* mapLayer,
   const QString& title, int pos) {
   MapLayerInterface* layer = new NodeMapLayer(title, mapLayer);
@@ -68,9 +76,15 @@ MapLayerInterface* MapLayerGroup::createMapLayerNoInsert(osg::Node* mapLayer,
     treeItem->addChild(layer->getTreeItem());
   }
   mapLayers.insert(layer);
-  updraft->mainWindow->registerMapLayer(layer);
   // don't add
   layer->inserted(this);
+  if ((treeItem->data(0, Qt::CheckStateRole).isValid() &&
+    treeItem->checkState(0) == Qt::Unchecked) ||
+    treeItem->isDisabled()) {
+    layer->setDisabled(true);
+  }
+
+  updraft->mainWindow->registerMapLayer(layer);
 
   treeItem->setHidden(!mapLayers.count());
 
