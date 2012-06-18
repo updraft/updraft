@@ -220,6 +220,7 @@ void OpenedFile::createGroup() {
   // push the scene
   track = viewer->mapLayerGroup->createMapLayer(sceneRoot, fileInfo.fileName());
   track->connectCheckedToVisibility();
+  track->zoom();
 }
 
 osg::Node* OpenedFile::createTrack() {

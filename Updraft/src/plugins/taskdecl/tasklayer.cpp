@@ -54,6 +54,8 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   connect(file, SIGNAL(storageStateChanged()),
     this, SLOT(taskStorageStateChanged()));
 
+  mapLayer->zoom();
+
   taskDataChanged();
 }
 
