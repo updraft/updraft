@@ -94,6 +94,8 @@ class MapLayer : public QObject, virtual public MapLayerInterface {
   /// \return The QAction that deletes the file associated to this map layer.
   QAction* getDeleteAction();
 
+  QAction* getZoomAction();
+
   /// Save the state (check state and expanded state)
   /// of this layer.
   /// \return QByteArray with the saved state of this map layer.
@@ -150,6 +152,9 @@ class MapLayer : public QObject, virtual public MapLayerInterface {
 
   /// Action for getDeleteAction.
   QAction* deleteAction;
+
+  /// Action for getZoomAction.
+  QAction* zoomAction;
 
   /// File path for delete action.
   QString deleteFilePath;

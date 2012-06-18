@@ -80,6 +80,12 @@ class MapLayerInterface {
   /// For a single map layer, the same QAction is returned every time.
   virtual QAction* getDeleteAction() = 0;
 
+  /// Returns pointer to the action that zooms to make everything associated
+  /// with this map layer visible in the map.
+  /// The action's triggered() signal zooms the current view.
+  /// For a single map layer, the same QAction is returned every time.
+  virtual QAction* getZoomAction() = 0;
+
   /// \}
 
   virtual bool isVisible() = 0;

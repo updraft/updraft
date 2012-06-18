@@ -14,7 +14,7 @@ namespace Updraft {
 namespace Core {
 
 MapLayer::MapLayer(const QString &title)
-  : deleteAction(0), ownsTreeItem(true), parent(0) {
+  : deleteAction(0), zoomAction(0), ownsTreeItem(true), parent(0) {
   treeItem = new QTreeWidgetItem();
   treeItem->setText(0, title);
   treeItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
@@ -24,7 +24,8 @@ MapLayer::MapLayer(const QString &title)
 }
 
 MapLayer::MapLayer(QTreeWidgetItem *item)
-  : deleteAction(0), treeItem(item), ownsTreeItem(false), parent(0) {}
+  : deleteAction(0), zoomAction(0),
+  treeItem(item), ownsTreeItem(false), parent(0) {}
 
 MapLayer::~MapLayer() {
   if (ownsTreeItem) {
@@ -98,10 +99,17 @@ void MapLayer::setFilePath(const QString& path) {
 QAction* MapLayer::getDeleteAction() {
   if (!deleteAction) {
     deleteAction = new QAction(tr("Delete"), this);
-    connect(deleteAction, SIGNAL(triggered()),
-      this, SLOT(deleteActionSlot()));
+    connect(deleteAction, SIGNAL(triggered()), this, SLOT(deleteActionSlot()));
   }
   return deleteAction;
+}
+
+QAction* MapLayer::getZoomAction() {
+  if (!zoomAction) {
+    zoomAction = new QAction(tr("Zoom"), this);
+    connect(zoomAction, SIGNAL(triggered()), this, SLOT(zoom()));
+  }
+  return zoomAction;
 }
 
 void MapLayer::deleteActionSlot() {
