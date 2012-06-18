@@ -22,7 +22,7 @@
 namespace Updraft {
 namespace Core {
 
-const float SceneManager::flyToHomeDuration = 1.0;
+const float SceneManager::animDuration = 1.0;
 
 SceneManager::SceneManager() {
   // Create a group for map settings
@@ -99,7 +99,7 @@ SceneManager::SceneManager() {
 
 void SceneManager::saveHomePosition() {
   osgEarth::Viewpoint viewpoint = manipulator->getViewpoint();
-  manipulator->setHomeViewpoint(viewpoint, flyToHomeDuration);
+  manipulator->setHomeViewpoint(viewpoint, animDuration);
   QByteArray saved = StateSaver::saveViewpoint(viewpoint);
   homePositionSetting->set(saved);
 }
@@ -179,7 +179,7 @@ QWidget* SceneManager::getWidget() {
 void SceneManager::startInitialAnimation() {
   osgEarth::Util::Viewpoint home = getHomePosition();
   // set home position for ACTION_HOME
-  manipulator->setHomeViewpoint(home, flyToHomeDuration);
+  manipulator->setHomeViewpoint(home, animDuration);
   // go to home position now
   manipulator->setViewpoint(home, 2.0);
 }
@@ -286,7 +286,7 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
 
       manipulator->setHomeViewpoint(correctedViewpoint(viewpoint));
       viewer->setCameraManipulator(manipulator);
-      manipulator->setHomeViewpoint(getHomePosition(), flyToHomeDuration);
+      manipulator->setHomeViewpoint(getHomePosition(), animDuration);
 
       registerOsgNode(mapNode, mapManagers[activeMapIndex]->getMapObject());
       layers[oldIndex]->setChecked(false);
@@ -386,7 +386,7 @@ void SceneManager::createMaps() {
   manipulator->setHomeViewpoint(saveViewpoint);
   mapManagers[activeMapIndex]->bindManipulator(manipulator);
   viewer->setCameraManipulator(manipulator);
-  manipulator->setHomeViewpoint(getHomePosition(), flyToHomeDuration);
+  manipulator->setHomeViewpoint(getHomePosition(), animDuration);
 }
 
 osgEarth::Util::ObjectPlacer* SceneManager::getObjectPlacer() {
@@ -474,6 +474,10 @@ osgEarth::Util::Viewpoint SceneManager::correctedViewpoint(
   }
 
   return viewpoint;
+}
+void SceneManager::animateToViewpoint(
+  const osgEarth::Util::Viewpoint& viewpoint) {
+  manipulator->setViewpoint(viewpoint, animDuration);
 }
 
 }  // end namespace Core

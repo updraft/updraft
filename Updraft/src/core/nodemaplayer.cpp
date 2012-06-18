@@ -20,6 +20,10 @@ NodeMapLayer::~NodeMapLayer() {
   }
 }
 
+const osg::Node* NodeMapLayer::getNode() {
+  return node;
+}
+
 void NodeMapLayer::setVisibility(bool value) {
   node->setNodeMask(value ? 0xffffffff : 0x0);
 }

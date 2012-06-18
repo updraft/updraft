@@ -84,6 +84,11 @@ class MapLayerInterface {
 
   virtual bool isVisible() = 0;
 
+  /// Zoom to make everything associated with this map layer visible in the map.
+  /// Called when the zoomAction is triggered.
+  /// \see getZoomAction()
+  virtual void zoom() = 0;
+
   friend class Core::MapLayerGroup;
   friend class Core::MainWindow;
 

@@ -82,6 +82,9 @@ class MapLayerGroup : public MapLayer, public MapLayerGroupInterface {
   bool restoreState(const QByteArray &state);
 
  private:
+  /// Return the osg node of this map layer or null if there is none.
+  const osg::Node* getNode();
+
   void addToScene(MapLayerGroup* group);
   void removeFromScene(MapLayerGroup* group);
   void inserted(Core::MapLayerGroup* parent);

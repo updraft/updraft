@@ -7,6 +7,10 @@
 
 class QTreeWidgetItem;
 
+namespace osg {
+class Node;
+}
+
 namespace Updraft {
 namespace Core {
 
@@ -106,6 +110,8 @@ class MapLayer : public QObject, virtual public MapLayerInterface {
   /// \param value The new state of visibility.
   void setVisibility(bool value) = 0;
 
+  void zoom();
+
  private slots:
   /// The slot that is executed by the delete action. This method deleted the
   /// associated file.
@@ -124,6 +130,9 @@ class MapLayer : public QObject, virtual public MapLayerInterface {
   void contextMenuRequested(QPoint pos, MapLayerInterface* sender);
 
  protected:
+  /// Return the osg node of this map layer or null if there is none.
+  virtual const osg::Node* getNode() = 0;
+
   /// Emits the checked signal.
   /// Called from MainWindow.
   /// \param value Whether the check-box was checked

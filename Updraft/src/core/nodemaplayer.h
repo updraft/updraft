@@ -27,6 +27,9 @@ class NodeMapLayer: public MapLayer {
   bool isVisible();
 
  private:
+  /// Return the osg node of this map layer or null if there is none.
+  const osg::Node* getNode();
+
   /// The node that contains the map layer geometry.
   osg::ref_ptr<osg::Node> node;
 

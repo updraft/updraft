@@ -94,6 +94,8 @@ class SceneManager: public QObject {
   /// \return The currently used viewpoint
   osgEarth::Util::Viewpoint getViewpoint();
 
+  void animateToViewpoint(const osgEarth::Util::Viewpoint& viewpoint);
+
  public slots:
   void redrawScene();
   void resetNorth();
@@ -162,7 +164,7 @@ class SceneManager: public QObject {
   double getAspectRatio();
 
   SettingInterface* homePositionSetting;
-  static const float flyToHomeDuration;
+  static const float animDuration;
 };
 
 }  // end namespace Core

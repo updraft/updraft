@@ -192,5 +192,9 @@ bool MapLayerGroup::restoreState(const QByteArray &state) {
   return MapLayer::restoreState(ownState);
 }
 
+const osg::Node* MapLayerGroup::getNode() {
+  return getNodeGroup();
+}
+
 }  // End namespace Core
 }  // End namespace Updraft

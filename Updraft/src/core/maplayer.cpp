@@ -3,8 +3,12 @@
 #include <QTreeWidgetItem>
 #include <QFile>
 
+#include <osgEarth/Viewpoint>
+#include <osg/BoundingSphere>
+
 #include "ui/maplayergroup.h"
 #include "updraft.h"
+#include "scenemanager.h"
 
 namespace Updraft {
 namespace Core {
@@ -103,6 +107,32 @@ QAction* MapLayer::getDeleteAction() {
 void MapLayer::deleteActionSlot() {
   QFile::remove(updraft->getDataDirectory().filePath(deleteFilePath));
   delete this;
+}
+
+void MapLayer::zoom() {
+  const osg::BoundingSphere& bound = getNode()->getBound();
+
+  if (bound.radius() < 0) {
+    return;
+  }
+
+  osg::Vec3d centerLatLon;
+
+  updraft->sceneManager->getCurrentMapEllipsoid()->convertXYZToLatLongHeight(
+    bound.center().x(), bound.center().y(), bound.center().z(),
+    centerLatLon.y(), centerLatLon.x(), centerLatLon.z());
+
+  centerLatLon.x() = osg::RadiansToDegrees(centerLatLon.x());
+  centerLatLon.y() = osg::RadiansToDegrees(centerLatLon.y());
+
+  osgEarth::Viewpoint viewpoint(centerLatLon,
+    0, -90, bound.radius() * 3.8);
+    // Magical constant -- a little more than cotg(15 deg).
+    // This means that with field of view of 30 degrees
+    // the bounding sphere will contain a little less than the whole
+    // screen.
+
+  updraft->sceneManager->animateToViewpoint(viewpoint);
 }
 
 void MapLayer::setId(const QByteArray& id) {
