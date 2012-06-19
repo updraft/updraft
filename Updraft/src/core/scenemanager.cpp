@@ -269,6 +269,8 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
       osgEarth::Util::EarthManipulator::PROJ_PERSPECTIVE);
       viewer->frame();
 
+      osgEarth::Util::Viewpoint viewpoint = manipulator->getViewpoint();
+
       int oldIndex = activeMapIndex;
       activeMapIndex = index;
       unregisterOsgNode(mapManagers[oldIndex]->getMapNode());
@@ -277,8 +279,6 @@ void SceneManager::checkedMap(bool value, MapLayerInterface* object) {
       // set current map node
       mapNode = mapManagers[activeMapIndex]->getMapNode();
       mapManagers[activeMapIndex]->attach(sceneRoot);
-
-      osgEarth::Util::Viewpoint viewpoint = manipulator->getViewpoint();
 
       manipulator = new MapManipulator();
 
@@ -424,7 +424,7 @@ osgEarth::Util::Viewpoint SceneManager::correctedViewpoint(
   // We go around this by creating a transformation from
   // local coordinates (at the camera focal point)
   osg::Matrixd localToWorld;
-  viewpoint.getSRS()->getEllipsoid()->
+  getCurrentMapEllipsoid()->
     computeLocalToWorldTransformFromLatLongHeight(
       osg::DegreesToRadians(viewpoint.y()),
       osg::DegreesToRadians(viewpoint.x()),
@@ -450,7 +450,7 @@ osgEarth::Util::Viewpoint SceneManager::correctedViewpoint(
   double lat;
   double lon;
   double height;
-  viewpoint.getSRS()->getEllipsoid()->
+  getCurrentMapEllipsoid()->
     convertXYZToLatLongHeight(
       globalCameraPos.x(),
       globalCameraPos.y(),
