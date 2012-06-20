@@ -62,6 +62,10 @@ void MapLayerGroup::insertMapLayer(MapLayerInterface* layer, int pos) {
   updraft->mainWindow->registerMapLayer(layer);
 
   treeItem->setHidden(!mapLayers.count());
+  if (mapLayers.count() == 1 &&
+    treeItem->data(0, Qt::CheckStateRole).isValid()) {
+    treeItem->setCheckState(0, Qt::Checked);
+  }
 }
 
 // TODO(Kuba): Create a specialised subclass of MapLayer and avoid code
@@ -87,6 +91,10 @@ MapLayerInterface* MapLayerGroup::createMapLayerNoInsert(osg::Node* mapLayer,
   updraft->mainWindow->registerMapLayer(layer);
 
   treeItem->setHidden(!mapLayers.count());
+  if (mapLayers.count() == 1 &&
+    treeItem->data(0, Qt::CheckStateRole).isValid()) {
+    treeItem->setCheckState(0, Qt::Checked);
+  }
 
   return layer;
 }
