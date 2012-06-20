@@ -12,6 +12,9 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
       <cache type="filesystem">
         <path>osgearth_cache_topographic</path>
       </cache>
+      <terrain>
+        <mercator_fast_path>false</mercator_fast_path>
+      </terrain>
     </options>
     
     <image name="OSM-topographic-maps-cache" driver="arcgis">

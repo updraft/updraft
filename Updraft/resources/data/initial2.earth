@@ -13,6 +13,9 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
       </cache>
       
       <lighting>false</lighting>
+      <terrain>
+        <mercator_fast_path>false</mercator_fast_path>
+      </terrain>
     </options>
     
     <image name="OnlineMapsCache" driver="arcgis">
