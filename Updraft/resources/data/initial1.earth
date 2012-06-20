@@ -11,21 +11,17 @@ http://resources.esri.com/arcgisonlineservices/index.cfm?fa=content
       <cache type="filesystem">
         <path>osgearth_cache_osm</path>
       </cache>
-    
-      <profile>
-        <srs>global-mercator</srs>  
-      </profile>
       
       <lighting>false</lighting>
+      <terrain>
+        <mercator_fast_path>false</mercator_fast_path>
+      </terrain>
     </options>
 
-    <image name="OSM on Mapnik Slippy Map" driver="tms">
-        <url>http://tile.openstreetmap.org/</url>
-        <profile>global-mercator</profile>
-        <format>png</format>
-        <tile_size>256</tile_size>
-        <tms_type>google</tms_type>
-    </image>  
+    <image name="osm_mapnik" driver="xyz">
+      <url>http://[abc].tile.openstreetmap.org/{z}/{x}/{y}.png</url>
+      <profile>spherical-mercator</profile>
+    </image>
 </map>
 
 
