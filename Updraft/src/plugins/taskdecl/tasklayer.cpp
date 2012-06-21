@@ -46,7 +46,8 @@ TaskLayer::TaskLayer(bool displayed_, TaskDeclaration *plugin_,
   mapLayer->connectSignalChecked(this,
     SLOT(mapLayerDisplayed(bool, MapLayerInterface*)));
   tab->connectSignalCloseRequested(this, SLOT(tryCloseLayer()));
-
+  mapLayer->connectSignalContextMenuRequested(this,
+    SLOT(contextMenuRequested(QPoint, MapLayerInterface*)));
   // Connect the dataChanged signal
   connect(this->file, SIGNAL(dataChanged()),
     this->panel, SLOT(updateButtons()));
@@ -455,5 +456,12 @@ void TaskLayer::drawAreas(osg::Group *group) {
 
   file->endRead();
 }
+
+void TaskLayer::contextMenuRequested(QPoint pos, MapLayerInterface* sender) {
+  QMenu menu;
+  menu.addAction(sender->getZoomAction());
+  menu.exec(pos);
+}
+
 
 }  // End namespace Updraft

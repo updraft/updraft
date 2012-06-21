@@ -109,6 +109,9 @@ class TaskLayer : public QObject {
   /// It updates label in both bottom tab and left pane.
   void taskStorageStateChanged();
 
+  /// Context menu was requested on the map layer.
+  void contextMenuRequested(QPoint pos, MapLayerInterface* sender);
+
  private:
   /// Draws task lines.
   /// \param geode target geode object.
