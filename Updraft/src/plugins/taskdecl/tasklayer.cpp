@@ -1,3 +1,4 @@
+#include <osg/ShapeDrawable>
 #include <osg/Depth>
 #include <osg/Group>
 #include <osg/Geode>
@@ -265,6 +266,10 @@ void TaskLayer::taskDataChanged() {
   osg::Geode *curtain = new osg::Geode();
   drawCurtain(curtain);
   group->addChild(curtain);
+
+  osg::Group *areas = new osg::Group();
+  drawAreas(areas);
+  group->addChild(areas);
 }
 
 void TaskLayer::taskStorageStateChanged() {
@@ -405,6 +410,50 @@ void TaskLayer::drawCurtain(osg::Geode *geode) {
   stateSet->setAttributeAndModes(depth, osg::StateAttribute::ON);
 
   stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+}
+
+void TaskLayer::drawAreas(osg::Group *group) {
+  const TaskData *taskData = file->beginRead();
+  if (taskData == NULL) {
+    return;
+  }
+
+  // TODO(Kuba): ObjectPlacer is deprecated.
+  osgEarth::Util::ObjectPlacer *placer =
+    plugin->mapLayerGroup->getObjectPlacer();
+
+  int pointIndex = 0;
+  const TaskPoint *point = NULL;
+  while ((point = taskData->getTaskPoint(pointIndex))) {
+    double height = 1500 + point->getLocation().alt;
+
+    osg::Shape* cylinder = new osg::Cylinder(osg::Vec3d(0, 0, 0), 500, height);
+
+    osg::ShapeDrawable* cylinderDrawable = new osg::ShapeDrawable(cylinder);
+
+    osg::Geode *cylinderGeode = new osg::Geode();
+    cylinderGeode->addDrawable(cylinderDrawable);
+
+    cylinderDrawable->setColor(osg::Vec4d(0, 0, 0.5, 0.5));
+
+    osg::StateSet* stateSet = cylinderDrawable->getOrCreateStateSet();
+    stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    stateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
+    stateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+    stateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
+
+    osg::Depth* depth = new osg::Depth;
+    depth->setWriteMask(false);
+    stateSet->setAttributeAndModes(depth, osg::StateAttribute::ON);
+
+    group->addChild(placer->placeNode(cylinderGeode,
+      point->getLocation().lat,
+      point->getLocation().lon,
+      height / 2));
+    ++pointIndex;
+  }
+
+  file->endRead();
 }
 
 }  // End namespace Updraft
