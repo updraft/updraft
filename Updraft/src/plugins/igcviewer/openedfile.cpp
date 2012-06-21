@@ -53,7 +53,7 @@ bool OpenedFile::loadIgc(const QString& filename) {
     return false;
   }
 
-  const Util::Ellipsoid* ellipsoid = g_core->getEllipsoid();
+  const osg::EllipsoidModel* ellipsoid = g_core->getCurrentMapEllipsoid();
 
   fixList.clear();
 
@@ -69,7 +69,7 @@ bool OpenedFile::loadIgc(const QString& filename) {
 
     qreal x, y, z;
 
-    ellipsoid->getOsgEllipsoidModel()->convertLatLongHeightToXYZ(
+    ellipsoid->convertLatLongHeightToXYZ(
       igcFix->gpsLoc.lat_radians(), igcFix->gpsLoc.lon_radians(),
       igcFix->gpsLoc.alt,
       x, y, z);
@@ -270,7 +270,7 @@ osg::Node* OpenedFile::createSkirt() {
   skirtGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
 
   const osg::EllipsoidModel* ellipsoid =
-    g_core->getEllipsoid()->getOsgEllipsoidModel();
+    g_core->getCurrentMapEllipsoid();
   foreach(TrackFix fix, fixList) {
     double x, y, z;
     ellipsoid->convertLatLongHeightToXYZ(
