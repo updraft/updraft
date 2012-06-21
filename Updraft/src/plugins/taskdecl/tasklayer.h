@@ -113,7 +113,7 @@ class TaskLayer : public QObject {
   /// Draws task lines.
   /// \param geode target geode object.
   /// Lines are added as drawables into geode.
-  void DrawLines(osg::Geode *geode);
+  void drawLines(osg::Geode *geode);
 
   /// TaskDeclaration plugin
   TaskDeclaration *plugin;

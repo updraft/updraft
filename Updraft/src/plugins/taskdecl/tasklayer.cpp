@@ -258,7 +258,7 @@ void TaskLayer::taskDataChanged() {
 
   // Draws lines, adds them to group.
   osg::Geode *geodeLines = new osg::Geode();
-  DrawLines(geodeLines);
+  drawLines(geodeLines);
   group->addChild(geodeLines);
 }
 
@@ -267,7 +267,7 @@ void TaskLayer::taskStorageStateChanged() {
   mapLayer->setTitle(getTitle());
 }
 
-void TaskLayer::DrawLines(osg::Geode *geode) {
+void TaskLayer::drawLines(osg::Geode *geode) {
   // Creates geometry object and draw array.
   osg::Geometry* geom = new osg::Geometry();
   geode->addDrawable(geom);
@@ -286,20 +286,21 @@ void TaskLayer::DrawLines(osg::Geode *geode) {
     return;
   }
 
-  osgEarth::Util::ObjectPlacer *objectPlacer =
-    plugin->mapLayerGroup->getObjectPlacer();
+  const osg::EllipsoidModel* ellipsoid = g_core->getCurrentMapEllipsoid();
 
   // Reads all task points and fills draw array.
   int pointIndex = 0;
   const TaskPoint *point = NULL;
   while ((point = taskData->getTaskPoint(pointIndex))) {
-    osg::Matrixd matrix;
-
     // TODO(Tom): correct altitude
-    objectPlacer->createPlacerMatrix(point->getLocation().lat,
-      point->getLocation().lon, point->getLocation().alt + 1000.0, matrix);
+    double x, y, z;
+    ellipsoid->convertLatLongHeightToXYZ(
+      point->getLocation().lat_radians(),
+      point->getLocation().lon_radians(),
+      point->getLocation().alt + 1000.0,
+      x, y, z);
 
-    vertexData->push_back(osg::Vec3(0.0, 0.0, 0.0) * matrix);
+    vertexData->push_back(osg::Vec3(x, y, z));
     ++pointIndex;
   }
 
