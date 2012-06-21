@@ -115,6 +115,10 @@ class TaskLayer : public QObject {
   /// Lines are added as drawables into geode.
   void drawLines(osg::Geode *geode);
 
+  /// Draw curtain of the track.
+  /// \param geode target geode object.
+  void drawCurtain(osg::Geode *geode);
+
   /// TaskDeclaration plugin
   TaskDeclaration *plugin;
 

@@ -1,3 +1,4 @@
+#include <osg/Depth>
 #include <osg/Group>
 #include <osg/Geode>
 #include <osg/Geometry>
@@ -260,6 +261,10 @@ void TaskLayer::taskDataChanged() {
   osg::Geode *geodeLines = new osg::Geode();
   drawLines(geodeLines);
   group->addChild(geodeLines);
+
+  osg::Geode *curtain = new osg::Geode();
+  drawCurtain(curtain);
+  group->addChild(curtain);
 }
 
 void TaskLayer::taskStorageStateChanged() {
@@ -330,6 +335,76 @@ void TaskLayer::drawLines(osg::Geode *geode) {
   colors->push_back(osg::Vec4(0.78, 0.64, 0.0, 1.0));
   geom->setColorArray(colors);
   geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+}
+
+void TaskLayer::drawCurtain(osg::Geode *geode) {
+  osg::Geometry* geom = new osg::Geometry();
+
+  geode->addDrawable(geom);
+
+  osg::DrawArrays* drawArray =
+    new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP);
+  geom->addPrimitiveSet(drawArray);
+
+  osg::Vec3Array* vertexData = new osg::Vec3Array();
+  geom->setVertexArray(vertexData);
+
+  // Loads TaskData.
+  const TaskData *taskData = file->beginRead();
+  if (taskData == NULL) {
+    return;
+  }
+
+  const osg::EllipsoidModel* ellipsoid = g_core->getCurrentMapEllipsoid();
+
+  // Reads all task points and fills draw array.
+  int pointIndex = 0;
+  const TaskPoint *point = NULL;
+  while ((point = taskData->getTaskPoint(pointIndex))) {
+    double x, y, z;
+
+    ellipsoid->convertLatLongHeightToXYZ(
+      point->getLocation().lat_radians(),
+      point->getLocation().lon_radians(),
+      point->getLocation().alt + 1000.0,
+      x, y, z);
+    vertexData->push_back(osg::Vec3(x, y, z));
+
+    ellipsoid->convertLatLongHeightToXYZ(
+      point->getLocation().lat_radians(),
+      point->getLocation().lon_radians(),
+      0,
+      x, y, z);
+    vertexData->push_back(osg::Vec3(x, y, z));
+    ++pointIndex;
+  }
+
+  file->endRead();
+
+  drawArray->setFirst(0);
+  drawArray->setCount(vertexData->size());
+
+  // Subdivides lines
+  osgEarth::Symbology::MeshSubdivider meshSubdivider;
+  meshSubdivider.run(*geom, 0.01, osgEarth::GEOINTERP_GREAT_CIRCLE);
+
+  geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+  osg::Vec4Array* color = new osg::Vec4Array();
+  color->push_back(osg::Vec4(0.5, 0.5, 0.5, 0.5));
+  geom->setColorArray(color);
+
+  osg::StateSet* stateSet = geode->getOrCreateStateSet();
+  stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+  stateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
+  stateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+  stateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
+
+  osg::Depth* depth = new osg::Depth;
+  depth->setWriteMask(false);
+  stateSet->setAttributeAndModes(depth, osg::StateAttribute::ON);
+
+  stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 }
 
 }  // End namespace Updraft
