@@ -224,6 +224,8 @@ void OpenedFile::createGroup() {
   // push the scene
   track = viewer->mapLayerGroup->createMapLayer(sceneRoot, fileInfo.fileName());
   track->connectCheckedToVisibility();
+  track->connectSignalContextMenuRequested(this,
+    SLOT(contextMenuRequested(QPoint, MapLayerInterface*)));
   track->zoom();
 }
 
@@ -492,6 +494,12 @@ void OpenedFile::clearMarkers() {
     sceneRoot->removeChild(pickedMarkers[i]);
   }
   pickedMarkers.clear();
+}
+
+void OpenedFile::contextMenuRequested(QPoint pos, MapLayerInterface* sender) {
+  QMenu menu;
+  menu.addAction(sender->getZoomAction());
+  menu.exec(pos);
 }
 
 }  // End namespace IgcViewer

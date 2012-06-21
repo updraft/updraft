@@ -85,6 +85,9 @@ class OpenedFile: public QObject {
   /// It clears the markers on the track.
   void clearMarkers();
 
+  /// One of the map layers has requested a context menu.
+  void contextMenuRequested(QPoint pos, MapLayerInterface* sender);
+
  private slots:
   /// Slot that gets called when the tab associated with this file is closed.
   /// Deletes the opened file.
