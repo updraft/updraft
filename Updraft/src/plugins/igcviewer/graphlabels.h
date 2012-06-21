@@ -48,7 +48,7 @@ class AxisLabel : public Label {
   QString unitsDescription;
 
   static const int MIN_WIDTH = 20;
-  static const int MIN_HEIGHT = 20;
+  static const int MIN_HEIGHT = 15;
   static const int OFFSET_X = 3;
   static const int TEXT_HEIGHT = 10;
 

@@ -101,6 +101,8 @@ TextLabel::TextLabel(QString text_) {
 }
 
 void TextLabel::draw(QPainter* painter) {
+  if ((rect.height() < MIN_HEIGHT) || (rect.width() < MIN_WIDTH))
+    return;
   painter->setPen(LABEL_PEN);
   QFont font("Helvetica", 10);
   painter->setFont(font);
@@ -130,6 +132,8 @@ TimeLabel::TimeLabel(PlotAxes* axis_) {
 }
 
 void TimeLabel::draw(QPainter* painter) {
+  if ((rect.height() < MIN_HEIGHT) || (rect.width() < MIN_WIDTH))
+    return;
   painter->setPen(LABEL_PEN);
   QFont font("Helvetica", 10);
   painter->setFont(font);

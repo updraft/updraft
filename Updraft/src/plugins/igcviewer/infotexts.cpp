@@ -26,6 +26,8 @@ QSize PickedLabel::minimumSize() const {
 }
 
 void PickedLabel::draw(QPainter *painter) {
+  if ((rect.height() < MIN_HEIGHT) || (rect.width() < MIN_WIDTH))
+    return;
   if (texts->empty()) return;
   if (pickedPositions->empty()) return;
 
