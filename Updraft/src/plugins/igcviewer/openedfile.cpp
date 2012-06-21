@@ -4,6 +4,7 @@
 #include <QHBoxLayout>
 #include <QSplitter>
 #include <QVBoxLayout>
+#include <QGridLayout>
 #include <QDebug>
 
 #include <osg/Depth>
@@ -30,6 +31,8 @@ OpenedFile::~OpenedFile() {
     delete tmp;
   }
 
+  delete igc;
+
   foreach(FixInfo* info, fixInfo) {
     delete info;
   }
@@ -46,9 +49,8 @@ OpenedFile::~OpenedFile() {
 }
 
 bool OpenedFile::loadIgc(const QString& filename) {
-  Igc::IgcFile igc;
-
-  if (!igc.load(filename)) {
+  igc = new Igc::IgcFile();
+  if (!igc->load(filename)) {
     qDebug() << "Loading IGC file failed.";
     return false;
   }
@@ -57,7 +59,7 @@ bool OpenedFile::loadIgc(const QString& filename) {
 
   fixList.clear();
 
-  foreach(Igc::Event const* ev, igc.events()) {
+  foreach(Igc::Event const* ev, igc->events()) {
     if (ev->type != Igc::Event::FIX) {
       continue;
     }
@@ -129,8 +131,7 @@ bool OpenedFile::init(IgcViewer* viewer,
 
 
   QWidget* tabWidget = new QWidget();
-  QHBoxLayout* layout = new QHBoxLayout();
-  QVBoxLayout* verticalLayout = new QVBoxLayout();
+  QGridLayout* layout = new QGridLayout();
 
   layout->setContentsMargins(0, 0, 0, 0);
 
@@ -141,11 +142,14 @@ bool OpenedFile::init(IgcViewer* viewer,
     plotWidget->getPointsStatTexts());
   textBox->setReadOnly(true);
 
+  QLabel* header = new QLabel();
+  setHeaderText(header);
+
   tabWidget->setLayout(layout);
-  verticalLayout->addWidget(colorsCombo, 0);
-  verticalLayout->addWidget(textBox, 1);
-  layout->addLayout(verticalLayout, 0);
-  layout->addWidget(plotWidget, 1.0);
+  layout->addWidget(colorsCombo, 0, 0);
+  layout->addWidget(textBox, 1, 0);
+  layout->addWidget(header, 0, 1);
+  layout->addWidget(plotWidget, 1, 1);
 
   tab = g_core->createTab(tabWidget, fileInfo.fileName());
 
@@ -464,6 +468,23 @@ osg::Geode* OpenedFile::createMarker(qreal scale) {
   geode->addDrawable(geometry);
 
   return geode;
+}
+
+void OpenedFile::setHeaderText(QLabel* label) {
+  QString text;
+  QDate date = igc->date();
+  if (date.isValid()) {
+    text += date.toString(Qt::DefaultLocaleShortDate) + "\t";
+  }
+  QString pilot = igc->pilot();
+  if (!pilot.isEmpty()) {
+    text += tr("Pilot: ") + pilot + "\t";
+  }
+  QString glider = igc->gliderType();
+  if (!glider.isEmpty()) {
+    text += tr("Glider: ") + glider;
+  }
+  label->setText(text);
 }
 
 void OpenedFile::clearMarkers() {
