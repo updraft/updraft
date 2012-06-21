@@ -19,6 +19,12 @@
 class IGCViewer;
 
 namespace Updraft {
+namespace Igc {
+  class IgcFile;
+}
+}
+
+namespace Updraft {
 namespace IgcViewer {
 
 /// Helper class representing a single opened IGC file.
@@ -101,7 +107,11 @@ class OpenedFile: public QObject {
   /// Set coloring of the track.
   void setColors(Coloring* coloring);
 
+  /// Create the marker geometry.
   osg::Geode* createMarker(qreal scale);
+
+  /// Fill the header label information - name of the pilot, date, etc.
+  void setHeaderText(QLabel* label);
 
   QFileInfo fileInfo;
 
@@ -134,6 +144,9 @@ class OpenedFile: public QObject {
   osg::AutoTransform* currentMarker;
 
   Coloring* currentColoring;
+
+  /// Igc file
+  Igc::IgcFile* igc;
 
   /// List of track points.
   QList<TrackFix> fixList;
