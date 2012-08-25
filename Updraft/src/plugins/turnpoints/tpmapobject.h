@@ -12,6 +12,8 @@ class TPMapObject : public MapObject {
   explicit TPMapObject(const TurnPoint* tp)
   : MapObject(tp->name), turnPoint(tp) {}
 
+  virtual ~TPMapObject() {}
+
   // Use this method for comparing class name.
   // \return Name of this class.
   static QString getClassName() { return "TPMapObject"; }
