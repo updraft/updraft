@@ -9,6 +9,11 @@ INCLUDE(StyleCheck)
 INCLUDE(FilterQObject)
 INCLUDE(CommonBuild)
 
+# Work around a bug in FindOpenSceneGraph from CMake libraries (present in cmake 2.8.7)
+IF(NOT ENV{OSG_DIR})
+  SET(ENV{OSG_DIR} "${OSG_DIR}")
+ENDIF()
+
 SET(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 
 SET(SLOPPY_BUILD OFF CACHE BOOL "Don't require style checks to pass.")
