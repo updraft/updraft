@@ -165,13 +165,13 @@ void SettingsBottomView::createEditors() {
 
     QScrollArea* scrollArea = new QScrollArea();
 
-    QWidget* page = new QWidget();
-    page->setLayout(layout);
-    page->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-    page->setMinimumSize(0, 0);
+    QWidget* pageWidget = new QWidget();
+    pageWidget->setLayout(layout);
+    pageWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+    pageWidget->setMinimumSize(0, 0);
 
     scrollArea->setFrameStyle(QFrame::NoFrame);
-    scrollArea->setWidget(page);
+    scrollArea->setWidget(pageWidget);
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     stack->addWidget(scrollArea);
