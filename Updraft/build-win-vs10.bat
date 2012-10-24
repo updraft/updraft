@@ -1,0 +1,19 @@
+::
+:: Script for Windows build
+:: Creates Visual Studio solution in the ./build directory
+::
+
+
+:: Before run:
+:: make sure that you have set path to cmake in PATH variable
+:: and also set following 2 environment variables:
+:: 1)osg_dir      ...path of osg libraries (e.g.: C:\osg)
+:: 2)osgearth_dir ...path of osgEarth libraries (e.g.: C:\osgEarth)
+
+cls
+mkdir build
+cd build
+
+cmake .. -G"Visual Studio 10" -DOSG_DIR=%osg_dir% -DOSGEARTH_DIR=%osgearth_dir% -DDEPENDENCIES_DIR=c:/swproj/UpdraftDependencies/merged
+
+cd ..
